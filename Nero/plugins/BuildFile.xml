@@ -1,0 +1,26 @@
+<library name="NeroProducerNeroPlugins" file="*.cc"/>
+<use name="NeroProducer/Nero"/>
+<use name="FWCore/Framework"/>
+<use name="FWCore/PluginManager"/>
+<use name="FWCore/ParameterSet"/>
+<!--  -->
+<use name="DataFormats/PatCandidates"/>
+<use name="DataFormats/VertexReco"/>
+<use name="DataFormats/EgammaCandidates"/>
+<use name="DataFormats/Common"/>
+<use name="DataFormats/JetReco"/>
+<use name="DataFormats/Candidate" />
+<use name="DataFormats/HepMCCandidate" />
+<!--  -->
+<use name="CommonTools/UtilAlgos"/>
+<use name="CommonTools/Utils"/>
+<!--  -->
+<use name="SimDataFormats/GeneratorProducts"/>
+<use name="SimDataFormats/PileupSummaryInfo"/>
+<!--  -->
+<use name="CondFormats/JetMETObjects"/>
+<!--  -->
+<use name="clhep"/>
+<use name="root"/>
+<use name="RooFit"/>
+<flags EDM_PLUGIN="1"/>
