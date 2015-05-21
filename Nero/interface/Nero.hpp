@@ -7,6 +7,7 @@
 #include "NeroProducer/Nero/interface/Includes.hpp"
 #include "NeroProducer/Nero/interface/NeroCollection.hpp"
 
+#include "TStopwatch.h"
 
 //fwd declaration
 
@@ -39,6 +40,9 @@ class Nero : public edm::EDAnalyzer {
       edm::Service<TFileService> fileService_;
       // collection to be moved into a tree
       vector<NeroCollection*> obj;
+
+      // check performances
+      TStopwatch sw_;
 
       //NeroJets    *jets_;
       //NeroTaus	  *taus_;

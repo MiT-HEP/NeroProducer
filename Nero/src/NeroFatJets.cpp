@@ -72,7 +72,7 @@ int NeroFatJets::analyze(const edm::Event& iEvent){
 		
 		// Fill output object	
 		//p4 -> AddLast(new TLorentzVector(j.px(), j.py(), j.pz(), j.energy())  );
-		new ( (*p4)[p4->GetSize()]) TLorentzVector(j.px(), j.py(), j.pz(), j.energy());
+		new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(j.px(), j.py(), j.pz(), j.energy());
 
 		rawPt -> push_back (j.pt()*j.jecFactor("Uncorrected"));
         	flavour -> push_back( j.partonFlavour() );

@@ -29,6 +29,8 @@
 #include "NeroProducer/Nero/interface/NeroMonteCarlo.hpp"
 
 
+#define VERBOSE 0
+
 //
 // constants, enums and typedefs
 //
@@ -125,6 +127,7 @@ void
 Nero::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
    using namespace edm;
+   if (VERBOSE) cout<<"------- begin event --------"<<endl;
   
    for(auto o : obj)
    	o->clear();
@@ -132,16 +135,20 @@ Nero::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    const reco::Vertex *pv = NULL;
    for(auto o : obj)
 	{
+	if (VERBOSE){sw_.Reset(); sw_.Start();}
 	if ( dynamic_cast<NeroLeptons*>(o) != NULL ) dynamic_cast<NeroLeptons*>(o) -> SetPV( pv );
 
    	if (o->analyze(iEvent) ) return; // analyze return 0 on success (VTX ..)
 
 	if ( dynamic_cast<NeroVertex*>(o) != NULL ) pv = dynamic_cast<NeroVertex*>(o) ->GetPV(); 
+
+	if (VERBOSE){sw_.Stop(); cout<< "object "<<o->name()<<" took:"<< sw_.CpuTime()<< "CPU Time and "<<sw_.RealTime()<<"RealTime"<<endl;}
 	}
    	
 
    tree_->Fill();
    all_->Fill();
+   if (VERBOSE) cout<<"------- end event (success) --------"<<endl;
 
 }
 
@@ -150,6 +157,7 @@ Nero::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 void 
 Nero::beginJob()
 {
+	if(VERBOSE) cout<<" >>>>>>> BEGIN JOB <<<<<<<<<"<<endl;
 	tree_    = fileService_ -> make<TTree>("events", "events");
 	all_     = fileService_ -> make<TTree>("all", "all");	  
 	hXsec_   = fileService_ -> make<TH1F>("xSec", "xSec",20,-0.5,19.5); hXsec_ ->Sumw2();
@@ -163,6 +171,7 @@ Nero::beginJob()
 void 
 Nero::endJob() 
 {
+	if(VERBOSE) cout<<" >>>>>>> END JOB <<<<<<<<<"<<endl;
 }
 
 // ------------ method called when starting to processes a run  ------------
@@ -170,6 +179,7 @@ Nero::endJob()
 void 
 Nero::beginRun(edm::Run const&iRun, edm::EventSetup const&)
 {
+	if(VERBOSE) cout<<" ======= BEGIN RUN ======="<<endl;
 }
 
 
@@ -185,6 +195,7 @@ Nero::endRun(edm::Run const&iRun, edm::EventSetup const&iSetup)
 			dynamic_cast<NeroMonteCarlo*> (o) -> crossSection(iRun, hXsec_);
 			}
 		}
+	if(VERBOSE) cout <<" ======== END RUN ======="<<endl;
 }
 
 

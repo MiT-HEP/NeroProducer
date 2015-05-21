@@ -12,6 +12,7 @@ public:
 	void clear();
 	void defineBranches(TTree *t);
 	int analyze(const edm::Event& iEvent);
+	virtual inline string name(){return "NeroMonteCarlo";};
 	
 	// --- specific fuctions
 	int crossSection(edm::Run const & iRun, TH1F* h);

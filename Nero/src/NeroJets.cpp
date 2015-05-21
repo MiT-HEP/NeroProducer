@@ -69,7 +69,7 @@ int NeroJets::analyze(const edm::Event& iEvent){
 		
 		// Fill output object	
 		//p4 -> AddLast(new TLorentzVector(j.px(), j.py(), j.pz(), j.energy())  );
-		new ( (*p4)[p4->GetSize()]) TLorentzVector(j.px(), j.py(), j.pz(), j.energy());
+		new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(j.px(), j.py(), j.pz(), j.energy());
 		rawPt -> push_back (j.pt()*j.jecFactor("Uncorrected"));
 		puId -> push_back( j.userFloat("pileupJetId:fullDiscriminant") );
         	bDiscr -> push_back( j.bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags") );

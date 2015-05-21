@@ -11,6 +11,7 @@ public:
 	void clear();
 	void defineBranches(TTree *t);
 	virtual int analyze(const edm::Event &)  ;
+	virtual inline string name(){return "NeroLeptons";};
 
 	// ----
 	TClonesArray  *p4;

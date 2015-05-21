@@ -17,6 +17,7 @@ public:
 	// --- Just virtual
 	virtual void clear() = 0;
 	virtual void defineBranches(TTree*) = 0 ;
-	virtual int analyze(const edm::Event &) = 0 ;
+	virtual int  analyze(const edm::Event &) = 0 ;
+	virtual inline string name(){return "NeroCollection";};
 };
 #endif

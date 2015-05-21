@@ -55,7 +55,7 @@ int NeroPhotons::analyze(const edm::Event& iEvent){
 		if (not isPassMedium) continue;
 		
 		//FILL
-		new ( (*p4)[p4->GetSize()]) TLorentzVector(pho.px(),pho.py(),pho.pz(),pho.energy());
+		new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(pho.px(),pho.py(),pho.pz(),pho.energy());
 		iso->push_back(totIso);	
 		sieie -> push_back( pho. full5x5_sigmaIetaIeta() );
 		

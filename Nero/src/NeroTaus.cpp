@@ -41,7 +41,7 @@ int NeroTaus::analyze(const edm::Event & iEvent)
 		 if (tau.pt() <20 ) continue;	
 		
 		 //FILL
-		 new ( (*p4)[p4->GetSize()]) TLorentzVector(tau.px(), tau.py(), tau.pz(), tau.energy());
+		 new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(tau.px(), tau.py(), tau.pz(), tau.energy());
 		 id -> push_back( tau.tauID("byMediumCombinedIsolationDeltaBetaCorr3Hits"));
 		 Q -> push_back( tau.charge() );
 		 M -> push_back( tau.mass() );

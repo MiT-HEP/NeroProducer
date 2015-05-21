@@ -1,6 +1,9 @@
 #include "NeroProducer/Nero/interface/NeroMonteCarlo.hpp"
 #include "NeroProducer/Nero/interface/Nero.hpp"
 
+#include "TStopwatch.h"
+#define VERBOSE 0
+
 NeroMonteCarlo::NeroMonteCarlo(){
 }
 
@@ -49,13 +52,16 @@ void NeroMonteCarlo::defineBranches(TTree *t){
 
 int NeroMonteCarlo::analyze(const edm::Event& iEvent){
 
+	TStopwatch sw;
+	if(VERBOSE)sw.Start();
 	// maybe handle should be taken before
 	iEvent.getByToken(info_token, info_handle);
 	iEvent.getByToken(packed_token, packed_handle);
 	iEvent.getByToken(pruned_token, pruned_handle);
 	iEvent.getByToken(pu_token, pu_handle);
 	iEvent.getByToken(jet_token, jet_handle);
-	
+
+	if(VERBOSE){ sw.Stop() ; cout<<"[NeroMonteCarlo]::[analyze] getToken took "<<sw.CpuTime()<<" Cpu and "<<sw.RealTime()<<" RealTime"<<endl; sw.Reset(); sw.Start();}
 	// INFO
 	mcWeight = info_handle -> weight();
 	//weights() 
@@ -79,66 +85,75 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
 		//Out-of-time
 		}
 
+	if(VERBOSE){ sw.Stop() ; cout<<"[NeroMonteCarlo]::[analyze] pu&info took "<<sw.CpuTime()<<" Cpu and "<<sw.RealTime()<<" RealTime"<<endl; sw.Reset(); sw.Start();}
 	// GEN PARTICLES
 	TLorentzVector genmet(0,0,0,0);
-	for (const auto & gen : *packed_handle)
+	//for ( auto & gen : *packed_handle)
+	for ( unsigned int i=0;i < packed_handle->size() ;++i)
 		{
-		int pdg = gen.pdgId();
+		const auto gen  = & (*packed_handle)[i];
+		if (gen->pt()  < 5 ) continue;
+		int pdg = gen->pdgId();
 		int apdg = abs(pdg);
 
-			//neutrinos
+		//neutrinos
 		if (apdg != 12 and apdg !=14 and apdg !=16
 			and apdg <1000000 //SUSY
-			and fabs(gen.eta() ) <4.7 
+			and fabs(gen->eta() ) <4.7 
 			)
 			{ 
-			 TLorentzVector tmp( gen.px(),gen.py(),gen.pz(),gen.energy() ); 
+			 TLorentzVector tmp( gen->px(),gen->py(),gen->pz(),gen->energy() ); 
 			 genmet += tmp;
 			}
 
-		if (gen.pt()  < 5 ) continue;
 		
 		//FILL
 		//    e mu photons
 		if ( apdg == 11 or apdg == 13 or apdg == 22)
 			{
-			new ( (*p4)[p4->GetSize()]) TLorentzVector(gen.px(), gen.py(), gen.pz(), gen.energy());
+			new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(gen->px(), gen->py(), gen->pz(), gen->energy());
 			pdgId -> push_back( pdg );
 			}
 		
-		}
+		} //end packed
+
+
+	if(VERBOSE){ sw.Stop() ; cout<<"[NeroMonteCarlo]::[analyze] packed took "<<sw.CpuTime()<<" Cpu and "<<sw.RealTime()<<" RealTime"<<endl; sw.Reset(); sw.Start();}
 	// LOOP over PRUNED PARTICLES
-	for (const auto & gen : *pruned_handle)
+	//for (auto & gen : *pruned_handle)
+	for (unsigned int i=0;i<pruned_handle->size() ;++i)
 		{
-		if (gen.pt()  < 5 ) continue;
-		int pdg = gen.pdgId();
+		const auto gen = &(*pruned_handle)[i];
+		if (gen->pt()  < 5 ) continue;
+		int pdg = gen->pdgId();
 		int apdg = abs(pdg);
-		if (gen.status() == 1) continue; //packed
+		if (gen->status() == 1) continue; //packed
 
 		// tau Z (23)  W (24) H (25) H+ (37)
 		if ( apdg == 15 or 
 			(apdg >= 23 and apdg <26 ) or 
 			apdg == 37)
 			{
-			new ( (*p4)[p4->GetSize()]) TLorentzVector(gen.px(), gen.py(), gen.pz(), gen.energy());
+			new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(gen->px(), gen->py(), gen->pz(), gen->energy());
 			pdgId -> push_back( pdg );
 			}
 		}
 
+	if(VERBOSE){ sw.Stop() ; cout<<"[NeroMonteCarlo]::[analyze] pruned took "<<sw.CpuTime()<<" Cpu and "<<sw.RealTime()<<" RealTime"<<endl; sw.Reset(); sw.Start();}
 	// GEN JETS
 	for (const auto & j : *jet_handle)
 		{
 		if (j.pt() < 20 ) continue;
 		// --- FILL
-		new ( (*jetP4)[jetP4->GetSize()]) TLorentzVector(j.px(), j.py(), j.pz(), j.energy());
+		new ( (*jetP4)[jetP4->GetEntriesFast()]) TLorentzVector(j.px(), j.py(), j.pz(), j.energy());
 		}
+	if(VERBOSE){ sw.Stop() ; cout<<"[NeroMonteCarlo]::[analyze] jets took "<<sw.CpuTime()<<" Cpu and "<<sw.RealTime()<<" RealTime"<<endl; sw.Reset();}
 	return 0;
 }
 
 
 int NeroMonteCarlo::crossSection(edm::Run const & iRun, TH1F* h)
 {
-	cout<< "BEGIN RUN" <<endl;
 	iRun.getByToken( runinfo_token, runinfo_handle);
 	cout<<"in begin Run  intXS/extXSLO/extXSNLO "<<runinfo_handle->internalXSec().value()<<"/"<<runinfo_handle->externalXSecLO().value()<<"/"<<runinfo_handle->externalXSecNLO().value()<<endl;	
 

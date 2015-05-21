@@ -41,11 +41,11 @@ int NeroMet::analyze(const edm::Event& iEvent){
 	const pat::MET &met = handle->front();
 
 	//p4 -> AddLast(new TLorentzVector(met.px(),met.py(),met.pz(),met.energy()));
-	new ( (*p4)[p4->GetSize()]) TLorentzVector( met.px(),met.py(),met.pz(),met.energy()  );
+	new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector( met.px(),met.py(),met.pz(),met.energy()  );
 	ptJESUP -> push_back( met.shiftedPt(pat::MET::JetEnUp) );
 	ptJESDOWN -> push_back( met.shiftedPt(pat::MET::JetEnDown) );
 
-	new ( (*genP4)[genP4->GetSize()]) TLorentzVector( met.genMET()->px(),met.genMET()->py(),met.genMET()->pz(),met.genMET()->energy()  );
+	new ( (*genP4)[genP4->GetEntriesFast()]) TLorentzVector( met.genMET()->px(),met.genMET()->py(),met.genMET()->pz(),met.genMET()->energy()  );
 
 	return 0;
 }

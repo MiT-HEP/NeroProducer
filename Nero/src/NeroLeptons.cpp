@@ -47,7 +47,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 		//value map
 		//fill
 		//p4 -> AddLast(new TLorentzVector(mu.px(),mu.py(),mu.pz(),mu.energy()));
-		new ( (*p4)[p4->GetSize()]) TLorentzVector(mu.px(),mu.py(),mu.pz(),mu.energy());
+		new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(mu.px(),mu.py(),mu.pz(),mu.energy());
 		pdgId -> push_back(mu.charge()*13);
                 float chiso = mu.pfIsolationR04().sumChargedHadronPt;
                 float niso = mu.pfIsolationR04().sumNeutralHadronEt;
@@ -74,7 +74,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 		
 		
 		//p4 -> AddLast(new TLorentzVector(el.px(),el.py(),el.pz(),el.energy()));
-		new ( (*p4)[p4->GetSize()]) TLorentzVector(el.px(),el.py(),el.pz(),el.energy());
+		new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(el.px(),el.py(),el.pz(),el.energy());
 		pdgId -> push_back(el.charge()*11);
 		tightId -> push_back( int(isPassTight) );
 		
