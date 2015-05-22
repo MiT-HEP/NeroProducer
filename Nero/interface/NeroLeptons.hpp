@@ -2,22 +2,18 @@
 #define NERO_LEPTONS_H
 
 #include "NeroProducer/Nero/interface/NeroCollection.hpp"
+#include "NeroProducer/Nero/interface/BareLeptons.hpp"
 
-class NeroLeptons : public NeroCollection
+
+class NeroLeptons : virtual public NeroCollection,
+	virtual public BareLeptons
 {
 public:
 	NeroLeptons();
 	~NeroLeptons();
-	void clear();
-	void defineBranches(TTree *t);
+
 	virtual int analyze(const edm::Event &)  ;
 	virtual inline string name(){return "NeroLeptons";};
-
-	// ----
-	TClonesArray  *p4;
-	vector<float> *pdgId;	
-	vector<float> *iso;	
-	vector<int>   *tightId;	
 
 	
 	// to be setted by the vertex

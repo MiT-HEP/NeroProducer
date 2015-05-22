@@ -2,56 +2,10 @@
 #include "NeroProducer/Nero/interface/NeroJets.hpp" // JetId
 #include "NeroProducer/Nero/interface/Nero.hpp"
 
-NeroFatJets::NeroFatJets(){
-	p4 = NULL;
-	rawPt = NULL;
-	flavour = NULL;
+NeroFatJets::NeroFatJets() : BareFatJets(){
 }
 
 NeroFatJets::~NeroFatJets(){
-}
-
-void NeroFatJets::clear(){
-	// This function clear all the internal storage and init it to an arbitrary value
-	p4 -> Clear();
-	rawPt -> clear();
-	flavour -> clear();
-	tau1 -> clear();
-	tau2 -> clear();
-	tau3 -> clear();
-	trimmedMass -> clear();
-	prunedMass -> clear();
-	filteredMass -> clear();
-	softdropMass -> clear();
-}
-
-void NeroFatJets::defineBranches(TTree *t){
-	//
-	p4 = new TClonesArray("TLorentzVector", 20);
-	t->Branch("fatjetP4","TClonesArray", &p4, 128000, 0);
-	//
-	rawPt = new vector<float>;
-	t->Branch("fatjetRawPt","vector<float>",&rawPt);
-	// -- Jet Flavour by PAT
-	flavour = new vector<int>;
-	t->Branch("fatjetFlavour","vector<int>",&flavour);
-	//
-	tau1 = new vector<float>;
-	t->Branch("fatjetTau1","vector<float>",&tau1);
-	tau2 = new vector<float>;
-	t->Branch("fatjetTau2","vector<float>",&tau2);
-	tau3 = new vector<float>;
-	t->Branch("fatjetTau3","vector<float>",&tau3);
-
-	//
-	trimmedMass = new vector<float>;
-	t->Branch("fatjetTrimmedMass","vector<float>",&trimmedMass);
-	prunedMass = new vector<float>;
-	t->Branch("fatjetPrunedMass","vector<float>",&prunedMass);
-	filteredMass = new vector<float>;
-	t->Branch("fatjetFilteredMass","vector<float>",&filteredMass);
-	softdropMass = new vector<float>;
-	t->Branch("fatjetSoftdropMass","vector<float>",&softdropMass);
 }
 
 int NeroFatJets::analyze(const edm::Event& iEvent){

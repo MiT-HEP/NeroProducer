@@ -1,36 +1,11 @@
 #include "NeroProducer/Nero/interface/NeroLeptons.hpp"
 #include "NeroProducer/Nero/interface/Nero.hpp"
 
-NeroLeptons::NeroLeptons(){
+NeroLeptons::NeroLeptons(): BareLeptons(){
 	pv_ = NULL;
 }
 
 NeroLeptons::~NeroLeptons(){
-}
-
-void NeroLeptons::clear(){
-
-	p4 -> Clear();
-	pdgId -> clear();
-	iso ->clear();
-	tightId ->clear();
-
-}
-
-void NeroLeptons::defineBranches(TTree*t){
-	//
-	p4 = new TClonesArray("TLorentzVector", 20);
-	t->Branch("lepP4","TClonesArray", &p4, 128000, 0);
-	//
-	pdgId = new vector<float>;
-	t->Branch("lepPdgId","vector<float>",&pdgId);
-	//
-	iso = new vector<float>;
-	t->Branch("lepIso","vector<float>",&iso);
-	//
-	tightId = new vector<int>;
-	t->Branch("lepTightId","vector<int>",&tightId);
-
 }
 
 int NeroLeptons::analyze(const edm::Event & iEvent)

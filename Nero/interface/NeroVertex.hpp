@@ -2,15 +2,16 @@
 #define NERO_VERTEX_H
 
 #include "NeroProducer/Nero/interface/NeroCollection.hpp"
+#include "NeroProducer/Nero/interface/BareVertex.hpp"
 
 
-class NeroVertex : public NeroCollection
+class NeroVertex : virtual public NeroCollection,
+		virtual public BareVertex
 {
 public:
 	NeroVertex();
 	~NeroVertex();
-	void clear();
-	void defineBranches(TTree *t);
+	virtual void clear(); // some extra for the vertex
 	int analyze(const edm::Event& iEvent);
 	virtual inline string name(){return "NeroVertex";};
 	

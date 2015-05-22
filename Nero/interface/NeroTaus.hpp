@@ -2,23 +2,17 @@
 #define NERO_TAUS_H
 
 #include "NeroProducer/Nero/interface/NeroCollection.hpp"
+#include "NeroProducer/Nero/interface/BareTaus.hpp"
 
-class NeroTaus : public NeroCollection
+class NeroTaus : virtual public NeroCollection,
+		virtual public BareTaus
 {
 public:
 	NeroTaus();
 	~NeroTaus();
-	void clear();
-	void defineBranches(TTree *t);
 	int analyze(const edm::Event &)  ;
 	virtual inline string name(){return "NeroTaus";};
 
-	// --  members
-	TClonesArray *p4;
-	vector<float>           *id ;// byMediumCombinedIsolationDeltaBetaCorr3Hit ?
-	vector<int>       	*Q ;// charge
-	vector<float>           *M ; // mass
-	vector<float>           *iso ;
 
 	// Token
 	edm::EDGetTokenT<pat::TauCollection> token ;	

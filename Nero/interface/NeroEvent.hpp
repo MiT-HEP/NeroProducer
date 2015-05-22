@@ -2,15 +2,14 @@
 #define NERO_EVENT_H
 
 #include "NeroProducer/Nero/interface/NeroCollection.hpp"
+#include "NeroProducer/Nero/interface/BareEvent.hpp"
 
 
-class NeroEvent : public NeroCollection
+class NeroEvent : virtual public NeroCollection, virtual public BareEvent
 {
 public:
 	NeroEvent();
 	~NeroEvent();
-	void clear();
-	void defineBranches(TTree *t);
 	int analyze(const edm::Event& iEvent);
 	virtual inline string name(){return "NeroEvent";};
 	
@@ -21,13 +20,6 @@ public:
 	// --- Token
 	edm::EDGetTokenT<double> rho_token;
 
-	// -- variables
-	int isRealData;
-	int runNum;
-	int lumiNum;
-	ULong64_t eventNum;
-	
-	double rho;	
 
 };
 

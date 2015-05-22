@@ -2,15 +2,15 @@
 #define NERO_PHOTONS_H
 
 #include "NeroProducer/Nero/interface/NeroCollection.hpp"
+#include "NeroProducer/Nero/interface/BarePhotons.hpp"
 
 
-class NeroPhotons : public NeroCollection
+class NeroPhotons : virtual public NeroCollection,
+		virtual public BarePhotons
 {
 public:
 	NeroPhotons();
 	~NeroPhotons();
-	void clear();
-	void defineBranches(TTree *t);
 	int analyze(const edm::Event& iEvent);
 	virtual inline string name(){return "NeroPhotons";};
 	
@@ -31,10 +31,6 @@ public:
 	edm::EDGetTokenT<edm::ValueMap<float> > iso_nh_token;
 	edm::EDGetTokenT<edm::ValueMap<float> > iso_pho_token;
 
-	// -- variables
-	TClonesArray *p4;
-	vector<float> *sieie;
-	vector<float> *iso;
 
 };
 

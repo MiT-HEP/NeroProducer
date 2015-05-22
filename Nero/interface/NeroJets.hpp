@@ -2,15 +2,14 @@
 #define NERO_JETS_H
 
 #include "NeroProducer/Nero/interface/NeroCollection.hpp"
+#include "NeroProducer/Nero/interface/BareJets.hpp"
 
 
-class NeroJets : public NeroCollection
+class NeroJets : virtual public NeroCollection, virtual public BareJets
 {
 public:
 	NeroJets();
 	~NeroJets();
-	void clear();
-	void defineBranches(TTree *t);
 	int analyze(const edm::Event& iEvent);
 	virtual inline string name(){return "NeroJets";};
 	
@@ -23,16 +22,6 @@ public:
 	// --- Token
 	edm::EDGetTokenT<pat::JetCollection> token;
 	edm::EDGetTokenT<edm::ValueMap<float> > qg_token;
-
-	// -- variables
-	TClonesArray *p4;
-	vector<float> *rawPt;
-	vector<float> *bDiscr;
-	vector<float> *puId;
-	vector<float> *unc;
-	vector<float> *qgl;
-	vector<int>   *flavour;
-	
 
 };
 
