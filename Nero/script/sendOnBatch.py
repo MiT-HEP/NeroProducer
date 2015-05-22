@@ -11,7 +11,12 @@ parser.add_option("-d","--dir",dest="dir",type="string",help="working directory"
 parser.add_option("-e","--eos",dest="eos",type="string",help="eos directory to scout, will not read the files in the pSet",default="");
 parser.add_option("","--put-in",dest="put",type="string",help="eos directory to cp the results ",default="");
 parser.add_option("-q","--queue",dest="queue",type="string",help="batch Queue",default="");
-parser.add_option("","--only-submit",dest="onlysubmit",action='store_true',help="submit all sh files in opts.dir. Igonere other options",default=False);
+
+
+sub_group = OptionGroup(parser, "Submit Options:","these options are used to submit jobs");
+sub_group.add_option("","--only-submit",dest="onlysubmit",action='store_true',help="submit all sh files in opts.dir. Igonere other options",default=False);
+sub_group.add_option("-j","--jobId",dest="jobId",type='string',help="Jobs to be submitted",default="all");
+parser.add_option_group(sub_group)
 
 (opts,args)=parser.parse_args()
 
@@ -46,18 +51,24 @@ def chunksNum( l, tot):
     	ChunkSize = (len(l) / tot) + 1
     return chunks(l,ChunkSize)
 
-def submit(list, queue = "1nh"):
+def submit(list, queue = "1nh", name = "job"):
     """ Submit the jobs in the list """
     for sh in list:
-    	cmd = "bsub -q " + queue + " -o " + re.sub(".sh$",".txt",sh) + " -J job" + re.sub(".*sub","",re.sub(".sh","",sh)) + " "+ sh
+    	cmd = "bsub -q " + queue + " -o " + re.sub(".sh$",".txt",sh) + " -J "+name + re.sub(".*sub","",re.sub(".sh","",sh)) + " "+ sh
 	call(cmd, shell = True)
     
 if opts.onlysubmit:
-	toBeSubmitted = glob(opts.dir + "/*.sh" )
+	if opts.jobId != "" and opts.jobId != "all":
+		toBeSubmitted = []
+		for num in opts.jobId.split(","):
+			toBeSubmitted.append( os.environ['PWD'] + "/" + opts.dir + "/sub_%s.sh"%num )
+	else:
+		toBeSubmitted = glob(os.environ['PWD'] + "/" + opts.dir + "/*.sh" )
+				
 	if opts.queue == "":
 		print "Empty queue option"
 		exit(1)
-	submit(toBeSubmitted, opts.queue)
+	submit(toBeSubmitted, opts.queue,opts.dir)
 	exit(0)
 	
 toBeSubmitted= []
@@ -77,6 +88,11 @@ else:
 	fileList = [ '"' + re.sub("/eos/cms","",f) +'"' for f in fileList0 ]
 
 
+if len(fileList) == 0:
+	print "ERROR no file is given"
+	if opts.eos != "":
+		print "eos cmd was:",cmd
+
 fileChunks = chunksNum(fileList, opts.nJobs)
 
 mylen=0
@@ -92,6 +108,9 @@ for idx,fl in enumerate(fileChunks):
 	#print >> sh, "cmsenv"
 	print >> sh, "eval `scramv1 runtime -sh`" ## this is cmsenv
 	print >> sh, "cd " + opts.dir
+	print >> sh, 'rm sub_%d.fail || true'%idx
+	print >> sh, 'rm sub_%d.done || true'%idx
+	print >> sh, 'rm sub_%d.txt || true'%idx
 	print >> sh, 'touch sub_%d.run'%idx
 	print >> sh, 'cd $WORKDIR'
 	print >> sh, "cmsRun " + os.environ['PWD'] + "/" + opts.dir + "/" + psetFileName #+ " 2>&1 > log_%d.log"%idx
@@ -101,7 +120,7 @@ for idx,fl in enumerate(fileChunks):
 	print >> sh, 'rm sub_%d.run'%idx
 	print >> sh, 'echo "exit status is ${EXIT}"'
 	if opts.put != "":
-		print >> sh, '[ "${EXIT}" == "0" ] && { cmsMkdir ' + opts.put +'  && cmsStage ${WORKDIR}/NeroNtuples.root ' + opts.put + "/" +' && touch sub_%(idx)d.done || echo "cmsStage fail" > sub_%(idx)d.fail; }'%{'idx':idx}
+		print >> sh, '[ "${EXIT}" == "0" ] && { cmsMkdir ' + opts.put +'  && cmsStage ${WORKDIR}/NeroNtuples.root ' + opts.put + '/NeroNtuples_%(idx)d.root  && touch sub_%(idx)d.done || echo "cmsStage fail" > sub_%(idx)d.fail; }'%{'idx':idx}
 	else:
 		print >> sh, '[ "${EXIT}" == "0" ] && { cp ${WORKDIR}/NeroNtuples.root ./NeroNtuples_%(idx)d.root && touch sub_%(idx)d.done || echo "cp fail" > sub_%(idx)d.fail ; }'%{'idx':idx}
 
@@ -131,4 +150,4 @@ print "MY LEN is ", mylen ,"==",len(fileList)
 
 
 if opts.queue != "":
-	submit(toBeSubmitted,opts.queue)
+	submit(toBeSubmitted,opts.queue,opts.dir)
