@@ -15,7 +15,7 @@ parser.add_option("-q","--queue",dest="queue",type="string",help="batch Queue",d
 
 sub_group = OptionGroup(parser, "Submit Options:","these options are used to submit jobs");
 sub_group.add_option("","--only-submit",dest="onlysubmit",action='store_true',help="submit all sh files in opts.dir. Igonere other options",default=False);
-sub_group.add_option("-j","--jobId",dest="jobId",type='string',help="Jobs to be submitted",default="all");
+sub_group.add_option("-j","--jobId",dest="jobId",type='string',help="Jobs to be submitted. \"all\" 1,2,7 or \"fail\" ",default="all");
 parser.add_option_group(sub_group)
 
 (opts,args)=parser.parse_args()
@@ -58,10 +58,14 @@ def submit(list, queue = "1nh", name = "job"):
 	call(cmd, shell = True)
     
 if opts.onlysubmit:
-	if opts.jobId != "" and opts.jobId != "all":
+	if opts.jobId != "" and opts.jobId != "all" and opts.jobId != "fail" :
 		toBeSubmitted = []
 		for num in opts.jobId.split(","):
 			toBeSubmitted.append( os.environ['PWD'] + "/" + opts.dir + "/sub_%s.sh"%num )
+	elif opts.jobId == "fail":
+		list = glob(os.environ['PWD'] + "/" + opts.dir + "/*.fail" )
+		toBeSubmitted = [ re.sub('.fail','.sh',f) for f in list ]
+
 	else:
 		toBeSubmitted = glob(os.environ['PWD'] + "/" + opts.dir + "/*.sh" )
 				
