@@ -2,15 +2,15 @@
 #define NERO_MONTECARLO_H
 
 #include "NeroProducer/Nero/interface/NeroCollection.hpp"
+#include "NeroProducer/Nero/interface/BareMonteCarlo.hpp"
 
 
-class NeroMonteCarlo : public NeroCollection
+class NeroMonteCarlo : virtual public NeroCollection,
+		virtual public BareMonteCarlo
 {
 public:
 	NeroMonteCarlo();
 	~NeroMonteCarlo();
-	void clear();
-	void defineBranches(TTree *t);
 	int analyze(const edm::Event& iEvent);
 	virtual inline string name(){return "NeroMonteCarlo";};
 	
@@ -33,26 +33,6 @@ public:
 	edm::EDGetTokenT<GenRunInfoProduct> runinfo_token;
 	
 
-	// -- variables
-	TClonesArray *p4; // gen particles
-	vector<int>  *pdgId;
-
-	// genjets
-	TClonesArray *jetP4;
-
-	//
-	int puTrueInt;
-	//
-	float mcWeight ;
-        float qScale   ;
-        float alphaQED ;
-        float alphaQCD ;
-        float x1       ;
-        float x2       ;
-        int   pdf1Id   ;
-        int   pdf2Id   ;
-        float scalePdf ;
-	
 
 };
 

@@ -1,33 +1,12 @@
 #include "NeroProducer/Nero/interface/NeroPhotons.hpp"
 #include "NeroProducer/Nero/interface/Nero.hpp"
 
-NeroPhotons::NeroPhotons(){
-	p4 = NULL;
-	sieie = NULL;
-	iso = NULL;
+NeroPhotons::NeroPhotons() : BarePhotons(){
 }
 
 NeroPhotons::~NeroPhotons(){
 }
 
-void NeroPhotons::clear(){
-	// This function clear all the internal storage and init it to an arbitrary value
-	p4 -> Clear();
-	iso -> clear();
-	sieie -> clear();
-}
-
-void NeroPhotons::defineBranches(TTree *t){
-	//
-	p4 = new TClonesArray("TLorentzVector", 20);
-	t->Branch("photonP4","TClonesArray", &p4, 128000, 0);
-	//
-	iso = new vector<float>;
-	t->Branch("photonIso","vector<float>",&iso);
-	//
-	sieie = new vector<float>;
-	t->Branch("photonSieie","vector<float>",&sieie);
-}
 
 int NeroPhotons::analyze(const edm::Event& iEvent){
 

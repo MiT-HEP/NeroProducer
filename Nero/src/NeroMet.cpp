@@ -1,38 +1,12 @@
 #include "NeroProducer/Nero/interface/NeroMet.hpp"
 #include "NeroProducer/Nero/interface/Nero.hpp"
 
-NeroMet::NeroMet(){
-	p4 = NULL;
-	ptJESUP = NULL;
-	ptJESDOWN = NULL;
-	genP4 = NULL;
+NeroMet::NeroMet() : BareMet() {
 }
 
 NeroMet::~NeroMet(){
 }
 
-void NeroMet::clear(){
-	// This function clear all the internal storage and init it to an arbitrary value
-	p4 -> Clear();
-	ptJESUP -> clear();
-	ptJESDOWN -> clear();
-	genP4 -> Clear();
-}
-
-void NeroMet::defineBranches(TTree *t){
-	//
-	p4 = new TClonesArray("TLorentzVector", 20);
-	t->Branch("metP4","TClonesArray", &p4, 128000, 0);
-	//
-	ptJESUP = new vector<float>;
-	t->Branch("metPtJESUP","vector<float>",&ptJESUP);
-	//
-	ptJESDOWN = new vector<float>;
-	t->Branch("metPtJESDOWN","vector<float>",&ptJESDOWN);
-	//	
-	genP4 = new TClonesArray("TLorentzVector", 20);
-	t->Branch("metP4_GEN","TClonesArray", &p4, 128000, 0);
-}
 
 int NeroMet::analyze(const edm::Event& iEvent){
 
