@@ -20,5 +20,5 @@ void BareEvent::defineBranches(TTree *t){
   	t->Branch("runNum"      ,&runNum       ,"runNum/I");
   	t->Branch("lumiNum"     ,&lumiNum      ,"lumiNum/I");
   	t->Branch("eventNum"    ,&eventNum     ,"eventNum/l");
-  	t->Branch("rho"    ,&rho     ,"rho/D");
+  	t->Branch("rho"    ,&rho     ,"rho/F");
 }

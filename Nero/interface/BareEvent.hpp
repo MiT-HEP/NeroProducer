@@ -18,7 +18,7 @@ public:
 	int lumiNum;
 	ULong64_t eventNum;
 	
-	double rho;	
+	float rho;	
 };
 
 #endif
