@@ -12,6 +12,8 @@ void NeroLeptons::clear(){
 
 	p4 -> Clear();
 	pdgId -> clear();
+	iso -> clear();
+	tightId ->clear();
 
 }
 
