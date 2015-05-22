@@ -70,7 +70,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 		
 	}
 	// sort leptons
-	sort( leptons.begin(),leptons.end() , [](const myLepton &x, const myLepton&y){ return x.p4.Pt() < y.p4.Pt();} );
+	sort( leptons.begin(),leptons.end() , [](const myLepton &x, const myLepton&y){ return x.p4.Pt() > y.p4.Pt();} );
 
 	// fill storage
 	for(const auto &l : leptons)
