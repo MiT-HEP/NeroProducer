@@ -13,6 +13,7 @@ void NeroEvent::clear(){
 	runNum = -1;
 	lumiNum = -1;
 	eventNum = 0;
+	rho = -999;
 }
 
 void NeroEvent::defineBranches(TTree *t){
@@ -21,13 +22,17 @@ void NeroEvent::defineBranches(TTree *t){
   	t->Branch("runNum"      ,&runNum       ,"runNum/I");
   	t->Branch("lumiNum"     ,&lumiNum      ,"lumiNum/I");
   	t->Branch("eventNum"    ,&eventNum     ,"eventNum/l");
-
+  	t->Branch("rho"    ,&rho     ,"rho/D");
 }
 
 int NeroEvent::analyze(const edm::Event& iEvent){
 	isRealData = iEvent.isRealData() ? 1 : 0 ;
 	lumiNum    = iEvent.luminosityBlock();
 	eventNum   = iEvent.id().event();
+
+	iEvent.getByToken(rho_token,rho_handle);
+
+	rho 	   =  *rho_handle;
 	return 0;
 }
 

@@ -47,6 +47,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
 {
    // not push_back inline because he needs to know the class type for init
    NeroEvent *evt = new NeroEvent();
+   evt -> rho_token = consumes<double>(iConfig.getParameter<edm::InputTag>("rho"));
    obj.push_back(evt);
 
    // -- Before Leptons (mu uses Vtx)

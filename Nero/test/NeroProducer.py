@@ -77,6 +77,7 @@ process.load("RecoEgamma/PhotonIdentification/PhotonIDValueMapProducer_cfi")
 #------------------------------------------------------
 process.producer = cms.EDAnalyzer("Nero",
     vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
+    rho = cms.InputTag("fixedGridRhoFastjetAll"),
     muons = cms.InputTag("slimmedMuons"),
     electrons = cms.InputTag("slimmedElectrons"),
     taus = cms.InputTag("slimmedTaus"),

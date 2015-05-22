@@ -16,8 +16,10 @@ public:
 	
 	// --- specific fuctions
 	// --- Handle
+	edm::Handle<double> rho_handle;
 
 	// --- Token
+	edm::EDGetTokenT<double> rho_token;
 
 	// -- variables
 	int isRealData;
@@ -25,6 +27,7 @@ public:
 	int lumiNum;
 	ULong64_t eventNum;
 	
+	double rho;	
 
 };
 
