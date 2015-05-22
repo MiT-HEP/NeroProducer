@@ -14,7 +14,14 @@ public:
 
 	virtual int analyze(const edm::Event &)  ;
 	virtual inline string name(){return "NeroLeptons";};
-
+	//
+	class myLepton{
+		public:
+		float iso;
+		TLorentzVector p4;
+		int tightId;
+		int pdgId;
+	};
 	
 	// to be setted by the vertex
 	const reco::Vertex *pv_;
