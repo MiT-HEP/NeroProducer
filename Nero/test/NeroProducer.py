@@ -75,7 +75,7 @@ for idmod in pho_id_modules:
 ##ISO
 process.load("RecoEgamma/PhotonIdentification/PhotonIDValueMapProducer_cfi")
 #------------------------------------------------------
-process.producer = cms.EDAnalyzer("Nero",
+process.nero = cms.EDAnalyzer("Nero",
     vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
     rho = cms.InputTag("fixedGridRhoFastjetAll"),
     muons = cms.InputTag("slimmedMuons"),
@@ -109,5 +109,5 @@ process.p = cms.Path(
                 process.egmGsfElectronIDSequence *
                 process.egmPhotonIDSequence *
                 process.photonIDValueMapProducer * ## ISO MAP FOR PHOTONS
-                process.producer
+                process.nero
                 )
