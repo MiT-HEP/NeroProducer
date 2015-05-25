@@ -3,15 +3,19 @@
 
 #include "NeroProducer/Nero/interface/NeroCollection.hpp"
 #include "NeroProducer/Nero/interface/BareMonteCarlo.hpp"
+#include "NeroProducer/Nero/interface/NeroRunLumi.hpp"
 
 
 class NeroMonteCarlo : virtual public NeroCollection,
-		virtual public BareMonteCarlo
+		virtual public BareMonteCarlo,
+		virtual public NeroRun
 {
 public:
 	NeroMonteCarlo();
 	~NeroMonteCarlo();
 	int analyze(const edm::Event& iEvent);
+	inline int analyzeRun(edm::Run const & iRun, TH1F* h)
+	{ return crossSection(iRun,h);}
 	virtual inline string name(){return "NeroMonteCarlo";};
 	
 	// --- specific fuctions

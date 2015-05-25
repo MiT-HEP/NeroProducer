@@ -27,6 +27,7 @@
 #include "NeroProducer/Nero/interface/NeroMet.hpp"
 #include "NeroProducer/Nero/interface/NeroPhotons.hpp"
 #include "NeroProducer/Nero/interface/NeroMonteCarlo.hpp"
+#include "NeroProducer/Nero/interface/NeroAll.hpp"
 
 
 #define VERBOSE 0
@@ -101,6 +102,11 @@ Nero::Nero(const edm::ParameterSet& iConfig)
    mc -> jet_token    = consumes<reco::GenJetCollection>(iConfig.getParameter<edm::InputTag>("genjets"));
    mc -> runinfo_token = consumes<GenRunInfoProduct>(iConfig.getParameter<edm::InputTag>("genruninfo") );
    obj.push_back(mc);
+   objRun.push_back(mc);
+
+   NeroAll *info = new NeroAll();
+   info -> isSkim_ = 1;
+   objLumi.push_back(info);
 
 }
 
@@ -165,6 +171,9 @@ Nero::beginJob()
 
 	for(auto o : obj)
 		o -> defineBranches(tree_);
+
+	for(auto o : objLumi)
+		o -> defineBranches(all_);
 }
 
 
@@ -189,32 +198,36 @@ Nero::beginRun(edm::Run const&iRun, edm::EventSetup const&)
 void 
 Nero::endRun(edm::Run const&iRun, edm::EventSetup const&iSetup)
 { // this should be finalized at the end of the run
-	for(auto o : obj)
-		{
-		if ( dynamic_cast<NeroMonteCarlo*> (o) != NULL)
-			{
-			dynamic_cast<NeroMonteCarlo*> (o) -> crossSection(iRun, hXsec_);
-			}
-		}
+	//for(auto o : obj)
+	//	{
+	//	if ( dynamic_cast<NeroMonteCarlo*> (o) != NULL)
+	//		{
+	//		dynamic_cast<NeroMonteCarlo*> (o) -> crossSection(iRun, hXsec_);
+	//		}
+	//	}
+	for(auto o : runObj )
+		o->analyzeRun(iRun, hXsec_);
 	if(VERBOSE) cout <<" ======== END RUN ======="<<endl;
 }
 
 
 // ------------ method called when starting to processes a luminosity block  ------------
-/*
+
 void 
 Nero::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
 {
 }
-*/
+
 
 // ------------ method called when ending the processing of a luminosity block  ------------
-/*
+
 void 
-Nero::endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
+Nero::endLuminosityBlock(edm::LuminosityBlock const&iLumi, edm::EventSetup const&)
 {
+	for(auto o :lumiObj)
+		o->analyzeLumi(iLumi,all_);
 }
-*/
+
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
 void

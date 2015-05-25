@@ -74,6 +74,10 @@ for idmod in pho_id_modules:
         setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
 ##ISO
 process.load("RecoEgamma/PhotonIdentification/PhotonIDValueMapProducer_cfi")
+
+## SKIM INFO
+process.load('NeroProducer.Skim.infoProducerSequence_cff')
+
 #------------------------------------------------------
 process.nero = cms.EDAnalyzer("Nero",
     vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
@@ -105,6 +109,7 @@ process.nero = cms.EDAnalyzer("Nero",
 
 #------------------------------------------------------
 process.p = cms.Path(
+		process.infoProducerSequence *
                 process.QGTagger *
                 process.egmGsfElectronIDSequence *
                 process.egmPhotonIDSequence *
