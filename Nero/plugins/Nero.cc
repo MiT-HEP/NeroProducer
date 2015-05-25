@@ -152,9 +152,7 @@ Nero::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	if (VERBOSE){sw_.Stop(); cout<< "object "<<o->name()<<" took:"<< sw_.CpuTime()<< "CPU Time and "<<sw_.RealTime()<<"RealTime"<<endl;}
 	}
    	
-
    tree_->Fill();
-   all_->Fill();
    if (VERBOSE) cout<<"------- end event (success) --------"<<endl;
 
 }

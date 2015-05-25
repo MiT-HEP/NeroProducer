@@ -1,4 +1,5 @@
 #include "NeroProducer/Nero/interface/NeroAll.hpp"
+#define VERBOSE 0
 
 NeroAll::NeroAll(){isSkim_=1;isMc_=-1;}
 NeroAll::~NeroAll(){}
@@ -12,6 +13,7 @@ if(isMc_ <0 )
 	}
 if( isSkim() == 0) 
 	{
+	//TODO FILL all_
 	isRealData = ( iEvent.isRealData() ) ? 1 : 0;	
 	runNum = iEvent.id().run();
 	lumiNum = iEvent.luminosityBlock(); 	
@@ -53,8 +55,17 @@ int NeroAll::analyzeLumi(const edm::LuminosityBlock &iLumi, TTree *t)
 		isRealData = 0;
 		mcWeight = weights_handle->at(iE);
 		puTrueInt = putrue_handle->at(iE);
-	}
+		}
 
+	if (VERBOSE) 
+		cout<<"[NeroAll]::[analyzeLumi] Filling "
+		<<"iE="<<iE
+		<< "| r:"<<runNum
+		<< "| l:"<<lumiNum
+		<< "| e:"<<eventNum
+		<< "| w:"<<mcWeight
+		<< "| p:"<<puTrueInt
+		<<endl;
 	t->Fill();
 	}
 	return 0;
