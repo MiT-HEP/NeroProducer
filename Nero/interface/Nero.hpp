@@ -6,6 +6,7 @@
 
 #include "NeroProducer/Nero/interface/Includes.hpp"
 #include "NeroProducer/Nero/interface/NeroCollection.hpp"
+#include "NeroProducer/Nero/interface/NeroRunLumi.hpp"
 
 #include "TStopwatch.h"
 
@@ -30,8 +31,8 @@ class Nero : public edm::EDAnalyzer {
 
       virtual void beginRun(edm::Run const&, edm::EventSetup const&) override;
       virtual void endRun(edm::Run const&, edm::EventSetup const&) override;
-      //virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
-      //virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
+      virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
+      virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
 
       // ----------member data ---------------------------
       TTree *tree_;
@@ -40,6 +41,8 @@ class Nero : public edm::EDAnalyzer {
       edm::Service<TFileService> fileService_;
       // collection to be moved into a tree
       vector<NeroCollection*> obj;
+      vector<NeroRun*> runObj;
+      vector<NeroLumi*> lumiObj;
 
       // check performances
       TStopwatch sw_;

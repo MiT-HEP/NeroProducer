@@ -4,8 +4,8 @@
 #include "TStopwatch.h"
 #define VERBOSE 0
 
-NeroMonteCarlo::NeroMonteCarlo(): BareMonteCarlo(){
-}
+NeroMonteCarlo::NeroMonteCarlo(): BareMonteCarlo()
+{}
 
 NeroMonteCarlo::~NeroMonteCarlo(){
 }
