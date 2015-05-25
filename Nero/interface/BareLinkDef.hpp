@@ -10,5 +10,6 @@
 #pragma link C++ class BarePhotons+;
 #pragma link C++ class BareTaus+;
 #pragma link C++ class BareVertex+;
+#pragma link C++ class BareAll+;
 
 #endif
