@@ -102,11 +102,11 @@ Nero::Nero(const edm::ParameterSet& iConfig)
    mc -> jet_token    = consumes<reco::GenJetCollection>(iConfig.getParameter<edm::InputTag>("genjets"));
    mc -> runinfo_token = consumes<GenRunInfoProduct>(iConfig.getParameter<edm::InputTag>("genruninfo") );
    obj.push_back(mc);
-   objRun.push_back(mc);
+   runObj.push_back(mc);
 
    NeroAll *info = new NeroAll();
    info -> isSkim_ = 1;
-   objLumi.push_back(info);
+   lumiObj.push_back(info);
 
 }
 
@@ -172,7 +172,7 @@ Nero::beginJob()
 	for(auto o : obj)
 		o -> defineBranches(tree_);
 
-	for(auto o : objLumi)
+	for(auto o : lumiObj)
 		o -> defineBranches(all_);
 }
 

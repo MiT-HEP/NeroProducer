@@ -16,8 +16,8 @@ if( isSkim() == 0)
 	runNum = iEvent.id().run();
 	lumiNum = iEvent.luminosityBlock(); 	
 	eventNum = iEvent.id().event();  
-	iLumi.getByLabel(edm::InputTag("generator"), info_handle); // USE TOKEN AND INPUT TAG ?
-	iLumi.getByLabel(edm::InputTag("addPileupInfo"), pu_handle);
+	iEvent.getByLabel(edm::InputTag("generator"), info_handle); // USE TOKEN AND INPUT TAG ?
+	iEvent.getByLabel(edm::InputTag("addPileupInfo"), pu_handle);
 	mcWeight = info_handle->weight();
 	//PU
         puTrueInt = 0;
@@ -32,7 +32,7 @@ if( isSkim() == 0)
 	return 0;
 }
 
-int NeroAll::analizeLumi(const edm::LuminosityBlock &iLumi, TTree *t)
+int NeroAll::analyzeLumi(const edm::LuminosityBlock &iLumi, TTree *t)
 {
 	if (isSkim() <= 0) return 0;
 
