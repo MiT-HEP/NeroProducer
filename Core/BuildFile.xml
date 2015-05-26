@@ -18,7 +18,6 @@
 <use name="SimDataFormats/PileupSummaryInfo"/>
 <!--  -->
 <use name="CondFormats/JetMETObjects"/>
-<use name="NeroProducer/Core"/>
 <!--  -->
 <use name="clhep"/>
 <use name="RooFit"/>

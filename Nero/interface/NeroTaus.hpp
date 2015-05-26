@@ -2,7 +2,7 @@
 #define NERO_TAUS_H
 
 #include "NeroProducer/Nero/interface/NeroCollection.hpp"
-#include "NeroProducer/Nero/interface/BareTaus.hpp"
+#include "NeroProducer/Core/interface/BareTaus.hpp"
 
 class NeroTaus : virtual public NeroCollection,
 		virtual public BareTaus

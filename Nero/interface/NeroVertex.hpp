@@ -2,7 +2,7 @@
 #define NERO_VERTEX_H
 
 #include "NeroProducer/Nero/interface/NeroCollection.hpp"
-#include "NeroProducer/Nero/interface/BareVertex.hpp"
+#include "NeroProducer/Core/interface/BareVertex.hpp"
 
 
 class NeroVertex : virtual public NeroCollection,

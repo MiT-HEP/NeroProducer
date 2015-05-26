@@ -2,7 +2,7 @@
 #define NERO_LEPTONS_H
 
 #include "NeroProducer/Nero/interface/NeroCollection.hpp"
-#include "NeroProducer/Nero/interface/BareLeptons.hpp"
+#include "NeroProducer/Core/interface/BareLeptons.hpp"
 
 
 class NeroLeptons : virtual public NeroCollection,

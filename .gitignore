@@ -26,3 +26,10 @@
 *.exe
 *.out
 *.app
+
+##PYTHON
+*.pyc
+__init__.py
+
+## ROOT OBJECT
+*.root

@@ -1,7 +1,7 @@
 #ifndef BARE_EVENT_H
 #define BARE_EVENT_H
 
-#include "NeroProducer/Nero/interface/BareCollection.hpp"
+#include "NeroProducer/Core/interface/BareCollection.hpp"
 
 class BareEvent : virtual public BareCollection 
 {

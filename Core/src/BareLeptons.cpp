@@ -1,4 +1,4 @@
-#include "NeroProducer/Nero/interface/BareLeptons.hpp"
+#include "NeroProducer/Core/interface/BareLeptons.hpp"
 
 BareLeptons::BareLeptons(){
 	p4 = NULL;

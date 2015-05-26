@@ -2,7 +2,7 @@
 #define NERO_COLLECTION_H
 
 #include "NeroProducer/Nero/interface/Includes.hpp"
-#include "NeroProducer/Nero/interface/BareCollection.hpp"
+#include "NeroProducer/Core/interface/BareCollection.hpp"
 // user include files
 
 #include "TLorentzVector.h"

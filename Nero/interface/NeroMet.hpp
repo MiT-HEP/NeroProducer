@@ -2,7 +2,7 @@
 #define NERO_MET_H
 
 #include "NeroProducer/Nero/interface/NeroCollection.hpp"
-#include "NeroProducer/Nero/interface/BareMet.hpp"
+#include "NeroProducer/Core/interface/BareMet.hpp"
 
 
 class NeroMet : virtual public NeroCollection,

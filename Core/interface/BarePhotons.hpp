@@ -1,7 +1,7 @@
 #ifndef BARE_PHOTONS_H
 #define BARE_PHOTONS_H
 
-#include "NeroProducer/Nero/interface/BareCollection.hpp"
+#include "NeroProducer/Core/interface/BareCollection.hpp"
 
 
 class BarePhotons : virtual public BareCollection

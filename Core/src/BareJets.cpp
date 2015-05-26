@@ -1,4 +1,4 @@
-#include "NeroProducer/Nero/interface/BareJets.hpp"
+#include "NeroProducer/Core/interface/BareJets.hpp"
 
 BareJets::BareJets(){
 	p4 = NULL;

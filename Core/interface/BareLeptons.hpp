@@ -1,7 +1,7 @@
 #ifndef BARE_LEPTONS_H
 #define BARE_LEPTONS_H
 
-#include "NeroProducer/Nero/interface/BareCollection.hpp"
+#include "NeroProducer/Core/interface/BareCollection.hpp"
 
 class BareLeptons : virtual public BareCollection
 {

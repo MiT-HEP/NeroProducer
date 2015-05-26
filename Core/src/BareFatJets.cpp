@@ -1,4 +1,4 @@
-#include "NeroProducer/Nero/interface/BareFatJets.hpp"
+#include "NeroProducer/Core/interface/BareFatJets.hpp"
 
 
 BareFatJets::BareFatJets(){

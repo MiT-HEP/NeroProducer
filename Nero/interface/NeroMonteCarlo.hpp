@@ -2,7 +2,7 @@
 #define NERO_MONTECARLO_H
 
 #include "NeroProducer/Nero/interface/NeroCollection.hpp"
-#include "NeroProducer/Nero/interface/BareMonteCarlo.hpp"
+#include "NeroProducer/Core/interface/BareMonteCarlo.hpp"
 #include "NeroProducer/Nero/interface/NeroRunLumi.hpp"
 
 

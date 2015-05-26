@@ -1,4 +1,4 @@
-#include "NeroProducer/Nero/interface/BareVertex.hpp"
+#include "NeroProducer/Core/interface/BareVertex.hpp"
 
 
 BareVertex::BareVertex(){
