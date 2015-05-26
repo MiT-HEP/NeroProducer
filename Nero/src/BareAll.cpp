@@ -23,3 +23,13 @@ void BareAll::defineBranches(TTree *t){
   	t->Branch("puTrueInt"     ,&puTrueInt      ,"puTrueInt/I");
 }
 
+void BareAll::setBranchAddresses(TTree *t){
+	//
+	t->SetBranchAddress("isRealData"  ,&isRealData   );
+  	t->SetBranchAddress("runNum"      ,&runNum       );
+  	t->SetBranchAddress("lumiNum"     ,&lumiNum      );
+  	t->SetBranchAddress("eventNum"    ,&eventNum     );
+  	t->SetBranchAddress("mcWeight"    ,&mcWeight     );
+  	t->SetBranchAddress("puTrueInt"     ,&puTrueInt  );
+}
+

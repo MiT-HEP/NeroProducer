@@ -36,3 +36,12 @@ void BareTaus::defineBranches(TTree *t){
 	t->Branch("tauIso","vector<float>",&iso);
 	
 }
+
+void BareTaus::setBranchAddresses(TTree *t){
+	p4 = new TClonesArray("TLorentzVector", 20);
+	t->SetBranchAddress("tauP4"	,&p4);
+	t->SetBranchAddress("tauId"	,&id);
+	t->SetBranchAddress("tauQ"	,&Q);
+	t->SetBranchAddress("tauM"	,&M);
+	t->SetBranchAddress("tauIso"	,&iso);
+}

@@ -33,3 +33,11 @@ void BareMet::defineBranches(TTree *t){
 	genP4 = new TClonesArray("TLorentzVector", 20);
 	t->Branch("metP4_GEN","TClonesArray", &p4, 128000, 0);
 }
+
+void BareMet::setBranchAddresses(TTree *t){
+	p4 = new TClonesArray("TLorentzVector", 20);
+	t->SetBranchAddress("metP4"	, &p4	);
+	t->SetBranchAddress("metPtJESUP"	,&ptJESUP);
+	t->SetBranchAddress("metPtJESDOWN",&ptJESDOWN);
+	t->SetBranchAddress("metP4_GEN"	, &p4	);
+}

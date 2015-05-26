@@ -10,6 +10,7 @@ public:
 	~BareTaus();
 	void clear();
 	void defineBranches(TTree *t);
+	void setBranchAddresses(TTree*) ;
 	virtual inline string name(){return "BareTaus";};
 
 	// --  members

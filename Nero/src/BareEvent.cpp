@@ -22,3 +22,12 @@ void BareEvent::defineBranches(TTree *t){
   	t->Branch("eventNum"    ,&eventNum     ,"eventNum/l");
   	t->Branch("rho"    ,&rho     ,"rho/F");
 }
+
+void BareEvent::setBranchAddresses(TTree *t){
+	//
+	t->SetBranchAddress("isRealData"  ,&isRealData  );
+  	t->SetBranchAddress("runNum"      ,&runNum      );
+  	t->SetBranchAddress("lumiNum"     ,&lumiNum     );
+  	t->SetBranchAddress("eventNum"    ,&eventNum    );
+  	t->SetBranchAddress("rho"    	,&rho         );
+}

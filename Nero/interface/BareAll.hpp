@@ -11,6 +11,7 @@ public:
 	~BareAll();
 	void clear();
 	void defineBranches(TTree*);
+	virtual void setBranchAddresses(TTree*);
 	virtual inline string name(){ return "BareAll";}
 
 	// -- variables

@@ -49,3 +49,22 @@ void BareMonteCarlo::defineBranches(TTree *t){
 	t->Branch("pdfScalePdf",&scalePdf,"pdfScalePdf/F");
 }
 
+void BareMonteCarlo::setBranchAddresses(TTree *t){
+	//
+	jetP4 = new TClonesArray("TLorentzVector", 20);
+	t->SetBranchAddress("genjetP4"	, &jetP4 );
+	p4 = new TClonesArray("TLorentzVector", 20);
+	t->SetBranchAddress("genP4"	, &p4	);
+	t->SetBranchAddress("genPdgId"	, &pdgId);
+	//
+	t->SetBranchAddress("puTrueInt"	,&puTrueInt	);
+	t->SetBranchAddress("mcWeight"	,&mcWeight	);
+	t->SetBranchAddress("pdfQscale"	,&qScale	);
+	t->SetBranchAddress("pdfAlphaQED"	,&alphaQED	);
+	t->SetBranchAddress("pdfAlphaQCD"	,&alphaQCD	);
+	t->SetBranchAddress("pdfX1"	,&x1		);
+	t->SetBranchAddress("pdfX2"	,&x2		);
+	t->SetBranchAddress("pdfId1"	,&pdf1Id	);
+	t->SetBranchAddress("pdfId2"	,&pdf2Id	);
+	t->SetBranchAddress("pdfScalePdf"	,&scalePdf	);
+}

@@ -18,6 +18,7 @@ class BareCollection
 public:
 	virtual void clear() = 0;
 	virtual void defineBranches(TTree*) = 0 ;
+	virtual void setBranchAddresses(TTree*) = 0;
 	virtual string name() = 0;
 };
 
