@@ -65,7 +65,12 @@ if opts.onlysubmit:
 	elif opts.jobId == "fail":
 		list = glob(os.environ['PWD'] + "/" + opts.dir + "/*.fail" )
 		toBeSubmitted = [ re.sub('.fail','.sh',f) for f in list ]
-
+		# promptly remove .fail
+		if len(toBeSubmitted) == 0 :
+			print "Nothing to submit"
+			exit(0)
+		cmd = "rm -v " + " ".join(list)
+		call(cmd, shell= True)
 	else:
 		toBeSubmitted = glob(os.environ['PWD'] + "/" + opts.dir + "/*.sh" )
 				
