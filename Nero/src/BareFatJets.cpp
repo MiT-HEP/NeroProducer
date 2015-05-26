@@ -59,3 +59,19 @@ void BareFatJets::defineBranches(TTree *t){
 	softdropMass = new vector<float>;
 	t->Branch("fatjetSoftdropMass","vector<float>",&softdropMass);
 }
+
+void BareFatJets::setBranchAddresses(TTree *t){
+	//
+	p4 = new TClonesArray("TLorentzVector", 20);
+	t->SetBranchAddress("fatjetP4"	,&p4);
+	t->SetBranchAddress("fatjetRawPt"	,&rawPt);
+	t->SetBranchAddress("fatjetFlavour" ,&flavour);
+	t->SetBranchAddress("fatjetTau1"	,&tau1);
+	t->SetBranchAddress("fatjetTau2"	,&tau2);
+	t->SetBranchAddress("fatjetTau3"	,&tau3);
+
+	t->SetBranchAddress("fatjetTrimmedMass"	,&trimmedMass);
+	t->SetBranchAddress("fatjetPrunedMass"	,&prunedMass);
+	t->SetBranchAddress("fatjetFilteredMass"	,&filteredMass);
+	t->SetBranchAddress("fatjetSoftdropMass"	,&softdropMass);
+}

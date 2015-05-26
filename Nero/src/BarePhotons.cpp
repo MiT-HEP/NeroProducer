@@ -27,3 +27,10 @@ void BarePhotons::defineBranches(TTree *t){
 	sieie = new vector<float>;
 	t->Branch("photonSieie","vector<float>",&sieie);
 }
+
+void BarePhotons::setBranchAddresses(TTree *t){
+	p4 = new TClonesArray("TLorentzVector", 20);
+	t->Branch("photonP4"	,&p4);
+	t->Branch("photonIso"	,&iso);
+	t->Branch("photonSieie"	,&sieie);
+}

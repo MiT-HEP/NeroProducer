@@ -11,6 +11,7 @@ public:
 	~BarePhotons();
 	void clear();
 	void defineBranches(TTree *t);
+	void setBranchAddresses(TTree*) ;
 	virtual inline string name(){return "BarePhotons";};
 
 	// -- variables

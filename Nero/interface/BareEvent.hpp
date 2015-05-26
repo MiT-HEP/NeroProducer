@@ -10,6 +10,7 @@ public:
 	~BareEvent();
 	void clear();
 	void defineBranches(TTree*);
+	void setBranchAddresses(TTree*);
 	virtual inline string name(){ return "BareEvent";}
 
 	// -- variables

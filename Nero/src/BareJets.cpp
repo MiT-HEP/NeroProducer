@@ -46,3 +46,15 @@ void BareJets::defineBranches(TTree *t){
 	flavour = new vector<int>;
 	t->Branch("jetFlavour","vector<int>",&flavour);
 }
+
+void BareJets::setBranchAddresses(TTree*t)
+{
+	p4 = new TClonesArray("TLorentzVector", 20);
+	t->SetBranchAddress("jetP4"	, &p4	);
+	t->SetBranchAddress("jetRawPt"	,&rawPt);
+	t->SetBranchAddress("jetBdiscr"	,&bDiscr);
+	t->SetBranchAddress("jetPuId"	,&puId);
+	t->SetBranchAddress("jetUnc"	,&unc);
+	t->SetBranchAddress("jetQGL"	,&qgl);
+	t->SetBranchAddress("jetFlavour"	,&flavour);
+}
