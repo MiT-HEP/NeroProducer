@@ -1,7 +1,7 @@
 #ifndef BARE_MONTECARLO_H
 #define BARE_MONTECARLO_H
 
-#include "NeroProducer/Nero/interface/BareCollection.hpp"
+#include "NeroProducer/Core/interface/BareCollection.hpp"
 
 
 class BareMonteCarlo : virtual public BareCollection

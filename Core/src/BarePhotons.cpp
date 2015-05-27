@@ -1,4 +1,4 @@
-#include "NeroProducer/Nero/interface/BarePhotons.hpp"
+#include "NeroProducer/Core/interface/BarePhotons.hpp"
 
 
 BarePhotons::BarePhotons(){

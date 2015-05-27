@@ -1,4 +1,4 @@
-#include "NeroProducer/Nero/interface/BareAll.hpp"
+#include "NeroProducer/Core/interface/BareAll.hpp"
 
 BareAll::BareAll(){};
 BareAll::~BareAll(){};

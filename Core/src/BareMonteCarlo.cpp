@@ -1,4 +1,4 @@
-#include "NeroProducer/Nero/interface/BareMonteCarlo.hpp"
+#include "NeroProducer/Core/interface/BareMonteCarlo.hpp"
 
 BareMonteCarlo::BareMonteCarlo() {
 }

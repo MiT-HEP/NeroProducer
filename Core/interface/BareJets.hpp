@@ -1,7 +1,7 @@
 #ifndef BARE_JETS_H
 #define BARE_JETS_H
 
-#include "NeroProducer/Nero/interface/BareCollection.hpp"
+#include "NeroProducer/Core/interface/BareCollection.hpp"
 
 class BareJets : virtual public BareCollection
 {

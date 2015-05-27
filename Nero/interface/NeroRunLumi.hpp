@@ -2,7 +2,7 @@
 #define NERO_LUMI_RUN_H
 
 #include "NeroProducer/Nero/interface/Includes.hpp" 
-#include "NeroProducer/Nero/interface/BareCollection.hpp"
+#include "NeroProducer/Core/interface/BareCollection.hpp"
 
 class NeroLumi: virtual public BareCollection{
 public:

@@ -1,7 +1,7 @@
 #ifndef BARE_ALL_H
 #define BARE_ALL_H
 
-#include "NeroProducer/Nero/interface/BareCollection.hpp"
+#include "NeroProducer/Core/interface/BareCollection.hpp"
 
 class BareAll : virtual public BareCollection 
 {

@@ -1,4 +1,4 @@
-#include "NeroProducer/Nero/interface/BareTaus.hpp"
+#include "NeroProducer/Core/interface/BareTaus.hpp"
 
 BareTaus::BareTaus(){
 	p4 = NULL;

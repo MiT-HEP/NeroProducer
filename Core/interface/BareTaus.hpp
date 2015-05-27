@@ -1,7 +1,7 @@
 #ifndef BARE_TAUS_H
 #define BARE_TAUS_H
 
-#include "NeroProducer/Nero/interface/BareCollection.hpp"
+#include "NeroProducer/Core/interface/BareCollection.hpp"
 
 class BareTaus : virtual public BareCollection
 {

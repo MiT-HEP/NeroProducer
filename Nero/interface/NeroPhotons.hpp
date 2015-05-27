@@ -2,7 +2,7 @@
 #define NERO_PHOTONS_H
 
 #include "NeroProducer/Nero/interface/NeroCollection.hpp"
-#include "NeroProducer/Nero/interface/BarePhotons.hpp"
+#include "NeroProducer/Core/interface/BarePhotons.hpp"
 
 
 class NeroPhotons : virtual public NeroCollection,

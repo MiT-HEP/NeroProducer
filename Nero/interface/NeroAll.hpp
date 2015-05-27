@@ -3,7 +3,7 @@
 
 #include "NeroProducer/Nero/interface/NeroCollection.hpp"
 #include "NeroProducer/Nero/interface/NeroRunLumi.hpp"
-#include "NeroProducer/Nero/interface/BareAll.hpp"
+#include "NeroProducer/Core/interface/BareAll.hpp"
 
 
 class NeroAll : virtual public NeroCollection, 

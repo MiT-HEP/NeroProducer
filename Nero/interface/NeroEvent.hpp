@@ -2,7 +2,7 @@
 #define NERO_EVENT_H
 
 #include "NeroProducer/Nero/interface/NeroCollection.hpp"
-#include "NeroProducer/Nero/interface/BareEvent.hpp"
+#include "NeroProducer/Core/interface/BareEvent.hpp"
 
 
 class NeroEvent : virtual public NeroCollection, virtual public BareEvent

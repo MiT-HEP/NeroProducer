@@ -2,7 +2,7 @@
 #define NERO_FATJETS_H
 
 #include "NeroProducer/Nero/interface/NeroCollection.hpp"
-#include "NeroProducer/Nero/interface/BareFatJets.hpp"
+#include "NeroProducer/Core/interface/BareFatJets.hpp"
 
 
 class NeroFatJets : virtual public NeroCollection, 

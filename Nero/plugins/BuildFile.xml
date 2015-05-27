@@ -1,5 +1,6 @@
 <library name="NeroProducerNeroPlugins" file="*.cc"/>
 <use name="NeroProducer/Nero"/>
+<use name="NeroProducer/Core"/>
 <use name="FWCore/Framework"/>
 <use name="FWCore/PluginManager"/>
 <use name="FWCore/ParameterSet"/>

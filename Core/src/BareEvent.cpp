@@ -1,4 +1,4 @@
-#include "NeroProducer/Nero/interface/BareEvent.hpp"
+#include "NeroProducer/Core/interface/BareEvent.hpp"
 
 BareEvent::BareEvent(){};
 BareEvent::~BareEvent(){};

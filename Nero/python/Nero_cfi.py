@@ -1,7 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 
 #------------------------------------------------------
-process.nero = cms.EDAnalyzer("Nero",
+nero = cms.EDAnalyzer("Nero",
     vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
     rho = cms.InputTag("fixedGridRhoFastjetAll"),
     muons = cms.InputTag("slimmedMuons"),

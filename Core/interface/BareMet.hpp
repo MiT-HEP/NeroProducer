@@ -1,7 +1,7 @@
 #ifndef BARE_MET_H
 #define BARE_MET_H
 
-#include "NeroProducer/Nero/interface/BareCollection.hpp"
+#include "NeroProducer/Core/interface/BareCollection.hpp"
 
 
 class BareMet : virtual public BareCollection
