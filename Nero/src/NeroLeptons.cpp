@@ -63,7 +63,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 		//
 		myLepton l;
 		l.pdgId = el.charge()*11;
-		l.iso = -999.; //TODO
+		l.iso = el.ecalPFClusterIso() + el.hcalPFClusterIso(); //TODO
 		l.p4.SetPxPyPzE( el.px(),el.py(),el.pz(),el.energy());
 		l.tightId = int(isPassTight);
 		leptons.push_back(l);
