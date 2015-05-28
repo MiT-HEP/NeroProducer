@@ -30,6 +30,11 @@ nero = cms.EDAnalyzer("Nero",
     ## eleChargedIsolation = cms.InputTag("electronIDValueMapProducer:eleChargedIsolation"),
     ## eleNeutralHadronIsolation = cms.InputTag("electronIDValueMapProducer:eleNeutralHadronIsolation"),
     ## elePhotonIsolation = cms.InputTag("electronIDValueMapProducer:elePhotonIsolation"),
+    ## TRIGGER
+    triggerNames = cms.vstring(['HLT_Mu17_Mu8','HLT_Elec17_Elec8']),
+    prescales = cms.InputTag('patTrigger'),
+    trigger = cms.InputTag("TriggerResults","","HLT"),
+    # objects = cms.InputTag("selectedPatTrigger"),
     ## CUSTOM CONFIGURATION
     onlyMc = cms.bool (False),  ## not completely supported yet
     minJetPt = cms.double (20.),

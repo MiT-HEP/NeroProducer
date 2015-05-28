@@ -59,6 +59,13 @@ using namespace std;
 #include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
 #include "DataFormats/EgammaCandidates/interface/Conversion.h"
 
+// TRIGGER
+#include "FWCore/Common/interface/TriggerNames.h"
+#include "DataFormats/Common/interface/TriggerResults.h"
+#include "DataFormats/PatCandidates/interface/TriggerEvent.h"
+#include "PhysicsTools/PatUtils/interface/TriggerHelper.h"
+#include "DataFormats/PatCandidates/interface/TriggerObjectStandAlone.h"
+
 // ROOT
 #include "TTree.h"
 #include "TH1D.h"
