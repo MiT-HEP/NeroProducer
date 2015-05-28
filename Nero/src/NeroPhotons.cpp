@@ -2,6 +2,8 @@
 #include "NeroProducer/Nero/interface/Nero.hpp"
 
 NeroPhotons::NeroPhotons() : BarePhotons(){
+	mMinPt=20.;
+	mMaxIso=-1.;
 }
 
 NeroPhotons::~NeroPhotons(){
@@ -9,6 +11,8 @@ NeroPhotons::~NeroPhotons(){
 
 
 int NeroPhotons::analyze(const edm::Event& iEvent){
+
+	if ( mOnlyMc  ) return 0;
 
 	// maybe handle should be taken before
 	iEvent.getByToken(token, handle);
@@ -24,6 +28,8 @@ int NeroPhotons::analyze(const edm::Event& iEvent){
 	{
 	++iPho;
 		if (pho.pt() <20 or pho.chargedHadronIso()/pho.pt() > 0.3) continue;		
+		if (pho.pt() < mMinPt) continue;
+
 		edm::RefToBase<pat::Photon> ref ( edm::Ref< pat::PhotonCollection >(handle, iPho) ) ;
 		float chIso =  (*iso_ch) [ref];
         	float nhIso =  (*iso_nh) [ref];
@@ -32,6 +38,8 @@ int NeroPhotons::analyze(const edm::Event& iEvent){
         	bool isPassMedium = (*medium_id)[ref];	
 
 		if (not isPassMedium) continue;
+
+		if (mMaxIso >=0 and totIso > mMaxIso) continue;
 		
 		//FILL
 		new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(pho.px(),pho.py(),pho.pz(),pho.energy());

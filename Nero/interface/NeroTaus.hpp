@@ -19,6 +19,9 @@ public:
 	// Handle
 	edm::Handle<pat::TauCollection> handle;
 
+	// --- configuration
+	float mMinPt;
+	int   mMinNtaus;
 };
 
 

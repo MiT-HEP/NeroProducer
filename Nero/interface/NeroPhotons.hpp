@@ -30,7 +30,10 @@ public:
 	edm::EDGetTokenT<edm::ValueMap<float> > iso_ch_token;
 	edm::EDGetTokenT<edm::ValueMap<float> > iso_nh_token;
 	edm::EDGetTokenT<edm::ValueMap<float> > iso_pho_token;
-
+	
+	// --- configuration
+	float mMinPt ;
+	float mMaxIso ;
 
 };
 

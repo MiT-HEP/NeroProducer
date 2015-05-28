@@ -23,6 +23,10 @@ public:
 	edm::EDGetTokenT<pat::JetCollection> token;
 	edm::EDGetTokenT<edm::ValueMap<float> > qg_token;
 
+	// --- configuration
+	float mMinPt;
+	int   mMinNjets;
+
 };
 
 

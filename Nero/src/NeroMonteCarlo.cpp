@@ -5,12 +5,25 @@
 #define VERBOSE 0
 
 NeroMonteCarlo::NeroMonteCarlo(): BareMonteCarlo()
-{}
+{
+	mMinGenParticlePt = 5.;
+	mMinGenJetPt = 20.;
+	isRealData = 0;
+}
 
 NeroMonteCarlo::~NeroMonteCarlo(){
 }
 
+// -- void NeroMonteCarlo::defineBranches(TTree *t)
+// -- {
+// -- 	//if (I know it is data return;
+// -- 	return BareMonteCarlo::defineBranches(t);
+// -- }
+
 int NeroMonteCarlo::analyze(const edm::Event& iEvent){
+
+	if ( iEvent.isRealData() ) return 0;
+	isRealData = iEvent.isRealData() ? 1 : 0 ; // private, not the one in the tree
 
 	TStopwatch sw;
 	if(VERBOSE)sw.Start();
@@ -53,6 +66,7 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
 		{
 		const auto gen  = & (*packed_handle)[i];
 		if (gen->pt()  < 5 ) continue;
+		if (gen->pt() < mMinGenParticlePt ) continue;
 		int pdg = gen->pdgId();
 		int apdg = abs(pdg);
 
@@ -85,6 +99,7 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
 		{
 		const auto gen = &(*pruned_handle)[i];
 		if (gen->pt()  < 5 ) continue;
+		if (gen->pt()  < mMinGenParticlePt ) continue;
 		int pdg = gen->pdgId();
 		int apdg = abs(pdg);
 		if (gen->status() == 1) continue; //packed
@@ -104,6 +119,7 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
 	for (const auto & j : *jet_handle)
 		{
 		if (j.pt() < 20 ) continue;
+		if (j.pt() < mMinGenJetPt ) continue;
 		// --- FILL
 		new ( (*jetP4)[jetP4->GetEntriesFast()]) TLorentzVector(j.px(), j.py(), j.pz(), j.energy());
 		}
@@ -114,6 +130,9 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
 
 int NeroMonteCarlo::crossSection(edm::Run const & iRun, TH1F* h)
 {
+	// will be run at the end of run
+	if ( isRealData ) return 0; // if the first run has no events ?  TODO
+
 	//iRun.getByToken( runinfo_token, runinfo_handle);
 	iRun.getByLabel( "generator", runinfo_handle);
 	cout<<"in begin Run  intXS/extXSLO/extXSNLO "<<runinfo_handle->internalXSec().value()<<"/"<<runinfo_handle->externalXSecLO().value()<<"/"<<runinfo_handle->externalXSecNLO().value()<<endl;	

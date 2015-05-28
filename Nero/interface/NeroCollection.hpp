@@ -19,5 +19,8 @@ public:
 	// --- Just virtual
 	virtual int  analyze(const edm::Event &) = 0 ;
 	virtual inline string name(){return "NeroCollection";};
+
+	// -- configuration
+	bool mOnlyMc; // NO RECO INFO
 };
 #endif

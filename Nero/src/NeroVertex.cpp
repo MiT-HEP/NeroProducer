@@ -14,6 +14,7 @@ void NeroVertex::clear(){
 }
 
 int NeroVertex::analyze(const edm::Event& iEvent){
+	if ( mOnlyMc  ) return 0;
 	iEvent.getByToken(token, handle);
 	if (handle->empty()) return 1; // skip the event if no PV found
 	const reco::Vertex &PV = handle->front();

@@ -10,6 +10,8 @@ NeroFatJets::~NeroFatJets(){
 
 int NeroFatJets::analyze(const edm::Event& iEvent){
 
+	if ( mOnlyMc  ) return 0;
+
 	// maybe handle should be taken before
 	iEvent.getByToken(token, handle);
 

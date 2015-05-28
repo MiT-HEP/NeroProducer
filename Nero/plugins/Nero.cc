@@ -46,68 +46,99 @@
 Nero::Nero(const edm::ParameterSet& iConfig) 
 
 {
+   bool onlyMc = iConfig.getParameter<bool>("onlyMc");
+
    // not push_back inline because he needs to know the class type for init
    NeroEvent *evt = new NeroEvent();
+   evt -> mOnlyMc = onlyMc;
    evt -> rho_token = consumes<double>(iConfig.getParameter<edm::InputTag>("rho"));
    obj.push_back(evt);
 
    // -- Before Leptons (mu uses Vtx)
    NeroVertex *vtx = new NeroVertex();
+   vtx -> mOnlyMc = onlyMc;
    vtx -> token = consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("vertices"));
    obj.push_back(vtx);
 
    //now do what ever initialization is needed
    NeroJets *jets = new NeroJets();
+   jets -> mOnlyMc = onlyMc;
    jets -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("jets"));
    jets -> qg_token = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "qgLikelihood"));
+   jets -> mMinPt = iConfig.getParameter<double>("minJetPt");
+   jets -> mMinNjets = iConfig.getParameter<int>("minJetN");
+
    obj.push_back(jets);
 
    // --- 
    NeroTaus *taus = new NeroTaus();
+   taus -> mOnlyMc = onlyMc;
    taus -> token = consumes<pat::TauCollection>(iConfig.getParameter<edm::InputTag>("taus"));
+   taus -> mMinPt = iConfig.getParameter<double>("minTauPt");
+   taus -> mMinNtaus = iConfig.getParameter<int>("minTauN");
    obj.push_back(taus);
 
    //--
    NeroLeptons *leps = new NeroLeptons();
+   leps -> mOnlyMc = onlyMc;
    leps -> mu_token = consumes<pat::MuonCollection>(iConfig.getParameter<edm::InputTag>("muons"));
    leps -> el_token = consumes<pat::ElectronCollection>(iConfig.getParameter<edm::InputTag>("electrons"));
    leps -> el_mediumid_token = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMediumIdMap"));
    leps -> el_tightid_token = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleTightIdMap"));
+
+   //leps -> el_iso_ch_token  = consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("eleChargedIsolation") );
+   //leps -> el_iso_nh_token  = consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("eleNeutralHadronIsolation") );
+   //leps -> el_iso_pho_token = consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("elePhotonIsolation") );
+   //
+   leps -> mMinPt = iConfig.getParameter<double>("minLepPt");
+   leps -> mMinNleptons = iConfig.getParameter<int>("minLepN");
    obj. push_back(leps);
 
    //--
    NeroFatJets *fatjets = new NeroFatJets();
+   fatjets -> mOnlyMc = onlyMc;
    fatjets -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("fatjets"));
    obj.push_back(fatjets);
 
    //--
    NeroMet *met = new NeroMet();
+   met -> mOnlyMc = onlyMc;
    met -> token = consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("mets"));
    obj.push_back(met);
 
    // --
    NeroPhotons *phos = new NeroPhotons();
+   phos -> mOnlyMc = onlyMc;
    phos -> token = consumes<pat::PhotonCollection>(iConfig.getParameter<edm::InputTag>("photons"));
    phos -> medium_id_token = consumes<edm::ValueMap<bool>>(iConfig.getParameter<edm::InputTag>("phoMediumIdMap"));
    phos -> iso_ch_token = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>("phoChargedIsolation"));
    phos -> iso_nh_token = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>("phoNeutralHadronIsolation"));
    phos -> iso_pho_token = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>("phoPhotonIsolation"));
+   phos -> mMinPt = iConfig.getParameter<double>("minPhoPt");
+   phos -> mMaxIso = iConfig.getParameter<double>("maxPhoIso");
    obj.push_back(phos);
 
    NeroMonteCarlo *mc = new NeroMonteCarlo();
+   mc -> mOnlyMc = onlyMc;
    mc -> packed_token = consumes<edm::View<pat::PackedGenParticle> >(iConfig.getParameter<edm::InputTag>("packedgen"));
    mc -> pruned_token = consumes<edm::View<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("prunedgen")) ;
    mc -> info_token   = consumes<GenEventInfoProduct>(iConfig.getParameter<edm::InputTag>("generator"));
    mc -> pu_token     = consumes<std::vector<PileupSummaryInfo> >(iConfig.getParameter<edm::InputTag>("pileup"));
    mc -> jet_token    = consumes<reco::GenJetCollection>(iConfig.getParameter<edm::InputTag>("genjets"));
    mc -> runinfo_token = consumes<GenRunInfoProduct>(iConfig.getParameter<edm::InputTag>("genruninfo") );
+   mc -> mMinGenParticlePt = iConfig.getParameter<double>("minGenParticlePt");
+   mc -> mMinGenJetPt = iConfig.getParameter<double>("minGenJetPt");
+
    obj.push_back(mc);
    runObj.push_back(mc);
 
+   // ----------------- Collection to be run at the Lumi Block ----
    NeroAll *info = new NeroAll();
+   info -> mOnlyMc = onlyMc;
    info -> isSkim_ = 1;
    lumiObj.push_back(info);
 
+  
 }
 
 

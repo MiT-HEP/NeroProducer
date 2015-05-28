@@ -2,7 +2,10 @@
 #include "NeroProducer/Nero/interface/Nero.hpp"
 
 NeroJets::NeroJets() : BareJets()
-{}
+{
+	mMinPt = 20.;
+	mMinNjets = 0;
+}
 
 NeroJets::~NeroJets(){
 }
@@ -10,6 +13,8 @@ NeroJets::~NeroJets(){
 
 
 int NeroJets::analyze(const edm::Event& iEvent){
+
+	if ( mOnlyMc  ) return 0;
 
 	// maybe handle should be taken before
 	iEvent.getByToken(token, handle);
@@ -20,6 +25,7 @@ int NeroJets::analyze(const edm::Event& iEvent){
 		{
 		ijetRef++;
 		if (j.pt() < 20 ) continue;
+		if (j.pt() < mMinPt ) continue;
 
 		// JET ID
 		if ( !JetId(j) ) continue;
@@ -38,6 +44,9 @@ int NeroJets::analyze(const edm::Event& iEvent){
         	flavour -> push_back( j.partonFlavour() );
 		
 		}
+
+	if ( int(rawPt -> size()) < mMinNjets ) return 1;
+
 	return 0;
 }
 
