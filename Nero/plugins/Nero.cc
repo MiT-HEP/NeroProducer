@@ -28,6 +28,7 @@
 #include "NeroProducer/Nero/interface/NeroPhotons.hpp"
 #include "NeroProducer/Nero/interface/NeroMonteCarlo.hpp"
 #include "NeroProducer/Nero/interface/NeroAll.hpp"
+#include "NeroProducer/Nero/interface/NeroTrigger.hpp"
 
 
 #define VERBOSE 0
@@ -132,6 +133,14 @@ Nero::Nero(const edm::ParameterSet& iConfig)
    obj.push_back(mc);
    runObj.push_back(mc);
 
+   NeroTrigger *tr = new NeroTrigger();
+   tr -> mOnlyMc = onlyMc;
+   tr -> token = consumes< edm::TriggerResults >( iConfig.getParameter<edm::InputTag>("trigger"));
+   tr -> prescale_token = consumes<pat::PackedTriggerPrescales>( iConfig.getParameter<edm::InputTag>("prescales") );
+   //
+   *(tr -> triggerNames) =  iConfig.getParameter<std::vector<std::string> > ("triggerNames");
+   obj.push_back(tr);
+
    // ----------------- Collection to be run at the Lumi Block ----
    NeroAll *info = new NeroAll();
    info -> mOnlyMc = onlyMc;
@@ -197,6 +206,18 @@ Nero::beginJob()
 	tree_    = fileService_ -> make<TTree>("events", "events");
 	all_     = fileService_ -> make<TTree>("all", "all");	  
 	hXsec_   = fileService_ -> make<TH1F>("xSec", "xSec",20,-0.5,19.5); hXsec_ ->Sumw2();
+
+	// FILL TRIGGER NAMES INFO
+	string myString = "";
+	for(auto o : obj)
+		if (dynamic_cast<NeroTrigger*>(o) != NULL) 
+			{
+			NeroTrigger* tr = dynamic_cast<NeroTrigger*>(o) ;
+			for( string n : *tr->triggerNames)
+				myString +=  n + ",";
+			}
+
+	fileService_ -> make<TNamed>("triggerNames",myString.c_str());
 
 	for(auto o : obj)
 		o -> defineBranches(tree_);
