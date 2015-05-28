@@ -21,6 +21,11 @@ public:
 	
 	//configuration
 	vector<string> *triggerNames;
+
+	vector<int>  *triggerLeps;
+	vector<int>  *triggerJets;
+	vector<int>  *triggerTaus;
+	vector<int>  *triggerPhotons;
 };
 
 #endif

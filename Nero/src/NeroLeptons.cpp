@@ -3,7 +3,7 @@
 
 // -- Electron Isolation
 NeroLeptons::NeroLeptons(): BareLeptons(){
-	pv_ = NULL;
+	vtx_ = NULL;
 	mMinPt= 20;
 	mMinNleptons = 0;
 }
@@ -15,7 +15,8 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 {
 	if ( mOnlyMc  ) return 0;
 
-	if (pv_ == NULL) cout<<"[NeroLeptons]::[analyze]::[WARNING] PV not set."<<endl;
+	if ( vtx_ == NULL) cout<<"[NeroLeptons]::[analyze]::[WARNING] Vertex Class not set."<<endl;
+	if ( vtx_ -> GetPV() == NULL) cout<<"[NeroLeptons]::[analyze]::[WARNING] Primary Vertex not set."<<endl;
 
 	iEvent.getByToken(mu_token,mu_handle);	
 	iEvent.getByToken(el_token,el_handle);	
@@ -24,7 +25,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 	iEvent.getByToken(el_tightid_token,el_tight_id);
 
 	vector<myLepton> leptons;
-		
+	
 	for (const pat::Muon &mu : *mu_handle) {
 		// selection
 		if (mu.pt() < 20 || !mu.isLooseMuon()) continue; 
@@ -43,7 +44,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 		l.pdgId = mu.charge()*13;
 		l.iso = totiso;
 		l.p4.SetPxPyPzE( mu.px(),mu.py(),mu.pz(),mu.energy());
-		l.tightId = int(mu.isTightMuon(*pv_));
+		l.tightId = int(mu.isTightMuon( * vtx_->GetPV() ));
 		leptons.push_back(l);
 	}
 	
@@ -57,7 +58,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 		if ( not el.passConversionVeto() ) continue;  // ve
 		
 		edm::RefToBase<pat::Electron> ref ( edm::Ref< pat::ElectronCollection >(el_handle, iEle) ) ;
-		
+	
 		bool isPassMedium = (*el_medium_id)[ref];
 		bool isPassTight = (*el_tight_id)[ref];
 		
