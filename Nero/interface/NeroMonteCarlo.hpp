@@ -14,6 +14,7 @@ public:
 	NeroMonteCarlo();
 	~NeroMonteCarlo();
 	int analyze(const edm::Event& iEvent);
+	//void defineBranches(TTree *t);
 	inline int analyzeRun(edm::Run const & iRun, TH1F* h)
 	{ return crossSection(iRun,h);}
 	virtual inline string name(){return "NeroMonteCarlo";};
@@ -36,7 +37,10 @@ public:
 	edm::EDGetTokenT<reco::GenJetCollection> jet_token;
 	edm::EDGetTokenT<GenRunInfoProduct> runinfo_token;
 	
-
+	// --- configuration
+	float mMinGenParticlePt;
+	float mMinGenJetPt;
+	int isRealData;
 
 };
 

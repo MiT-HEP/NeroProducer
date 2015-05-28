@@ -13,6 +13,7 @@ int NeroEvent::analyze(const edm::Event& iEvent){
 	lumiNum    = iEvent.luminosityBlock();
 	eventNum   = iEvent.id().event();
 
+	if ( mOnlyMc  ) return 0;
 	iEvent.getByToken(rho_token,rho_handle);
 
 	rho 	   =  *rho_handle;

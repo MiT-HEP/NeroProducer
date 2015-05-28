@@ -34,14 +34,23 @@ public:
 	edm::EDGetTokenT<edm::ValueMap<bool> > 	el_mediumid_token;
 	edm::EDGetTokenT<edm::ValueMap<bool> > 	el_tightid_token;
 
+	//edm::EDGetTokenT<edm::ValueMap<float> > 	el_iso_ch_token;
+	//edm::EDGetTokenT<edm::ValueMap<float> > 	el_iso_nh_token;
+	//edm::EDGetTokenT<edm::ValueMap<float> > 	el_iso_pho_token;
+
 	// Handle
 	edm::Handle<pat::MuonCollection> mu_handle;
 	edm::Handle<pat::ElectronCollection> el_handle;
 	edm::Handle<edm::ValueMap<bool> > el_medium_id;
 	edm::Handle<edm::ValueMap<bool> > el_tight_id;
+
 	//edm::Handle<edm::ValueMap<float> > el_iso_ch;
 	//edm::Handle<edm::ValueMap<float> > el_iso_nh;
 	//edm::Handle<edm::ValueMap<float> > el_iso_pho;
+	
+	//configuration
+	float mMinPt;
+	int   mMinNleptons;
 
 };
 

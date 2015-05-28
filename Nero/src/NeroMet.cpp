@@ -10,6 +10,8 @@ NeroMet::~NeroMet(){
 
 int NeroMet::analyze(const edm::Event& iEvent){
 
+	if ( mOnlyMc  ) return 0; // in principle I would like to have the gen met: TODO
+
 	// maybe handle should be taken before
 	iEvent.getByToken(token, handle);
 	const pat::MET &met = handle->front();

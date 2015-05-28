@@ -26,5 +26,21 @@ nero = cms.EDAnalyzer("Nero",
     phoChargedIsolation = cms.InputTag("photonIDValueMapProducer:phoChargedIsolation"),
     phoNeutralHadronIsolation = cms.InputTag("photonIDValueMapProducer:phoNeutralHadronIsolation"),
     phoPhotonIsolation = cms.InputTag("photonIDValueMapProducer:phoPhotonIsolation"),
+    #
+    ## eleChargedIsolation = cms.InputTag("electronIDValueMapProducer:eleChargedIsolation"),
+    ## eleNeutralHadronIsolation = cms.InputTag("electronIDValueMapProducer:eleNeutralHadronIsolation"),
+    ## elePhotonIsolation = cms.InputTag("electronIDValueMapProducer:elePhotonIsolation"),
+    ## CUSTOM CONFIGURATION
+    onlyMc = cms.bool (False),  ## not completely supported yet
+    minJetPt = cms.double (20.),
+    minJetN = cms.int32 (0),
+    minLepPt = cms.double (20.),
+    minLepN = cms.int32 (0),
+    minTauPt = cms.double (20.),
+    minTauN = cms.int32 (0),
+    minGenParticlePt = cms.double(5.),
+    minGenJetPt = cms.double(20.),
+    minPhoPt = cms.double (20.),
+    maxPhoIso = cms.double (-1.),
 )
 #------------------------------------------------------

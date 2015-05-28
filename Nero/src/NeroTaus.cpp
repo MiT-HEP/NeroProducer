@@ -2,6 +2,8 @@
 #include "NeroProducer/Nero/interface/Nero.hpp"
 
 NeroTaus::NeroTaus(): BareTaus(){
+	mMinPt = 20;
+	mMinNtaus = 0;
 }
 
 NeroTaus::~NeroTaus(){
@@ -9,9 +11,12 @@ NeroTaus::~NeroTaus(){
 
 int NeroTaus::analyze(const edm::Event & iEvent)
 {
+	if ( mOnlyMc  ) return 0;
+
 	iEvent.getByToken(token, handle);
 	 for (const pat::Tau &tau : *handle) {
 		 if (tau.pt() <20 ) continue;	
+		 if (tau.pt() <mMinPt ) continue;	
 	
 	 	 //float trkIso = isolationTracksPtSum ();
 		 //bool Tau::ExistIsolationCands 	( ) 	const
@@ -28,6 +33,7 @@ int NeroTaus::analyze(const edm::Event & iEvent)
 		 iso -> push_back( totIso ) ; 
 
 	}
+	if( int(id->size()) < mMinNtaus) return 1;
 	return 0;
 }
 
