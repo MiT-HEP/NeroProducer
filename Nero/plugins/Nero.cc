@@ -82,6 +82,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
    //--
    NeroLeptons *leps = new NeroLeptons();
    leps -> mOnlyMc = onlyMc;
+   leps -> vtx_ = vtx; // Set the Vertex class
    leps -> mu_token = consumes<pat::MuonCollection>(iConfig.getParameter<edm::InputTag>("muons"));
    leps -> el_token = consumes<pat::ElectronCollection>(iConfig.getParameter<edm::InputTag>("electrons"));
    leps -> el_mediumid_token = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMediumIdMap"));
@@ -137,6 +138,12 @@ Nero::Nero(const edm::ParameterSet& iConfig)
    tr -> mOnlyMc = onlyMc;
    tr -> token = consumes< edm::TriggerResults >( iConfig.getParameter<edm::InputTag>("trigger"));
    tr -> prescale_token = consumes<pat::PackedTriggerPrescales>( iConfig.getParameter<edm::InputTag>("prescales") );
+   tr -> object_token = consumes< pat::TriggerObjectStandAloneCollection > ( iConfig.getParameter<edm::InputTag> ("objects") );
+   // set the collection he needs to be awared of
+   tr -> leps_ = leps;
+   tr -> jets_ = jets;
+   tr -> taus_ = taus;
+   tr -> photons_ = phos;
    //
    *(tr -> triggerNames) =  iConfig.getParameter<std::vector<std::string> > ("triggerNames");
    obj.push_back(tr);
@@ -179,17 +186,13 @@ Nero::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    for(auto o : obj)
    	o->clear();
 
-   const reco::Vertex *pv = NULL;
    for(auto o : obj)
 	{
 	if (VERBOSE){sw_.Reset(); sw_.Start();}
-	if ( dynamic_cast<NeroLeptons*>(o) != NULL ) dynamic_cast<NeroLeptons*>(o) -> SetPV( pv );
 
    	if (o->analyze(iEvent) ) return; // analyze return 0 on success (VTX ..)
 
-	if ( dynamic_cast<NeroVertex*>(o) != NULL ) pv = dynamic_cast<NeroVertex*>(o) ->GetPV(); 
-
-	if (VERBOSE){sw_.Stop(); cout<< "object "<<o->name()<<" took:"<< sw_.CpuTime()<< "CPU Time and "<<sw_.RealTime()<<"RealTime"<<endl;}
+	if (VERBOSE){sw_.Stop(); cout<< "[Nero]::[analyze] object "<<o->name()<<" took:"<< sw_.CpuTime()<< "CPU Time and "<<sw_.RealTime()<<"RealTime"<<endl;}
 	}
    	
    tree_->Fill();
