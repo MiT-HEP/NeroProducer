@@ -3,6 +3,7 @@
 
 #include "NeroProducer/Nero/interface/NeroCollection.hpp"
 #include "NeroProducer/Core/interface/BareLeptons.hpp"
+#include "NeroProducer/Nero/interface/NeroVertex.hpp"
 
 
 class NeroLeptons : virtual public NeroCollection,
@@ -21,12 +22,14 @@ public:
 		TLorentzVector p4;
 		int tightId;
 		int pdgId;
+		// ---
 	};
 	
 	// to be setted by the vertex
-	const reco::Vertex *pv_;
-	void inline SetPV( const reco::Vertex *pv){ pv_ = pv ; }
-	void inline SetPV( const reco::Vertex &pv){ pv_ = &pv ; }
+	//const reco::Vertex *pv_;
+	//void inline SetPV( const reco::Vertex *pv){ pv_ = pv ; }
+	//void inline SetPV( const reco::Vertex &pv){ pv_ = &pv ; }
+	NeroVertex *vtx_ ;
 
 	// Token
 	edm::EDGetTokenT<pat::MuonCollection> mu_token;
@@ -47,7 +50,7 @@ public:
 	//edm::Handle<edm::ValueMap<float> > el_iso_ch;
 	//edm::Handle<edm::ValueMap<float> > el_iso_nh;
 	//edm::Handle<edm::ValueMap<float> > el_iso_pho;
-	
+
 	//configuration
 	float mMinPt;
 	int   mMinNleptons;
