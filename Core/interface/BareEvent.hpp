@@ -3,7 +3,7 @@
 
 #include "NeroProducer/Core/interface/BareCollection.hpp"
 
-class BareEvent : virtual public BareCollection 
+class BareEvent : virtual public BareCollection
 {
 public:
 	BareEvent();
@@ -20,6 +20,11 @@ public:
 	ULong64_t eventNum;
 	
 	float rho;	
+	//
+	// --- not good for CMSSW, 
+	#ifdef TREE_STREAMER
+	ClassDef(BareEvent,1);
+	#endif
 };
 
 #endif

@@ -58,3 +58,6 @@ void BareJets::setBranchAddresses(TTree*t)
 	t->SetBranchAddress("jetQGL"	,&qgl);
 	t->SetBranchAddress("jetFlavour"	,&flavour);
 }
+#ifdef TREE_STREAMER
+ClassImp(BareJets);
+#endif

@@ -45,3 +45,6 @@ void BareTaus::setBranchAddresses(TTree *t){
 	t->SetBranchAddress("tauM"	,&M);
 	t->SetBranchAddress("tauIso"	,&iso);
 }
+#ifdef TREE_STREAMER
+ClassImp(BareTaus);
+#endif

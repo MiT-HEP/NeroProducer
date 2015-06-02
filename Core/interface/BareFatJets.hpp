@@ -27,6 +27,9 @@ public:
 	vector<float> *filteredMass;
 	vector<float> *softdropMass;
 
+	#ifdef TREE_STREAMER
+	ClassDef(BareFatJets,1);
+	#endif
 };
 
 #endif

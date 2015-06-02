@@ -31,3 +31,8 @@ void BareEvent::setBranchAddresses(TTree *t){
   	t->SetBranchAddress("eventNum"    ,&eventNum    );
   	t->SetBranchAddress("rho"    	,&rho         );
 }
+
+// --- not good for CMSSW, 
+#ifdef TREE_STREAMER
+ClassImp(BareEvent);
+#endif

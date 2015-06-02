@@ -23,6 +23,9 @@ public:
 	vector<float> *qgl;
 	vector<int>   *flavour;
 
+	#ifdef TREE_STREAMER
+	ClassDef(BareJets,1);
+	#endif
 };
 
 #endif

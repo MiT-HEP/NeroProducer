@@ -1,12 +1,12 @@
 #include "NeroProducer/Core/interface/BareMonteCarlo.hpp"
 
 BareMonteCarlo::BareMonteCarlo() {
-}
-
-BareMonteCarlo::~BareMonteCarlo(){
 	p4 = NULL;
 	pdgId = NULL;
 	jetP4 = NULL;
+}
+
+BareMonteCarlo::~BareMonteCarlo(){
 }
 
 void BareMonteCarlo::clear(){
@@ -68,3 +68,6 @@ void BareMonteCarlo::setBranchAddresses(TTree *t){
 	t->SetBranchAddress("pdfId2"	,&pdf2Id	);
 	t->SetBranchAddress("pdfScalePdf"	,&scalePdf	);
 }
+#ifdef TREE_STREAMER
+ClassImp(BareMonteCarlo);
+#endif
