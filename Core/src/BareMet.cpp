@@ -39,7 +39,8 @@ void BareMet::setBranchAddresses(TTree *t){
 	t->SetBranchAddress("metP4"	, &p4	);
 	t->SetBranchAddress("metPtJESUP"	,&ptJESUP);
 	t->SetBranchAddress("metPtJESDOWN",&ptJESDOWN);
-	t->SetBranchAddress("metP4_GEN"	, &p4	);
+	genP4 = new TClonesArray("TLorentzVector", 20);
+	t->SetBranchAddress("metP4_GEN"	, &genP4 );
 }
 
 #ifdef TREE_STREAMER
