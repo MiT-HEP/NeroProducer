@@ -63,6 +63,19 @@ void BareFatJets::defineBranches(TTree *t){
 void BareFatJets::setBranchAddresses(TTree *t){
 	//
 	p4 = new TClonesArray("TLorentzVector", 20);
+	rawPt = new vector<float>;
+	// -- Jet Flavour by PAT
+	flavour = new vector<int>;
+	//
+	tau1 = new vector<float>;
+	tau2 = new vector<float>;
+	tau3 = new vector<float>;
+
+	trimmedMass = new vector<float>;
+	prunedMass = new vector<float>;
+	filteredMass = new vector<float>;
+	softdropMass = new vector<float>;
+
 	t->SetBranchAddress("fatjetP4"	,&p4);
 	t->SetBranchAddress("fatjetRawPt"	,&rawPt);
 	t->SetBranchAddress("fatjetFlavour" ,&flavour);

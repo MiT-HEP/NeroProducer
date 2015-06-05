@@ -55,6 +55,7 @@ void BareMonteCarlo::setBranchAddresses(TTree *t){
 	t->SetBranchAddress("genjetP4"	, &jetP4 );
 	p4 = new TClonesArray("TLorentzVector", 20);
 	t->SetBranchAddress("genP4"	, &p4	);
+	pdgId = new vector<int>;
 	t->SetBranchAddress("genPdgId"	, &pdgId);
 	//
 	t->SetBranchAddress("puTrueInt"	,&puTrueInt	);
