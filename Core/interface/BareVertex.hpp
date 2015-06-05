@@ -14,8 +14,5 @@ public:
 	virtual void setBranchAddresses(TTree*);
 	virtual inline string name(){return "BareVertex";};
 
-	#ifdef TREE_STREAMER
-	ClassDef(BareVertex,1);
-	#endif
 };
 #endif

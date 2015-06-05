@@ -45,6 +45,3 @@ void BareTrigger::setBranchAddresses(TTree*t)
 	t -> SetBranchAddress("triggerPhotons", &triggerPhotons);
 }
 
-#ifdef TREE_STREAMER
-ClassImp(BareTrigger);
-#endif

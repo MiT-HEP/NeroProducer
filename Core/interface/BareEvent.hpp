@@ -21,10 +21,6 @@ public:
 	
 	float rho;	
 	//
-	// --- not good for CMSSW, 
-	#ifdef TREE_STREAMER
-	ClassDef(BareEvent,1);
-	#endif
 };
 
 #endif

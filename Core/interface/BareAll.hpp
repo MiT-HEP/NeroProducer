@@ -23,9 +23,6 @@ public:
 	int puTrueInt;
 	float mcWeight;
 	
-	#ifdef TREE_STREAMER
-	ClassDef(BareAll,1);
-	#endif
 };
 
 #endif

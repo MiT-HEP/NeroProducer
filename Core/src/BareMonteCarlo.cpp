@@ -68,6 +68,3 @@ void BareMonteCarlo::setBranchAddresses(TTree *t){
 	t->SetBranchAddress("pdfId2"	,&pdf2Id	);
 	t->SetBranchAddress("pdfScalePdf"	,&scalePdf	);
 }
-#ifdef TREE_STREAMER
-ClassImp(BareMonteCarlo);
-#endif

@@ -1,6 +1,5 @@
 GCC=g++
 CXXFLAGS=`root-config --libs --cflags` -O2 -fPIC -I../../ 
-#-D TREE_STREAMER
 SOFLAGS=-shared
 
 SRCDIR=src

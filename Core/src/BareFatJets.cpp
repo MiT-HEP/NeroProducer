@@ -75,6 +75,3 @@ void BareFatJets::setBranchAddresses(TTree *t){
 	t->SetBranchAddress("fatjetFilteredMass"	,&filteredMass);
 	t->SetBranchAddress("fatjetSoftdropMass"	,&softdropMass);
 }
-#ifdef TREE_STREAMER
-ClassImp(BareFatJets);
-#endif

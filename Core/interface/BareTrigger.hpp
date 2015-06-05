@@ -27,9 +27,6 @@ public:
 	vector<int>  *triggerTaus;
 	vector<int>  *triggerPhotons;
 
-	#ifdef TREE_STREAMER
-	ClassDef(BareTrigger,1);
-	#endif
 };
 
 #endif

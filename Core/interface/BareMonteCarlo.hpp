@@ -34,9 +34,5 @@ public:
         int   pdf2Id   ;
         float scalePdf ;
 
-	#ifdef TREE_STREAMER
-	ClassDef(BareMonteCarlo,1);
-	#endif
-	
 };
 #endif

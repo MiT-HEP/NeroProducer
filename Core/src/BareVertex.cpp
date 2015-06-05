@@ -17,6 +17,3 @@ void BareVertex::setBranchAddresses(TTree *t){
 	// nothing to be done
 }
 
-#ifdef TREE_STREAMER
-ClassImp(BareVertex);
-#endif

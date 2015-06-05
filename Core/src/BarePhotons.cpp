@@ -34,6 +34,3 @@ void BarePhotons::setBranchAddresses(TTree *t){
 	t->Branch("photonIso"	,&iso);
 	t->Branch("photonSieie"	,&sieie);
 }
-#ifdef TREE_STREAMER
-ClassImp(BarePhotons);
-#endif

@@ -20,8 +20,5 @@ public:
 	vector<float>           *M ; // mass
 	vector<float>           *iso ;
 
-	#ifdef TREE_STREAMER
-	ClassDef(BareTaus,1);
-	#endif
 };
 #endif

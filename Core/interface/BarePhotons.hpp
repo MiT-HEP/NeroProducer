@@ -18,9 +18,6 @@ public:
 	TClonesArray *p4;
 	vector<float> *sieie;
 	vector<float> *iso;
-	#ifdef TREE_STREAMER
-	ClassDef(BarePhotons,1);
-	#endif
 };
 
 #endif

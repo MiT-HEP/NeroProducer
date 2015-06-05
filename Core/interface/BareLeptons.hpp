@@ -18,10 +18,6 @@ public:
 	vector<float> *iso;	
 	vector<int>   *tightId;	
 
-	#ifdef TREE_STREAMER
-	ClassDef(BareLeptons,1);
-	#endif
-
 };
 
 #endif

@@ -41,6 +41,3 @@ void BareLeptons::setBranchAddresses(TTree*t){
 	t->SetBranchAddress("lepTightId"	,&tightId);
 }
 
-#ifdef TREE_STREAMER
-ClassImp(BareLeptons);
-#endif

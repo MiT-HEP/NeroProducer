@@ -43,6 +43,3 @@ void BareMet::setBranchAddresses(TTree *t){
 	t->SetBranchAddress("metP4_GEN"	, &genP4 );
 }
 
-#ifdef TREE_STREAMER
-ClassImp(BareMet);
-#endif

@@ -22,8 +22,5 @@ public:
 	// Should not stay here, but in MC -> we will esculed it if run on onlyMc
 	TClonesArray *genP4;
 
-	#ifdef TREE_STREAMER
-	ClassDef(BareMet,1);
-	#endif
 };
 #endif

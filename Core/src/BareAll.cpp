@@ -33,6 +33,3 @@ void BareAll::setBranchAddresses(TTree *t){
   	t->SetBranchAddress("puTrueInt"     ,&puTrueInt  );
 }
 
-#ifdef TREE_STREAMER
-ClassImp(BareAll);
-#endif
