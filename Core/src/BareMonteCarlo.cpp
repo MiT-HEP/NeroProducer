@@ -1,12 +1,12 @@
 #include "NeroProducer/Core/interface/BareMonteCarlo.hpp"
 
 BareMonteCarlo::BareMonteCarlo() {
-}
-
-BareMonteCarlo::~BareMonteCarlo(){
 	p4 = NULL;
 	pdgId = NULL;
 	jetP4 = NULL;
+}
+
+BareMonteCarlo::~BareMonteCarlo(){
 }
 
 void BareMonteCarlo::clear(){
@@ -55,6 +55,7 @@ void BareMonteCarlo::setBranchAddresses(TTree *t){
 	t->SetBranchAddress("genjetP4"	, &jetP4 );
 	p4 = new TClonesArray("TLorentzVector", 20);
 	t->SetBranchAddress("genP4"	, &p4	);
+	pdgId = new vector<int>;
 	t->SetBranchAddress("genPdgId"	, &pdgId);
 	//
 	t->SetBranchAddress("puTrueInt"	,&puTrueInt	);

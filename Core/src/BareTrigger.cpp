@@ -36,6 +36,13 @@ void BareTrigger::defineBranches(TTree *t){
 
 void BareTrigger::setBranchAddresses(TTree*t)
 {
+	triggerFired =new vector<int>;
+	triggerPrescale =new vector<float>;
+	// ---
+	triggerLeps =new vector<int>;
+	triggerJets =new vector<int>;
+	triggerTaus =new vector<int>;
+	triggerPhotons =new vector<int>;
 	t -> SetBranchAddress("triggerFired", &triggerFired);
 	t -> SetBranchAddress("triggerPrescale", &triggerPrescale);
 	// ---
@@ -44,3 +51,4 @@ void BareTrigger::setBranchAddresses(TTree*t)
 	t -> SetBranchAddress("triggerTaus", &triggerTaus);
 	t -> SetBranchAddress("triggerPhotons", &triggerPhotons);
 }
+

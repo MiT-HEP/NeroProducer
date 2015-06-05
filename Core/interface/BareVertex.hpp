@@ -13,5 +13,6 @@ public:
 	void defineBranches(TTree *t);
 	virtual void setBranchAddresses(TTree*);
 	virtual inline string name(){return "BareVertex";};
+
 };
 #endif

@@ -14,10 +14,9 @@ public:
 	virtual inline string name(){return "BareLeptons";};
 	// ----
 	TClonesArray  *p4;
-	vector<float> *pdgId;	
+	vector<int>   *pdgId;	
 	vector<float> *iso;	
 	vector<int>   *tightId;	
-
 
 };
 

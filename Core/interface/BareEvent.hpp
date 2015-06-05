@@ -3,7 +3,7 @@
 
 #include "NeroProducer/Core/interface/BareCollection.hpp"
 
-class BareEvent : virtual public BareCollection 
+class BareEvent : virtual public BareCollection
 {
 public:
 	BareEvent();
@@ -20,6 +20,7 @@ public:
 	ULong64_t eventNum;
 	
 	float rho;	
+	//
 };
 
 #endif

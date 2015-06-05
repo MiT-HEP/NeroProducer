@@ -31,3 +31,4 @@ void BareEvent::setBranchAddresses(TTree *t){
   	t->SetBranchAddress("eventNum"    ,&eventNum    );
   	t->SetBranchAddress("rho"    	,&rho         );
 }
+

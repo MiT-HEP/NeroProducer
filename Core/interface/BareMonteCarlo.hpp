@@ -33,6 +33,6 @@ public:
         int   pdf1Id   ;
         int   pdf2Id   ;
         float scalePdf ;
-	
+
 };
 #endif

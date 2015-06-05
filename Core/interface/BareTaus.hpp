@@ -19,5 +19,6 @@ public:
 	vector<int>       	*Q ;// charge
 	vector<float>           *M ; // mass
 	vector<float>           *iso ;
+
 };
 #endif

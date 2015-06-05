@@ -28,6 +28,7 @@ parser.add_option("-b","--background",dest="bkg",type="string",help="Comma separ
 parser.add_option("-n","--nbins",dest="nbins",type="int",help="nbins. Default=%default",default=10);
 parser.add_option("","--xmin",dest="xmin",type="float",help="xMin. Default=%default",default=0.);
 parser.add_option("","--xmax",dest="xmax",type="float",help="xMax. Default=%default",default=10);
+parser.add_option("-w","--weight",dest="weight",action="store_true",help="Assume MC is weighted. Default=%default",default=False);
 
 opts,args = parser.parse_args()
 
@@ -69,11 +70,19 @@ def Load(name):
 
 	print "File",chain.GetFileNumber(),"file",chain.GetFile()
 	h=chain.GetFile().Get("nero/xSec")
-	nEntries= all.GetEntries()
+	if opts.weight:
+		sum=r.TH1F("sum","sum of weights",1,0,2)
+		all.Draw("1>>sum","mcWeight")
+		nEntries = sum.GetBinContent(1)
+	else:
+		nEntries= all.GetEntries()
 	xSec= h.GetBinContent(1)/h.GetBinContent(2) 
 	
 	return (chain,nEntries,xSec) 
 	
+
+if opts.weight:
+	opts.cut = "mcWeight*(%s)"%opts.cut
 
 # Load Chains
 sigChains = []

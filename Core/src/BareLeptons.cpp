@@ -22,8 +22,8 @@ void BareLeptons::defineBranches(TTree*t){
 	p4 = new TClonesArray("TLorentzVector", 20);
 	t->Branch("lepP4","TClonesArray", &p4, 128000, 0);
 	//
-	pdgId = new vector<float>;
-	t->Branch("lepPdgId","vector<float>",&pdgId);
+	pdgId = new vector<int>;
+	t->Branch("lepPdgId","vector<int>",&pdgId);
 	//
 	iso = new vector<float>;
 	t->Branch("lepIso","vector<float>",&iso);
@@ -36,7 +36,11 @@ void BareLeptons::setBranchAddresses(TTree*t){
 
 	p4 = new TClonesArray("TLorentzVector", 20);
 	t->SetBranchAddress("lepP4"	, &p4	);
+	pdgId = new vector<int>;
 	t->SetBranchAddress("lepPdgId"	,&pdgId);
+	iso = new vector<float>;
 	t->SetBranchAddress("lepIso"	,&iso);
+	tightId = new vector<int>;
 	t->SetBranchAddress("lepTightId"	,&tightId);
 }
+

@@ -26,6 +26,7 @@ public:
 	vector<int>  *triggerJets;
 	vector<int>  *triggerTaus;
 	vector<int>  *triggerPhotons;
+
 };
 
 #endif

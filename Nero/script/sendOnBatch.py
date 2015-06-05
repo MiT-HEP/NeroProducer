@@ -17,8 +17,78 @@ sub_group = OptionGroup(parser, "Submit Options:","these options are used to sub
 sub_group.add_option("","--only-submit",dest="onlysubmit",action='store_true',help="submit all sh files in opts.dir. Igonere other options",default=False);
 sub_group.add_option("-j","--jobId",dest="jobId",type='string',help="Jobs to be submitted. \"all\" 1,2,7 or \"fail\" ",default="all");
 parser.add_option_group(sub_group)
+sub_group.add_option("-s","--status",dest="status",action='store_true',help="Display status of dir", default=False)
 
-(opts,args)=parser.parse_args()
+(opts,args) = parser.parse_args()
+
+def PrintLine(list):
+        ''' convert list in list of int number, sort and compress consecutive numbers. Then print the result:
+        4,5,8,3 -> 3-5,8
+        '''
+        nums = [ int(s) for s in list ]
+        nums.sort()
+        compress = []
+        last = None
+        blockinit = None
+
+        for n in nums:
+                #first if it is not consecutive
+                if last == None: ## INIT
+                        blockinit = n
+
+                elif last != n-1:
+                        #close a block and open a new one
+                        if last != blockinit:
+                                compress.append( str(blockinit) + "-" + str(last) )
+                        else:
+                                compress.append( str(last) )
+                        blockinit = n
+
+                last = n
+
+        #consider also the last number
+        #close a block and open a new one
+        if last != blockinit:
+                compress.append( str(blockinit) + "-" + str(last) )
+        else:
+                compress.append( str(last) )
+
+        return ",".join(compress)
+
+def PrintSummary(dir, doPrint=True):
+        ''' Print summary informations for dir'''
+        run  = glob(dir + "/*run")
+        fail = glob(dir + "/*fail")
+        done = glob(dir + "/*done")
+
+        ## bash color string
+        red="\033[01;31m"
+        green = "\033[01;32m"
+        yellow = "\033[01;33m"
+        white = "\033[00m"
+
+        run = [ re.sub('\.run','' , re.sub('.*/sub_','', r) ) for r in run ]
+        fail = [ re.sub('\.fail','' , re.sub('.*/sub_','', r) ) for r in fail ]
+        done = [ re.sub('\.done','' , re.sub('.*/sub_','', r) ) for r in done ]
+
+        tot = len(run) + len(fail) + len(done)
+
+        color = red
+        if len(run) > len(fail) and len(run) > len(done) : color= yellow
+        if len(done) == tot and tot >0 : color = green
+
+        if doPrint:
+                print " ----  Directory "+ color+opts.dir+white+" --------"
+                print " Run : " + yellow + "%3d"%len(run) + " / "  + str(tot) + white + " : " + PrintLine(run)  ### + ",".join(run)  + "|" 
+                print " Fail: " + red    + "%3d"%len(fail) + " / " + str(tot) + white + " : " + PrintLine(fail) ### + ",".join(fail) + "|" 
+                print " Done: " + green  + "%3d"%len(done) + " / " + str(tot) + white + " : " + PrintLine(done) ### + ",".join(done) + "|" 
+                print " -------------------------------------"
+
+        return ( done, run, fail)
+
+if opts.status:
+	PrintSummary(opts.dir)
+	exit(0)
 
 EOS = "/afs/cern.ch/project/eos/installation/0.3.84-aquamarine/bin/eos.select"
 
