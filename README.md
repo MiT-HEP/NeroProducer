@@ -19,6 +19,7 @@ NtuplE fRamewOrk
 ## Nero
 The Nero directory contains the ntuple producer. It is designed to run on MiniAOD within the CMSSW framework.
 
+
 ### CMSSW compile
 * Notice that cmssw should be init when the src directory is empty
 ```
@@ -37,8 +38,7 @@ scram b -j 16
 cd ${CMSSW_BASE}/src/NeroProducer/Skim
 scram b -j 16
 cd ${CMSSW_BASE}/src/NeroProducer/Core
-scram b -j 16
-```
+
 
 ### Crab submit
 ```

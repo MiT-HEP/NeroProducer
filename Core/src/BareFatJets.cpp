@@ -12,6 +12,10 @@ BareFatJets::BareFatJets(){
 	prunedMass = NULL;
 	filteredMass = NULL;
 	softdropMass = NULL;
+    ak8_subjet = NULL;
+    ak8jet_hasSubjet = NULL;
+    ak8subjet_btag = NULL;
+    
 }
 
 BareFatJets::~BareFatJets(){
@@ -29,6 +33,9 @@ void BareFatJets::clear(){
 	prunedMass -> clear();
 	filteredMass -> clear();
 	softdropMass -> clear();
+    ak8_subjet->Clear();
+    ak8subjet_btag ->clear();
+    ak8jet_hasSubjet->clear();
 }
 
 void BareFatJets::defineBranches(TTree *t){
@@ -58,6 +65,14 @@ void BareFatJets::defineBranches(TTree *t){
 	t->Branch("fatjetFilteredMass","vector<float>",&filteredMass);
 	softdropMass = new vector<float>;
 	t->Branch("fatjetSoftdropMass","vector<float>",&softdropMass);
+    
+    ak8_subjet = new TClonesArray("TLorentzVector", 20);
+    t->Branch("ak8_subjet","TClonesArray", &ak8_subjet, 128000, 0);
+    ak8jet_hasSubjet =  new vector<int>;
+    t->Branch("ak8jet_hasSubjet","vector<int>",&ak8jet_hasSubjet);
+    ak8subjet_btag =  new vector<float>;
+    t->Branch("ak8subjet_btag","vector<float>",&ak8subjet_btag);
+
 }
 
 void BareFatJets::setBranchAddresses(TTree *t){
@@ -87,4 +102,9 @@ void BareFatJets::setBranchAddresses(TTree *t){
 	t->SetBranchAddress("fatjetPrunedMass"	,&prunedMass);
 	t->SetBranchAddress("fatjetFilteredMass"	,&filteredMass);
 	t->SetBranchAddress("fatjetSoftdropMass"	,&softdropMass);
+
+	ak8_subjet = new TClonesArray("TLorentzVector", 20);
+	t->SetBranchAddress("ak8_subjet"	,&ak8_subjet);
+    t->SetBranchAddress("ak8jet_hasSubjet",&ak8jet_hasSubjet);
+    t->SetBranchAddress("ak8subjet_btag",&ak8subjet_btag);
 }

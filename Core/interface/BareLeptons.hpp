@@ -17,7 +17,7 @@ public:
 	vector<int>   *pdgId;	
 	vector<float> *iso;	
 	vector<int>   *tightId;	
-
+    	vector<float> *lepPfPt;
 };
 
 #endif

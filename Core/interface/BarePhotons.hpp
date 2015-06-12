@@ -18,6 +18,8 @@ public:
 	TClonesArray *p4;
 	vector<float> *sieie;
 	vector<float> *iso;
+    vector<int> *tightid;
+    vector<int> *mediumid;
 };
 
 #endif

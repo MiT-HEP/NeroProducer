@@ -24,7 +24,6 @@ public:
 	// -- variables
 	const reco::Vertex *pv_;	
 	const inline reco::Vertex* GetPV(){ return pv_ ; }
-
 };
 
 

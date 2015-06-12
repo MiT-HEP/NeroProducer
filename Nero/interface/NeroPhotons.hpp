@@ -18,7 +18,9 @@ public:
 	// --- Handle
 	edm::Handle<pat::PhotonCollection> handle;	
 
+	edm::Handle<edm::ValueMap<bool> > loose_id;  
 	edm::Handle<edm::ValueMap<bool> > medium_id;  
+	edm::Handle<edm::ValueMap<bool> > tight_id;  
 
 	edm::Handle<edm::ValueMap<float> > iso_ch;
 	edm::Handle<edm::ValueMap<float> > iso_nh;
@@ -26,7 +28,9 @@ public:
 
 	// --- Token
 	edm::EDGetTokenT<pat::PhotonCollection> token;
+	edm::EDGetTokenT<edm::ValueMap<bool> > loose_id_token;
 	edm::EDGetTokenT<edm::ValueMap<bool> > medium_id_token;
+	edm::EDGetTokenT<edm::ValueMap<bool> > tight_id_token;
 	edm::EDGetTokenT<edm::ValueMap<float> > iso_ch_token;
 	edm::EDGetTokenT<edm::ValueMap<float> > iso_nh_token;
 	edm::EDGetTokenT<edm::ValueMap<float> > iso_pho_token;

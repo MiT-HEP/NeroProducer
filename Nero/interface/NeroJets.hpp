@@ -14,7 +14,7 @@ public:
 	virtual inline string name(){return "NeroJets";};
 	
 	// --- specific fuctions
-	static bool JetId(const pat::Jet &);
+	static bool JetId(const pat::Jet &, string id);
 	// --- Handle
 	edm::Handle<pat::JetCollection> handle;	
 	edm::Handle<edm::ValueMap<float>> qg_handle;

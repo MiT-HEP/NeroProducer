@@ -11,10 +11,8 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 
-#fileList = [ "/store/mc/Spring14miniaod/WToTauNu_M_200_Tune4C_tauola_13TeV_pythia8/MINIAODSIM/PU20bx25_POSTLS170_V5-v1/00000/00100400-9007-E411-964D-0025905AC822.root",
-#	     "/store/mc/Spring14miniaod/WToTauNu_M_200_Tune4C_tauola_13TeV_pythia8/MINIAODSIM/PU20bx25_POSTLS170_V5-v1/00000/08194701-9007-E411-B181-0025905AC982.root",
-#	    ]
-fileList = []
+#fileList = ['/store/relval/CMSSW_7_4_1/RelValADDMonoJet_d3MD3_13/MINIAODSIM/MCRUN2_74_V9_gensim71X-v1/00000/80CF5456-B9EC-E411-93DA-002618FDA248.root']
+fileList = ['/store/relval/CMSSW_7_4_1/RelValProdTTbar_13/MINIAODSIM/MCRUN2_74_V9_gensim71X-v1/00000/0A9E2CED-C9EC-E411-A8E4-003048FFCBA8.root']
 
 
 ### do not remove the line below!
@@ -41,9 +39,8 @@ process.load('Configuration.StandardSequences.Services_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 #data
 #process.GlobalTag.globaltag = 'GR_R_52_V9::All'
-#mc
-process.GlobalTag.globaltag = 'PLS170_V7AN2::All'
-
+#mc https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions#Global_Tags_for_Run2_MC_Producti
+process.GlobalTag.globaltag = 'MCRUN2_74_V9::All'
 
 #-----------------------ELECTRON ID-------------------------------
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
