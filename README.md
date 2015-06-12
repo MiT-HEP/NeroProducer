@@ -38,7 +38,8 @@ scram b -j 16
 cd ${CMSSW_BASE}/src/NeroProducer/Skim
 scram b -j 16
 cd ${CMSSW_BASE}/src/NeroProducer/Core
-
+scram b -j 16
+```
 
 ### Crab submit
 ```
