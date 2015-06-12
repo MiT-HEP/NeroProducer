@@ -68,7 +68,6 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 		edm::RefToBase<pat::Electron> ref ( edm::Ref< pat::ElectronCollection >(el_handle, iEle) ) ;
 	
 		bool isPassVeto = (*el_veto_id)[ref];
-		bool isPassMedium = (*el_medium_id)[ref];
 		bool isPassTight = (*el_tight_id)[ref];
 		
 		//bool isPassLoose = (*el_loose_id)[ref];

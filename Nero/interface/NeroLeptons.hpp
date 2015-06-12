@@ -22,11 +22,7 @@ public:
 		TLorentzVector p4;
 		int tightId;
 		int pdgId;
-<<<<<<< HEAD
-		// ---
-=======
-        float pfPt;
->>>>>>> zeynep/master
+        	float pfPt;
 	};
 	
 	// to be setted by the vertex
