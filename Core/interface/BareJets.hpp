@@ -15,14 +15,16 @@ public:
 
 	// -- variables
 	// -- variables
-	TClonesArray *p4;
+	TClonesArray  *p4;
 	vector<float> *rawPt;
 	vector<float> *bDiscr;
 	vector<float> *puId;
 	vector<float> *unc;
 	vector<float> *qgl;
 	vector<int>   *flavour;
-
+    vector<bool>  *mjId;
+    vector<bool>  *mjId_loose;
+    
 };
 
 #endif

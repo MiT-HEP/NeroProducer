@@ -16,13 +16,14 @@ int NeroFatJets::analyze(const edm::Event& iEvent){
 	iEvent.getByToken(token, handle);
 
 	int ijetRef = -1;
+    int nsubjet = 0;
 	for (const pat::Jet& j : *handle)
 		{
 		ijetRef++;
-		if (j.pt() < 20 ) continue;
+		if (j.pt() < 100 ) continue;
 
 		// JET ID
-		if ( !NeroJets::JetId(j) ) continue;
+		if ( !NeroJets::JetId(j,"loose") ) continue;
 		
 		// GET  ValueMaps
 		
@@ -36,19 +37,19 @@ int NeroFatJets::analyze(const edm::Event& iEvent){
 		tau2 -> push_back(j.userFloat("NjettinessAK8:tau2"));
 		tau3 -> push_back(j.userFloat("NjettinessAK8:tau3"));
 
-		trimmedMass->push_back(j.userFloat("ak8PFJetsCHSTrimmedMass"));
-		prunedMass->push_back(j.userFloat("ak8PFJetsCHSPrunedMass"));
+		trimmedMass ->push_back(j.userFloat("ak8PFJetsCHSTrimmedMass"));
+		prunedMass  ->push_back(j.userFloat("ak8PFJetsCHSPrunedMass"));
 		filteredMass->push_back(j.userFloat("ak8PFJetsCHSFilteredMass"));
 		softdropMass->push_back(j.userFloat("ak8PFJetsCHSSoftDropMass"));
+        ak8jet_hasSubjet->push_back(j.hasSubjets("SoftDrop"));
 
-		// how do I save these guys :
-		// int nsubjet = 0;
-		// auto Subjets = j.subjets("SoftDrop");
-		// for ( auto const & sj : Subjets )
-		// 	{
-		// 	nsubjet++;
-		// 	}
-		
+        auto Subjets = j.subjets("SoftDrop");
+        for ( auto const & i : Subjets ) {
+            new ( (*ak8_subjet)[nsubjet]) TLorentzVector(i->px(), i->py(), i->pz(), i->energy());
+            ak8subjet_btag->push_back(i->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+            nsubjet++;
+        }
+        
 		}
 	return 0;
 }

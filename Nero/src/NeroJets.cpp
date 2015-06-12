@@ -10,8 +10,6 @@ NeroJets::NeroJets() : BareJets()
 NeroJets::~NeroJets(){
 }
 
-
-
 int NeroJets::analyze(const edm::Event& iEvent){
 
 	if ( mOnlyMc  ) return 0;
@@ -22,66 +20,73 @@ int NeroJets::analyze(const edm::Event& iEvent){
 
 	int ijetRef = -1;
 	for (const pat::Jet& j : *handle)
-		{
+	{
 		ijetRef++;
+
 		if (j.pt() < 20 ) continue;
 		if (j.pt() < mMinPt ) continue;
+		if ( fabs(j.eta()) > 2.5 ) continue;
 
 		// JET ID
-		if ( !JetId(j) ) continue;
-		
+		if ( !JetId(j,"loose") ) continue;
+
+		//0 < |eta| < 2.5: PUID > -0.63
+		if ( !(j.userFloat("pileupJetId:fullDiscriminant") > -0.63) ) continue;
+
 		// GET  ValueMaps
 		edm::RefToBase<pat::Jet> jetRef(edm::Ref<pat::JetCollection>(handle, ijetRef) );
-        	float qgLikelihood = (*qg_handle)[jetRef];
-		
+		float qgLikelihood = (*qg_handle)[jetRef];
+
 		// Fill output object	
-		//p4 -> AddLast(new TLorentzVector(j.px(), j.py(), j.pz(), j.energy())  );
 		new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(j.px(), j.py(), j.pz(), j.energy());
-		rawPt -> push_back (j.pt()*j.jecFactor("Uncorrected"));
-		puId -> push_back( j.userFloat("pileupJetId:fullDiscriminant") );
-        	bDiscr -> push_back( j.bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags") );
-        	qgl -> push_back( qgLikelihood );
-        	flavour -> push_back( j.partonFlavour() );
-		
-		}
+		rawPt  -> push_back (j.pt()*j.jecFactor("Uncorrected"));
+		puId   -> push_back (j.userFloat("pileupJetId:fullDiscriminant") );
+		bDiscr -> push_back( j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") );
+		qgl     -> push_back( qgLikelihood );
+		flavour -> push_back( j.partonFlavour() );
+		mjId       -> push_back( JetId(j,"monojet"));
+		mjId_loose -> push_back( JetId(j,"monojetloose"));
+	}
 
 	if ( int(rawPt -> size()) < mMinNjets ) return 1;
 
 	return 0;
 }
 
-bool NeroJets::JetId(const pat::Jet &j)
+bool NeroJets::JetId(const pat::Jet &j, std::string id)
 {
-	// 8TeV JetId recommended for 13 TeV
-	// May 2015
-   	float chf = j.chargedHadronEnergyFraction();
-        float nhf = j.neutralHadronEnergyFraction() + j.HFHadronEnergyFraction();
-        float phf = j.neutralEmEnergyFraction();
-        float elf = j.chargedEmEnergyFraction(); ;
-        float muf = j.muonEnergyFraction();
-        int chm   = j.chargedHadronMultiplicity();
-        int npr   = j.chargedMultiplicity() + j.neutralMultiplicity();
-		// put Twiki link!
+	// https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetID
+	//                              Loose -- Tight Jet ID
+	// --- Number of Constituents   > 1     > 1
+	// --- Neutral Hadron Fraction  < 0.99  < 0.90
+	// --- Neutral EM Fraction      < 0.99  < 0.90
+	// --- Muon Fraction    < 0.8   < 0.8
+	// --- And for -2.4 <= eta <= 2.4 in addition apply
+	// --- Charged Hadron Fraction  > 0     > 0
+	// --- Charged Multiplicity     > 0     > 0
+	// --- Charged EM Fraction      < 0.99  < 0.90 
 
-	        // Loose -- Tight Jet ID
-                // --- Number of Constituents   > 1     > 1
-                // --- Neutral Hadron Fraction  < 0.99  < 0.90
-                // --- Neutral EM Fraction      < 0.99  < 0.90
-                // --- Muon Fraction    < 0.8   < 0.8
-                // --- And for -2.4 <= eta <= 2.4 in addition apply
-                // --- Charged Hadron Fraction  > 0     > 0
-                // --- Charged Multiplicity     > 0     > 0
-                // --- Charged EM Fraction      < 0.99  < 0.90 
+	bool jetid = false;
 
-        if ( npr <= 1 ) return false;
-        if ( nhf >= 0.99 ) return false;
-        if ( phf >= 0.99 ) return false; // neutral EM
-        if ( muf >= 0.8 ) return false;
-        if ( fabs(j.eta()) <=2.4)
-                {
-                if ( chf <=0 ) return false;
-                if ( chm <=0 ) return false;
-                if ( elf <=0 ) return false;
-                }
-	return true;	
+	float NHF    = j.neutralHadronEnergyFraction();
+	float NEMF   = j.neutralEmEnergyFraction();
+	float CHF    = j.chargedHadronEnergyFraction();
+	float MUF    = j.muonEnergyFraction();
+	float CEMF   = j.chargedEmEnergyFraction();
+	int NumConst = j.chargedMultiplicity()+j.neutralMultiplicity();
+	int CHM      = j.chargedMultiplicity();
+
+	if (id=="loose")
+		jetid = (NHF<0.99 && NEMF<0.99 && NumConst>1 && MUF<0.8) && ((fabs(j.eta())<=2.4 && CHF>0 && CHM>0 && CEMF<0.99) || fabs(j.eta())>2.4);
+
+	if (id=="tight")
+		jetid = (NHF<0.90 && NEMF<0.90 && NumConst>1 && MUF<0.8) && ((fabs(j.eta())<=2.4 && CHF>0 && CHM>0 && CEMF<0.90) || fabs(j.eta())>2.4);
+
+	if (id=="monojet")
+		jetid = (CHF > 0.2 && NHF < 0.7 && NEMF < 0.7);
+
+	if (id=="monojetloose")
+		jetid = (NHF < 0.7 && NEMF < 0.9);
+
+	return jetid;
 }

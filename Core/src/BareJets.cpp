@@ -1,12 +1,14 @@
 #include "NeroProducer/Core/interface/BareJets.hpp"
 
 BareJets::BareJets(){
-	p4 = NULL;
-	rawPt = NULL;
-	puId = NULL;
-	unc = NULL;
-	qgl = NULL;
+	p4      = NULL;
+	rawPt   = NULL;
+	puId    = NULL;
+	unc     = NULL;
+	qgl     = NULL;
 	flavour = NULL;
+    mjId    = NULL;
+    mjId_loose  = NULL;
 }
 
 BareJets::~BareJets(){}
@@ -21,6 +23,8 @@ void BareJets::clear(){
 	unc -> clear();
 	qgl -> clear();
 	flavour -> clear();
+    mjId -> clear();
+    mjId_loose -> clear();
 }
 
 void BareJets::defineBranches(TTree *t){
@@ -45,6 +49,12 @@ void BareJets::defineBranches(TTree *t){
 	// -- Jet Flavour by PAT
 	flavour = new vector<int>;
 	t->Branch("jetFlavour","vector<int>",&flavour);
+
+	mjId = new vector<bool>;
+	t->Branch("jetMonojetId","vector<bool>",&mjId);
+
+	mjId_loose = new vector<bool>;
+	t->Branch("jetMonojetIdLoose","vector<bool>",&mjId_loose);
 }
 
 void BareJets::setBranchAddresses(TTree*t)
@@ -63,4 +73,8 @@ void BareJets::setBranchAddresses(TTree*t)
 	t->SetBranchAddress("jetQGL"	,&qgl);
 	flavour = new vector<int>;
 	t->SetBranchAddress("jetFlavour"	,&flavour);
+	mjId= new vector<bool>;
+    	t->SetBranchAddress("jetMonojetId", &mjId);
+	mjId_loose= new vector<bool>;
+    	t->SetBranchAddress("jetMonojetIdLoose", &mjId_loose);
 }

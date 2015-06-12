@@ -5,6 +5,7 @@ BareLeptons::BareLeptons(){
 	pdgId = NULL;
 	iso = NULL;
 	tightId = NULL;
+    lepPfPt = NULL;
 }
 
 BareLeptons::~BareLeptons(){
@@ -15,6 +16,7 @@ void BareLeptons::clear(){
 	pdgId -> clear();
 	iso -> clear();
 	tightId ->clear();
+    lepPfPt->clear();    
 }
 
 void BareLeptons::defineBranches(TTree*t){
@@ -30,6 +32,10 @@ void BareLeptons::defineBranches(TTree*t){
 	//
 	tightId = new vector<int>;
 	t->Branch("lepTightId","vector<int>",&tightId);
+    //
+	lepPfPt = new vector<float>;
+	t->Branch("lepPfPt","vector<float>",&lepPfPt);
+
 }
 
 void BareLeptons::setBranchAddresses(TTree*t){
@@ -42,5 +48,7 @@ void BareLeptons::setBranchAddresses(TTree*t){
 	t->SetBranchAddress("lepIso"	,&iso);
 	tightId = new vector<int>;
 	t->SetBranchAddress("lepTightId"	,&tightId);
+	t->SetBranchAddress("lepPfPt"	,&lepPfPt);
+
 }
 

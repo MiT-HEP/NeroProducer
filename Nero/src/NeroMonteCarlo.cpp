@@ -138,8 +138,17 @@ int NeroMonteCarlo::crossSection(edm::Run const & iRun, TH1F* h)
 	cout<<"in begin Run  intXS/extXSLO/extXSNLO "<<runinfo_handle->internalXSec().value()<<"/"<<runinfo_handle->externalXSecLO().value()<<"/"<<runinfo_handle->externalXSecNLO().value()<<endl;	
 
 	// Internal xSec =  h(0) / h(1) 
-  	h->Fill(0. ,runinfo_handle->internalXSec().value()/pow(runinfo_handle->internalXSec().error(),2)    );
-  	h->Fill(1 ,1./pow(runinfo_handle->internalXSec().error(),2) );
+	if ( runinfo_handle->internalXSec().error() != 0 )
+		{
+	  	h->Fill(0. ,runinfo_handle->internalXSec().value()/pow(runinfo_handle->internalXSec().error(),2)    );
+	  	h->Fill(1 ,1./pow(runinfo_handle->internalXSec().error(),2) );
+		}
+	else 
+		{
+		cout <<" Warning: ERROR on xSec is 0. Setting it to 1"<<endl;
+	  	h->Fill(0. ,runinfo_handle->internalXSec().value()    );
+	  	h->Fill(1 ,1.);
+		}
   	
 	// External xSec =  h(2) / h(3) 
   	h->Fill(2 ,runinfo_handle->externalXSecLO().value()/pow(runinfo_handle->externalXSecLO().error(),2)  );

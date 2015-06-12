@@ -15,12 +15,18 @@ int NeroTaus::analyze(const edm::Event & iEvent)
 
 	iEvent.getByToken(token, handle);
 	 for (const pat::Tau &tau : *handle) {
-		 if (tau.pt() <20 ) continue;	
+
+		 if (tau.pt() <18 ) continue;	
 		 if (tau.pt() <mMinPt ) continue;	
 	
 	 	 //float trkIso = isolationTracksPtSum ();
 		 //bool Tau::ExistIsolationCands 	( ) 	const
 		 //reco::CandidatePtrVector Tau::isolationGammaCands () const
+         
+		if ( fabs(tau.eta()) > 2.3 ) continue;
+         	if ( tau.tauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") >= 5 ) continue;
+         	if ( !(tau.tauID("decayModeFinding") ) ) continue;
+
 		 float phoIso = 0.; for(auto cand : tau.isolationGammaCands() ) phoIso += cand->pt();//tau.isolationPFGammaCandsEtSum() ;
 		 float chIso  = 0.; for(auto cand : tau.isolationChargedHadrCands() ) chIso += cand->pt();//tau.isolationPFChargedHadrCandsPtSum();
 		 float nhIso  = 0.; for(auto cand : tau.isolationNeutrHadrCands() ) nhIso += cand->pt(); // PF Cands not exists in miniAOD

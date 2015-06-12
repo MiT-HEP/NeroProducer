@@ -22,7 +22,7 @@ public:
 		TLorentzVector p4;
 		int tightId;
 		int pdgId;
-		// ---
+        	float pfPt;
 	};
 	
 	// to be setted by the vertex
@@ -34,6 +34,7 @@ public:
 	// Token
 	edm::EDGetTokenT<pat::MuonCollection> mu_token;
 	edm::EDGetTokenT<pat::ElectronCollection> el_token;
+	edm::EDGetTokenT<edm::ValueMap<bool> > 	el_vetoid_token;
 	edm::EDGetTokenT<edm::ValueMap<bool> > 	el_mediumid_token;
 	edm::EDGetTokenT<edm::ValueMap<bool> > 	el_tightid_token;
 
@@ -44,6 +45,7 @@ public:
 	// Handle
 	edm::Handle<pat::MuonCollection> mu_handle;
 	edm::Handle<pat::ElectronCollection> el_handle;
+	edm::Handle<edm::ValueMap<bool> > el_veto_id;
 	edm::Handle<edm::ValueMap<bool> > el_medium_id;
 	edm::Handle<edm::ValueMap<bool> > el_tight_id;
 

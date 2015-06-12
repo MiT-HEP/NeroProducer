@@ -15,7 +15,7 @@ public:
 	virtual inline string name(){return "BareFatJets";};
 
 	// -- variables
-	TClonesArray *p4;
+	TClonesArray  *p4;
 	vector<float> *rawPt;
 	vector<int>   *flavour;
 	vector<float> *tau1;
@@ -26,6 +26,11 @@ public:
 	vector<float> *prunedMass;
 	vector<float> *filteredMass;
 	vector<float> *softdropMass;
+
+    TClonesArray  *ak8_subjet;
+    vector<int>   *ak8jet_hasSubjet;
+    vector<float> *ak8subjet_btag;
+
 
 };
 
