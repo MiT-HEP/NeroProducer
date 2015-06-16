@@ -5,6 +5,8 @@ NeroJets::NeroJets() : BareJets()
 {
 	mMinPt = 20.;
 	mMinNjets = 0;
+    mMinEta = 2.5;
+    mMinId = "loose";
 }
 
 NeroJets::~NeroJets(){
@@ -23,12 +25,9 @@ int NeroJets::analyze(const edm::Event& iEvent){
 	{
 		ijetRef++;
 
-		if (j.pt() < 20 ) continue;
 		if (j.pt() < mMinPt ) continue;
-		if ( fabs(j.eta()) > 2.5 ) continue;
-
-		// JET ID
-		if ( !JetId(j,"loose") ) continue;
+		if ( fabs(j.eta()) > mMinEta ) continue;
+		if ( !JetId(j,mMinId) ) continue;
 
 		//0 < |eta| < 2.5: PUID > -0.63
 		if ( !(j.userFloat("pileupJetId:fullDiscriminant") > -0.63) ) continue;

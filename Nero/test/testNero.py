@@ -11,8 +11,8 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 
-#fileList = ['/store/relval/CMSSW_7_4_1/RelValADDMonoJet_d3MD3_13/MINIAODSIM/MCRUN2_74_V9_gensim71X-v1/00000/80CF5456-B9EC-E411-93DA-002618FDA248.root']
-fileList = ['/store/relval/CMSSW_7_4_1/RelValProdTTbar_13/MINIAODSIM/MCRUN2_74_V9_gensim71X-v1/00000/0A9E2CED-C9EC-E411-A8E4-003048FFCBA8.root']
+fileList = ['/store/relval/CMSSW_7_4_1/RelValADDMonoJet_d3MD3_13/MINIAODSIM/MCRUN2_74_V9_gensim71X-v1/00000/80CF5456-B9EC-E411-93DA-002618FDA248.root']
+#fileList = ['/store/relval/CMSSW_7_4_1/RelValProdTTbar_13/MINIAODSIM/MCRUN2_74_V9_gensim71X-v1/00000/0A9E2CED-C9EC-E411-A8E4-003048FFCBA8.root']
 
 
 ### do not remove the line below!
@@ -77,6 +77,8 @@ process.load("RecoEgamma/ElectronIdentification/ElectronIDValueMapProducer_cfi")
 process.load('NeroProducer.Skim.infoProducerSequence_cff')
 
 process.load('NeroProducer.Nero.Nero_cfi')
+process.load('NeroProducer.Nero.NeroMonojet_cfi')
+#process.load('NeroProducer.Nero.NeroChargedHiggs_cfi')
 
 #------------------------------------------------------
 process.p = cms.Path(

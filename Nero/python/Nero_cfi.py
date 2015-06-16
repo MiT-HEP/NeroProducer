@@ -30,25 +30,42 @@ nero = cms.EDAnalyzer("Nero",
     phoNeutralHadronIsolation = cms.InputTag("photonIDValueMapProducer:phoNeutralHadronIsolation"),
     phoPhotonIsolation = cms.InputTag("photonIDValueMapProducer:phoPhotonIsolation"),
     #
-    ## eleChargedIsolation = cms.InputTag("electronIDValueMapProducer:eleChargedIsolation"),
-    ## eleNeutralHadronIsolation = cms.InputTag("electronIDValueMapProducer:eleNeutralHadronIsolation"),
-    ## elePhotonIsolation = cms.InputTag("electronIDValueMapProducer:elePhotonIsolation"),
     ## TRIGGER
-    triggerNames = cms.vstring(['HLT_Mu17_Mu8','HLT_Ele17_Ele8','HLT_Ele17']),
+    triggerNames = cms.vstring(['HLT_PFMET170_NoiseCleaned',
+                                'HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight']),
     prescales = cms.InputTag('patTrigger'),
     trigger = cms.InputTag("TriggerResults","","HLT"),
     objects = cms.InputTag('selectedPatTrigger'),
     ## CUSTOM CONFIGURATION
     onlyMc = cms.bool (False),  ## not completely supported yet
-    minJetPt = cms.double (20.),
-    minJetN = cms.int32 (0),
-    minLepPt = cms.double (20.),
-    minLepN = cms.int32 (0),
-    minTauPt = cms.double (20.),
-    minTauN = cms.int32 (0),
+
+    minJetPt  = cms.double (30.),
+    minJetEta = cms.double (2.5),
+    minJetN   = cms.int32  (0),
+    minJetId  = cms.string ('loose'),
+
+    minElePt  = cms.double (10.),
+    minEleEta = cms.double (2.5),
+    maxEleIso = cms.double (-1.),
+
+    minMuPt   = cms.double (10.),
+    minMuEta  = cms.double (2.4),
+    maxMuIso  = cms.double (0.2),
+   
+    minLepN   = cms.int32 (0),
+
+    minTauPt  = cms.double (18.),
+    minTauEta = cms.double (2.3),
+    minTauN   = cms.int32  (0),
+    minTauId  = cms.string ('decayModeFinding'),
+    maxTauIso = cms.double (-1.),
+
     minGenParticlePt = cms.double(5.),
     minGenJetPt = cms.double(20.),
-    minPhoPt = cms.double (20.),
+                      
+    minPhoPt  = cms.double (15.),
+    minPhoEta = cms.double (2.5),
+    minPhoN   = cms.int32  (0),
     maxPhoIso = cms.double (-1.),
 )
 #------------------------------------------------------

@@ -31,7 +31,7 @@
 #include "NeroProducer/Nero/interface/NeroTrigger.hpp"
 
 
-#define VERBOSE 0
+#define VERBOSE 1
 
 //
 // constants, enums and typedefs
@@ -68,7 +68,9 @@ Nero::Nero(const edm::ParameterSet& iConfig)
    jets -> qg_token = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "qgLikelihood"));
    jets -> mMinPt = iConfig.getParameter<double>("minJetPt");
    jets -> mMinNjets = iConfig.getParameter<int>("minJetN");
-
+   jets -> mMinEta = iConfig.getParameter<double>("minJetEta");
+   jets -> mMinId = iConfig.getParameter<string>("minJetId");
+   
    obj.push_back(jets);
 
    // --- 
@@ -77,6 +79,9 @@ Nero::Nero(const edm::ParameterSet& iConfig)
    taus -> token = consumes<pat::TauCollection>(iConfig.getParameter<edm::InputTag>("taus"));
    taus -> mMinPt = iConfig.getParameter<double>("minTauPt");
    taus -> mMinNtaus = iConfig.getParameter<int>("minTauN");
+   taus -> mMinEta = iConfig.getParameter<double>("minTauEta");
+   taus -> mMinId = iConfig.getParameter<string>("minTauId");
+   taus -> mMaxIso = iConfig.getParameter<double>("maxTauIso");
    obj.push_back(taus);
 
    //--
@@ -93,8 +98,16 @@ Nero::Nero(const edm::ParameterSet& iConfig)
    //leps -> el_iso_nh_token  = consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("eleNeutralHadronIsolation") );
    //leps -> el_iso_pho_token = consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("elePhotonIsolation") );
    //
-   leps -> mMinPt = iConfig.getParameter<double>("minLepPt");
+   leps -> mMinPt_mu = iConfig.getParameter<double>("minMuPt");
+   leps -> mMinEta_mu = iConfig.getParameter<double>("minMuEta");
+   leps -> mMaxIso_mu = iConfig.getParameter<double>("maxMuIso");
+
+   leps -> mMinPt_el = iConfig.getParameter<double>("minElePt");
+   leps -> mMinEta_el = iConfig.getParameter<double>("minEleEta");
+   leps -> mMaxIso_el = iConfig.getParameter<double>("maxEleIso");
+
    leps -> mMinNleptons = iConfig.getParameter<int>("minLepN");
+
    obj. push_back(leps);
 
    //--
@@ -121,6 +134,9 @@ Nero::Nero(const edm::ParameterSet& iConfig)
    phos -> iso_pho_token = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>("phoPhotonIsolation"));
    phos -> mMinPt = iConfig.getParameter<double>("minPhoPt");
    phos -> mMaxIso = iConfig.getParameter<double>("maxPhoIso");
+   phos -> mMinNpho = iConfig.getParameter<int>("minPhoN");
+   phos -> mMinEta = iConfig.getParameter<double>("minPhoEta");
+
    obj.push_back(phos);
 
    NeroMonteCarlo *mc = new NeroMonteCarlo();

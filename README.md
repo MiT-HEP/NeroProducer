@@ -41,6 +41,18 @@ cd ${CMSSW_BASE}/src/NeroProducer/Core
 scram b -j 16
 ```
 
+### How to Run
+```
+cd NeroProducer/Nero/test
+cmsRun testNero.py
+```
+
+To check the simple cut flow for the monojet analysis
+```
+cd NeroProducer/Nero/scripts
+./cutflow.py -f FILENAME -n NUMBEROFEVENTS
+```
+
 ### Crab submit
 ```
 cd NeroProducer/Nero/test

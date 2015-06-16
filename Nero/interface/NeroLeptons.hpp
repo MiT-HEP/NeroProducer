@@ -22,7 +22,7 @@ public:
 		TLorentzVector p4;
 		int tightId;
 		int pdgId;
-        	float pfPt;
+        float pfPt;
 	};
 	
 	// to be setted by the vertex
@@ -54,9 +54,15 @@ public:
 	//edm::Handle<edm::ValueMap<float> > el_iso_pho;
 
 	//configuration
-	float mMinPt;
-	int   mMinNleptons;
+	float mMinPt_el;
+    float mMinEta_el;
+    float mMaxIso_el;
 
+	float mMinPt_mu;
+    float mMinEta_mu;
+    float mMaxIso_mu;
+
+    int mMinNleptons;
 };
 
 

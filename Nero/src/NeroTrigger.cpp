@@ -79,8 +79,8 @@ int NeroTrigger::analyze(const edm::Event& iEvent){
 			//else if ( obj.filterIds()[h] == trigger::TriggerMET ) isMet=true;
 		}
 		std::vector<std::string> pathNamesAll  = obj.pathNames(false);
-        	std::vector<std::string> pathNamesLast = obj.pathNames(true);
-
+        std::vector<std::string> pathNamesLast = obj.pathNames(true);
+            
 		// match : if more than one ? best
 		if(VERBOSE)cout<<"[NeroTrigger]::[analize] Matching"<<endl;
 

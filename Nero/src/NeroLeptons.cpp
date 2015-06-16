@@ -3,9 +3,18 @@
 
 // -- Electron Isolation
 NeroLeptons::NeroLeptons(): BareLeptons(){
-	vtx_ = NULL;
-	mMinPt= 20;
-	mMinNleptons = 0;
+	vtx_   = NULL;
+
+    mMinPt_mu = 10;
+    mMinEta_mu = 2.4;
+    mMaxIso_mu = 0.2;
+
+    mMinPt_el = 10;
+    mMinEta_el = 2.5;
+    mMaxIso_el = -1.;
+
+    mMinNleptons = 0;    
+
 }
 
 NeroLeptons::~NeroLeptons(){
@@ -29,29 +38,21 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 	
 	for (const pat::Muon &mu : *mu_handle) {
 		// selection
-		if (mu.pt() < 10 || !mu.isLooseMuon()) continue; 
-		if (mu.pt() < mMinPt ) continue;
-		if (fabs(mu.eta()) > 2.4 ) continue;  // TODO Make me configurable
-		//value map
-		//fill
-        
-        //Muon Corrected MET add back: muon.pfP4().pt() 
-    
-
-
+        if (mu.pt() < 10 ) continue;
+		if (mu.pt() < mMinPt_mu || fabs(mu.eta()) > mMinEta_mu || !mu.isLooseMuon()) continue; 
         float chiso  = mu.pfIsolationR04().sumChargedHadronPt;
         float niso   = mu.pfIsolationR04().sumNeutralHadronEt;
         float phoiso = mu.pfIsolationR04().sumPhotonEt;
 		float totiso = chiso + niso + phoiso;
 
-        if ( totiso/mu.pt() > 0.2 ) continue;
+        if ( totiso/mu.pt() > mMaxIso_mu ) continue;
 
 		myLepton l;
 		l.pdgId = mu.charge()*13;
 		l.iso = totiso;
 		l.p4.SetPxPyPzE( mu.px(),mu.py(),mu.pz(),mu.energy());
 		l.tightId = int(mu.isTightMuon( * vtx_->GetPV() ));
-        	l.pfPt = mu.pfP4().pt();
+        l.pfPt = mu.pfP4().pt();
 		leptons.push_back(l);
 	}
 	
@@ -60,19 +61,15 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 	for (const pat::Electron &el : *el_handle)
 	{
 		iEle ++;
-		if ( el.pt() <10 ) continue;
-		if ( el.pt() < mMinPt ) continue;
-		if ( fabs(el.eta()) > 2.5 ) continue; // TODO make me config
-		if ( not el.passConversionVeto() ) continue;  // ve
+
+		if ( el.pt() < 10 ) continue;
+        if ( el.pt() < mMinPt_el || fabs(el.eta()) > mMinEta_el ) continue;
+        if ( not el.passConversionVeto() ) continue;  // ve
 		
 		edm::RefToBase<pat::Electron> ref ( edm::Ref< pat::ElectronCollection >(el_handle, iEle) ) ;
 	
 		bool isPassVeto = (*el_veto_id)[ref];
 		bool isPassTight = (*el_tight_id)[ref];
-		
-		//bool isPassLoose = (*el_loose_id)[ref];
-		//bool isPassMedium = (*el_medium_id)[ref];
-		//
 		
 		if (not isPassVeto ) continue;
 		
@@ -92,6 +89,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 	}
 
 	if ( int(leptons.size()) < mMinNleptons ) return 1;
+
 	// sort leptons
 	sort( leptons.begin(),leptons.end() , [](const myLepton &x, const myLepton&y){ return x.p4.Pt() > y.p4.Pt();} );
 
@@ -102,7 +100,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 		iso     -> push_back(l.iso);
 		tightId -> push_back(l.tightId);
 		pdgId   -> push_back(l.pdgId);
-       	 	lepPfPt -> push_back(l.pfPt);
+       	lepPfPt -> push_back(l.pfPt);
 	}
 	return 0;
 }

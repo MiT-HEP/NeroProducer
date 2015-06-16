@@ -26,6 +26,8 @@ public:
 	// --- configuration
 	float mMinPt;
 	int   mMinNjets;
+    float mMinEta;
+    string mMinId;
 
 };
 
