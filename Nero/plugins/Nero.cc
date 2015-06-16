@@ -31,7 +31,7 @@
 #include "NeroProducer/Nero/interface/NeroTrigger.hpp"
 
 
-#define VERBOSE 1
+#define VERBOSE 0
 
 //
 // constants, enums and typedefs
