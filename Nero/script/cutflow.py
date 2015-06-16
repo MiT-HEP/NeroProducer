@@ -5,8 +5,12 @@ import sys
 from optparse import OptionParser
 # Get all the root classes
 from ROOT import *
+from math import *
+
+gROOT.ProcessLine(".x functions.C");
 
 # - M A I N ----------------------------------------------------------------------------------------
+# Usage: ./cutflow.py -f ROOTFILE -n NUMBEROFEVENTS
 
 # Prepare the command line parser
 parser = OptionParser()
@@ -35,9 +39,8 @@ else:
   print 'ERROR - Cannot open root tree: ' + options.input_tree + ' , exiting!'
   raise SystemExit
 
-
 #initialize 
-n_jet=0; n_met=0; n_njet=0; n_nlep=0; n_ntau=0; n_npho=0;
+n_jet=0; n_met=0; n_njet=0; n_nlep=0; n_ntau=0; n_npho=0; n_dphi=0;n_2ndjet=0;
 
 # Check the number of entries in the tree
 n_entries = input_tree.GetEntriesFast()
@@ -53,24 +56,42 @@ print 'INFO - Number of entries to be processed: ' + str(n_entries)
 for ientry in range(0,n_entries):
   # Grab the n'th entry
   input_tree.GetEntry(ientry)
+
+  #print deltaPhi(input_tree.jetP4[0].Phi(),input_tree.jetP4[1].Phi() )
   #print 'INFO ------------------------ Event '+str(ientry)+' ------------------------ '
+
+  dphi = -10000.
+  
+  if(input_tree.jetP4.GetEntriesFast() > 1 and input_tree.jetP4[0].Pt() > 110 and input_tree.jetMonojetId[0] and input_tree.jetMonojetIdLoose[1]) : # and input_tree.jetPuId() > -0.62) : 
+    dphi = deltaPhi( input_tree.jetP4[0].Phi(),input_tree.jetP4[1].Phi() )
+  else:
+     if (input_tree.jetP4.GetEntriesFast() < 2):
+       dphi= -99.999
+     else:
+       dphi = -10000.
+
   if (input_tree.jetP4.GetEntriesFast() > 0 and input_tree.jetP4[0].Pt() > 110 and input_tree.jetMonojetId[0]):
     n_jet += 1
-    if(input_tree.metP4[0].Energy() > 200 ):  
-      n_met += 1
-      if(input_tree.jetP4.GetEntriesFast() < 4): 
-        n_njet += 1
-        if(input_tree.lepP4.GetEntriesFast() < 1): 
-          n_nlep += 1
-          if(input_tree.tauP4.GetEntriesFast() < 1): 
-            n_ntau += 1
-            if(input_tree.photonP4.GetEntriesFast() < 1):
-              n_npho += 1
-
+    if (input_tree.jetP4.GetEntriesFast() == 1 or (input_tree.jetP4.GetEntriesFast() > 1 and input_tree.jetMonojetIdLoose[1])):
+      n_2ndjet += 1
+      if( fabs(dphi) < 2.5  or dphi == -99.999 ):
+        n_dphi += 1
+        if(input_tree.metP4[0].Energy() > 200 ):  
+          n_met += 1
+          if(input_tree.jetP4.GetEntriesFast() < 3): 
+            n_njet += 1
+            if(input_tree.lepP4.GetEntriesFast() < 1): 
+              n_nlep += 1
+              if(input_tree.tauP4.GetEntriesFast() < 1): 
+                n_ntau += 1
+                if(input_tree.photonP4.GetEntriesFast() < 1):
+                  n_npho += 1
 
 print 'INFO - Cut Flow Chart: '
 print 'INFO - Full     '+ str(n_entries)
 print 'INFO - Jet Cut  '+ str(n_jet)
+print 'INFO - 2_j Cut  '+ str(n_2ndjet)
+print 'INFO - Phi Cut  '+ str(n_dphi)
 print 'INFO - Met Cut  '+ str(n_met)
 print 'INFO - NJet Cut '+ str(n_njet)
 print 'INFO - NLep Cut '+ str(n_nlep)

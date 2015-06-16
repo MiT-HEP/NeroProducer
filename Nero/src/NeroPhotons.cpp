@@ -2,8 +2,11 @@
 #include "NeroProducer/Nero/interface/Nero.hpp"
 
 NeroPhotons::NeroPhotons() : BarePhotons(){
-	mMinPt=20.;
-	mMaxIso=-1.;
+
+    mMinPt = 15;
+    mMaxIso = -1;
+    mMinNpho = 0;
+    mMinEta = 2.5;
 }
 
 NeroPhotons::~NeroPhotons(){
@@ -31,7 +34,7 @@ int NeroPhotons::analyze(const edm::Event& iEvent){
 	++iPho;
 
 	if (pho.pt() <15 or pho.chargedHadronIso()/pho.pt() > 0.3) continue;		
-    	if (fabs(pho.eta()) > 2.5 ) continue;// TODO configurable
+    if (fabs(pho.eta()) > mMinEta ) continue;
 	if (pho.pt() < mMinPt) continue;
 
 	edm::RefToBase<pat::Photon> ref ( edm::Ref< pat::PhotonCollection >(handle, iPho) ) ;
@@ -39,12 +42,12 @@ int NeroPhotons::analyze(const edm::Event& iEvent){
 	float nhIso =  (*iso_nh) [ref];
 	float phIso =  (*iso_pho)[ref];	
 	float totIso = chIso + nhIso + phIso;
-    	bool isPassLoose  = (*loose_id)[ref];	
+
+    bool isPassLoose  = (*loose_id)[ref];	
 	bool isPassMedium = (*medium_id)[ref];	
-    	bool isPassTight  = (*tight_id)[ref];	
+    bool isPassTight  = (*tight_id)[ref];	
 
 	if (not isPassLoose) continue;
-
 	if (mMaxIso >=0 and totIso > mMaxIso) continue;
 	
 	//FILL

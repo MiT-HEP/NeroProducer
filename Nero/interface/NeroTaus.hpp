@@ -22,6 +22,9 @@ public:
 	// --- configuration
 	float mMinPt;
 	int   mMinNtaus;
+    float mMinEta;
+    string mMinId;
+    float mMaxIso;
 };
 
 
