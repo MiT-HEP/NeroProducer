@@ -48,6 +48,7 @@ void BareLeptons::setBranchAddresses(TTree*t){
 	t->SetBranchAddress("lepIso"	,&iso);
 	tightId = new vector<int>;
 	t->SetBranchAddress("lepTightId"	,&tightId);
+	lepPfPt = new vector<float>;
 	t->SetBranchAddress("lepPfPt"	,&lepPfPt);
 
 }
