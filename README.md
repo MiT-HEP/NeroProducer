@@ -23,8 +23,8 @@ The Nero directory contains the ntuple producer. It is designed to run on MiniAO
 ### CMSSW compile
 * Notice that cmssw should be init when the src directory is empty
 ```
-cmsrel CMSSW_7_4_2
-cd CMSSW_7_4_2/src
+cmsrel CMSSW_7_4_5
+cd CMSSW_7_4_5/src
 cmsenv
 wget --no-check-certificate 'https://raw.githubusercontent.com/MiT-HEP/NeroProducer/master/Nero/script/setup.sh' -O /tmp/$USER/setup.sh
 source /tmp/$USER/setup.sh
