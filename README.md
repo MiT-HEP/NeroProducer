@@ -52,6 +52,7 @@ To check the simple cut flow for the monojet analysis
 cd NeroProducer/Nero/scripts
 ./cutflow.py -f FILENAME -n NUMBEROFEVENTS
 ```
+The numbers should match: https://twiki.cern.ch/twiki/bin/view/CMS/DMS13TeVSynch
 
 ### Crab submit
 ```
