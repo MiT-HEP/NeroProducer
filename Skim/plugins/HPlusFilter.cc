@@ -5,10 +5,10 @@
 // 
 /**\class HPlusFilter HPlusFilter.cc NeroProducer/HPlusFilter/plugins/HPlusFilter.cc
 
- Description: [one line class summary]
+Description: [one line class summary]
 
- Implementation:
-     [Notes on implementation]
+Implementation:
+[Notes on implementation]
 */
 //
 // Original Author:  Andrea Carlo Marini
@@ -45,31 +45,31 @@
 //
 
 class HPlusFilter : public edm::EDFilter {
-   public:
-      explicit HPlusFilter(const edm::ParameterSet&);
-      ~HPlusFilter();
+    public:
+        explicit HPlusFilter(const edm::ParameterSet&);
+        ~HPlusFilter();
 
-      static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
+        static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
-   private:
-      virtual void beginJob() override;
-      virtual bool filter(edm::Event&, const edm::EventSetup&) override;
-      virtual void endJob() override;
-      
-      //virtual void beginRun(edm::Run const&, edm::EventSetup const&) override;
-      //virtual void endRun(edm::Run const&, edm::EventSetup const&) override;
-      //virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
-      //virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
+    private:
+        virtual void beginJob() override;
+        virtual bool filter(edm::Event&, const edm::EventSetup&) override;
+        virtual void endJob() override;
 
-      // ----------member data ---------------------------
-	edm::EDGetTokenT<pat::TauCollection> tau_token ;	
-	edm::Handle<pat::TauCollection> tau_handle;
-	//
-	edm::EDGetTokenT<pat::MuonCollection> mu_token;
-	edm::Handle<pat::MuonCollection> mu_handle;
-	//
-	edm::EDGetTokenT<pat::ElectronCollection> el_token;
-	edm::Handle<pat::ElectronCollection> el_handle;
+        //virtual void beginRun(edm::Run const&, edm::EventSetup const&) override;
+        //virtual void endRun(edm::Run const&, edm::EventSetup const&) override;
+        //virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
+        //virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
+
+        // ----------member data ---------------------------
+        edm::EDGetTokenT<pat::TauCollection> tau_token ;	
+        edm::Handle<pat::TauCollection> tau_handle;
+        //
+        edm::EDGetTokenT<pat::MuonCollection> mu_token;
+        edm::Handle<pat::MuonCollection> mu_handle;
+        //
+        edm::EDGetTokenT<pat::ElectronCollection> el_token;
+        edm::Handle<pat::ElectronCollection> el_handle;
 };
 
 //
@@ -84,20 +84,20 @@ class HPlusFilter : public edm::EDFilter {
 // constructors and destructor
 //
 HPlusFilter::HPlusFilter(const edm::ParameterSet& iConfig):
-	tau_token( consumes<pat::TauCollection>(iConfig.getParameter<edm::InputTag>("taus")) ),
-	mu_token(  consumes<pat::MuonCollection>(iConfig.getParameter<edm::InputTag>("muons")) ),
-	el_token(  consumes<pat::ElectronCollection>(iConfig.getParameter<edm::InputTag>("electrons")) )
+    tau_token( consumes<pat::TauCollection>(iConfig.getParameter<edm::InputTag>("taus")) ),
+    mu_token(  consumes<pat::MuonCollection>(iConfig.getParameter<edm::InputTag>("muons")) ),
+    el_token(  consumes<pat::ElectronCollection>(iConfig.getParameter<edm::InputTag>("electrons")) )
 {
-   //now do what ever initialization is needed
+    //now do what ever initialization is needed
 
 }
 
 
 HPlusFilter::~HPlusFilter()
 {
- 
-   // do anything here that needs to be done at desctruction time
-   // (e.g. close files, deallocate resources etc.)
+
+    // do anything here that needs to be done at desctruction time
+    // (e.g. close files, deallocate resources etc.)
 
 }
 
@@ -107,28 +107,28 @@ HPlusFilter::~HPlusFilter()
 //
 
 // ------------ method called on each new Event  ------------
-bool
+    bool
 HPlusFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
-   using namespace edm;
-   iEvent.getByToken(mu_token, mu_handle);
-   iEvent.getByToken(el_token, el_handle);
+    using namespace edm;
+    iEvent.getByToken(mu_token, mu_handle);
+    iEvent.getByToken(el_token, el_handle);
 
-   int nLeptons = mu_handle->size() + el_handle->size();
+    int nLeptons = mu_handle->size() + el_handle->size();
 
-   if (nLeptons >=2) return true;
+    if (nLeptons >=2) return true;
 
-   // OR ...
-   iEvent.getByToken(tau_token, tau_handle);
-   // at least 1 tau
-   if (tau_handle->size() >0 ) return true;
+    // OR ...
+    iEvent.getByToken(tau_token, tau_handle);
+    // at least 1 tau
+    if (tau_handle->size() >0 ) return true;
 
 
-   return false;
+    return false;
 }
 
 // ------------ method called once each job just before starting event loop  ------------
-void 
+    void 
 HPlusFilter::beginJob()
 {
 }
@@ -140,45 +140,52 @@ HPlusFilter::endJob() {
 
 // ------------ method called when starting to processes a run  ------------
 /*
-void
-HPlusFilter::beginRun(edm::Run const&, edm::EventSetup const&)
-{ 
-}
-*/
- 
+   void
+   HPlusFilter::beginRun(edm::Run const&, edm::EventSetup const&)
+   { 
+   }
+   */
+
 // ------------ method called when ending the processing of a run  ------------
 /*
-void
-HPlusFilter::endRun(edm::Run const&, edm::EventSetup const&)
-{
-}
-*/
- 
+   void
+   HPlusFilter::endRun(edm::Run const&, edm::EventSetup const&)
+   {
+   }
+   */
+
 // ------------ method called when starting to processes a luminosity block  ------------
 /*
-void
-HPlusFilter::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
-{
-}
-*/
- 
+   void
+   HPlusFilter::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
+   {
+   }
+   */
+
 // ------------ method called when ending the processing of a luminosity block  ------------
 /*
-void
-HPlusFilter::endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
-{
-}
-*/
- 
+   void
+   HPlusFilter::endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
+   {
+   }
+   */
+
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
 void
 HPlusFilter::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
-  //The following says we do not know what parameters are allowed so do no validation
-  // Please change this to state exactly what you do use, even if it is no parameters
-  edm::ParameterSetDescription desc;
-  desc.setUnknown();
-  descriptions.addDefault(desc);
+    //The following says we do not know what parameters are allowed so do no validation
+    // Please change this to state exactly what you do use, even if it is no parameters
+    edm::ParameterSetDescription desc;
+    desc.setUnknown();
+    descriptions.addDefault(desc);
 }
 
 //define this as a plug-in
 DEFINE_FWK_MODULE(HPlusFilter);
+// Local Variables:
+// mode:c++
+// indent-tabs-mode:nil
+// tab-width:4
+// c-basic-offset:4
+// End:
+// vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
