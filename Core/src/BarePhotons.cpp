@@ -46,7 +46,9 @@ void BarePhotons::setBranchAddresses(TTree *t){
     t->Branch("photonIso"	,&iso);
     sieie = new vector<float>;
     t->Branch("photonSieie"	,&sieie);
+    tightid = new vector<int>;
     t->Branch("photonTightId"	,&tightid);
+    mediumid = new vector<int>;
     t->Branch("photonMediumId"	,&mediumid);
 }
 // Local Variables:

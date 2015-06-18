@@ -30,7 +30,9 @@ process.TFileService = cms.Service("TFileService",
 			fileName = cms.string("NeroNtuples.root"),
                 )
 
-process.load('NeroProducer.Nero.Nero_cfi')
+#process.load('NeroProducer.Nero.Nero_cfi')
+process.load('NeroProducer.Nero.NeroChargedHiggs_cfi')
+#process.load('NeroProducer.Nero.NeroMonojet_cfi')
 
 process.p = cms.Path(
                 process.nero

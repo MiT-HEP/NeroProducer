@@ -63,11 +63,13 @@ crab submit
 
 ### Batch submit
 * MINIAOD
+* edit the ../test/testNero.py to be sure to use the right configuration (ChargedHiggs or MonoJet) 
 ```
 cd NeroProducer/Nero/script
 dir=TT_Tune4C_13TeV-pythia8-tauola;vers=v0.2; python sendOnBatch.py -i ../test/testNero.py -e /store/mc/Phys14DR/${dir} --put-in=/store/user/${USER}/Nero/${vers}/${dir} -d ${dir} -n 100 -q 8nh
 ```
 * MINIAOD-SKIMMED
+* edit the ../test/testNeroSkimmed.py to be sure to use the right configuration (ChargedHiggs or MonoJet) 
 ```
 cd NeroProducer/Nero/script
 vers=v0.2;dir=TTbar_HBWB_HToTauNu_M-90_13TeV_pythia6 ;python sendOnBatch.py -i ../test/testNeroSkimmed.py -e /store/user/amarini/v0.1/${dir} --put-in=/store/user/amarini/Nero/${vers}/${dir} -d ${dir} -n 10 -q 8nh
