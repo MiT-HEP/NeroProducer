@@ -3,8 +3,8 @@ from NeroProducer.Nero.Nero_cfi import nero
 
 nero.triggerNames = cms.vstring(['HLT_PFMET170_NoiseCleaned'
                                 'HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight'])
-nero.minJetPt  = cms.double (30.)
-nero.minJetEta = cms.double (2.5)
+nero.minJetPt  = cms.double (25.)
+nero.minJetEta = cms.double (4.7)
 nero.minJetN   = cms.int32  (0)
 nero.minJetId  = cms.string ('loose')
 nero.minElePt  = cms.double (10.)
