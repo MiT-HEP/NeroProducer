@@ -6,25 +6,25 @@
 
 class BareMonteCarlo : virtual public BareCollection
 {
-public:
-	BareMonteCarlo();
-	~BareMonteCarlo();
-	void clear();
-	void defineBranches(TTree *t);
-	void setBranchAddresses(TTree*) ;
-	virtual inline string name(){return "BareMonteCarlo";};
+    public:
+        BareMonteCarlo();
+        ~BareMonteCarlo();
+        void clear();
+        void defineBranches(TTree *t);
+        void setBranchAddresses(TTree*) ;
+        virtual inline string name(){return "BareMonteCarlo";};
 
-	// -- variables
-	TClonesArray *p4; // gen particles
-	vector<int>  *pdgId;
+        // -- variables
+        TClonesArray *p4; // gen particles
+        vector<int>  *pdgId;
 
-	// genjets
-	TClonesArray *jetP4;
+        // genjets
+        TClonesArray *jetP4;
 
-	//
-	int puTrueInt;
-	//
-	float mcWeight ;
+        //
+        int puTrueInt;
+        //
+        float mcWeight ;
         float qScale   ;
         float alphaQED ;
         float alphaQCD ;
@@ -36,3 +36,10 @@ public:
 
 };
 #endif
+// Local Variables:
+// mode:c++
+// indent-tabs-mode:nil
+// tab-width:4
+// c-basic-offset:4
+// End:
+// vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4

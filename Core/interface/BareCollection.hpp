@@ -15,11 +15,18 @@ using namespace std;
 
 class BareCollection
 {
-public:
-	virtual void clear() = 0;
-	virtual void defineBranches(TTree*) = 0 ;
-	virtual void setBranchAddresses(TTree*) = 0;
-	virtual string name() = 0;
+    public:
+        virtual void clear() = 0;
+        virtual void defineBranches(TTree*) = 0 ;
+        virtual void setBranchAddresses(TTree*) = 0;
+        virtual string name() = 0;
 };
 
 #endif
+// Local Variables:
+// mode:c++
+// indent-tabs-mode:nil
+// tab-width:4
+// c-basic-offset:4
+// End:
+// vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4

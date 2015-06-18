@@ -6,32 +6,39 @@
 
 class BareFatJets : virtual public BareCollection
 {
-public:
-	BareFatJets();
-	~BareFatJets();
-	void clear();
-	void defineBranches(TTree *t);
-	virtual void setBranchAddresses(TTree*);
-	virtual inline string name(){return "BareFatJets";};
+    public:
+        BareFatJets();
+        ~BareFatJets();
+        void clear();
+        void defineBranches(TTree *t);
+        virtual void setBranchAddresses(TTree*);
+        virtual inline string name(){return "BareFatJets";};
 
-	// -- variables
-	TClonesArray  *p4;
-	vector<float> *rawPt;
-	vector<int>   *flavour;
-	vector<float> *tau1;
-	vector<float> *tau2;
-	vector<float> *tau3;
+        // -- variables
+        TClonesArray  *p4;
+        vector<float> *rawPt;
+        vector<int>   *flavour;
+        vector<float> *tau1;
+        vector<float> *tau2;
+        vector<float> *tau3;
 
-	vector<float> *trimmedMass;
-	vector<float> *prunedMass;
-	vector<float> *filteredMass;
-	vector<float> *softdropMass;
+        vector<float> *trimmedMass;
+        vector<float> *prunedMass;
+        vector<float> *filteredMass;
+        vector<float> *softdropMass;
 
-    TClonesArray  *ak8_subjet;
-    vector<int>   *ak8jet_hasSubjet;
-    vector<float> *ak8subjet_btag;
+        TClonesArray  *ak8_subjet;
+        vector<int>   *ak8jet_hasSubjet;
+        vector<float> *ak8subjet_btag;
 
 
 };
 
 #endif
+// Local Variables:
+// mode:c++
+// indent-tabs-mode:nil
+// tab-width:4
+// c-basic-offset:4
+// End:
+// vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4

@@ -8,17 +8,17 @@ NeroVertex::~NeroVertex(){
 }
 
 void NeroVertex::clear(){
-	BareVertex::clear();
-	// This function clear all the internal storage and init it to an arbitrary value
-	pv_ = NULL;
+    BareVertex::clear();
+    // This function clear all the internal storage and init it to an arbitrary value
+    pv_ = NULL;
 }
 
 int NeroVertex::analyze(const edm::Event& iEvent){
-	if ( mOnlyMc  ) return 0;
-	iEvent.getByToken(token, handle);
-	if (handle->empty()) return 1; // skip the event if no PV found
-	const reco::Vertex &PV = handle->front();
-	pv_ = &PV; // it should remain after ending
+    if ( mOnlyMc  ) return 0;
+    iEvent.getByToken(token, handle);
+    if (handle->empty()) return 1; // skip the event if no PV found
+    const reco::Vertex &PV = handle->front();
+    pv_ = &PV; // it should remain after ending
 
     using namespace std;
     using namespace edm;
@@ -29,18 +29,25 @@ int NeroVertex::analyze(const edm::Event& iEvent){
     VertexCollection::const_iterator firstGoodVertex = handle->end();
     int firstGoodVertexIdx = 0;
     for (VertexCollection::const_iterator vtx = handle->begin(); 
-         vtx != handle->end(); ++vtx, ++firstGoodVertexIdx) {
+            vtx != handle->end(); ++vtx, ++firstGoodVertexIdx) {
         bool isFake = (vtx->chi2()==0 && vtx->ndof()==0);
         if ( !isFake
-             && vtx->ndof()>=4. && vtx->position().Rho()<=2.0
-             && fabs(vtx->position().Z())<=24.0) {
+                && vtx->ndof()>=4. && vtx->position().Rho()<=2.0
+                && fabs(vtx->position().Z())<=24.0) {
             firstGoodVertex = vtx;
             break;
         }
     }
-    
+
     if ( firstGoodVertex==handle->end() ) return 1; // skip event if there are no good PVs
-  
-	return 0;
+
+    return 0;
 }
 
+// Local Variables:
+// mode:c++
+// indent-tabs-mode:nil
+// tab-width:4
+// c-basic-offset:4
+// End:
+// vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4

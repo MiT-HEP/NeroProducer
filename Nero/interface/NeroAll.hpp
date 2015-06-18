@@ -7,39 +7,46 @@
 
 
 class NeroAll : virtual public NeroCollection, 
-	virtual public BareAll,
-	virtual public NeroLumi
+    virtual public BareAll,
+    virtual public NeroLumi
 {
-public:
-	NeroAll();
-	~NeroAll();
-	int analyze(const edm::Event&);
-	int analyzeLumi(const edm::LuminosityBlock&,TTree*);
-	virtual inline string name(){return "NeroAll";};
+    public:
+        NeroAll();
+        ~NeroAll();
+        int analyze(const edm::Event&);
+        int analyzeLumi(const edm::LuminosityBlock&,TTree*);
+        virtual inline string name(){return "NeroAll";};
 
-	// --- members	
-	int isSkim_; // -1: figure it out. 0 no skim info. 1 skim info
-	int isMc_ ;  // -1: figure it out. 0 no, 1 yes.
-	// --- specific fuctions
-	int isSkim(){return isSkim_;}
-	//
-	// --- Handle
-	
-	// from the skim
-	edm::Handle<std::vector<long> > events_handle;
-	edm::Handle<std::vector<float> > weights_handle;
-	edm::Handle<std::vector<int> > putrue_handle;
-	// from PAT-MINIAOD
+        // --- members	
+        int isSkim_; // -1: figure it out. 0 no skim info. 1 skim info
+        int isMc_ ;  // -1: figure it out. 0 no, 1 yes.
+        // --- specific fuctions
+        int isSkim(){return isSkim_;}
+        //
+        // --- Handle
+
+        // from the skim
+        edm::Handle<std::vector<long> > events_handle;
+        edm::Handle<std::vector<float> > weights_handle;
+        edm::Handle<std::vector<int> > putrue_handle;
+        // from PAT-MINIAOD
         edm::EDGetTokenT<GenEventInfoProduct> info_token;
-	edm::Handle<GenEventInfoProduct> info_handle;
+        edm::Handle<GenEventInfoProduct> info_handle;
 
-	edm::EDGetTokenT<std::vector<PileupSummaryInfo> > pu_token;
-	edm::Handle< std::vector<PileupSummaryInfo> > pu_handle;
+        edm::EDGetTokenT<std::vector<PileupSummaryInfo> > pu_token;
+        edm::Handle< std::vector<PileupSummaryInfo> > pu_handle;
 
-	// --- Token
+        // --- Token
 
 
 };
 
 
 #endif
+// Local Variables:
+// mode:c++
+// indent-tabs-mode:nil
+// tab-width:4
+// c-basic-offset:4
+// End:
+// vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
