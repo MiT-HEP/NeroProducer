@@ -5,10 +5,10 @@
 // 
 /**\class InfoProducer InfoProducer.cc NtupleTools/InfoProducer/plugins/InfoProducer.cc
 
- Description: Additional information about jets
+Description: Additional information about jets
 
- Implementation:
-     Add information missing in the input edm files.
+Implementation:
+Add information missing in the input edm files.
 */
 
 
@@ -40,103 +40,103 @@ using namespace edm;
 using namespace std;
 
 class InfoProducer : public edm::one::EDProducer<edm::one::WatchLuminosityBlocks,
-                                                       edm::EndLuminosityBlockProducer>{
-   public:
-      explicit InfoProducer(const edm::ParameterSet&);
-      ~InfoProducer();
+    edm::EndLuminosityBlockProducer>{
+        public:
+            explicit InfoProducer(const edm::ParameterSet&);
+            ~InfoProducer();
 
 
-   private:
-      virtual void produce(edm::Event&, const edm::EventSetup&) override;
-      virtual void beginLuminosityBlock(const edm::LuminosityBlock &, const edm::EventSetup&) override;
-      virtual void endLuminosityBlock(edm::LuminosityBlock const&, const edm::EventSetup&) override;
-      virtual void endLuminosityBlockProduce(edm::LuminosityBlock &, const edm::EventSetup&) override;
-      // ----------member data ---------------------------
-      unsigned int eventsProcessedInLumi_;
-      double mcWeights_;
+        private:
+            virtual void produce(edm::Event&, const edm::EventSetup&) override;
+            virtual void beginLuminosityBlock(const edm::LuminosityBlock &, const edm::EventSetup&) override;
+            virtual void endLuminosityBlock(edm::LuminosityBlock const&, const edm::EventSetup&) override;
+            virtual void endLuminosityBlockProduce(edm::LuminosityBlock &, const edm::EventSetup&) override;
+            // ----------member data ---------------------------
+            unsigned int eventsProcessedInLumi_;
+            double mcWeights_;
 
-      template <class T>
-      void inline copyVector( const vector<T> &a, vector<T> &b){ b.clear(); for (auto x : a) b.push_back(x); } 
+            template <class T>
+                void inline copyVector( const vector<T> &a, vector<T> &b){ b.clear(); for (auto x : a) b.push_back(x); } 
 
-      vector<long> vecEvents_;
-      vector<float> vecMcWeights_;
-      vector<int> vecPuTrueInt_;
+            vector<long> vecEvents_;
+            vector<float> vecMcWeights_;
+            vector<int> vecPuTrueInt_;
 
-      edm::EDGetTokenT<GenEventInfoProduct> info_token; 
-      edm::Handle<GenEventInfoProduct> info_handle;
+            edm::EDGetTokenT<GenEventInfoProduct> info_token; 
+            edm::Handle<GenEventInfoProduct> info_handle;
 
-      edm::EDGetTokenT<std::vector<PileupSummaryInfo> > pu_token;
-      edm::Handle< std::vector<PileupSummaryInfo> > pu_handle;
+            edm::EDGetTokenT<std::vector<PileupSummaryInfo> > pu_token;
+            edm::Handle< std::vector<PileupSummaryInfo> > pu_handle;
 
 
-};
+    };
 
 InfoProducer::InfoProducer(const edm::ParameterSet& iConfig)
-	: info_token(consumes<GenEventInfoProduct>(edm::InputTag("generator")) ),
-	pu_token(consumes<std::vector<PileupSummaryInfo> >(edm::InputTag("addPileupInfo")))
+    : info_token(consumes<GenEventInfoProduct>(edm::InputTag("generator")) ),
+    pu_token(consumes<std::vector<PileupSummaryInfo> >(edm::InputTag("addPileupInfo")))
 {
-  //register your products
-  //produces<edm::ValueMap<bool> >("monojetSelection");
-  produces<edm::MergeableCounter, edm::InLumi>("numberEvents");
-  produces<edm::MergeableCounter, edm::InLumi>("sumMcWeights");
+    //register your products
+    //produces<edm::ValueMap<bool> >("monojetSelection");
+    produces<edm::MergeableCounter, edm::InLumi>("numberEvents");
+    produces<edm::MergeableCounter, edm::InLumi>("sumMcWeights");
 
-  // save this info for all the events, in the lumiblock
-  produces<std::vector<long>,   edm::InLumi>("vecEvents");
-  produces<std::vector<float>, edm::InLumi>("vecMcWeights");
-  produces<std::vector<int>,  edm::InLumi>("vecPuTrueInt");
+    // save this info for all the events, in the lumiblock
+    produces<std::vector<long>,   edm::InLumi>("vecEvents");
+    produces<std::vector<float>, edm::InLumi>("vecMcWeights");
+    produces<std::vector<int>,  edm::InLumi>("vecPuTrueInt");
 }
 
 
 InfoProducer::~InfoProducer(){}
 
-void
+    void
 InfoProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
-  // edm::Handle<edm::View<reco::Jet> > ak4Jets;
-  // iEvent.getByLabel("slimmedJets", ak4Jets);
-  // prepare output
-  
-  // fill information
-  eventsProcessedInLumi_++;
-  vecEvents_.push_back(iEvent.id().event());
+    // edm::Handle<edm::View<reco::Jet> > ak4Jets;
+    // iEvent.getByLabel("slimmedJets", ak4Jets);
+    // prepare output
+
+    // fill information
+    eventsProcessedInLumi_++;
+    vecEvents_.push_back(iEvent.id().event());
 
 
-  if ( not iEvent.isRealData() )
- 	 {
-  	 // define input
-   	 iEvent.getByToken(info_token, info_handle);  
-	 mcWeights_ += info_handle -> weight();
+    if ( not iEvent.isRealData() )
+    {
+        // define input
+        iEvent.getByToken(info_token, info_handle);  
+        mcWeights_ += info_handle -> weight();
 
-	 vecMcWeights_ . push_back( info_handle -> weight());
+        vecMcWeights_ . push_back( info_handle -> weight());
 
-	 iEvent.getByToken(pu_token, pu_handle);
+        iEvent.getByToken(pu_token, pu_handle);
 
-	 int  puTrueInt = 0;
-         for(const auto & pu : *pu_handle)
-                 {
-                 //Intime
-                 if (pu.getBunchCrossing() == 0)
-                         puTrueInt += pu.getTrueNumInteractions();
-                         //puInt += getPU_NumInteractions(); //old
-                 //Out-of-time
-                 }
+        int  puTrueInt = 0;
+        for(const auto & pu : *pu_handle)
+        {
+            //Intime
+            if (pu.getBunchCrossing() == 0)
+                puTrueInt += pu.getTrueNumInteractions();
+            //puInt += getPU_NumInteractions(); //old
+            //Out-of-time
+        }
 
 
-	 vecPuTrueInt_ . push_back(puTrueInt);
- 	 }
+        vecPuTrueInt_ . push_back(puTrueInt);
+    }
 
-  // finalize
+    // finalize
 }
 
 
 void InfoProducer::beginLuminosityBlock(const edm::LuminosityBlock &, const edm::EventSetup&) 
 {
-	mcWeights_ = 0;
-	eventsProcessedInLumi_ = 0;
+    mcWeights_ = 0;
+    eventsProcessedInLumi_ = 0;
 
-	vecMcWeights_ . clear();
-	vecPuTrueInt_ . clear();
-	vecEvents_    . clear();
+    vecMcWeights_ . clear();
+    vecPuTrueInt_ . clear();
+    vecEvents_    . clear();
 }
 
 void InfoProducer::endLuminosityBlock(edm::LuminosityBlock const&, const edm::EventSetup&) 
@@ -144,30 +144,37 @@ void InfoProducer::endLuminosityBlock(edm::LuminosityBlock const&, const edm::Ev
 
 void InfoProducer::endLuminosityBlockProduce(edm::LuminosityBlock &iLumi, const edm::EventSetup&)
 {
-  // ---
-  auto_ptr<edm::MergeableCounter> numEventsPtr(new edm::MergeableCounter);
-  auto_ptr<edm::MergeableCounter> sumMcWeights(new edm::MergeableCounter);
+    // ---
+    auto_ptr<edm::MergeableCounter> numEventsPtr(new edm::MergeableCounter);
+    auto_ptr<edm::MergeableCounter> sumMcWeights(new edm::MergeableCounter);
 
-  numEventsPtr->value = eventsProcessedInLumi_;
-  sumMcWeights->value = mcWeights_;
+    numEventsPtr->value = eventsProcessedInLumi_;
+    sumMcWeights->value = mcWeights_;
 
-  iLumi.put(numEventsPtr,"numberEvents");
-  iLumi.put(sumMcWeights,"sumMcWeights");
+    iLumi.put(numEventsPtr,"numberEvents");
+    iLumi.put(sumMcWeights,"sumMcWeights");
 
-  // ---
-  auto_ptr<std::vector<long> > vecEventsPtr( new vector<long> );
-  auto_ptr<std::vector<float> > vecMcWeightsPtr( new vector<float> );
-  auto_ptr<std::vector<int> > vecPuTrueIntPtr( new vector<int> );
+    // ---
+    auto_ptr<std::vector<long> > vecEventsPtr( new vector<long> );
+    auto_ptr<std::vector<float> > vecMcWeightsPtr( new vector<float> );
+    auto_ptr<std::vector<int> > vecPuTrueIntPtr( new vector<int> );
 
-  copyVector(vecEvents_, *vecEventsPtr.get());
-  copyVector(vecMcWeights_, *vecMcWeightsPtr.get());
-  copyVector(vecPuTrueInt_, *vecPuTrueIntPtr.get());
-  //
-  iLumi.put(vecEventsPtr,"vecEvents");
-  iLumi.put(vecMcWeightsPtr,"vecMcWeights");
-  iLumi.put(vecPuTrueIntPtr,"vecPuTrueInt");
+    copyVector(vecEvents_, *vecEventsPtr.get());
+    copyVector(vecMcWeights_, *vecMcWeightsPtr.get());
+    copyVector(vecPuTrueInt_, *vecPuTrueIntPtr.get());
+    //
+    iLumi.put(vecEventsPtr,"vecEvents");
+    iLumi.put(vecMcWeightsPtr,"vecMcWeights");
+    iLumi.put(vecPuTrueIntPtr,"vecPuTrueInt");
 }
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
 
 //define this as a plug-in
 DEFINE_FWK_MODULE(InfoProducer);
+// Local Variables:
+// mode:c++
+// indent-tabs-mode:nil
+// tab-width:4
+// c-basic-offset:4
+// End:
+// vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4

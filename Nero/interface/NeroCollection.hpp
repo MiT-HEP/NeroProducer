@@ -15,12 +15,19 @@ using namespace std;
 
 class NeroCollection : virtual public BareCollection
 {
-public:
-	// --- Just virtual
-	virtual int  analyze(const edm::Event &) = 0 ;
-	virtual inline string name(){return "NeroCollection";};
+    public:
+        // --- Just virtual
+        virtual int  analyze(const edm::Event &) = 0 ;
+        virtual inline string name(){return "NeroCollection";};
 
-	// -- configuration
-	bool mOnlyMc; // NO RECO INFO
+        // -- configuration
+        bool mOnlyMc; // NO RECO INFO
 };
 #endif
+// Local Variables:
+// mode:c++
+// indent-tabs-mode:nil
+// tab-width:4
+// c-basic-offset:4
+// End:
+// vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4

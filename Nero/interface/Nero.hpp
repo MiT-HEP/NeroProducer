@@ -17,42 +17,49 @@
 //
 
 class Nero : public edm::EDAnalyzer {
-   public:
-      explicit Nero(const edm::ParameterSet&);
-      ~Nero();
+    public:
+        explicit Nero(const edm::ParameterSet&);
+        ~Nero();
 
-      static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
+        static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
 
-   private:
-      virtual void beginJob() override;
-      virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
-      virtual void endJob() override;
+    private:
+        virtual void beginJob() override;
+        virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
+        virtual void endJob() override;
 
-      virtual void beginRun(edm::Run const&, edm::EventSetup const&) override;
-      virtual void endRun(edm::Run const&, edm::EventSetup const&) override;
-      virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
-      virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
+        virtual void beginRun(edm::Run const&, edm::EventSetup const&) override;
+        virtual void endRun(edm::Run const&, edm::EventSetup const&) override;
+        virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
+        virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
 
-      // ----------member data ---------------------------
-      TTree *tree_;
-      TTree *all_;
-      TH1F  *hXsec_;
-      edm::Service<TFileService> fileService_;
-      // collection to be moved into a tree
-      vector<NeroCollection*> obj;
-      vector<NeroRun*> runObj;
-      vector<NeroLumi*> lumiObj;
+        // ----------member data ---------------------------
+        TTree *tree_;
+        TTree *all_;
+        TH1F  *hXsec_;
+        edm::Service<TFileService> fileService_;
+        // collection to be moved into a tree
+        vector<NeroCollection*> obj;
+        vector<NeroRun*> runObj;
+        vector<NeroLumi*> lumiObj;
 
-      // check performances
-      TStopwatch sw_;
+        // check performances
+        TStopwatch sw_;
 
-      //NeroJets    *jets_;
-      //NeroTaus	  *taus_;
-      //NeroLeptons *leps_;
-      
+        //NeroJets    *jets_;
+        //NeroTaus	  *taus_;
+        //NeroLeptons *leps_;
+
 };
 
 
 
 #endif
+// Local Variables:
+// mode:c++
+// indent-tabs-mode:nil
+// tab-width:4
+// c-basic-offset:4
+// End:
+// vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4

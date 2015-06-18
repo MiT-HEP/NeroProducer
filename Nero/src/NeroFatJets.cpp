@@ -10,37 +10,37 @@ NeroFatJets::~NeroFatJets(){
 
 int NeroFatJets::analyze(const edm::Event& iEvent){
 
-	if ( mOnlyMc  ) return 0;
+    if ( mOnlyMc  ) return 0;
 
-	// maybe handle should be taken before
-	iEvent.getByToken(token, handle);
+    // maybe handle should be taken before
+    iEvent.getByToken(token, handle);
 
-	int ijetRef = -1;
+    int ijetRef = -1;
     int nsubjet = 0;
-	for (const pat::Jet& j : *handle)
-		{
-		ijetRef++;
-		if (j.pt() < 100 ) continue;
+    for (const pat::Jet& j : *handle)
+    {
+        ijetRef++;
+        if (j.pt() < 100 ) continue;
 
-		// JET ID
-		if ( !NeroJets::JetId(j,"loose") ) continue;
-		
-		// GET  ValueMaps
-		
-		// Fill output object	
-		//p4 -> AddLast(new TLorentzVector(j.px(), j.py(), j.pz(), j.energy())  );
-		new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(j.px(), j.py(), j.pz(), j.energy());
+        // JET ID
+        if ( !NeroJets::JetId(j,"loose") ) continue;
 
-		rawPt -> push_back (j.pt()*j.jecFactor("Uncorrected"));
-        	flavour -> push_back( j.partonFlavour() );
-		tau1 -> push_back(j.userFloat("NjettinessAK8:tau1"));
-		tau2 -> push_back(j.userFloat("NjettinessAK8:tau2"));
-		tau3 -> push_back(j.userFloat("NjettinessAK8:tau3"));
+        // GET  ValueMaps
 
-		trimmedMass ->push_back(j.userFloat("ak8PFJetsCHSTrimmedMass"));
-		prunedMass  ->push_back(j.userFloat("ak8PFJetsCHSPrunedMass"));
-		filteredMass->push_back(j.userFloat("ak8PFJetsCHSFilteredMass"));
-		softdropMass->push_back(j.userFloat("ak8PFJetsCHSSoftDropMass"));
+        // Fill output object	
+        //p4 -> AddLast(new TLorentzVector(j.px(), j.py(), j.pz(), j.energy())  );
+        new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(j.px(), j.py(), j.pz(), j.energy());
+
+        rawPt -> push_back (j.pt()*j.jecFactor("Uncorrected"));
+        flavour -> push_back( j.partonFlavour() );
+        tau1 -> push_back(j.userFloat("NjettinessAK8:tau1"));
+        tau2 -> push_back(j.userFloat("NjettinessAK8:tau2"));
+        tau3 -> push_back(j.userFloat("NjettinessAK8:tau3"));
+
+        trimmedMass ->push_back(j.userFloat("ak8PFJetsCHSTrimmedMass"));
+        prunedMass  ->push_back(j.userFloat("ak8PFJetsCHSPrunedMass"));
+        filteredMass->push_back(j.userFloat("ak8PFJetsCHSFilteredMass"));
+        softdropMass->push_back(j.userFloat("ak8PFJetsCHSSoftDropMass"));
         ak8jet_hasSubjet->push_back(j.hasSubjets("SoftDrop"));
 
         auto Subjets = j.subjets("SoftDrop");
@@ -49,8 +49,15 @@ int NeroFatJets::analyze(const edm::Event& iEvent){
             ak8subjet_btag->push_back(i->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
             nsubjet++;
         }
-        
-		}
-	return 0;
+
+    }
+    return 0;
 }
 
+// Local Variables:
+// mode:c++
+// indent-tabs-mode:nil
+// tab-width:4
+// c-basic-offset:4
+// End:
+// vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
