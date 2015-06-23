@@ -1,6 +1,8 @@
 import FWCore.ParameterSet.Config as cms
 from NeroProducer.Nero.Nero_cfi import nero
 
+print " ------- LOADING CHARGED HIGGS CONFIGURATION -------- "
+
 nero.triggerNames = cms.vstring(['HLT_PFMET170_NoiseCleaned'
                                 'HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight'])
 nero.minJetPt  = cms.double (25.)
