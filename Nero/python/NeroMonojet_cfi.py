@@ -21,7 +21,7 @@ nero.minTauPt  = cms.double (18.)
 nero.minTauEta = cms.double (2.3)
 nero.minTauN   = cms.int32  (0)
 nero.minTauId  = cms.string ('decayModeFinding')
-nero.maxTauIso = cms.double (-1.)
+nero.maxTauIso = cms.double (5)
 
 nero.minGenParticlePt = cms.double(5.)
 nero.minGenJetPt = cms.double(20.)

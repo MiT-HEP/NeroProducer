@@ -71,7 +71,10 @@ def PrintSummary(dir, doPrint=True):
         fail = [ re.sub('\.fail','' , re.sub('.*/sub_','', r) ) for r in fail ]
         done = [ re.sub('\.done','' , re.sub('.*/sub_','', r) ) for r in done ]
 
-        tot = len(run) + len(fail) + len(done)
+        if opts.dir[-1] == '/' : opts.dir = opts.dir[:-1]
+        pend = int(check_output( "bjobs -w | grep '%s' | grep 'PEND' | wc -l "%opts.dir, shell=True))
+
+        tot = len(run) + len(fail) + len(done) + pend
 
         color = red
         if len(run) > len(fail) and len(run) > len(done) : color= yellow
@@ -79,6 +82,7 @@ def PrintSummary(dir, doPrint=True):
 
         if doPrint:
                 print " ----  Directory "+ color+opts.dir+white+" --------"
+                print " Pend: " + yellow + "%3d"%pend  + " / " + str(tot) + white
                 print " Run : " + yellow + "%3d"%len(run) + " / "  + str(tot) + white + " : " + PrintLine(run)  ### + ",".join(run)  + "|" 
                 print " Fail: " + red    + "%3d"%len(fail) + " / " + str(tot) + white + " : " + PrintLine(fail) ### + ",".join(fail) + "|" 
                 print " Done: " + green  + "%3d"%len(done) + " / " + str(tot) + white + " : " + PrintLine(done) ### + ",".join(done) + "|" 

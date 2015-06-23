@@ -43,7 +43,9 @@ def PrintError(info):
 
 def PrintCompare(a,b):
 	if a == b: PrintDone()
-	else : PrintFail()
+	else : 
+		print " instead of ",b,
+		PrintFail()
 
 def TestCore():
 	### TEST THE CORE LIBRARY

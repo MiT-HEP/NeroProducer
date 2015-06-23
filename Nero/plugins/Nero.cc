@@ -82,6 +82,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     taus -> mMinEta = iConfig.getParameter<double>("minTauEta");
     taus -> mMinId = iConfig.getParameter<string>("minTauId");
     taus -> mMaxIso = iConfig.getParameter<double>("maxTauIso");
+    taus -> SetExtend ( iConfig.getParameter<bool>("extendTau") );
     obj.push_back(taus);
 
     //--
