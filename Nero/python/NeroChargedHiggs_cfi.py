@@ -1,6 +1,8 @@
 import FWCore.ParameterSet.Config as cms
 from NeroProducer.Nero.Nero_cfi import nero
 
+print " ------- LOADING CHARGED HIGGS CONFIGURATION -------- "
+
 nero.triggerNames = cms.vstring(['HLT_PFMET170_NoiseCleaned'
                                 'HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight'])
 nero.minJetPt  = cms.double (25.)
@@ -20,8 +22,9 @@ nero.minLepN   = cms.int32 (0)
 nero.minTauPt  = cms.double (18.)
 nero.minTauEta = cms.double (2.3)
 nero.minTauN   = cms.int32  (0)
-nero.minTauId  = cms.string ('decayModeFinding')
-nero.maxTauIso = cms.double (-1.)
+nero.minTauId  = cms.string ('decayModeFindingNewDMs')
+nero.maxTauIso = cms.double (-1)
+nero.extendTau = cms.bool(True)
 
 nero.minGenParticlePt = cms.double(5.)
 nero.minGenJetPt = cms.double(20.)

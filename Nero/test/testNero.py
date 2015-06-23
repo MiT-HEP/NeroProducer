@@ -77,8 +77,8 @@ process.load("RecoEgamma/ElectronIdentification/ElectronIDValueMapProducer_cfi")
 process.load('NeroProducer.Skim.infoProducerSequence_cff')
 
 process.load('NeroProducer.Nero.Nero_cfi')
-process.load('NeroProducer.Nero.NeroMonojet_cfi')
-#process.load('NeroProducer.Nero.NeroChargedHiggs_cfi')
+#process.load('NeroProducer.Nero.NeroMonojet_cfi')
+process.load('NeroProducer.Nero.NeroChargedHiggs_cfi')
 
 #------------------------------------------------------
 process.p = cms.Path(

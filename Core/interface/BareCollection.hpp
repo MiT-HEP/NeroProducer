@@ -15,11 +15,17 @@ using namespace std;
 
 class BareCollection
 {
+    protected:
+        bool extend_;  // for collection switch to a more inclusive mode
     public:
+        BareCollection(){ extend_=false;}
         virtual void clear() = 0;
         virtual void defineBranches(TTree*) = 0 ;
         virtual void setBranchAddresses(TTree*) = 0;
         virtual string name() = 0;
+        
+        inline void SetExtend(bool value=true){extend_=value;}
+        inline bool IsExtend(){return extend_;}
 };
 
 #endif

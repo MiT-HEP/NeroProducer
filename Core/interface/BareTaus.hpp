@@ -14,14 +14,24 @@ class BareTaus : virtual public BareCollection
         virtual inline string name(){return "BareTaus";};
 
         // --  members
-        TClonesArray *p4;
-        vector<float>           *id ;// byMediumCombinedIsolationDeltaBetaCorr3Hit ?
-        vector<int>       	*Q ;// charge
-        vector<float>           *M ; // mass
-        vector<float>           *iso ;
+        TClonesArray    *p4;
+        vector<float>   *id ; 
+        vector<int>     *Q ; // charge
+        vector<float>   *M ; // mass
+        vector<float>   *iso ;
 
+        // EXTENDED VARIABLES
+        vector<float>   *chargedIsoPtSum;
+        vector<float>   *neutralIsoPtSum;
+        vector<float>   *isoDeltaBetaCorr;
+        vector<int>   *againstEleLoose;
+        vector<int>   *againstEleMedium;
+        vector<int>   *againstMuLoose;
+        vector<int>   *againstMuTight;
 };
+
 #endif
+
 // Local Variables:
 // mode:c++
 // indent-tabs-mode:nil

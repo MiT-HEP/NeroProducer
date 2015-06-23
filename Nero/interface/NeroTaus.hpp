@@ -27,8 +27,8 @@ class NeroTaus : virtual public NeroCollection,
         float mMaxIso;
 };
 
-
 #endif
+
 // Local Variables:
 // mode:c++
 // indent-tabs-mode:nil

@@ -22,6 +22,8 @@ parser.add_option("-n", "--nprocs", dest="nprocs", type="int", default=10,
                   help="number of processed entries [default: %default]")
 (options, args) = parser.parse_args()
 
+from testUnit import PrintCompare
+
 # Open the correct input file and get the event tree
 input_file = TFile.Open(options.input_file)
 if input_file:
@@ -32,6 +34,7 @@ else:
   raise SystemExit
   
 input_tree = input_file.FindObjectAny(options.input_tree)
+input_all  = input_file.Get("nero/all");
 if input_tree:
   print 'INFO - Opening root tree: ' + options.input_tree
   
@@ -88,12 +91,13 @@ for ientry in range(0,n_entries):
                   n_npho += 1
 
 print 'INFO - Cut Flow Chart: '
-print 'INFO - Full     '+ str(n_entries)
-print 'INFO - Jet Cut  '+ str(n_jet)
-print 'INFO - 2_j Cut  '+ str(n_2ndjet)
-print 'INFO - Phi Cut  '+ str(n_dphi)
-print 'INFO - Met Cut  '+ str(n_met)
-print 'INFO - NJet Cut '+ str(n_njet)
-print 'INFO - NLep Cut '+ str(n_nlep)
-print 'INFO - NTau Cut '+ str(n_ntau)
-print 'INFO - NPho Cut '+ str(n_npho)
+print 'INFO - FULL     '+ str(input_all.GetEntries() )
+print 'INFO - GoodVtx  '+ str(n_entries)  ,; PrintCompare(n_entries,3797)
+print 'INFO - Jet Cut  '+ str(n_jet)      ,; PrintCompare(n_jet,1995)
+print 'INFO - 2_j Cut  '+ str(n_2ndjet)   ,; PrintCompare(n_2ndjet,1990)
+print 'INFO - Phi Cut  '+ str(n_dphi)     ,; PrintCompare(n_dphi,1727)
+print 'INFO - Met Cut  '+ str(n_met)      ,; PrintCompare(n_met,996)
+print 'INFO - NJet Cut '+ str(n_njet)     ,; PrintCompare(n_njet,644)
+print 'INFO - NLep Cut '+ str(n_nlep)     ,; PrintCompare(n_nlep,644)
+print 'INFO - NTau Cut '+ str(n_ntau)     ,; PrintCompare(n_ntau,641)
+print 'INFO - NPho Cut '+ str(n_npho)     ,; PrintCompare(n_npho,637)
