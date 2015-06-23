@@ -44,7 +44,6 @@ int NeroTaus::analyze(const edm::Event & iEvent)
         iso -> push_back( totIso ) ; 
 
         if (IsExtend() ){
-            decayMode        -> push_back( tau.tauID("decayModeFinding") );
             chargedIsoPtSum  -> push_back( tau.tauID("chargedIsoPtSum") );
             neutralIsoPtSum  -> push_back( tau.tauID("neutralIsoPtSum") );
             isoDeltaBetaCorr -> push_back( tau.tauID("byCombinedIsolationDeltaBetaCorrRaw3Hits"));

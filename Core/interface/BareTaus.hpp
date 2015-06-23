@@ -24,7 +24,6 @@ class BareTaus : virtual public BareCollection
         vector<float>   *chargedIsoPtSum;
         vector<float>   *neutralIsoPtSum;
         vector<float>   *isoDeltaBetaCorr;
-        vector<int>   *decayMode;
         vector<int>   *againstEleLoose;
         vector<int>   *againstEleMedium;
         vector<int>   *againstMuLoose;

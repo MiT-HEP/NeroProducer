@@ -6,7 +6,6 @@ BareTaus::BareTaus(): BareCollection() {
     Q = NULL;
     M = NULL;
     iso = NULL;
-    decayMode = NULL;
     chargedIsoPtSum = NULL;
     neutralIsoPtSum = NULL;
     isoDeltaBetaCorr = NULL;
@@ -27,7 +26,6 @@ void BareTaus::clear(){
     iso -> clear();
     if ( extend_ ) 
         {
-        decayMode->clear();
         chargedIsoPtSum->clear();
         neutralIsoPtSum->clear() ;
         isoDeltaBetaCorr->clear();
@@ -56,9 +54,6 @@ void BareTaus::defineBranches(TTree *t){
 
     if ( IsExtend() )
         {
-        decayMode = new vector<int>;
-        t->Branch("tauDecayMode","vector<int>",&decayMode);
-
         chargedIsoPtSum = new vector<float>;
         t->Branch("tauChargedIsoPtSum","vector<float>",&chargedIsoPtSum);
         neutralIsoPtSum = new vector<float> ;
@@ -95,9 +90,6 @@ void BareTaus::setBranchAddresses(TTree *t){
     // EXTENDED VARIBALES
     if ( IsExtend() )
         {
-        decayMode = new vector<int>;
-        t->SetBranchAddress("tauDecayMode",&decayMode);
-
         chargedIsoPtSum = new vector<float>;
         t->SetBranchAddress("tauChargedIsoPtSum",&chargedIsoPtSum);
 
