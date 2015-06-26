@@ -1,6 +1,19 @@
 #include "NeroProducer/Nero/interface/NeroJets.hpp"
 #include "NeroProducer/Nero/interface/Nero.hpp"
 
+
+const reco::Candidate * getMother(const reco::Candidate * part){
+    if(part==NULL){return NULL;}
+    if(part->numberOfMothers()<1){return NULL;}
+    else{
+        int partPdgId = part->pdgId(); 
+        const reco::Candidate * partMother = part->mother(0);
+        int partMotherPdgId = partMother->pdgId();
+        if(partMotherPdgId == partPdgId){return getMother(partMother);}
+        else{return partMother;}
+    }
+}
+
 NeroJets::NeroJets() : BareJets()
 {
     mMinPt = 20.;
@@ -36,6 +49,18 @@ int NeroJets::analyze(const edm::Event& iEvent){
         edm::RefToBase<pat::Jet> jetRef(edm::Ref<pat::JetCollection>(handle, ijetRef) );
         float qgLikelihood = (*qg_handle)[jetRef];
 
+        // Generator-level Info [Charged-H specific]
+        const reco::Candidate * jetGen = j.genParton();
+        const reco::Candidate * jetMother = getMother(jetGen);
+        const reco::Candidate * jetGrMother = getMother(jetMother);
+        int jetMatchedPartonPdgId_I = 0;
+        int motherPdgId_I = 0;
+        int grMotherPdgId_I = 0;
+        if(!(jetGen == NULL)){jetMatchedPartonPdgId_I = jetGen->pdgId();}
+        if(!(jetMother == 0)){motherPdgId_I = jetMother->pdgId();}
+        if(!(jetGrMother == 0)){grMotherPdgId_I = jetGrMother->pdgId();}
+      
+        
         // Fill output object	
         new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(j.px(), j.py(), j.pz(), j.energy());
         rawPt  -> push_back (j.pt()*j.jecFactor("Uncorrected"));
@@ -43,6 +68,9 @@ int NeroJets::analyze(const edm::Event& iEvent){
         bDiscr -> push_back( j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") );
         qgl     -> push_back( qgLikelihood );
         flavour -> push_back( j.partonFlavour() );
+        matchedPartonPdgId -> push_back( jetMatchedPartonPdgId_I );
+        motherPdgId -> push_back( motherPdgId_I );
+        grMotherPdgId -> push_back( grMotherPdgId_I );
         mjId       -> push_back( JetId(j,"monojet"));
         mjId_loose -> push_back( JetId(j,"monojetloose"));
     }

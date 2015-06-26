@@ -7,6 +7,9 @@ BareJets::BareJets(){
     unc     = NULL;
     qgl     = NULL;
     flavour = NULL;
+    matchedPartonPdgId = NULL;
+    motherPdgId = NULL;
+    grMotherPdgId = NULL;
     mjId    = NULL;
     mjId_loose  = NULL;
 }
@@ -23,6 +26,9 @@ void BareJets::clear(){
     unc -> clear();
     qgl -> clear();
     flavour -> clear();
+    matchedPartonPdgId -> clear();
+    motherPdgId -> clear();
+    grMotherPdgId -> clear();
     mjId -> clear();
     mjId_loose -> clear();
 }
@@ -50,6 +56,15 @@ void BareJets::defineBranches(TTree *t){
     flavour = new vector<int>;
     t->Branch("jetFlavour","vector<int>",&flavour);
 
+    matchedPartonPdgId = new vector<int>;
+    t->Branch("jetMatchedPartonPdgId","vector<int>",&matchedPartonPdgId);
+
+    motherPdgId = new vector<int>;
+    t->Branch("jetMotherPdgId","vector<int>",&motherPdgId);
+
+    grMotherPdgId = new vector<int>;
+    t->Branch("jetGrMotherPdgId","vector<int>",&grMotherPdgId);
+
     mjId = new vector<bool>;
     t->Branch("jetMonojetId","vector<bool>",&mjId);
 
@@ -73,6 +88,12 @@ void BareJets::setBranchAddresses(TTree*t)
     t->SetBranchAddress("jetQGL"	,&qgl);
     flavour = new vector<int>;
     t->SetBranchAddress("jetFlavour"	,&flavour);
+    matchedPartonPdgId = new vector<int>;
+    t->SetBranchAddress("jetMatchedPartonPdgId", &matchedPartonPdgId);
+    motherPdgId = new vector<int>;
+    t->SetBranchAddress("jetMotherPdgId", &motherPdgId);
+    grMotherPdgId = new vector<int>;
+    t->SetBranchAddress("jetGrMotherPdgId", &grMotherPdgId);
     mjId= new vector<bool>;
     t->SetBranchAddress("jetMonojetId", &mjId);
     mjId_loose= new vector<bool>;
