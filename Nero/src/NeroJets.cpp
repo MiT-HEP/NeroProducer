@@ -56,10 +56,11 @@ int NeroJets::analyze(const edm::Event& iEvent){
         int jetMatchedPartonPdgId_I = 0;
         int motherPdgId_I = 0;
         int grMotherPdgId_I = 0;
-        if(!(jetGen == NULL)){jetMatchedPartonPdgId_I = jetGen->pdgId();}
-        if(!(jetMother == 0)){motherPdgId_I = jetMother->pdgId();}
-        if(!(jetGrMother == 0)){grMotherPdgId_I = jetGrMother->pdgId();}
-      
+        if( IsExtendJetInfo() ){           
+            if(!(jetGen == NULL)){jetMatchedPartonPdgId_I = jetGen->pdgId();}
+            if(!(jetMother == 0)){motherPdgId_I = jetMother->pdgId();}
+            if(!(jetGrMother == 0)){grMotherPdgId_I = jetGrMother->pdgId();}
+        }
         
         // Fill output object	
         new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(j.px(), j.py(), j.pz(), j.energy());
@@ -68,9 +69,11 @@ int NeroJets::analyze(const edm::Event& iEvent){
         bDiscr -> push_back( j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") );
         qgl     -> push_back( qgLikelihood );
         flavour -> push_back( j.partonFlavour() );
-        matchedPartonPdgId -> push_back( jetMatchedPartonPdgId_I );
-        motherPdgId -> push_back( motherPdgId_I );
-        grMotherPdgId -> push_back( grMotherPdgId_I );
+        if( IsExtendJetInfo() ){
+            matchedPartonPdgId -> push_back( jetMatchedPartonPdgId_I );
+            motherPdgId -> push_back( motherPdgId_I );
+            grMotherPdgId -> push_back( grMotherPdgId_I );
+        }
         mjId       -> push_back( JetId(j,"monojet"));
         mjId_loose -> push_back( JetId(j,"monojetloose"));
     }

@@ -25,6 +25,7 @@ nero.minTauN   = cms.int32  (0)
 nero.minTauId  = cms.string ('decayModeFindingNewDMs')
 nero.maxTauIso = cms.double (-1)
 nero.extendTau = cms.bool(True)
+nero.extendChHiggsJetGenInfo = cms.bool(True)
 
 nero.minGenParticlePt = cms.double(5.)
 nero.minGenJetPt = cms.double(20.)

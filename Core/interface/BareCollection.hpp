@@ -17,6 +17,7 @@ class BareCollection
 {
     protected:
         bool extend_;  // for collection switch to a more inclusive mode
+        bool extendJetInfo_;
     public:
         BareCollection(){ extend_=false;}
         virtual void clear() = 0;
@@ -25,7 +26,9 @@ class BareCollection
         virtual string name() = 0;
         
         inline void SetExtend(bool value=true){extend_=value;}
+        inline void SetExtendJetInfo(bool value=true){extendJetInfo_=value;}
         inline bool IsExtend(){return extend_;}
+        inline bool IsExtendJetInfo(){return extendJetInfo_;}
 };
 
 #endif

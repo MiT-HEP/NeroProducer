@@ -1,0 +1,102 @@
+Sender: LSF System <lsfadmin@b6550a7aab.cern.ch>
+Subject: Job 671072114: <chargedHiggs2_65> in cluster batch Done
+
+Job <chargedHiggs2_65> was submitted from host <lxplus0034.cern.ch> by user <jsalfeld> in cluster <batch>.
+Job was executed on host(s) <b6550a7aab.cern.ch>, in queue <8nh>, as user <jsalfeld> in cluster <batch>.
+</afs/cern.ch/user/j/jsalfeld> was used as the home directory.
+</afs/cern.ch/work/j/jsalfeld/MIT/vdmAnalysis/CMSSW_7_4_5/src/NeroProducer/Nero> was used as the working directory.
+Started at Fri Jun 26 03:37:52 2015
+Results reported at Fri Jun 26 03:43:08 2015
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+/afs/cern.ch/work/j/jsalfeld/MIT/vdmAnalysis/CMSSW_7_4_5/src/NeroProducer/Nero/chargedHiggs2/sub_65.sh
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time   :     68.17 sec.
+    Max Memory :       539 MB
+    Max Swap   :      1015 MB
+
+    Max Processes  :         8
+    Max Threads    :        14
+
+The output (if any) follows:
+
+@(#)CERN job starter $Date: 2010/06/23 14:22:16 $
+Working directory is </pool/lsf/jsalfeld/671072114> on <b6550a7aab.cern.ch>
+
+rm: cannot remove `sub_65.fail': No such file or directory
+rm: cannot remove `sub_65.done': No such file or directory
+rm: cannot remove `sub_65.txt': No such file or directory
+Added 'egmGsfElectronIDs' to process definition (MiniAOD format)!
+Added ID 'cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-loose' to egmGsfElectronIDs
+Added ID 'cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-medium' to egmGsfElectronIDs
+Added ID 'cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-tight' to egmGsfElectronIDs
+Added ID 'cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-veto' to egmGsfElectronIDs
+Added 'egmPhotonIDs' to process definition (MiniAOD format)!
+Added ID 'cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-loose' to egmPhotonIDs
+Added ID 'cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-medium' to egmPhotonIDs
+Added ID 'cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-tight' to egmPhotonIDs
+ ------- LOADING CHARGED HIGGS CONFIGURATION -------- 
+26-Jun-2015 03:40:26 CEST  Initiating request to open file root://eoscms//eos/cms/store/user/arapyan/mc/SUSYGluGluToTBHPTohbbW/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2/MINIAODSIM2/MINIAOD_55.root?svcClass=default
+%MSG-w XrdAdaptor:  file_open 26-Jun-2015 03:40:27 CEST pre-events
+Data is served from cern.ch instead of original site eoscms
+%MSG
+26-Jun-2015 03:40:28 CEST  Successfully opened file root://eoscms//eos/cms/store/user/arapyan/mc/SUSYGluGluToTBHPTohbbW/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2/MINIAODSIM2/MINIAOD_55.root?svcClass=default
+[NeroTrigger]::[NeroTrigger]::[WARNING] Trigger matching based on object and best DR. No official tools yet.
+Begin processing the 1st record. Run 1, Event 1, LumiSection 55 at 26-Jun-2015 03:41:50.747 CEST
+26-Jun-2015 03:42:25 CEST  Closed file root://eoscms//eos/cms/store/user/arapyan/mc/SUSYGluGluToTBHPTohbbW/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2/MINIAODSIM2/MINIAOD_55.root?svcClass=default
+26-Jun-2015 03:42:25 CEST  Initiating request to open file root://eoscms//eos/cms/store/user/arapyan/mc/SUSYGluGluToTBHPTohbbW/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2/MINIAODSIM2/MINIAOD_56.root?svcClass=default
+%MSG-w XrdAdaptor:  file_open 26-Jun-2015 03:42:25 CEST PostProcessEvent
+Data is served from cern.ch instead of original site eoscms
+%MSG
+26-Jun-2015 03:42:25 CEST  Successfully opened file root://eoscms//eos/cms/store/user/arapyan/mc/SUSYGluGluToTBHPTohbbW/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2/MINIAODSIM2/MINIAOD_56.root?svcClass=default
+26-Jun-2015 03:42:33 CEST  Closed file root://eoscms//eos/cms/store/user/arapyan/mc/SUSYGluGluToTBHPTohbbW/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2/MINIAODSIM2/MINIAOD_56.root?svcClass=default
+26-Jun-2015 03:42:33 CEST  Initiating request to open file root://eoscms//eos/cms/store/user/arapyan/mc/SUSYGluGluToTBHPTohbbW/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2/MINIAODSIM2/MINIAOD_57.root?svcClass=default
+%MSG-w XrdAdaptor:  file_open 26-Jun-2015 03:42:33 CEST PostProcessEvent
+Data is served from cern.ch instead of original site eoscms
+%MSG
+26-Jun-2015 03:42:33 CEST  Successfully opened file root://eoscms//eos/cms/store/user/arapyan/mc/SUSYGluGluToTBHPTohbbW/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2/MINIAODSIM2/MINIAOD_57.root?svcClass=default
+26-Jun-2015 03:42:41 CEST  Closed file root://eoscms//eos/cms/store/user/arapyan/mc/SUSYGluGluToTBHPTohbbW/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2/MINIAODSIM2/MINIAOD_57.root?svcClass=default
+26-Jun-2015 03:42:41 CEST  Initiating request to open file root://eoscms//eos/cms/store/user/arapyan/mc/SUSYGluGluToTBHPTohbbW/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2/MINIAODSIM2/MINIAOD_58.root?svcClass=default
+%MSG-w XrdAdaptor:  file_open 26-Jun-2015 03:42:42 CEST PostProcessEvent
+Data is served from cern.ch instead of original site eoscms
+%MSG
+26-Jun-2015 03:42:42 CEST  Successfully opened file root://eoscms//eos/cms/store/user/arapyan/mc/SUSYGluGluToTBHPTohbbW/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2/MINIAODSIM2/MINIAOD_58.root?svcClass=default
+Begin processing the 1001st record. Run 1, Event 101, LumiSection 58 at 26-Jun-2015 03:42:45.964 CEST
+in begin Run  intXS/extXSLO/extXSNLO 0.0741481/1/-1
+26-Jun-2015 03:42:50 CEST  Closed file root://eoscms//eos/cms/store/user/arapyan/mc/SUSYGluGluToTBHPTohbbW/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2/MINIAODSIM2/MINIAOD_58.root?svcClass=default
+
+=============================================
+
+MessageLogger Summary
+
+ type     category        sev    module        subroutine        count    total
+ ---- -------------------- -- ---------------- ----------------  -----    -----
+    1 XrdAdaptor           -w file_open                              4        4
+    2 fileAction           -s file_close                             4        4
+    3 fileAction           -s file_open                              8        8
+
+ type    category    Examples: run/evt        run/evt          run/evt
+ ---- -------------------- ---------------- ---------------- ----------------
+    1 XrdAdaptor           pre-events       PostProcessEvent PostProcessEvent
+    2 fileAction           PostProcessEvent PostProcessEvent PostEndRun
+    3 fileAction           pre-events       pre-events       PostProcessEvent
+
+Severity    # Occurrences   Total Occurrences
+--------    -------------   -----------------
+Warning                 4                   4
+System                 12                  12
+exit status is 0
+
+Job finished at Fri Jun 26 03:42:59 CEST 2015 on node 
+ under linux version Scientific Linux CERN SLC release 6.6 (Carbon)
+
+CERN statistics: This process used approximately : 0:02:58 KSI2K hours (178 KSI2K seconds)
+                 This process corresponds to     : 0:11:34 HS06  hours (694 HS06  seconds)
