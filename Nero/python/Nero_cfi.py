@@ -43,6 +43,7 @@ nero = cms.EDAnalyzer("Nero",
     minJetEta = cms.double (2.5),
     minJetN   = cms.int32  (0),
     minJetId  = cms.string ('loose'),
+    extendChHiggsJetGenInfo = cms.bool(False),
 
     minElePt  = cms.double (10.),
     minEleEta = cms.double (2.5),
