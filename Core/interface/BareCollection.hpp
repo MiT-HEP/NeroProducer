@@ -17,7 +17,6 @@ class BareCollection
 {
     protected:
         bool extend_;  // for collection switch to a more inclusive mode
-        bool extendJetInfo_;
     public:
         BareCollection(){ extend_=false;}
         virtual void clear() = 0;
