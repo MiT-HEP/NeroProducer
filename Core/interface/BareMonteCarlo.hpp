@@ -33,6 +33,7 @@ class BareMonteCarlo : virtual public BareCollection
         int   pdf1Id   ;
         int   pdf2Id   ;
         float scalePdf ;
+        
 
 };
 #endif

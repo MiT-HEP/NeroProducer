@@ -47,6 +47,11 @@ Implementation:
 Nero::Nero(const edm::ParameterSet& iConfig) 
 
 {
+
+    tag_  = iConfig.getParameter<string>("tag");
+    head_ = iConfig.getParameter<string>("head");
+    info_ = iConfig.getParameter<string>("info");
+
     bool onlyMc = iConfig.getParameter<bool>("onlyMc");
 
     // not push_back inline because he needs to know the class type for init
@@ -70,7 +75,6 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     jets -> mMinNjets = iConfig.getParameter<int>("minJetN");
     jets -> mMinEta = iConfig.getParameter<double>("minJetEta");
     jets -> mMinId = iConfig.getParameter<string>("minJetId");
-
     obj.push_back(jets);
 
     // --- 
@@ -229,6 +233,10 @@ Nero::beginJob()
     tree_    = fileService_ -> make<TTree>("events", "events");
     all_     = fileService_ -> make<TTree>("all", "all");	  
     hXsec_   = fileService_ -> make<TH1F>("xSec", "xSec",20,-0.5,19.5); hXsec_ ->Sumw2();
+
+    fileService_ ->make<TNamed>("tag",tag_.c_str() );
+    fileService_ ->make<TNamed>("head",head_.c_str() );
+    fileService_ ->make<TNamed>("info",info_.c_str() );
 
     // FILL TRIGGER NAMES INFO
     string myString = "";

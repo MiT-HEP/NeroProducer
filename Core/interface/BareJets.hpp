@@ -22,6 +22,9 @@ class BareJets : virtual public BareCollection
         vector<float> *unc;
         vector<float> *qgl;
         vector<int>   *flavour;
+        vector<int>   *matchedPartonPdgId;
+        vector<int>   *motherPdgId;
+        vector<int>   *grMotherPdgId;
         vector<bool>  *mjId;
         vector<bool>  *mjId_loose;
 
