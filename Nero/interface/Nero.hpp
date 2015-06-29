@@ -50,7 +50,11 @@ class Nero : public edm::EDAnalyzer {
         //NeroJets    *jets_;
         //NeroTaus	  *taus_;
         //NeroLeptons *leps_;
-
+        
+        // GIT TAG AND INFO
+        string tag_; // last tag
+        string head_; // head
+        string info_; // bare config, ch Higgs, monojet
 };
 
 
