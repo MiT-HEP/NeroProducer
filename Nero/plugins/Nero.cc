@@ -70,7 +70,6 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     jets -> mMinNjets = iConfig.getParameter<int>("minJetN");
     jets -> mMinEta = iConfig.getParameter<double>("minJetEta");
     jets -> mMinId = iConfig.getParameter<string>("minJetId");
-    jets -> SetExtendJetInfo (iConfig.getParameter<bool>("extendChHiggsJetGenInfo") );
     obj.push_back(jets);
 
     // --- 

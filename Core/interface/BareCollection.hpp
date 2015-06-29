@@ -26,9 +26,7 @@ class BareCollection
         virtual string name() = 0;
         
         inline void SetExtend(bool value=true){extend_=value;}
-        inline void SetExtendJetInfo(bool value=true){extendJetInfo_=value;}
         inline bool IsExtend(){return extend_;}
-        inline bool IsExtendJetInfo(){return extendJetInfo_;}
 };
 
 #endif

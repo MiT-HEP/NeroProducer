@@ -50,16 +50,19 @@ int NeroJets::analyze(const edm::Event& iEvent){
         float qgLikelihood = (*qg_handle)[jetRef];
 
         // Generator-level Info [Charged-H specific]
-        const reco::Candidate * jetGen = j.genParton();
-        const reco::Candidate * jetMother = getMother(jetGen);
-        const reco::Candidate * jetGrMother = getMother(jetMother);
         int jetMatchedPartonPdgId_I = 0;
         int motherPdgId_I = 0;
         int grMotherPdgId_I = 0;
-        if( IsExtendJetInfo() ){           
+        int jetFlavour_I = 0;
+
+        if( not iEvent.isRealData() ){           
+            const reco::Candidate * jetGen = j.genParton();
+            const reco::Candidate * jetMother = getMother(jetGen);
+            const reco::Candidate * jetGrMother = getMother(jetMother);
             if(!(jetGen == NULL)){jetMatchedPartonPdgId_I = jetGen->pdgId();}
             if(!(jetMother == 0)){motherPdgId_I = jetMother->pdgId();}
             if(!(jetGrMother == 0)){grMotherPdgId_I = jetGrMother->pdgId();}
+            jetFlavour_I = j.partonFlavour();
         }
         
         // Fill output object	
@@ -68,12 +71,10 @@ int NeroJets::analyze(const edm::Event& iEvent){
         puId   -> push_back (j.userFloat("pileupJetId:fullDiscriminant") );
         bDiscr -> push_back( j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") );
         qgl     -> push_back( qgLikelihood );
-        flavour -> push_back( j.partonFlavour() );
-        if( IsExtendJetInfo() ){
-            matchedPartonPdgId -> push_back( jetMatchedPartonPdgId_I );
-            motherPdgId -> push_back( motherPdgId_I );
-            grMotherPdgId -> push_back( grMotherPdgId_I );
-        }
+        flavour -> push_back( jetFlavour_I );
+        matchedPartonPdgId -> push_back( jetMatchedPartonPdgId_I );
+        motherPdgId -> push_back( motherPdgId_I );
+        grMotherPdgId -> push_back( grMotherPdgId_I );
         mjId       -> push_back( JetId(j,"monojet"));
         mjId_loose -> push_back( JetId(j,"monojetloose"));
     }
