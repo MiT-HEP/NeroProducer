@@ -60,30 +60,36 @@ def PrintSummary(dir, doPrint=True):
         run  = glob(dir + "/*run")
         fail = glob(dir + "/*fail")
         done = glob(dir + "/*done")
+        pend = glob(dir + "/*pend")
 
         ## bash color string
         red="\033[01;31m"
         green = "\033[01;32m"
         yellow = "\033[01;33m"
+	blue = "\033[01;34m"
+	pink = "\033[01;35m"
+	cyan = "\033[01;36m"
         white = "\033[00m"
 
         run = [ re.sub('\.run','' , re.sub('.*/sub_','', r) ) for r in run ]
         fail = [ re.sub('\.fail','' , re.sub('.*/sub_','', r) ) for r in fail ]
         done = [ re.sub('\.done','' , re.sub('.*/sub_','', r) ) for r in done ]
+        pend = [ re.sub('\.pend','' , re.sub('.*/sub_','', r) ) for r in pend ]
 
         if opts.dir[-1] == '/' : opts.dir = opts.dir[:-1]
-        pend = int(check_output( "bjobs -w | grep '%s' | grep 'PEND' | wc -l "%opts.dir, shell=True))
+        #pend = int(check_output( "bjobs -w | grep '%s' | grep 'PEND' | wc -l "%opts.dir, shell=True))
 
-        tot = len(run) + len(fail) + len(done) + pend
+        tot = len(run) + len(fail) + len(done) + len(pend)
 
         color = red
-        if len(run) > len(fail) and len(run) > len(done) : color= yellow
+        if len(run) > len(fail) and len(run) > len(pend) : color= yellow
+	if len(pend) > len(run) and len(pend) > len(fail) : color=cyan
         if len(done) == tot and tot >0 : color = green
 
         if doPrint:
                 print " ----  Directory "+ color+opts.dir+white+" --------"
-                print " Pend: " + yellow + "%3d"%pend  + " / " + str(tot) + white
-                print " Run : " + yellow + "%3d"%len(run) + " / "  + str(tot) + white + " : " + PrintLine(run)  ### + ",".join(run)  + "|" 
+		print " Pend: " + yellow + "%3d"%len(pend) + " / " + str(tot) + white + " : " + PrintLine(pend)
+                print " Run : " + yellow + "%3d"%len(run)  + " / " + str(tot) + white + " : " + PrintLine(run)  ### + ",".join(run)  + "|" 
                 print " Fail: " + red    + "%3d"%len(fail) + " / " + str(tot) + white + " : " + PrintLine(fail) ### + ",".join(fail) + "|" 
                 print " Done: " + green  + "%3d"%len(done) + " / " + str(tot) + white + " : " + PrintLine(done) ### + ",".join(done) + "|" 
                 print " -------------------------------------"
@@ -128,11 +134,13 @@ def chunksNum( l, tot):
 def submit(list, queue = "1nh", name = "job"):
     """ Submit the jobs in the list """
     for sh in list:
+	cmd = "touch "+ re.sub(".sh$",".pend",sh)
+	call(cmd,shell = True)
     	cmd = "bsub -q " + queue + " -o " + re.sub(".sh$",".txt",sh) + " -J "+name + re.sub(".*sub","",re.sub(".sh","",sh)) + " "+ sh
 	call(cmd, shell = True)
     
 if opts.onlysubmit:
-	if opts.jobId != "" and opts.jobId != "all" and opts.jobId != "fail" :
+	if opts.jobId != "" and opts.jobId != "all" and opts.jobId != "fail" and opts.jobId != "run":
 		toBeSubmitted = []
 		for num in opts.jobId.split(","):
 			toBeSubmitted.append( os.environ['PWD'] + "/" + opts.dir + "/sub_%s.sh"%num )
@@ -140,6 +148,15 @@ if opts.onlysubmit:
 		list = glob(os.environ['PWD'] + "/" + opts.dir + "/*.fail" )
 		toBeSubmitted = [ re.sub('.fail','.sh',f) for f in list ]
 		# promptly remove .fail
+		if len(toBeSubmitted) == 0 :
+			print "Nothing to submit"
+			exit(0)
+		cmd = "rm -v " + " ".join(list)
+		call(cmd, shell= True)
+	elif opts.jobId == "run":
+		list = glob(os.environ['PWD'] + "/" + opts.dir + "/*.run" )
+		toBeSubmitted = [ re.sub('.run','.sh',f) for f in list ]
+		# promptly remove .run
 		if len(toBeSubmitted) == 0 :
 			print "Nothing to submit"
 			exit(0)
@@ -184,6 +201,8 @@ for idx,fl in enumerate(fileChunks):
 	psetFileName = "NeroProducer_%d.py"%(idx)
 	pset = opts.dir + "/" + psetFileName 
 	#create file .sh
+	call("touch %s/sub_%d.pend"%(opts.dir,idx) ,shell=True)
+
 	sh = open( opts.dir + "/" + "sub_%d.sh"%idx, "w")
 	print >> sh, "#!/bin/bash"
 	print >> sh, '[ "${WORKDIR}" == "" ] && { mkdir -p /tmp/$USER/ ; export WORKDIR=/tmp/${USER}/; }'
@@ -193,6 +212,7 @@ for idx,fl in enumerate(fileChunks):
 	print >> sh, "cd " + opts.dir
 	print >> sh, 'rm sub_%d.fail || true'%idx
 	print >> sh, 'rm sub_%d.done || true'%idx
+	print >> sh, 'rm sub_%d.pend || true'%idx
 	print >> sh, 'rm sub_%d.txt || true'%idx
 	print >> sh, 'touch sub_%d.run'%idx
 	print >> sh, 'cd $WORKDIR'
@@ -203,7 +223,7 @@ for idx,fl in enumerate(fileChunks):
 	print >> sh, 'rm sub_%d.run'%idx
 	print >> sh, 'echo "exit status is ${EXIT}"'
 	if opts.put != "":
-		print >> sh, '[ "${EXIT}" == "0" ] && { cmsMkdir ' + opts.put +'  && cmsStage ${WORKDIR}/NeroNtuples.root ' + opts.put + '/NeroNtuples_%(idx)d.root  && touch sub_%(idx)d.done || echo "cmsStage fail" > sub_%(idx)d.fail; }'%{'idx':idx}
+		print >> sh, '[ "${EXIT}" == "0" ] && { cmsMkdir ' + opts.put +'  && cmsStage -f ${WORKDIR}/NeroNtuples.root ' + opts.put + '/NeroNtuples_%(idx)d.root  && touch sub_%(idx)d.done || echo "cmsStage fail" > sub_%(idx)d.fail; }'%{'idx':idx}
 	else:
 		print >> sh, '[ "${EXIT}" == "0" ] && { cp ${WORKDIR}/NeroNtuples.root ./NeroNtuples_%(idx)d.root && touch sub_%(idx)d.done || echo "cp fail" > sub_%(idx)d.fail ; }'%{'idx':idx}
 
