@@ -1,11 +1,21 @@
 #include "NeroProducer/Nero/interface/NeroMatching.hpp"
 
+//#define VERBOSE 1
+
 void Matcher::match(TClonesArray*a,TClonesArray*b,vector<int>&r, vector<int> *pdgIdB , int pdgId)
 {
     r.clear();	
     int sizeA = a->GetEntries();
     r.reserve( sizeA );
     int sizeB = b->GetEntries();
+
+    if(pdgIdB != NULL ) 
+        {
+        if (pdgIdB -> size()  != (unsigned)sizeB ) 
+            cout<<"[Matcher]::[match]::[ERROR] pdgIdB size is "
+                <<pdgIdB->size()
+                <<" while clones array has size "<<sizeB <<endl;
+        }
 
     for( int i=0; i < sizeA ; ++i )
     {
@@ -40,13 +50,19 @@ void Matcher::match(BareP4*a,BareP4*b,vector<int>&r)
 
 int NeroMatching::analyze(const edm::Event& iEvent)
 {
+    #ifdef VERBOSE
+        if (VERBOSE) cout <<"[NeroMatching]::[analyze] Matching jets"<<endl;
+    #endif
     if (jets_->doMatch()) matcher_ . match( jets_ -> p4, mc_ -> jetP4 , * (jets_->match) );
     // -------------
+    #ifdef VERBOSE
+        if (VERBOSE) cout <<"[NeroMatching]::[analyze] Matching leptons"<<endl;
+    #endif
     if (leps_->doMatch()) {
         vector<int> ele;
         vector<int> muon;
-        matcher_ . match( leps_ -> p4, mc_ -> jetP4 , ele, mc_ -> pdgId , 11 );
-        matcher_ . match( leps_ -> p4, mc_ -> jetP4 , muon, mc_ -> pdgId , 13 );
+        matcher_ . match( leps_ -> p4, mc_ -> p4 , ele, mc_ -> pdgId , 11 );
+        matcher_ . match( leps_ -> p4, mc_ -> p4 , muon, mc_ -> pdgId , 13 );
         for(unsigned i=0;i< ele.size() ;++i)
             {
                 if( ele[i] == -2 or muon[i] == -2) leps_->match->push_back(-2);
@@ -58,9 +74,15 @@ int NeroMatching::analyze(const edm::Event& iEvent)
         }
 
     // -------------
+    #ifdef VERBOSE
+        if (VERBOSE) cout <<"[NeroMatching]::[analyze] Matching photons"<<endl;
+    #endif
     if (phos_->doMatch()) matcher_ . match( phos_ -> p4, mc_ -> p4 , * (phos_->match) , mc_->pdgId, 22);
 
     // -------------
+    #ifdef VERBOSE
+        if (VERBOSE) cout <<"[NeroMatching]::[analyze] Matching taus"<<endl;
+    #endif
     if (taus_->doMatch()) matcher_ . match( taus_ -> p4, mc_ -> p4 , * (taus_->match) , mc_->pdgId, 15);
 
     // -------------

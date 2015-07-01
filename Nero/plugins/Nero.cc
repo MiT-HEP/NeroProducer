@@ -218,22 +218,48 @@ Nero::~Nero()
 Nero::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
     using namespace edm;
-    if (VERBOSE) cout<<"------- begin event --------"<<endl;
+    if (VERBOSE>1) cout<<"------- begin event --------"<<endl;
 
     for(auto o : obj)
         o->clear();
 
+    if (VERBOSE>1) cout<<"------- analyze event --------"<<endl;
     for(auto o : obj)
     {
         if (VERBOSE){sw_.Reset(); sw_.Start();}
 
         if (o->analyze(iEvent) ) return; // analyze return 0 on success (VTX ..)
 
-        if (VERBOSE){sw_.Stop(); cout<< "[Nero]::[analyze] object "<<o->name()<<" took:"<< sw_.CpuTime()<< "CPU Time and "<<sw_.RealTime()<<"RealTime"<<endl;}
+        if (VERBOSE)
+        {
+            sw_.Stop(); 
+            times_[o->name()] += sw_.CpuTime() ;
+        }
+        if(VERBOSE>1)
+        {
+            cout<< "[Nero]::[analyze] object "<<o->name()
+                <<" took:"<< sw_.CpuTime()<< "CPU Time and "
+                <<sw_.RealTime()<<"RealTime"<<endl;
+        }
     }
 
+    if (VERBOSE>1) cout<<"------- fill event --------"<<endl;
     tree_->Fill();
-    if (VERBOSE) cout<<"------- end event (success) --------"<<endl;
+    if (VERBOSE>1) cout<<"------- end event (success) --------"<<endl;
+    if (VERBOSE){
+        times_[ "counter" ] +=1;
+        if(times_[ "counter"] > 3000 )
+        {
+            cout<< " --- CPU TIMES ----" <<endl;
+            for(auto &x : times_)
+            {
+                cout << x.first <<": "<<x.second<<endl;
+                x.second = 0;
+            }
+            cout<< " ------------" <<endl;
+            times_[ "counter"] = 0;
+        }
+    } // end VERBOSE
 
 }
 
