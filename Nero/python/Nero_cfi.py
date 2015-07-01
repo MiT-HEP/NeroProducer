@@ -50,6 +50,7 @@ nero = cms.EDAnalyzer("Nero",
     minJetEta = cms.double (2.5),
     minJetN   = cms.int32  (0),
     minJetId  = cms.string ('loose'),
+    matchJets = cms.bool (True),
 
     minElePt  = cms.double (10.),
     minEleEta = cms.double (2.5),
@@ -60,6 +61,7 @@ nero = cms.EDAnalyzer("Nero",
     maxMuIso  = cms.double (0.2),
    
     minLepN   = cms.int32 (0),
+    matchLeps = cms.bool (True),
 
     minTauPt  = cms.double (18.),
     minTauEta = cms.double (2.3),
@@ -67,6 +69,7 @@ nero = cms.EDAnalyzer("Nero",
     minTauId  = cms.string ('decayModeFindingNewDMs'),
     maxTauIso = cms.double (-1),
     extendTau = cms.bool(False),
+    matchTaus = cms.bool (True),
 
     minGenParticlePt = cms.double(5.),
     minGenJetPt = cms.double(20.),
@@ -75,5 +78,6 @@ nero = cms.EDAnalyzer("Nero",
     minPhoEta = cms.double (2.5),
     minPhoN   = cms.int32  (0),
     maxPhoIso = cms.double (-1.),
+    matchPhos = cms.bool (False),
 )
 #------------------------------------------------------

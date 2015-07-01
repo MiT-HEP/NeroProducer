@@ -2,8 +2,10 @@
 #define BARE_LEPTONS_H
 
 #include "NeroProducer/Core/interface/BareCollection.hpp"
+#include "NeroProducer/Core/interface/BareP4.hpp"
 
-class BareLeptons : virtual public BareCollection
+class BareLeptons : virtual public BareCollection,
+    virtual public BareP4
 {
     public:
         BareLeptons();
@@ -13,7 +15,7 @@ class BareLeptons : virtual public BareCollection
         void setBranchAddresses(TTree*);
         virtual inline string name(){return "BareLeptons";};
         // ----
-        TClonesArray  *p4;
+        //TClonesArray  *p4;
         vector<int>   *pdgId;	
         vector<float> *iso;	
         vector<int>   *tightId;	

@@ -2,9 +2,11 @@
 #define BARE_MONTECARLO_H
 
 #include "NeroProducer/Core/interface/BareCollection.hpp"
+#include "NeroProducer/Core/interface/BareP4.hpp"
 
 
-class BareMonteCarlo : virtual public BareCollection
+class BareMonteCarlo : virtual public BareCollection,
+    virtual public BareP4
 {
     public:
         BareMonteCarlo();
@@ -15,7 +17,7 @@ class BareMonteCarlo : virtual public BareCollection
         virtual inline string name(){return "BareMonteCarlo";};
 
         // -- variables
-        TClonesArray *p4; // gen particles
+        //TClonesArray *p4; // gen particles
         vector<int>  *pdgId;
 
         // genjets

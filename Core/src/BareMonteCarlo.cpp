@@ -11,7 +11,7 @@ BareMonteCarlo::~BareMonteCarlo(){
 
 void BareMonteCarlo::clear(){
     // This function clear all the internal storage and init it to an arbitrary value
-    p4 -> Clear();
+    BareP4::clear();
     pdgId -> clear();
     jetP4 -> Clear();
     puTrueInt = -999;
@@ -28,11 +28,10 @@ void BareMonteCarlo::clear(){
 
 void BareMonteCarlo::defineBranches(TTree *t){
     //
+    BareP4::defineBranches(t, "gen" );
+    //
     jetP4 = new TClonesArray("TLorentzVector", 20);
     t->Branch("genjetP4","TClonesArray", &jetP4, 128000, 0);
-    //
-    p4 = new TClonesArray("TLorentzVector", 20);
-    t->Branch("genP4","TClonesArray", &p4, 128000, 0);
     //
     pdgId = new vector<int>;
     t->Branch("genPdgId","vector<int>", &pdgId);
@@ -50,11 +49,10 @@ void BareMonteCarlo::defineBranches(TTree *t){
 }
 
 void BareMonteCarlo::setBranchAddresses(TTree *t){
+    BareP4::setBranchAddresses(t,"gen");
     //
     jetP4 = new TClonesArray("TLorentzVector", 20);
     t->SetBranchAddress("genjetP4"	, &jetP4 );
-    p4 = new TClonesArray("TLorentzVector", 20);
-    t->SetBranchAddress("genP4"	, &p4	);
     pdgId = new vector<int>;
     t->SetBranchAddress("genPdgId"	, &pdgId);
     //

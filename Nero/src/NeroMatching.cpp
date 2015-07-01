@@ -1,0 +1,78 @@
+#include "NeroProducer/Nero/interface/NeroMatching.hpp"
+
+void Matcher::match(TClonesArray*a,TClonesArray*b,vector<int>&r, vector<int> *pdgIdB , int pdgId)
+{
+    r.clear();	
+    int sizeA = a->GetEntries();
+    r.reserve( sizeA );
+    int sizeB = b->GetEntries();
+
+    for( int i=0; i < sizeA ; ++i )
+    {
+        int  match = -1;
+        TLorentzVector* Ap4 =  (TLorentzVector*) ( (*a)[i] );
+        for(int j=0;j<sizeB;++j)
+        {
+            TLorentzVector* Bp4 =  (TLorentzVector*) ( (*b)[j] );
+            if (Ap4->DeltaR(*Bp4) < dR_ ) continue;
+
+            if (pdgIdB != NULL and pdgId !=0 )
+                {
+                if( abs(pdgIdB->at(j)) != pdgId ) continue;
+                }
+
+            if (match>=0 ) { match =-2; break;}
+            if (match == -1) match = j;
+        }
+        r.push_back(match);
+    }
+    return;
+}
+
+//vector<int>  *pdgId;
+//
+
+void Matcher::match(BareP4*a,BareP4*b,vector<int>&r)
+{
+    match( a->p4, b->p4, r);
+    return;
+}
+
+int NeroMatching::analyze(const edm::Event& iEvent)
+{
+    if (jets_->doMatch()) matcher_ . match( jets_ -> p4, mc_ -> jetP4 , * (jets_->match) );
+    // -------------
+    if (leps_->doMatch()) {
+        vector<int> ele;
+        vector<int> muon;
+        matcher_ . match( leps_ -> p4, mc_ -> jetP4 , ele, mc_ -> pdgId , 11 );
+        matcher_ . match( leps_ -> p4, mc_ -> jetP4 , muon, mc_ -> pdgId , 13 );
+        for(unsigned i=0;i< ele.size() ;++i)
+            {
+                if( ele[i] == -2 or muon[i] == -2) leps_->match->push_back(-2);
+                else if(ele[i] >=0 and muon[i] ==-1 ) leps_->match->push_back( ele[i] );
+                else if(muon[i] >=0 and ele[i] == -1 ) leps_->match->push_back(muon[i]) ;
+                else if(muon[i] >=0 and ele[i] >=0 ) leps_->match->push_back(-2);
+                else leps_->match->push_back(-1);
+            }
+        }
+
+    // -------------
+    if (phos_->doMatch()) matcher_ . match( phos_ -> p4, mc_ -> p4 , * (phos_->match) , mc_->pdgId, 22);
+
+    // -------------
+    if (taus_->doMatch()) matcher_ . match( taus_ -> p4, mc_ -> p4 , * (taus_->match) , mc_->pdgId, 15);
+
+    // -------------
+    return 0;
+
+}
+
+
+// Local Variables:
+// mode:c++
+// indent-tabs-mode:nil
+// tab-width:4
+// c-basic-offset:4
+// End:
+// vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4

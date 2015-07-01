@@ -19,7 +19,7 @@ BareTaus::~BareTaus(){
 }
 
 void BareTaus::clear(){
-    p4->Clear();
+    BareP4::clear();
     id->clear();
     Q->clear();
     M->clear();
@@ -37,8 +37,7 @@ void BareTaus::clear(){
 }
 
 void BareTaus::defineBranches(TTree *t){
-    p4 = new TClonesArray("TLorentzVector", 20);
-    t->Branch("tauP4","TClonesArray", &p4, 128000, 0);
+    BareP4::defineBranches(t, "tau" );
     //
     id = new vector<float>;
     t->Branch("tauId","vector<float>",&id);
@@ -73,8 +72,8 @@ void BareTaus::defineBranches(TTree *t){
 }
 
 void BareTaus::setBranchAddresses(TTree *t){
-    p4 = new TClonesArray("TLorentzVector", 20);
-    t->SetBranchAddress("tauP4"	,&p4);
+    BareP4::setBranchAddresses(t,"tau");
+
     id = new vector<float>;
     t->SetBranchAddress("tauId"	,&id);
     //

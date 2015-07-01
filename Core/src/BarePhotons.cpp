@@ -13,7 +13,7 @@ BarePhotons::~BarePhotons(){}
 
 void BarePhotons::clear(){
     // This function clear all the internal storage and init it to an arbitrary value
-    p4 -> Clear();
+    BareP4::clear();
     iso -> clear();
     sieie -> clear();
     tightid -> clear();
@@ -22,8 +22,7 @@ void BarePhotons::clear(){
 
 void BarePhotons::defineBranches(TTree *t){
     //
-    p4 = new TClonesArray("TLorentzVector", 20);
-    t->Branch("photonP4","TClonesArray", &p4, 128000, 0);
+    BareP4::defineBranches(t, "photon" );
     //
     iso = new vector<float>;
     t->Branch("photonIso","vector<float>",&iso);
@@ -40,8 +39,9 @@ void BarePhotons::defineBranches(TTree *t){
 }
 
 void BarePhotons::setBranchAddresses(TTree *t){
-    p4 = new TClonesArray("TLorentzVector", 20);
-    t->Branch("photonP4"	,&p4);
+
+    BareP4::setBranchAddresses(t,"photon");
+
     iso = new vector<float>;
     t->Branch("photonIso"	,&iso);
     sieie = new vector<float>;

@@ -2,8 +2,10 @@
 #define BARE_TAUS_H
 
 #include "NeroProducer/Core/interface/BareCollection.hpp"
+#include "NeroProducer/Core/interface/BareP4.hpp"
 
-class BareTaus : virtual public BareCollection
+class BareTaus : virtual public BareCollection,
+    virtual public BareP4
 {
     public:
         BareTaus();
@@ -14,7 +16,7 @@ class BareTaus : virtual public BareCollection
         virtual inline string name(){return "BareTaus";};
 
         // --  members
-        TClonesArray    *p4;
+        //TClonesArray    *p4;
         vector<float>   *id ; 
         vector<int>     *Q ; // charge
         vector<float>   *M ; // mass

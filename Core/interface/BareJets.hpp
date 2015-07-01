@@ -2,8 +2,10 @@
 #define BARE_JETS_H
 
 #include "NeroProducer/Core/interface/BareCollection.hpp"
+#include "NeroProducer/Core/interface/BareP4.hpp"
 
-class BareJets : virtual public BareCollection
+class BareJets : virtual public BareCollection, 
+    virtual public BareP4
 {
     public:
         BareJets();
@@ -14,8 +16,7 @@ class BareJets : virtual public BareCollection
         virtual inline string name(){ return "BareJets";}
 
         // -- variables
-        // -- variables
-        TClonesArray  *p4;
+        //TClonesArray  *p4;
         vector<float> *rawPt;
         vector<float> *bDiscr;
         vector<float> *puId;
