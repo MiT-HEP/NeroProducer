@@ -43,8 +43,9 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         float chiso  = mu.pfIsolationR04().sumChargedHadronPt;
         float niso   = mu.pfIsolationR04().sumNeutralHadronEt;
         float phoiso = mu.pfIsolationR04().sumPhotonEt;
-        float totiso = chiso + niso + phoiso;
-
+        float puiso = mu.pfIsolationR04().sumPUPt;
+        float totiso = chiso + TMath::Max(niso + phoiso - .5*puiso, 0. ) ;
+    
         if ( totiso/mu.pt() > mMaxIso_mu ) continue;
 
         myLepton l;
