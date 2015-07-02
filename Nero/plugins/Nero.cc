@@ -29,7 +29,7 @@ Implementation:
 #include "NeroProducer/Nero/interface/NeroMonteCarlo.hpp"
 #include "NeroProducer/Nero/interface/NeroAll.hpp"
 #include "NeroProducer/Nero/interface/NeroTrigger.hpp"
-
+#include "NeroProducer/Nero/interface/NeroMatching.hpp"
 
 #define VERBOSE 0
 
@@ -75,6 +75,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     jets -> mMinNjets = iConfig.getParameter<int>("minJetN");
     jets -> mMinEta = iConfig.getParameter<double>("minJetEta");
     jets -> mMinId = iConfig.getParameter<string>("minJetId");
+    jets -> SetMatch( iConfig.getParameter<bool>("matchJet") );
     obj.push_back(jets);
 
     // --- 
@@ -87,6 +88,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     taus -> mMinId = iConfig.getParameter<string>("minTauId");
     taus -> mMaxIso = iConfig.getParameter<double>("maxTauIso");
     taus -> SetExtend ( iConfig.getParameter<bool>("extendTau") );
+    taus -> SetMatch( iConfig.getParameter<bool>("matchTau") );
     obj.push_back(taus);
 
     //--
@@ -98,6 +100,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     leps -> el_vetoid_token = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleVetoIdMap"));
     leps -> el_mediumid_token = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMediumIdMap"));
     leps -> el_tightid_token = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleTightIdMap"));
+    leps -> SetMatch( iConfig.getParameter<bool>("matchLep") );
 
     //leps -> el_iso_ch_token  = consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("eleChargedIsolation") );
     //leps -> el_iso_nh_token  = consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("eleNeutralHadronIsolation") );
@@ -112,6 +115,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     leps -> mMaxIso_el = iConfig.getParameter<double>("maxEleIso");
 
     leps -> mMinNleptons = iConfig.getParameter<int>("minLepN");
+    leps -> SetMatch( iConfig.getParameter<bool>("matchLep") );
 
     obj. push_back(leps);
 
@@ -141,6 +145,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     phos -> mMaxIso = iConfig.getParameter<double>("maxPhoIso");
     phos -> mMinNpho = iConfig.getParameter<int>("minPhoN");
     phos -> mMinEta = iConfig.getParameter<double>("minPhoEta");
+    phos -> SetMatch( iConfig.getParameter<bool>("matchPho") );
 
     obj.push_back(phos);
 
@@ -157,6 +162,18 @@ Nero::Nero(const edm::ParameterSet& iConfig)
 
     obj.push_back(mc);
     runObj.push_back(mc);
+
+    NeroMatching *match = new NeroMatching();
+        match -> jets_ = jets;
+        match -> leps_ = leps;
+        match -> phos_ = phos;
+        match -> taus_ = taus;
+        match -> mc_ = mc;
+        match -> mTauDr = iConfig.getParameter<double>("matchTauDr");
+        match -> mJetDr = iConfig.getParameter<double>("matchJetDr");
+        match -> mLepDr = iConfig.getParameter<double>("matchLepDr");
+        match -> mPhoDr = iConfig.getParameter<double>("matchPhoDr");
+    obj.push_back(match);
 
     NeroTrigger *tr = new NeroTrigger();
     tr -> mOnlyMc = onlyMc;
@@ -205,22 +222,48 @@ Nero::~Nero()
 Nero::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
     using namespace edm;
-    if (VERBOSE) cout<<"------- begin event --------"<<endl;
+    if (VERBOSE>1) cout<<"------- begin event --------"<<endl;
 
     for(auto o : obj)
         o->clear();
 
+    if (VERBOSE>1) cout<<"------- analyze event --------"<<endl;
     for(auto o : obj)
     {
         if (VERBOSE){sw_.Reset(); sw_.Start();}
 
         if (o->analyze(iEvent) ) return; // analyze return 0 on success (VTX ..)
 
-        if (VERBOSE){sw_.Stop(); cout<< "[Nero]::[analyze] object "<<o->name()<<" took:"<< sw_.CpuTime()<< "CPU Time and "<<sw_.RealTime()<<"RealTime"<<endl;}
+        if (VERBOSE)
+        {
+            sw_.Stop(); 
+            times_[o->name()] += sw_.CpuTime() ;
+        }
+        if(VERBOSE>1)
+        {
+            cout<< "[Nero]::[analyze] object "<<o->name()
+                <<" took:"<< sw_.CpuTime()<< "CPU Time and "
+                <<sw_.RealTime()<<"RealTime"<<endl;
+        }
     }
 
+    if (VERBOSE>1) cout<<"------- fill event --------"<<endl;
     tree_->Fill();
-    if (VERBOSE) cout<<"------- end event (success) --------"<<endl;
+    if (VERBOSE>1) cout<<"------- end event (success) --------"<<endl;
+    if (VERBOSE){
+        times_[ "counter" ] +=1;
+        if(times_[ "counter"] > 3000 )
+        {
+            cout<< " --- CPU TIMES ----" <<endl;
+            for(auto &x : times_)
+            {
+                cout << x.first <<": "<<x.second<<endl;
+                x.second = 0;
+            }
+            cout<< " ------------" <<endl;
+            times_[ "counter"] = 0;
+        }
+    } // end VERBOSE
 
 }
 

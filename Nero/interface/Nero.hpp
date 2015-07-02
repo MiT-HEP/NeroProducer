@@ -46,6 +46,7 @@ class Nero : public edm::EDAnalyzer {
 
         // check performances
         TStopwatch sw_;
+        map<string,float> times_;
 
         //NeroJets    *jets_;
         //NeroTaus	  *taus_;

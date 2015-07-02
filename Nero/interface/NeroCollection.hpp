@@ -23,6 +23,7 @@ class NeroCollection : virtual public BareCollection
         // -- configuration
         bool mOnlyMc; // NO RECO INFO
 };
+
 #endif
 // Local Variables:
 // mode:c++

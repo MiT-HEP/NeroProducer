@@ -2,9 +2,10 @@
 #define BARE_MET_H
 
 #include "NeroProducer/Core/interface/BareCollection.hpp"
+#include "NeroProducer/Core/interface/BareP4.hpp"
 
 
-class BareMet : virtual public BareCollection
+class BareMet : virtual public BareP4
 {
     public:
         BareMet();
@@ -15,7 +16,7 @@ class BareMet : virtual public BareCollection
         virtual inline string name(){return "BareMet";};
 
         // -- variables
-        TClonesArray *p4;
+        //TClonesArray *p4;
         vector<float> *ptJESUP;
         vector<float> *ptJESDOWN;
 

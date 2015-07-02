@@ -1,6 +1,7 @@
 #ifdef __CINT__
 
 #pragma link C++ class BareCollection+;
+#pragma link C++ class BareP4+;
 #pragma link C++ class BareEvent+;
 #pragma link C++ class BareFatJets+;
 #pragma link C++ class BareJets+;

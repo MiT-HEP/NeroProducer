@@ -2,9 +2,10 @@
 #define BARE_PHOTONS_H
 
 #include "NeroProducer/Core/interface/BareCollection.hpp"
+#include "NeroProducer/Core/interface/BareP4.hpp"
 
 
-class BarePhotons : virtual public BareCollection
+class BarePhotons : virtual public BareP4
 {
     public:
         BarePhotons();
@@ -15,7 +16,7 @@ class BarePhotons : virtual public BareCollection
         virtual inline string name(){return "BarePhotons";};
 
         // -- variables
-        TClonesArray *p4;
+        //TClonesArray *p4;
         vector<float> *sieie;
         vector<float> *iso;
         vector<int> *tightid;

@@ -23,6 +23,7 @@ BareFatJets::~BareFatJets(){
 
 void BareFatJets::clear(){
     // This function clear all the internal storage and init it to an arbitrary value
+    BareP4::clear();
     p4 -> Clear();
     rawPt -> clear();
     flavour -> clear();
@@ -40,8 +41,7 @@ void BareFatJets::clear(){
 
 void BareFatJets::defineBranches(TTree *t){
     //
-    p4 = new TClonesArray("TLorentzVector", 20);
-    t->Branch("fatjetP4","TClonesArray", &p4, 128000, 0);
+    BareP4::defineBranches(t, "fatjet" );
     //
     rawPt = new vector<float>;
     t->Branch("fatjetRawPt","vector<float>",&rawPt);
@@ -77,7 +77,8 @@ void BareFatJets::defineBranches(TTree *t){
 
 void BareFatJets::setBranchAddresses(TTree *t){
     //
-    p4 = new TClonesArray("TLorentzVector", 20);
+    BareP4::setBranchAddresses(t,"fatjet");
+
     rawPt = new vector<float>;
     // -- Jet Flavour by PAT
     flavour = new vector<int>;
@@ -91,7 +92,6 @@ void BareFatJets::setBranchAddresses(TTree *t){
     filteredMass = new vector<float>;
     softdropMass = new vector<float>;
 
-    t->SetBranchAddress("fatjetP4"	,&p4);
     t->SetBranchAddress("fatjetRawPt"	,&rawPt);
     t->SetBranchAddress("fatjetFlavour" ,&flavour);
     t->SetBranchAddress("fatjetTau1"	,&tau1);

@@ -13,7 +13,8 @@ BareMet::~BareMet(){
 
 void BareMet::clear(){
     // This function clear all the internal storage and init it to an arbitrary value
-    p4 -> Clear();
+    BareP4::clear();
+
     ptJESUP -> clear();
     ptJESDOWN -> clear();
     genP4 -> Clear();
@@ -21,8 +22,7 @@ void BareMet::clear(){
 
 void BareMet::defineBranches(TTree *t){
     //
-    p4 = new TClonesArray("TLorentzVector", 20);
-    t->Branch("metP4","TClonesArray", &p4, 128000, 0);
+    BareP4::defineBranches(t, "met" );
     //
     ptJESUP = new vector<float>;
     t->Branch("metPtJESUP","vector<float>",&ptJESUP);
@@ -35,8 +35,9 @@ void BareMet::defineBranches(TTree *t){
 }
 
 void BareMet::setBranchAddresses(TTree *t){
-    p4 = new TClonesArray("TLorentzVector", 20);
-    t->SetBranchAddress("metP4"	, &p4	);
+
+    BareP4::setBranchAddresses(t,"met");
+
     ptJESUP = new vector<float>;
     t->SetBranchAddress("metPtJESUP"	,&ptJESUP);
     ptJESDOWN = new vector<float>;

@@ -19,7 +19,7 @@ BareJets::~BareJets(){}
 
 void BareJets::clear(){
     // This function clear all the internal storage and init it to an arbitrary value
-    p4 -> Clear();
+    BareP4::clear();
     rawPt -> clear();
     bDiscr -> clear();
     puId -> clear();
@@ -37,8 +37,9 @@ void BareJets::clear(){
 
 void BareJets::defineBranches(TTree *t){
     //
-    p4 = new TClonesArray("TLorentzVector", 20);
-    t->Branch("jetP4","TClonesArray", &p4, 128000, 0);
+    //p4 = new TClonesArray("TLorentzVector", 20);
+    //t->Branch("jetP4","TClonesArray", &p4, 128000, 0);
+    BareP4::defineBranches(t, "jet" );
     //
     rawPt = new vector<float>;
     t->Branch("jetRawPt","vector<float>",&rawPt);
@@ -76,8 +77,9 @@ void BareJets::defineBranches(TTree *t){
 
 void BareJets::setBranchAddresses(TTree*t)
 {
-    p4 = new TClonesArray("TLorentzVector", 20);
-    t->SetBranchAddress("jetP4"	, &p4	);
+    BareP4::setBranchAddresses(t,"jet");
+    //p4 = new TClonesArray("TLorentzVector", 20);
+    //t->SetBranchAddress("jetP4"	, &p4	);
     rawPt = new vector<float>;
     t->SetBranchAddress("jetRawPt"	,&rawPt);
     bDiscr = new vector<float>;
