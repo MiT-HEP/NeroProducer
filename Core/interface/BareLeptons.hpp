@@ -4,8 +4,7 @@
 #include "NeroProducer/Core/interface/BareCollection.hpp"
 #include "NeroProducer/Core/interface/BareP4.hpp"
 
-class BareLeptons : virtual public BareCollection,
-    virtual public BareP4
+class BareLeptons : virtual public BareP4
 {
     public:
         BareLeptons();

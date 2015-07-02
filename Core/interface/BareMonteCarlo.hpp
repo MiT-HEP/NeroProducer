@@ -5,8 +5,7 @@
 #include "NeroProducer/Core/interface/BareP4.hpp"
 
 
-class BareMonteCarlo : virtual public BareCollection,
-    virtual public BareP4
+class BareMonteCarlo : virtual public BareP4
 {
     public:
         BareMonteCarlo();
