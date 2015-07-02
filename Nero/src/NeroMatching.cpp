@@ -24,7 +24,7 @@ void Matcher::match(TClonesArray*a,TClonesArray*b,vector<int>&r, vector<int> *pd
         for(int j=0;j<sizeB;++j)
         {
             TLorentzVector* Bp4 =  (TLorentzVector*) ( (*b)[j] );
-            if (Ap4->DeltaR(*Bp4) < dR_ ) continue;
+            if (Ap4->DeltaR(*Bp4) >= dR_ ) continue;
 
             if (pdgIdB != NULL and pdgId !=0 )
                 {
