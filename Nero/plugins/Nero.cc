@@ -75,7 +75,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     jets -> mMinNjets = iConfig.getParameter<int>("minJetN");
     jets -> mMinEta = iConfig.getParameter<double>("minJetEta");
     jets -> mMinId = iConfig.getParameter<string>("minJetId");
-    jets -> SetMatch( iConfig.getParameter<bool>("matchJets") );
+    jets -> SetMatch( iConfig.getParameter<bool>("matchJet") );
     obj.push_back(jets);
 
     // --- 
@@ -88,7 +88,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     taus -> mMinId = iConfig.getParameter<string>("minTauId");
     taus -> mMaxIso = iConfig.getParameter<double>("maxTauIso");
     taus -> SetExtend ( iConfig.getParameter<bool>("extendTau") );
-    taus -> SetMatch( iConfig.getParameter<bool>("matchTaus") );
+    taus -> SetMatch( iConfig.getParameter<bool>("matchTau") );
     obj.push_back(taus);
 
     //--
@@ -100,7 +100,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     leps -> el_vetoid_token = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleVetoIdMap"));
     leps -> el_mediumid_token = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMediumIdMap"));
     leps -> el_tightid_token = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleTightIdMap"));
-    leps -> SetMatch( iConfig.getParameter<bool>("matchLeps") );
+    leps -> SetMatch( iConfig.getParameter<bool>("matchLep") );
 
     //leps -> el_iso_ch_token  = consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("eleChargedIsolation") );
     //leps -> el_iso_nh_token  = consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("eleNeutralHadronIsolation") );
@@ -115,7 +115,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     leps -> mMaxIso_el = iConfig.getParameter<double>("maxEleIso");
 
     leps -> mMinNleptons = iConfig.getParameter<int>("minLepN");
-    leps -> SetMatch( iConfig.getParameter<bool>("matchLeps") );
+    leps -> SetMatch( iConfig.getParameter<bool>("matchLep") );
 
     obj. push_back(leps);
 
@@ -145,7 +145,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     phos -> mMaxIso = iConfig.getParameter<double>("maxPhoIso");
     phos -> mMinNpho = iConfig.getParameter<int>("minPhoN");
     phos -> mMinEta = iConfig.getParameter<double>("minPhoEta");
-    phos -> SetMatch( iConfig.getParameter<bool>("matchPhos") );
+    phos -> SetMatch( iConfig.getParameter<bool>("matchPho") );
 
     obj.push_back(phos);
 
@@ -169,6 +169,10 @@ Nero::Nero(const edm::ParameterSet& iConfig)
         match -> phos_ = phos;
         match -> taus_ = taus;
         match -> mc_ = mc;
+        match -> mTauDr = iConfig.getParameter<double>("matchTauDr");
+        match -> mJetDr = iConfig.getParameter<double>("matchJetDr");
+        match -> mLepDr = iConfig.getParameter<double>("matchLepDr");
+        match -> mPhoDr = iConfig.getParameter<double>("matchPhoDr");
     obj.push_back(match);
 
     NeroTrigger *tr = new NeroTrigger();

@@ -17,7 +17,7 @@ class Matcher
         Matcher(){dR_ = 0.3; }
         ~Matcher(){}
         
-        void SetDR(float dR ){dR_=dR;} 
+        void SetDr(float dR ){dR_=dR;} 
 
         void match(TClonesArray *a, TClonesArray *b, 
                 vector<int> &r,
@@ -50,6 +50,12 @@ class NeroMatching :virtual public NeroCollection
         NeroPhotons *phos_;
         NeroTaus    *taus_;
         NeroMonteCarlo *mc_;
+
+        // --- configuration
+        float mTauDr;
+        float mJetDr;
+        float mLepDr;
+        float mPhoDr;
 };
 
 #endif

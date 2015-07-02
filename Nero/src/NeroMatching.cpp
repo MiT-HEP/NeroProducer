@@ -53,12 +53,16 @@ int NeroMatching::analyze(const edm::Event& iEvent)
     #ifdef VERBOSE
         if (VERBOSE) cout <<"[NeroMatching]::[analyze] Matching jets"<<endl;
     #endif
-    if (jets_->doMatch()) matcher_ . match( jets_ -> p4, mc_ -> jetP4 , * (jets_->match) );
+    if (jets_->doMatch()){
+        matcher_ . SetDr( mJetDr );
+        matcher_ . match( jets_ -> p4, mc_ -> jetP4 , * (jets_->match) );
+    }
     // -------------
     #ifdef VERBOSE
         if (VERBOSE) cout <<"[NeroMatching]::[analyze] Matching leptons"<<endl;
     #endif
     if (leps_->doMatch()) {
+        matcher_ . SetDr( mLepDr );
         vector<int> ele;
         vector<int> muon;
         matcher_ . match( leps_ -> p4, mc_ -> p4 , ele, mc_ -> pdgId , 11 );
@@ -77,13 +81,19 @@ int NeroMatching::analyze(const edm::Event& iEvent)
     #ifdef VERBOSE
         if (VERBOSE) cout <<"[NeroMatching]::[analyze] Matching photons"<<endl;
     #endif
-    if (phos_->doMatch()) matcher_ . match( phos_ -> p4, mc_ -> p4 , * (phos_->match) , mc_->pdgId, 22);
+    if (phos_->doMatch()){
+        matcher_ . SetDr( mPhoDr );
+        matcher_ . match( phos_ -> p4, mc_ -> p4 , * (phos_->match) , mc_->pdgId, 22);
+    }
 
     // -------------
     #ifdef VERBOSE
         if (VERBOSE) cout <<"[NeroMatching]::[analyze] Matching taus"<<endl;
     #endif
-    if (taus_->doMatch()) matcher_ . match( taus_ -> p4, mc_ -> p4 , * (taus_->match) , mc_->pdgId, 15);
+    if (taus_->doMatch()){
+        matcher_ . SetDr( mTauDr );
+        matcher_ . match( taus_ -> p4, mc_ -> p4 , * (taus_->match) , mc_->pdgId, 15);
+    }
 
     // -------------
     return 0;
