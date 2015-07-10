@@ -135,6 +135,9 @@ int NeroMonteCarlo::crossSection(edm::Run const & iRun, TH1F* h)
 
     //iRun.getByToken( runinfo_token, runinfo_handle);
     iRun.getByLabel( "generator", runinfo_handle);
+    
+    if (not runinfo_handle . isValid() ) return 0;
+
     cout<<"in begin Run  intXS/extXSLO/extXSNLO "<<runinfo_handle->internalXSec().value()<<"/"<<runinfo_handle->externalXSecLO().value()<<"/"<<runinfo_handle->externalXSecNLO().value()<<endl;	
 
     // Internal xSec =  h(0) / h(1) 

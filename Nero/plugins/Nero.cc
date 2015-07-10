@@ -31,7 +31,7 @@ Implementation:
 #include "NeroProducer/Nero/interface/NeroTrigger.hpp"
 #include "NeroProducer/Nero/interface/NeroMatching.hpp"
 
-#define VERBOSE 0
+#define VERBOSE 2
 
 //
 // constants, enums and typedefs
@@ -329,8 +329,12 @@ Nero::endRun(edm::Run const&iRun, edm::EventSetup const&iSetup)
     //		dynamic_cast<NeroMonteCarlo*> (o) -> crossSection(iRun, hXsec_);
     //		}
     //	}
+
     for(auto o : runObj )
+    {
+        if(VERBOSE> 1) cout<<"[Nero]::[endRun]::[DEBUG] calling object"<<o->name()<<endl;
         o->analyzeRun(iRun, hXsec_);
+    }
     if(VERBOSE) cout <<" ======== END RUN ======="<<endl;
 }
 
@@ -340,6 +344,7 @@ Nero::endRun(edm::Run const&iRun, edm::EventSetup const&iSetup)
     void 
 Nero::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
 {
+    if(VERBOSE) cout <<" -------- BEGIN LUMI --------"<<endl;
 }
 
 
@@ -349,7 +354,12 @@ Nero::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
 Nero::endLuminosityBlock(edm::LuminosityBlock const&iLumi, edm::EventSetup const&)
 {
     for(auto o :lumiObj)
+    {
+        if(VERBOSE>1) cout<<"[Nero]::[endLuminosityBlock]::[DEBUG] calling object"<<o->name()<<endl;
         o->analyzeLumi(iLumi,all_);
+    }
+
+    if(VERBOSE) cout <<" -------- END LUMI --------"<<endl;
 }
 
 
