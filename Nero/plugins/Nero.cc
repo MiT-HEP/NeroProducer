@@ -31,7 +31,7 @@ Implementation:
 #include "NeroProducer/Nero/interface/NeroTrigger.hpp"
 #include "NeroProducer/Nero/interface/NeroMatching.hpp"
 
-#define VERBOSE 2
+#define VERBOSE 0
 
 //
 // constants, enums and typedefs

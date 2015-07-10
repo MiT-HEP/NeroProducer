@@ -1,5 +1,5 @@
 #include "NeroProducer/Nero/interface/NeroAll.hpp"
-#define VERBOSE 2
+#define VERBOSE 0
 
 NeroAll::NeroAll(){isSkim_=1;isMc_=-1;}
 NeroAll::~NeroAll(){}
