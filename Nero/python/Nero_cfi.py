@@ -46,8 +46,8 @@ nero = cms.EDAnalyzer("Nero",
     ## CUSTOM CONFIGURATION
     onlyMc = cms.bool (False),  ## not completely supported yet
 
-    minJetPt  = cms.double (30.),
-    minJetEta = cms.double (2.5),
+    minJetPt  = cms.double (25.),
+    minJetEta = cms.double (4.7),
     minJetN   = cms.int32  (0),
     minJetId  = cms.string ('loose'),
     matchJet  = cms.bool (True),
@@ -70,7 +70,7 @@ nero = cms.EDAnalyzer("Nero",
     minTauN   = cms.int32  (0),
     minTauId  = cms.string ('decayModeFindingNewDMs'),
     maxTauIso = cms.double (-1),
-    extendTau = cms.bool(False),
+    extendTau = cms.bool(True),
     matchTau  = cms.bool (True),
     matchTauDr = cms.double (0.1),
 
