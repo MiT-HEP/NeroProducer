@@ -18,11 +18,17 @@ class NeroLeptons : virtual public NeroCollection,
         //
         class myLepton{
             public:
+                myLepton(){ chiso=-999; nhiso=-999; phoiso=-999; puiso=-999;}
                 float iso;
                 TLorentzVector p4;
                 int tightId;
                 int pdgId;
                 float pfPt;
+
+                float chiso;
+                float nhiso;
+                float phoiso;
+                float puiso;
         };
 
         // to be setted by the vertex
