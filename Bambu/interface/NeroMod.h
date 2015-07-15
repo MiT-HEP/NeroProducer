@@ -3,7 +3,6 @@
 
 #include "MitAna/TreeMod/interface/BaseMod.h"
 #include "NeroProducer/Bambu/interface/Collections.h"
-#include "NeroProducer/Bambu/interface/BaseConfig.h"
 #include "NeroProducer/Bambu/interface/BaseFiller.h"
 #include "NeroProducer/Core/interface/BareCollection.hpp"
 
@@ -23,7 +22,7 @@ namespace mithep {
     void SetHead(char const* _head) { head_.SetTitle(_head); }
     void SetInfo(char const* _info) { info_.SetTitle(_info); }
     void SetFileName(char const* _name) { fileName_ = _name; }
-    void AddConfig(nero::BaseConfig* _config) { config_[_config->collection()] = _config; }
+    void AddFiller(nero::BaseFiller* _filler) { filler_[_filler->collection()] = _filler; }
 
   private:
     void SlaveBegin() override;
@@ -39,9 +38,7 @@ namespace mithep {
     TNamed head_{"head", ""};
     TNamed info_{"info", "Nero"};
 
-    nero::BaseConfig* config_[nero::nCollections] = {};
     nero::BaseFiller* filler_[nero::nCollections] = {};
-    BareCollection* collection_[nero::nCollections] = {};
 
     ClassDef(NeroMod, 0)
   };

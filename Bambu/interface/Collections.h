@@ -7,6 +7,7 @@ namespace mithep {
   namespace nero {
 
     enum Collection {
+      kEvent,
       kJets,
       kFatJets,
       kLeptons,

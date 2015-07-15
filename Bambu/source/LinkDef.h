@@ -10,6 +10,14 @@
 #pragma link C++ namespace mithep;
 
 #pragma link C++ typedef mithep::NeroMod;
-#pragma link C++ typedef mithep::nero::TriggerConfig;
+#pragma link C++ typedef mithep::nero::AllFiller;
+#pragma link C++ typedef mithep::nero::EventFiller;
+#pragma link C++ typedef mithep::nero::TriggerFiller;
+#pragma link C++ typedef mithep::nero::FatJetsFiller;
+#pragma link C++ typedef mithep::nero::JetsFiller;
+#pragma link C++ typedef mithep::nero::LeptonsFiller;
+#pragma link C++ typedef mithep::nero::MetFiller;
+#pragma link C++ typedef mithep::nero::MonteCarloFiller;
+#pragma link C++ typedef mithep::nero::PhotonsFiller;
 
 #endif

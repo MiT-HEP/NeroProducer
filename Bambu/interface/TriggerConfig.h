@@ -16,7 +16,7 @@ namespace mithep {
       ~TriggerConfig() {}
 
       mithep::nero::Collection collection() const override { return mithep::nero::kTrigger; }
-      std::pair<BareCollection*, BaseFiller*> create() const override;
+      ConfigProduct create() const override;
 
       std::vector<TString> triggerNames;
 

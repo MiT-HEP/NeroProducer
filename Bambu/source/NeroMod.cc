@@ -1,7 +1,5 @@
 #include "NeroProducer/Bambu/interface/NeroMod.h"
-#include "NeroProducer/Bambu/interface/TriggerConfig.h"
-
-#include "MitAna/DataCont/interface/BaseCollection.h"
+#include "NeroProducer/Bambu/interface/TriggerFiller.h"
 
 #include "TString.h"
 
@@ -32,30 +30,28 @@ mithep::NeroMod::SlaveBegin()
   info_.Write();
 
   TString triggerNames;
-  if (config_[nero::kTrigger]) {
-    auto& cfg(*static_cast<nero::TriggerConfig*>(config_[nero::kTrigger]));
-    for (auto& n : cfg.triggerNames)
+  if (filler_[nero::kTrigger]) {
+    auto& filler(*static_cast<nero::TriggerFiller*>(filler_[nero::kTrigger]));
+    for (auto& n : filler.triggerNames())
       triggerNames += n + ",";
   }
   TNamed("triggerNames", triggerNames.Data()).Write();
 
-  nero::ProductGetter getter([this](char const* _name)->mithep::BaseCollection* {
-    return this->GetObject<BaseCollection>(_name);
+  nero::BaseFiller::ProductGetter getter([this](char const* _name)->TObject* {
+      return this->GetObject<TObject>(_name);
     });
 
   for (unsigned iC(0); iC != nero::nCollections; ++iC) {
-    if (!config_[iC])
+    if (!filler_[iC])
       continue;
 
-    auto&& prod(config_[iC]->create());
-    collection_[iC] = prod.first;
-    filler_[iC] = prod.second;
-    filler_[iC]->setGetter(getter);
+    filler_[iC]->initialize();
+    filler_[iC]->setProductGetter(getter);
 
     if (iC < nero::nEventObjects)
-      collection_[iC]->defineBranches(eventsTree_);
+      filler_[iC]->getObject()->defineBranches(eventsTree_);
     else
-      collection_[iC]->defineBranches(allTree_);
+      filler_[iC]->getObject()->defineBranches(allTree_);
   }
 }
 
@@ -69,20 +65,18 @@ mithep::NeroMod::SlaveTerminate()
 
   eventsTree_ = allTree_ = 0;
   hXsec_ = 0;
-
-  for (unsigned iC(0); iC != nero::nCollections; ++iC) {
-    delete collection_[iC];
-    delete filler_[iC];
-    collection_[iC] = 0;
-    filler_[iC] = 0;
-  }
 }
 
 void
 mithep::NeroMod::Process()
 {
   for (auto* filler : filler_) {
-    if (filler)
+    if (filler) {
+      filler->getObject()->clear();
       filler->fill();
+    }
   }
+
+  eventsTree_->Fill();
+  allTree_->Fill();
 }
