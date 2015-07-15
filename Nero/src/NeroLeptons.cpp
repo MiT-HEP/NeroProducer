@@ -54,6 +54,12 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         l.p4.SetPxPyPzE( mu.px(),mu.py(),mu.pz(),mu.energy());
         l.tightId = int(mu.isTightMuon( * vtx_->GetPV() ));
         l.pfPt = mu.pfP4().pt();
+
+        l.chiso  = chiso;
+        l.nhiso  = niso;
+        l.phoiso = phoiso;
+        l.puiso  = puiso;
+
         leptons.push_back(l);
     }
 
@@ -77,14 +83,22 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         myLepton l;
         l.pdgId = el.charge()*11;
         //l.iso = el.ecalPFClusterIso() + el.hcalPFClusterIso(); //not working, use GEDIdTools or ValueMap
+        
         float chIso = el.chargedHadronIso();
         float nhIso = el.neutralHadronIso();
         float phoIso = el.photonIso();
-        //float puChIso= el.puChargedHadronIso();
+        float puChIso= el.puChargedHadronIso();
+
         l.iso = chIso + nhIso + phoIso; 
         l.p4.SetPxPyPzE( el.px(),el.py(),el.pz(),el.energy());
         l.tightId = int(isPassTight);
         l.pfPt = 0.;
+    
+        l.chiso  = chIso;
+        l.nhiso  = nhIso;
+        l.phoiso = phoIso;
+        l.puiso  = puChIso;
+
         leptons.push_back(l);
 
     }
@@ -102,6 +116,11 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         tightId -> push_back(l.tightId);
         pdgId   -> push_back(l.pdgId);
         lepPfPt -> push_back(l.pfPt);
+
+        chIso	-> push_back(l.chiso);
+        nhIso	-> push_back(l.nhiso);
+        phoIso	-> push_back(l.phoiso);
+        puIso	-> push_back(l.puiso);
     }
     return 0;
 }

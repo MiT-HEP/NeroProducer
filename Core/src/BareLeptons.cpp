@@ -6,6 +6,12 @@ BareLeptons::BareLeptons(){
     iso = NULL;
     tightId = NULL;
     lepPfPt = NULL;
+
+    //
+    chIso=NULL;
+    nhIso=NULL;
+    phoIso=NULL;
+    puIso=NULL;
 }
 
 BareLeptons::~BareLeptons(){
@@ -18,6 +24,11 @@ void BareLeptons::clear(){
     iso -> clear();
     tightId ->clear();
     lepPfPt->clear();    
+
+    chIso->clear();
+    nhIso->clear();
+    phoIso->clear();
+    puIso->clear();
 }
 
 void BareLeptons::defineBranches(TTree*t){
@@ -36,6 +47,17 @@ void BareLeptons::defineBranches(TTree*t){
     lepPfPt = new vector<float>;
     t->Branch("lepPfPt","vector<float>",&lepPfPt);
 
+    // 
+    chIso=new vector<float>;
+    t->Branch("lepChIso","vector<float>",&chIso);
+    nhIso=new vector<float>;
+    t->Branch("lepNhIso","vector<float>",&nhIso);
+    phoIso=new vector<float>;
+    t->Branch("lepPhoIso","vector<float>",&phoIso);
+    puIso=new vector<float>;
+    t->Branch("lepPuIso","vector<float>",&puIso);
+    
+
 }
 
 void BareLeptons::setBranchAddresses(TTree*t){
@@ -50,6 +72,15 @@ void BareLeptons::setBranchAddresses(TTree*t){
     t->SetBranchAddress("lepTightId"	,&tightId);
     lepPfPt = new vector<float>;
     t->SetBranchAddress("lepPfPt"	,&lepPfPt);
+
+    chIso=new vector<float>;
+    t->SetBranchAddress("lepChIso",&chIso);
+    nhIso=new vector<float>;
+    t->SetBranchAddress("lepNhIso",&nhIso);
+    phoIso=new vector<float>;
+    t->SetBranchAddress("lepPhoIso",&phoIso);
+    puIso=new vector<float>;
+    t->SetBranchAddress("lepPuIso",&puIso);
 
 }
 
