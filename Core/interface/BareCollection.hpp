@@ -19,6 +19,7 @@ class BareCollection
         bool extend_;  // for collection switch to a more inclusive mode
     public:
         BareCollection(){ extend_=false;}
+        virtual ~BareCollection() {}
         virtual void clear() = 0;
         virtual void defineBranches(TTree*) = 0 ;
         virtual void setBranchAddresses(TTree*) = 0;
