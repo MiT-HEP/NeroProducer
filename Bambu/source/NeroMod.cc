@@ -1,7 +1,7 @@
 #include "NeroProducer/Bambu/interface/NeroMod.h"
 #include "NeroProducer/Bambu/interface/TriggerFiller.h"
 
-#include "TString.h"
+#include <exception>
 
 ClassImp(mithep::NeroMod)
 
@@ -73,7 +73,14 @@ mithep::NeroMod::Process()
   for (auto* filler : filler_) {
     if (filler) {
       filler->getObject()->clear();
-      filler->fill();
+      try {
+        std::cout << filler->getObject()->name() << std::endl;
+        filler->fill();
+      }
+      catch (std::exception& ex) {
+        std::cerr << ex.what() << std::endl;
+        AbortAnalysis();
+      }
     }
   }
 

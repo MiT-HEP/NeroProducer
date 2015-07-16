@@ -10,6 +10,7 @@
 #include "TTree.h"
 #include "TH1F.h"
 #include "TNamed.h"
+#include "TString.h"
 
 namespace mithep {
 
