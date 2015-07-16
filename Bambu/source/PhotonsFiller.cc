@@ -34,7 +34,7 @@ mithep::nero::PhotonsFiller::fill()
     if (iso > maxIso_)
       continue;
 
-    newP4(out_, photon.Px(), photon.Py(), photon.Pz(), photon.E());
+    newP4(out_, photon);
 
     out_.iso->push_back(iso);
     out_.sieie->push_back(photon.CoviEtaiEta5x5());

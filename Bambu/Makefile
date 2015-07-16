@@ -15,7 +15,7 @@ LINKDEF = source/LinkDef.h
 DICT = source/MitNeroLinkDefDict.cc
 PCM = $(patsubst source/%.cc,%_rdict.pcm,$(DICT))
 DICTOBJ = $(patsubst source/%.cc,$(TMPDIR)/%.o,$(DICT))
-DICTHDR = source/classes.h
+DICTHDR = interface/classes.h
 
 LIBRARY = libMitNero.so
 SRC = $(filter-out $(DICT),$(wildcard source/*.cc))

@@ -14,7 +14,7 @@ mithep::nero::TausFiller::fill()
   for (unsigned iT(0); iT != taus->GetEntries(); ++iT) {
     auto& tau(*taus->At(iT));
 
-    newP4(out_, tau.Px(), tau.Py(), tau.Pz(), tau.E());
+    newP4(out_, tau);
 
     out_.id->push_back(tau.PFTauDiscriminator(mithep::PFTau::kDiscriminationByDecayModeFinding));
     out_.Q->push_back(tau.Charge());

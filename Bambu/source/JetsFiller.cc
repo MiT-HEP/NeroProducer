@@ -15,7 +15,7 @@ mithep::nero::JetsFiller::fill()
   for (unsigned iJ(0); iJ != jets->GetEntries(); ++iJ) {
     auto& jet(*jets->At(iJ));
 
-    newP4(out_, jet.Px(), jet.Py(), jet.Pz(), jet.E());
+    newP4(out_, jet);
 
     auto&& rawMom(jet.RawMom());
 

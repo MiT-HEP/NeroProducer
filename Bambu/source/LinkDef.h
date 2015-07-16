@@ -1,4 +1,4 @@
-#include "NeroProducer/Bambu/source/classes.h"
+#include "NeroProducer/Bambu/interface/classes.h"
 
 #ifdef __CLING__
 

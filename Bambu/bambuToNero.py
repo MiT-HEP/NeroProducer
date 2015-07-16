@@ -5,7 +5,8 @@ ROOT.gSystem.Load('libMitNero.so')
 setattr(mithep, 'nero', ROOT.mithep.nero)
 
 import os
-from subprocess import check_output
+
+mitdata = os.environ['MIT_DATA']
 
 from MitPhysics.Mods.GoodPVFilterMod import goodPVFilterMod
 from MitPhysics.Mods.JetCorrectionMod import jetCorrectionMod
@@ -47,9 +48,9 @@ fatJetCorrectionMod = mithep.JetCorrectionMod(
     CorrectedJetsName = 'CorrectedFatJets',
     RhoAlgo = mithep.PileupEnergyDensity.kFixedGridFastjetAll
 )
-fatJetCorrectionMod.AddCorrectionFromFile("/local/yiiyama/jec/MCRUN2_74_V9_L1FastJet_AK8PFchs.txt")
-fatJetCorrectionMod.AddCorrectionFromFile("/local/yiiyama/jec/MCRUN2_74_V9_L2Relative_AK8PFchs.txt")
-fatJetCorrectionMod.AddCorrectionFromFile("/local/yiiyama/jec/MCRUN2_74_V9_L3Absolute_AK8PFchs.txt")
+fatJetCorrectionMod.AddCorrectionFromFile(mitdata + "/MCRUN2_74_V9_L1FastJet_AK8PFchs.txt")
+fatJetCorrectionMod.AddCorrectionFromFile(mitdata + "/MCRUN2_74_V9_L2Relative_AK8PFchs.txt")
+fatJetCorrectionMod.AddCorrectionFromFile(mitdata + "/MCRUN2_74_V9_L3Absolute_AK8PFchs.txt")
 
 fatJetIdMod = mithep.JetIdMod(
     InputName = fatJetCorrectionMod.GetOutputName(),
@@ -79,8 +80,8 @@ photonTightId = mithep.PhotonIdMod('PhotonTightId',
     EtaMax = 2.5
 )
 
-head = check_output("cd " + os.environ['CMSSW_BASE'] + "/src/NeroProducer/ && git rev-parse HEAD && cd - 2>&1 >/dev/null", shell = True)
-tag = check_output("cd " + os.environ["CMSSW_BASE"] + "/src/NeroProducer && { git describe --tags || true ; } && cd - 2>&1 >/dev/null", shell = True)
+head = 'HEAD'
+tag = 'BAMBU_041'
 
 fillers = []
 

@@ -5,6 +5,8 @@
 #include "NeroProducer/Core/interface/BareP4.hpp"
 #include "NeroProducer/Bambu/interface/Collections.h"
 
+#include "MitAna/DataTree/interface/Particle.h"
+
 #include "TObject.h"
 #include "TClonesArray.h"
 #include "TLorentzVector.h"
@@ -33,8 +35,8 @@ namespace mithep {
       template<class T>
       T* getSource(char const* name) const;
 
-      void newP4(BareP4&, double px, double py, double pz, double e) const;
-      void newP4(TClonesArray&, double px, double py, double pz, double e) const;
+      void newP4(BareP4&, mithep::Particle const&) const;
+      void newP4(TClonesArray&, mithep::Particle const&) const;
 
     private:
       ProductGetter getter_;
@@ -53,16 +55,16 @@ mithep::nero::BaseFiller::getSource(char const* _name) const
 
 inline
 void
-mithep::nero::BaseFiller::newP4(BareP4& _p4col, double _px, double _py, double _pz, double _e) const
+mithep::nero::BaseFiller::newP4(BareP4& _p4col, mithep::Particle const& _part) const
 {
-  newP4(*_p4col.p4, _px, _py, _pz, _e);
+  newP4(*_p4col.p4, _part);
 }
 
 inline
 void
-mithep::nero::BaseFiller::newP4(TClonesArray& _arr, double _px, double _py, double _pz, double _e) const
+mithep::nero::BaseFiller::newP4(TClonesArray& _arr, mithep::Particle const& _part) const
 {
-  new (_arr[_arr.GetEntriesFast()]) TLorentzVector(_pz, _py, _pz, _e);
+  new (_arr[_arr.GetEntriesFast()]) TLorentzVector(_part.Px(), _part.Py(), _part.Pz(), _part.E());
 }
 
 #endif

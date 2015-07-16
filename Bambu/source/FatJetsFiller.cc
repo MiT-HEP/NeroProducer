@@ -17,7 +17,7 @@ mithep::nero::FatJetsFiller::fill()
     if (jet.Pt() < 100.)
       continue;
 
-    newP4(out_, jet.Px(), jet.Py(), jet.Pz(), jet.E());
+    newP4(out_, jet);
 
     out_.rawPt->push_back(jet.RawMom().Pt());
     out_.flavour->push_back(jet.MatchedMCFlavor());

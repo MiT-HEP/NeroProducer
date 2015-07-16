@@ -51,7 +51,7 @@ mithep::nero::LeptonsFiller::fill()
     }
 
     if (ele) {
-      newP4(out_, ele->Px(), ele->Py(), ele->Pz(), ele->E());
+      newP4(out_, *ele);
 
       double chIso(ele->PFChargedHadronIso());
       double nhIso(ele->PFNeutralHadronIso());
@@ -71,7 +71,7 @@ mithep::nero::LeptonsFiller::fill()
       ++iE;
     }
     else {
-      newP4(out_, mu->Px(), mu->Py(), mu->Pz(), mu->E());
+      newP4(out_, *mu);
 
       double iso(IsolationTools::BetaMwithPUCorrection(nopuPFCands, puPFCands, mu, 0.4));
       
