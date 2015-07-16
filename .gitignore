@@ -1,3 +1,6 @@
+# Emacs backup
+*~
+
 # Compiled Object files
 *.slo
 *.lo
@@ -33,3 +36,6 @@ __init__.py
 
 ## ROOT OBJECT
 *.root
+
+## ROOT Dictionary (need a naming convention)
+*LinkDefDict*
