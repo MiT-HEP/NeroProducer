@@ -74,7 +74,6 @@ mithep::NeroMod::Process()
     if (filler) {
       filler->getObject()->clear();
       try {
-        std::cout << filler->getObject()->name() << std::endl;
         filler->fill();
       }
       catch (std::exception& ex) {
