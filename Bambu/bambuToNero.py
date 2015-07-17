@@ -13,6 +13,7 @@ from MitPhysics.Mods.JetCorrectionMod import jetCorrectionMod
 from MitPhysics.Mods.JetIdMod import jetIdMod
 from MitPhysics.Mods.MetCorrectionMod import metCorrectionMod
 from MitPhysics.Mods.PFTauIdMod import pfTauIdMod
+pfTauIdMod.AddCutDiscriminator(mithep.PFTau.kDiscriminationByRawCombinedIsolationDBSumPtCorr3Hits, 5.)
 from MitPhysics.Mods.ElectronIdMod import electronIdMod
 from MitPhysics.Mods.MuonIdMod import muonIdMod
 from MitPhysics.Mods.PhotonIdMod import photonIdMod
