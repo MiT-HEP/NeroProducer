@@ -20,7 +20,7 @@ mithep::nero::MetFiller::fill()
   out_.ptJESDOWN->push_back(0.);
 
   if (getSource<mithep::EventHeader>(Names::gkEvtHeaderBrn)->IsMC()) {
-    auto* genMetCol = getSource<mithep::GenMetCol>(genMetName_);
+    auto* genMetCol = getSource<mithep::MetCol>(genMetName_);
     auto& genMet(*genMetCol->At(0));
 
     newP4(*out_.genP4, genMet);

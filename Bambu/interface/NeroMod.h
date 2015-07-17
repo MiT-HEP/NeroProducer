@@ -25,6 +25,8 @@ namespace mithep {
     void SetFileName(char const* _name) { fileName_ = _name; }
     void AddFiller(nero::BaseFiller* _filler) { filler_[_filler->collection()] = _filler; }
 
+    void SetPrintLevel(unsigned _l) { printLevel_ = _l; }
+
   private:
     void SlaveBegin() override;
     void SlaveTerminate() override;
@@ -40,6 +42,8 @@ namespace mithep {
     TNamed info_{"info", "Nero"};
 
     nero::BaseFiller* filler_[nero::nCollections] = {};
+
+    unsigned printLevel_ = 0;
 
     ClassDef(NeroMod, 0)
   };
