@@ -15,6 +15,9 @@ int NeroFatJets::analyze(const edm::Event& iEvent){
     // maybe handle should be taken before
     iEvent.getByToken(token, handle);
 
+    edm::Handle<reco::JetTagCollection> pfBoostedDoubleSecondaryVertex;  //HBB 74X
+    iEvent.getByLabel("pfBoostedDoubleSecondaryVertexAK8BJetTags",pfBoostedDoubleSecondaryVertex); //HBB 74X
+
     int ijetRef = -1;
     int nsubjet = 0;
     for (const pat::Jet& j : *handle)
@@ -42,6 +45,12 @@ int NeroFatJets::analyze(const edm::Event& iEvent){
         filteredMass->push_back(j.userFloat("ak8PFJetsCHSFilteredMass"));
         softdropMass->push_back(j.userFloat("ak8PFJetsCHSSoftDropMass"));
         ak8jet_hasSubjet->push_back(j.hasSubjets("SoftDrop"));
+
+        // --float hbb= j.bDiscriminator("pfBoostedDoubleSecondaryVertexAK8BJetTags"); // HBB 75X
+        // --cout <<"Hbb tagger="<<hbb<<endl;
+        // --if(hbb>10) cout<<endl;
+        float hbb =  (*pfBoostedDoubleSecondaryVertex).value(ijetRef) ;//HBB 74X
+        if(hbb>-10) cout<<"HBB="<<hbb<<endl;
 
         auto Subjets = j.subjets("SoftDrop");
         for ( auto const & i : Subjets ) {
