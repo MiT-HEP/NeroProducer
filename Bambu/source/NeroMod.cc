@@ -45,6 +45,9 @@ mithep::NeroMod::SlaveBegin()
     if (!filler_[iC])
       continue;
 
+    if (printLevel_ > 0)
+      std::cout << "initializing " << filler_[iC]->getObject()->name() << std::endl;
+
     filler_[iC]->initialize();
     filler_[iC]->setProductGetter(getter);
 
@@ -72,6 +75,9 @@ mithep::NeroMod::Process()
 {
   for (auto* filler : filler_) {
     if (filler) {
+      if (printLevel_ > 1)
+        std::cout << "filling " << filler->getObject()->name() << std::endl;
+
       filler->getObject()->clear();
       try {
         filler->fill();
@@ -80,6 +86,9 @@ mithep::NeroMod::Process()
         std::cerr << ex.what() << std::endl;
         AbortAnalysis();
       }
+
+      if (printLevel_ > 1)
+        std::cout << "filled " << filler->getObject()->name() << std::endl;
     }
   }
 

@@ -12,6 +12,7 @@
 #include "TLorentzVector.h"
 
 #include <functional>
+#include <stdexcept>
 
 namespace mithep {
   namespace nero {
@@ -33,7 +34,7 @@ namespace mithep {
 
     protected:
       template<class T>
-      T* getSource(char const* name) const;
+      T* getSource(char const* name, bool doThrow = true) const;
 
       void newP4(BareP4&, mithep::Particle const&) const;
       void newP4(TClonesArray&, mithep::Particle const&) const;
@@ -48,9 +49,13 @@ namespace mithep {
 template<class T>
 inline
 T*
-mithep::nero::BaseFiller::getSource(char const* _name) const
+mithep::nero::BaseFiller::getSource(char const* _name, bool _doThrow/* = true*/) const
 {
-  return dynamic_cast<T*>(getter_(_name));
+  auto* source = dynamic_cast<T*>(getter_(_name));
+  if (!source && _doThrow)
+    throw std::runtime_error((TString("ProductNotFound: ") + _name).Data());
+
+  return source;
 }
 
 inline

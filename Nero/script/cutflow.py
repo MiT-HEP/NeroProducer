@@ -7,7 +7,7 @@ from optparse import OptionParser
 from ROOT import *
 from math import *
 
-gROOT.ProcessLine(".x functions.C");
+gROOT.ProcessLine(".x " + os.path.dirname(os.path.realpath(__file__)) + "/functions.C");
 
 # - M A I N ----------------------------------------------------------------------------------------
 # Usage: ./cutflow.py -f ROOTFILE -n NUMBEROFEVENTS

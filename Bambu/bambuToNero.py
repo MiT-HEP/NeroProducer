@@ -11,11 +11,19 @@ mitdata = os.environ['MIT_DATA']
 from MitPhysics.Mods.GoodPVFilterMod import goodPVFilterMod
 from MitPhysics.Mods.JetCorrectionMod import jetCorrectionMod
 from MitPhysics.Mods.JetIdMod import jetIdMod
+from MitPhysics.Mods.MetCorrectionMod import metCorrectionMod
 from MitPhysics.Mods.PFTauIdMod import pfTauIdMod
+pfTauIdMod.AddCutDiscriminator(mithep.PFTau.kDiscriminationByRawCombinedIsolationDBSumPtCorr3Hits, 5.)
 from MitPhysics.Mods.ElectronIdMod import electronIdMod
 from MitPhysics.Mods.MuonIdMod import muonIdMod
 from MitPhysics.Mods.PhotonIdMod import photonIdMod
 from MitPhysics.Mods.SeparatePileUpMod import separatePileUpMod
+
+generatorMod = mithep.GeneratorMod(
+    IsData = False,
+    CopyArrays = False,
+    MCMETName = "GenMet"
+)
 
 # TODO replace when clone() is available
 electronTightId = mithep.ElectronIdMod(
@@ -110,6 +118,9 @@ fillers[-1].SetPUPFCandsName(separatePileUpMod.GetPFPileUpName())
 fillers.append(mithep.nero.FatJetsFiller())
 fillers[-1].SetFatJetsName(fatJetIdMod.GetOutputName())
 
+fillers.append(mithep.nero.MetFiller())
+fillers[-1].SetMetName(metCorrectionMod.GetOutputName())
+
 fillers.append(mithep.nero.PhotonsFiller())
 fillers[-1].SetPhotonsName(photonIdMod.GetOutputName())
 fillers[-1].SetMediumIdName(photonMediumId.GetOutputName())
@@ -126,16 +137,19 @@ neroMod = mithep.NeroMod(
     Info = 'Nero',
     Head = head,
     Tag = tag,
-    FileName = 'nero.root'
+    FileName = 'nero.root',
+    PrintLevel = 0
 )
 for filler in fillers:
     neroMod.AddFiller(filler)
 
 analysis.setSequence(
     goodPVFilterMod *
+    generatorMod *
     separatePileUpMod *
     jetCorrectionMod *
     jetIdMod *
+    metCorrectionMod *
     pfTauIdMod *
     electronIdMod *
     muonIdMod *
