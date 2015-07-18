@@ -49,8 +49,8 @@ int NeroFatJets::analyze(const edm::Event& iEvent){
         // --float hbb= j.bDiscriminator("pfBoostedDoubleSecondaryVertexAK8BJetTags"); // HBB 75X
         // --cout <<"Hbb tagger="<<hbb<<endl;
         // --if(hbb>10) cout<<endl;
-        float hbb =  (*pfBoostedDoubleSecondaryVertex).value(ijetRef) ;//HBB 74X
-        if(hbb>-10) cout<<"HBB="<<hbb<<endl;
+        //float hbb =  (*pfBoostedDoubleSecondaryVertex).value(ijetRef) ;//HBB 74X
+        hbb -> push_back( (*pfBoostedDoubleSecondaryVertex).value(ijetRef) ) ;
 
         auto Subjets = j.subjets("SoftDrop");
         for ( auto const & i : Subjets ) {
