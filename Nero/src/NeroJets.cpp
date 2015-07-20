@@ -48,7 +48,8 @@ int NeroJets::analyze(const edm::Event& iEvent){
         // GET  ValueMaps
         edm::RefToBase<pat::Jet> jetRef(edm::Ref<pat::JetCollection>(handle, ijetRef) );
         float qgLikelihood = (*qg_handle)[jetRef];
-
+    
+    
         // Generator-level Info [Charged-H specific]
         int jetMatchedPartonPdgId_I = 0;
         int motherPdgId_I = 0;
@@ -70,6 +71,7 @@ int NeroJets::analyze(const edm::Event& iEvent){
         rawPt  -> push_back (j.pt()*j.jecFactor("Uncorrected"));
         puId   -> push_back (j.userFloat("pileupJetId:fullDiscriminant") );
         bDiscr -> push_back( j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") );
+        bDiscrLegacy -> push_back( j.bDiscriminator("combinedSecondaryVertexBJetTags") );
         qgl     -> push_back( qgLikelihood );
         flavour -> push_back( jetFlavour_I );
         matchedPartonPdgId -> push_back( jetMatchedPartonPdgId_I );

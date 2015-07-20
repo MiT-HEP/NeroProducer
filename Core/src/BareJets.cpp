@@ -3,6 +3,8 @@
 BareJets::BareJets(){
     p4      = NULL;
     rawPt   = NULL;
+    bDiscr = NULL;
+    bDiscrLegacy = NULL;
     puId    = NULL;
     unc     = NULL;
     qgl     = NULL;
@@ -22,6 +24,7 @@ void BareJets::clear(){
     BareP4::clear();
     rawPt -> clear();
     bDiscr -> clear();
+    bDiscrLegacy -> clear();
     puId -> clear();
     unc -> clear();
     qgl -> clear();
@@ -46,6 +49,9 @@ void BareJets::defineBranches(TTree *t){
     //
     bDiscr = new vector<float>;
     t->Branch("jetBdiscr","vector<float>",&bDiscr);
+    //
+    bDiscrLegacy = new vector<float>;
+    t->Branch("jetBdiscrLegacy","vector<float>",&bDiscrLegacy);
     //	
     puId = new vector<float>;
     t->Branch("jetPuId","vector<float>",&puId);
@@ -84,6 +90,8 @@ void BareJets::setBranchAddresses(TTree*t)
     t->SetBranchAddress("jetRawPt"	,&rawPt);
     bDiscr = new vector<float>;
     t->SetBranchAddress("jetBdiscr"	,&bDiscr);
+    bDiscrLegacy = new vector<float>;
+    t->SetBranchAddress("jetBdiscrLegacy"	,&bDiscrLegacy);
     puId = new vector<float>;
     t->SetBranchAddress("jetPuId"	,&puId);
     unc = new vector<float>;

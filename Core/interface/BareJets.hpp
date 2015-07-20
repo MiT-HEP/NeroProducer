@@ -18,6 +18,7 @@ class BareJets : virtual public BareP4
         //TClonesArray  *p4;
         vector<float> *rawPt;
         vector<float> *bDiscr;
+        vector<float> *bDiscrLegacy;
         vector<float> *puId;
         vector<float> *unc;
         vector<float> *qgl;
