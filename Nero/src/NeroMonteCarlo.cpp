@@ -60,7 +60,7 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
 
     if(VERBOSE){ sw.Stop() ; cout<<"[NeroMonteCarlo]::[analyze] pu&info took "<<sw.CpuTime()<<" Cpu and "<<sw.RealTime()<<" RealTime"<<endl; sw.Reset(); sw.Start();}
     // GEN PARTICLES
-    TLorentzVector genmet(0,0,0,0);
+    //TLorentzVector genmet(0,0,0,0);
     //for ( auto & gen : *packed_handle)
     for ( unsigned int i=0;i < packed_handle->size() ;++i)
     {
@@ -71,14 +71,16 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
         int apdg = abs(pdg);
 
         //neutrinos
-        if (apdg != 12 and apdg !=14 and apdg !=16
-                and apdg <1000000 //SUSY
-                and fabs(gen->eta() ) <4.7 
-           )
-        { 
-            TLorentzVector tmp( gen->px(),gen->py(),gen->pz(),gen->energy() ); 
-            genmet += tmp;
-        }
+        // --- if ( (apdg != 12 and apdg !=14 and apdg != 16
+        // ---       and apdg > 1000000  neutrinos and neutralinos
+        // ---      )//SUSY
+        // ---         and fabs(gen->eta() ) <4.7 
+        // ---    )
+        // --- { 
+        // ---     TLorentzVector tmp( gen->px(),gen->py(),gen->pz(),gen->energy() ); 
+        // ---     genmet += tmp;
+        // --- }
+        // --- genmet = -genmet;
 
 
         //FILL
