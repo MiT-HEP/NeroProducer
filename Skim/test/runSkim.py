@@ -34,7 +34,7 @@ process.QGTagger.srcVertexCollection = cms.InputTag("offlineSlimmedPrimaryVertic
 process.QGTagger.useQualityCuts = cms.bool(False)
 ##----------------GLOBAL TAG ---------------------------
 # used by photon id and jets
-process.load("Configuration.StandardSequences.Geometry_cff")
+#process.load("Configuration.StandardSequences.Geometry_cff") ### VETO BY HBB 74X SEQ
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 #data
@@ -73,11 +73,45 @@ for idmod in pho_id_modules:
 ##ISO
 process.load("RecoEgamma/PhotonIdentification/PhotonIDValueMapProducer_cfi")
 
+################ HBB 74X ##############
+process.load("Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cff")
+process.load("Configuration.Geometry.GeometryRecoDB_cff")
+process.load("RecoBTag.Configuration.RecoBTag_cff") # this loads all available b-taggers
+process.load("RecoBTag.SecondaryVertex.pfBoostedDoubleSecondaryVertexAK8BJetTags_cfi")
+
+process.pfImpactParameterTagInfosAK8.primaryVertex = cms.InputTag("offlineSlimmedPrimaryVertices")
+process.pfImpactParameterTagInfosAK8.candidates = cms.InputTag("packedPFCandidates")
+process.pfImpactParameterTagInfosAK8.jets = cms.InputTag("slimmedJetsAK8") 
+
+process.load("RecoBTag.SoftLepton.softPFMuonTagInfosAK8_cfi")
+process.softPFMuonsTagInfosAK8.jets=cms.InputTag("slimmedJetsAK8")
+process.softPFMuonsTagInfosAK8.muons=cms.InputTag("slimmedMuons")
+process.softPFMuonsTagInfosAK8.primaryVertex=cms.InputTag("offlineSlimmedPrimaryVertices")
+
+process.load("RecoBTag.SoftLepton.softPFElectronTagInfosAK8_cfi")
+process.softPFElectronsTagInfosAK8.jets=cms.InputTag("slimmedJetsAK8")
+process.softPFElectronsTagInfosAK8.electrons=cms.InputTag("slimmedElectrons")
+process.softPFElectronsTagInfosAK8.primaryVertex=cms.InputTag("offlineSlimmedPrimaryVertices")
+
+process.load("RecoBTag.SecondaryVertex.pfInclusiveSecondaryVertexFinderTagInfosAK8_cfi")
+process.pfInclusiveSecondaryVertexFinderTagInfosAK8.extSVCollection = cms.InputTag("slimmedSecondaryVertices")
+
+process.HBB = cms.Sequence(
+		process.pfImpactParameterTagInfosAK8 *
+		process.pfInclusiveSecondaryVertexFinderTagInfosAK8 *
+		process.softPFMuonsTagInfosAK8 *
+		process.softPFElectronsTagInfosAK8 *
+		process.pfBoostedDoubleSecondaryVertexAK8BJetTags 
+		)
+
+
+#################################
 process.extraPath = cms.Path(
                 	process.QGTagger *
                 	process.egmGsfElectronIDSequence *
                 	process.egmPhotonIDSequence *
-                	process.photonIDValueMapProducer ## ISO MAP FOR PHOTONS
+                	process.photonIDValueMapProducer * ## ISO MAP FOR PHOTONS
+			process.HBB ## HBB 74X
 		)
 
 process.schedule = cms.Schedule(

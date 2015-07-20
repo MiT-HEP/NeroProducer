@@ -31,7 +31,8 @@ class BareFatJets : virtual public BareP4
         TClonesArray  *ak8_subjet;
         vector<int>   *ak8jet_hasSubjet;
         vector<float> *ak8subjet_btag;
-
+    
+        vector<float> *hbb;
 
 };
 

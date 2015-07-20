@@ -15,6 +15,7 @@ BareFatJets::BareFatJets(){
     ak8_subjet = NULL;
     ak8jet_hasSubjet = NULL;
     ak8subjet_btag = NULL;
+    hbb = NULL;
 
 }
 
@@ -37,6 +38,7 @@ void BareFatJets::clear(){
     ak8_subjet->Clear();
     ak8subjet_btag ->clear();
     ak8jet_hasSubjet->clear();
+    hbb -> clear();
 }
 
 void BareFatJets::defineBranches(TTree *t){
@@ -73,6 +75,9 @@ void BareFatJets::defineBranches(TTree *t){
     ak8subjet_btag =  new vector<float>;
     t->Branch("ak8subjet_btag","vector<float>",&ak8subjet_btag);
 
+    hbb =  new vector<float>;
+    t->Branch("fatjetHbb","vector<float>",&hbb);
+
 }
 
 void BareFatJets::setBranchAddresses(TTree *t){
@@ -105,8 +110,13 @@ void BareFatJets::setBranchAddresses(TTree *t){
 
     ak8_subjet = new TClonesArray("TLorentzVector", 20);
     t->SetBranchAddress("ak8_subjet"	,&ak8_subjet);
+    ak8jet_hasSubjet =  new vector<int>;
     t->SetBranchAddress("ak8jet_hasSubjet",&ak8jet_hasSubjet);
+    ak8subjet_btag =  new vector<float>;
     t->SetBranchAddress("ak8subjet_btag",&ak8subjet_btag);
+
+    hbb =  new vector<float>;
+    t->SetBranchAddress("fatjetHbb",&hbb);
 }
 // Local Variables:
 // mode:c++
