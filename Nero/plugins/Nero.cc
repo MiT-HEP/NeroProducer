@@ -54,6 +54,8 @@ Nero::Nero(const edm::ParameterSet& iConfig)
 
     bool onlyMc = iConfig.getParameter<bool>("onlyMc");
 
+    std::cout << "onlyMc: " << onlyMc << std::endl;
+
     // not push_back inline because he needs to know the class type for init
     NeroEvent *evt = new NeroEvent();
     evt -> mOnlyMc = onlyMc;
@@ -129,6 +131,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     NeroMet *met = new NeroMet();
     met -> mOnlyMc = onlyMc;
     met -> token = consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("mets"));
+    met -> pfToken_ = consumes<pat::PackedCandidateCollection>(iConfig.getParameter<edm::InputTag>("pfCands"));
     obj.push_back(met);
 
     // --

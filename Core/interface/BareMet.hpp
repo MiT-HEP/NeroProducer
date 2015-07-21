@@ -22,6 +22,8 @@ class BareMet : virtual public BareP4
 
         // Should not stay here, but in MC -> we will esculed it if run on onlyMc
         TClonesArray *genP4;
+    
+        float metNoMu;
 
 };
 #endif

@@ -18,6 +18,8 @@ nero = cms.EDAnalyzer("Nero",
     jets = cms.InputTag("slimmedJets"),
     fatjets = cms.InputTag("slimmedJetsAK8"),
     mets = cms.InputTag("slimmedMETs"),
+    pfCands = cms.InputTag("packedPFCandidates"),
+
     # gen
     pileup = cms.InputTag("addPileupInfo"),
     generator = cms.InputTag("generator"),
@@ -39,12 +41,13 @@ nero = cms.EDAnalyzer("Nero",
     #
     ## TRIGGER
     triggerNames = cms.vstring(['HLT_PFMET170_NoiseCleaned',
-                                'HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight']),
+                                'HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight',
+                                'HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight']),
     prescales = cms.InputTag('patTrigger'),
     trigger = cms.InputTag("TriggerResults","","HLT"),
     objects = cms.InputTag('selectedPatTrigger'),
     ## CUSTOM CONFIGURATION
-    onlyMc = cms.bool (False),  ## not completely supported yet
+    onlyMc = cms.bool (True),  ## not completely supported yet
 
     minJetPt  = cms.double (25.),
     minJetEta = cms.double (4.7),

@@ -42,9 +42,10 @@ scram b -j 16
 ```
 
 ### How to Run
+If running on data, set the isData flag to True, else False
 ```
 cd NeroProducer/Nero/test
-cmsRun testNero.py
+cmsRun testNero.py isData=True
 ```
 
 To check the simple cut flow for the monojet analysis

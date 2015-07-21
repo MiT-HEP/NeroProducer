@@ -22,6 +22,22 @@ int NeroMet::analyze(const edm::Event& iEvent){
     ptJESUP -> push_back( met.shiftedPt(pat::MET::JetEnUp) );
     ptJESDOWN -> push_back( met.shiftedPt(pat::MET::JetEnDown) );
 
+    //MetNoMu
+    float metnomu_x = met.px();
+    float metnomu_y = met.py();
+   
+    
+    iEvent.getByToken(pfToken_, pfs);
+    for (unsigned int i = 0, n = pfs->size(); i < n; ++i) {
+        const pat::PackedCandidate &pf = (*pfs)[i];
+        if (std::abs(pf.pdgId()) == 13 ){
+            metnomu_x += pf.px();
+            metnomu_y += pf.py();
+        }
+    }
+    
+    metNoMu = sqrt(metnomu_x*metnomu_x + metnomu_y*metnomu_y);
+
     if ( not iEvent.isRealData () ){
     new ( (*genP4)[genP4->GetEntriesFast()]) TLorentzVector( met.genMET()->px(),met.genMET()->py(),met.genMET()->pz(),met.genMET()->energy()  );
     }
