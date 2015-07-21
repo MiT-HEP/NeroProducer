@@ -139,7 +139,7 @@ process.HBB = cms.Sequence(
 ## SKIM INFO
 process.load('NeroProducer.Skim.infoProducerSequence_cff')
 process.load('NeroProducer.Nero.Nero_cfi')
-process.load('NeroProducer.Nero.NeroMonojet_cfi')
+#process.load('NeroProducer.Nero.NeroMonojet_cfi')
 #process.load('NeroProducer.Nero.NeroChargedHiggs_cfi')
 
 #------------------------------------------------------
