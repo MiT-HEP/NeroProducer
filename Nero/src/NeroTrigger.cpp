@@ -37,16 +37,28 @@ int NeroTrigger::analyze(const edm::Event& iEvent){
     if ( handle.isValid() and not handle.failedToGet() ) {
         int ntrigs = (int)names.size();
         for (int i = 0; i < ntrigs; i++) {
+
+            if (VERBOSE > 2){
+            std::cout << "Trigger " << names.triggerName(i) << 
+                ", prescale " << prescale_handle->getPrescaleForIndex(i) <<
+                ": " << (handle->accept(i) ? "PASS" : "fail (or not run)") 
+                      << std::endl;
+            }
             string name = names.triggerName(i);
             for(unsigned int j=0;j< triggerNames->size() ;++j) // destination loop
             {
                 if (name.find( (*triggerNames)[j]) != string::npos)
-                    (*triggerFired)[j] = 1;
+                {
+                    if (handle->accept(i)){
+                        ((*triggerFired)[j]) = 1;
+                    }
+                }
                 (*triggerPrescale)[j] = prescale_handle -> getPrescaleForIndex(i) ;
 
             } // my trigger end
         } // trigger loop
     } // handle is valid
+
 
     // ---- TRIGGER MATCHING ---
     if (leps_ !=NULL) triggerLeps -> resize(leps_ -> p4 -> GetEntries()  ,0);

@@ -6,6 +6,7 @@ BareMet::BareMet(){
     ptJESUP = NULL;
     ptJESDOWN = NULL;
     genP4 = NULL;
+    metNoMu = -1.0;
 }
 
 BareMet::~BareMet(){
@@ -32,6 +33,9 @@ void BareMet::defineBranches(TTree *t){
     //	
     genP4 = new TClonesArray("TLorentzVector", 20);
     t->Branch("metP4_GEN","TClonesArray", &p4, 128000, 0);
+    //
+    t->Branch("metNoMu",&metNoMu,"metNoMu/F");
+
 }
 
 void BareMet::setBranchAddresses(TTree *t){
@@ -44,6 +48,7 @@ void BareMet::setBranchAddresses(TTree *t){
     t->SetBranchAddress("metPtJESDOWN",&ptJESDOWN);
     genP4 = new TClonesArray("TLorentzVector", 20);
     t->SetBranchAddress("metP4_GEN"	, &genP4 );
+
 }
 
 // Local Variables:

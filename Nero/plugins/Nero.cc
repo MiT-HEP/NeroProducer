@@ -129,6 +129,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     NeroMet *met = new NeroMet();
     met -> mOnlyMc = onlyMc;
     met -> token = consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("mets"));
+    met -> pfToken_ = consumes<pat::PackedCandidateCollection>(iConfig.getParameter<edm::InputTag>("pfCands"));
     obj.push_back(met);
 
     // --
