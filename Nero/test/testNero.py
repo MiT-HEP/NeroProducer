@@ -18,7 +18,7 @@ process.load("FWCore.MessageService.MessageLogger_cfi")
 # the size of the output by prescaling the report of the event number
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 
 fileList = [
     '/store/data/Run2015B/MET/MINIAOD/PromptReco-v1/000/251/643/00000/CC77B94F-902C-E511-9A26-02163E01369B.root'
@@ -56,6 +56,12 @@ process.load('Configuration.StandardSequences.Services_cff')
 if (isData):
     process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
     process.GlobalTag.globaltag = '74X_dataRun2_Prompt_v0'
+    
+    import FWCore.PythonUtilities.LumiList as LumiList
+    process.source.lumisToProcess = LumiList.LumiList(filename='/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/DCSOnly/json_DCSONLY_Run2015B.txt').getVLuminosityBlockRange()
+    # GoldenJsn
+    #process.source.lumisToProcess = LumiList.LumiList(filename='/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Cert_246908-251642_13TeV_PromptReco_Collisions15_JSON.txt').getVLuminosityBlockRange()
+
 else:
     process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
     process.GlobalTag.globaltag = 'MCRUN2_74_V9::All'
@@ -133,13 +139,6 @@ process.HBB = cms.Sequence(
 ## SKIM INFO
 process.load('NeroProducer.Skim.infoProducerSequence_cff')
 process.load('NeroProducer.Nero.Nero_cfi')
-
-from NeroProducer.Nero.Nero_cfi import *
-if (isData):
-    process.nero.onlyMc = cms.bool(False)
-else:
-    process.nero.onlyMc = cms.bool(True)
-
 process.load('NeroProducer.Nero.NeroMonojet_cfi')
 #process.load('NeroProducer.Nero.NeroChargedHiggs_cfi')
 

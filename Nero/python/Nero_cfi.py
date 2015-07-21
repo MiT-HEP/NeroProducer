@@ -40,14 +40,18 @@ nero = cms.EDAnalyzer("Nero",
     phoPhotonIsolation = cms.InputTag("photonIDValueMapProducer:phoPhotonIsolation"),
     #
     ## TRIGGER
-    triggerNames = cms.vstring(['HLT_PFMET170_NoiseCleaned',
+    triggerNames = cms.vstring(['HLT_Ele27_eta2p1_WPLoose_Gsf',
+                                'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET80',
+                                'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET120',
+                                'HLT_IsoMu20',
+                                'HLT_PFMET170_NoiseCleaned',
                                 'HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight',
                                 'HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight']),
     prescales = cms.InputTag('patTrigger'),
     trigger = cms.InputTag("TriggerResults","","HLT"),
     objects = cms.InputTag('selectedPatTrigger'),
     ## CUSTOM CONFIGURATION
-    onlyMc = cms.bool (True),  ## not completely supported yet
+    onlyMc = cms.bool (False),  ## not completely supported yet
 
     minJetPt  = cms.double (25.),
     minJetEta = cms.double (4.7),
