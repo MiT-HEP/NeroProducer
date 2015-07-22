@@ -16,9 +16,6 @@ mithep::nero::EventFiller::fill()
   out_.lumiNum = eventHeader->LumiSec();
   out_.eventNum = eventHeader->EvtNum();
 
-  if (eventHeader->IsMC()) {
-    auto* rhoCol = getSource<mithep::PileupEnergyDensityCol>(Names::gkPileupEnergyDensityBrn);
-
-    out_.rho = rhoCol->At(0)->Rho(rhoAlgo_);
-  }
+  auto* rhoCol = getSource<mithep::PileupEnergyDensityCol>(Names::gkPileupEnergyDensityBrn);
+  out_.rho = rhoCol->At(0)->Rho(rhoAlgo_);
 }

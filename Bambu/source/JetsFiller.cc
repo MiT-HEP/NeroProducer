@@ -12,6 +12,8 @@ mithep::nero::JetsFiller::fill()
   if (!jets)
     return;
 
+  auto* vertices = getSource<mithep::VertexCol>(verticesName_);
+
   for (unsigned iJ(0); iJ != jets->GetEntries(); ++iJ) {
     auto& jet(*jets->At(iJ));
 
@@ -20,8 +22,6 @@ mithep::nero::JetsFiller::fill()
     auto&& rawMom(jet.RawMom());
 
     out_.rawPt->push_back(rawMom.Pt());
-    // TODO
-    out_.puId->push_back(0.);
     out_.bDiscr->push_back(jet.BJetTagsDisc(mithep::Jet::kCombinedInclusiveSecondaryVertexV2));
     // TODO
     out_.qgl->push_back(0.);
@@ -42,6 +42,9 @@ mithep::nero::JetsFiller::fill()
 
       out_.mjId->push_back(chFrac > 0.2 && nhFrac < 0.7 && neFrac < 0.7);
       out_.mjId_loose->push_back(nhFrac < 0.7 && neFrac < 0.9);
+
+      if (jetId_ && vertices)
+        out_.puId->push_back(jetId_->MVAValue(&pfJet, vertices->At(0), vertices));
     }
     else {
       out_.mjId->push_back(false);
