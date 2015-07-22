@@ -19,8 +19,7 @@ xsections={}
 nevents={}
 lumi=30 ## pb
 
-#book=['DY','WZ','ZZ','WW','WJets','TTJets']
-book=['WW']
+book=['DY','WZ','ZZ','WW','WJets','TTJets']
 datasets=['SingleMuon']
 ##configure
 if True:
