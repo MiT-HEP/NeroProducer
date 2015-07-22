@@ -162,14 +162,18 @@ for mc in book:
 		llM[mc].Fill( ll.M(), t.mcWeight * xsections[mc] / nevents[mc] )
 		llPt[mc].Fill( ll.Pt() )
 		rho[mc].Fill( t.rho )
-	print '\r'+stdout+"DONE"
+	print '\r'+stdout+"DONE                            "
 
 for data in datasets:
-	print " * for data",
+	stdout=" * for data"
+	print stdout,
 	t=ROOT.TChain("nero/events")
 	for f in ReadFromEos( disks[mc] ):
 	      t.Add(f)
 	for i in range(0,t.GetEntries() ):
+		if i&1023 == 1:
+			print "\r"+stdout ,i,"/",t.GetEntriesFast(),
+			sys.stdout.flush()
                 if t.lepP4.GetEntries()<2 : continue ## 2leptons
                 if t.lepP4[1].Pt() < 20 : continue ## pt 20
                 if t.lepPdgId[0]* t.lepPdgId[1] != -13*13 : continue ## OS SF muon, leading two
@@ -177,7 +181,7 @@ for data in datasets:
                 llM[mc].Fill( ll.M() )
                 llPt[mc].Fill( ll.Pt() )
                 rho[mc].Fill( t.rho )
-	print "DONE"
+	print "\r"+stdout+"DONE                               "
 
 print "-> Preparing canvas"
 ROOT.gStyle.SetOptStat(0)

@@ -5,10 +5,14 @@ process = cms.Process("nero")
 
 options = VarParsing.VarParsing ('analysis')
 options.register('isData',
-                 'False', #
+                 False,
                  VarParsing.VarParsing.multiplicity.singleton,
                  VarParsing.VarParsing.varType.bool,
                  "True if running on Data, False if running on MC")
+
+options.register('isGrid', False, VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Set it to true if running on Grid")
+options.register('head', "XXX", VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.string,"Set to the head of the repository. use check_output 'git rev-parse HEAD' in the crab py file. active only if isGrid.")
+options.register('tag', "YYY", VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.string,"Set to the tag of the repository. use check_output 'git rev-parse HEAD' in the crab py file. active only if isGrid.")
 
 options.parseArguments()
 isData = options.isData
@@ -141,6 +145,10 @@ process.load('NeroProducer.Skim.infoProducerSequence_cff')
 process.load('NeroProducer.Nero.Nero_cfi')
 #process.load('NeroProducer.Nero.NeroMonojet_cfi')
 #process.load('NeroProducer.Nero.NeroChargedHiggs_cfi')
+
+if options.isGrid:
+	process.nero.head=options.head ##'git rev-parse HEAD'
+	process.nero.tag=options.tag ## git describe --tags
 
 #------------------------------------------------------
 process.p = cms.Path(
