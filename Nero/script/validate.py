@@ -19,8 +19,9 @@ xsections={}
 nevents={}
 lumi=30 ## pb
 
-book=['DY','WZ','ZZ','WW','WJets','TTJets']
-datasets='SingleMuon'
+#book=['DY','WZ','ZZ','WW','WJets','TTJets']
+book=['WW']
+datasets=['SingleMuon']
 ##configure
 if True:
 	#### Asympt 50 ns v2
@@ -93,13 +94,14 @@ def PrepareCanvas(name="c"):
 
 def CMS():
 	ltx=ROOT.TLatex()
+	ltx.SetNDC()
 	ltx.SetTextFont(42)
 	ltx.SetTextSize(0.03)
-	ltx.SetTextAlign(13)
-	ltx.DrawLatex(.96,.96,"%.1fpb^{-1}(13TeV)"%Lumi)
 	ltx.SetTextAlign(31)
+	ltx.DrawLatex(.96,.96,"%.1fpb^{-1}(13TeV)"%lumi)
+	ltx.SetTextAlign(13)
 	ltx.SetTextSize(0.05)
-	ltx.DrawLatex(.17,.89,"#bf{CMS},#scale[0.75]{#it{ Preliminary}}")
+	ltx.DrawLatex(.17,.93,"#bf{CMS},#scale[0.75]{#it{ Preliminary}}")
 
 def DrawHistograms( dict ) :
 	s=ROOT.THStack()
@@ -139,8 +141,8 @@ rho["data"] =ROOT.TH1D("rho","rho",150,0,300)
 
 print "-> compute observables"
 for mc in book:
-	stdout=" * for mc "+mc,
-	print stdout
+	stdout=" * for mc "+mc
+	print stdout,
 	sys.stdout.flush()
 	t=ROOT.TChain("nero/events")	
 	for f in ReadFromEos( disks[mc] ):
@@ -159,7 +161,7 @@ for mc in book:
 		if t.lepP4[1].Pt() < 20 : continue ## pt 20
 		if t.lepPdgId[0]* t.lepPdgId[1] != -13*13 : continue ## OS SF muon, leading two
 		ll = t.lepP4[0] + t.lepP4[1]
-		llM[mc].Fill( ll.M(), t.mcWeight * xsections[mc] / nevents[mc] )
+		llM[mc].Fill( ll.M(), t.mcWeight * xsections[mc] * lumi/ nevents[mc] )
 		llPt[mc].Fill( ll.Pt() )
 		rho[mc].Fill( t.rho )
 	print '\r'+stdout+"DONE                            "
@@ -168,7 +170,7 @@ for data in datasets:
 	stdout=" * for data"
 	print stdout,
 	t=ROOT.TChain("nero/events")
-	for f in ReadFromEos( disks[mc] ):
+	for f in ReadFromEos( disks[data] ):
 	      t.Add(f)
 	for i in range(0,t.GetEntries() ):
 		if i&1023 == 1:
@@ -181,7 +183,7 @@ for data in datasets:
                 llM[mc].Fill( ll.M() )
                 llPt[mc].Fill( ll.Pt() )
                 rho[mc].Fill( t.rho )
-	print "\r"+stdout+"DONE                               "
+	print "\r"+stdout+" DONE                               "
 
 print "-> Preparing canvas"
 ROOT.gStyle.SetOptStat(0)
