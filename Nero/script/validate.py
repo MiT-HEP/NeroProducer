@@ -61,17 +61,26 @@ def ReadFromEos(eos):
 ## compute nevents
 print "-> compute nevents"
 for mc in book:
-	print " -> for mc ", mc,
+	stdout = " * for mc " +  mc
+	print stdout,
 	sys.stdout.flush()
 	t=ROOT.TChain("nero/all")	
+	n=0
 	for f in ReadFromEos( disks[mc] ):
 		t.Add(f)
+		n += 1 
+	stdout += " "+str(n) +" files added"
+	print "\r"+stdout,
+	sys.stdout.flush()
 	SW=0.
 	for i in range(0,t.GetEntries() ):
+		if i&1023 == 1:
+			print "\r"+ stdout ,i,"/",t.GetEntriesFast(),
+			sys.stdout.flush()
 		t.GetEntry(i)
-		SW += t.weight
+		SW += t.mcWeight
 	nevents[mc]=SW
-	print SW
+	print "\r" + stdout,"SumW=",SW
 
 ## plot stuff
 def PrepareCanvas(name="c"):
@@ -130,7 +139,8 @@ rho["data"] =ROOT.TH1D("rho","rho",150,0,300)
 
 print "-> compute observables"
 for mc in book:
-	print " * for mc", mc,
+	stdout=" * for mc "+mc,
+	print stdout
 	sys.stdout.flush()
 	t=ROOT.TChain("nero/events")	
 	for f in ReadFromEos( disks[mc] ):
@@ -141,15 +151,18 @@ for mc in book:
 	rho[mc] = rho["data"].Clone("%s_%s"%(rho["data"].GetName(),mc))
 
 	for i in range(0,t.GetEntries() ):
+		if i&1023 == 1:
+			print "\r"+stdout ,i,"/",t.GetEntriesFast(),
+			sys.stdout.flush()
 		t.GetEntry(i)
 		if t.lepP4.GetEntries()<2 : continue ## 2leptons
 		if t.lepP4[1].Pt() < 20 : continue ## pt 20
 		if t.lepPdgId[0]* t.lepPdgId[1] != -13*13 : continue ## OS SF muon, leading two
 		ll = t.lepP4[0] + t.lepP4[1]
-		llM[mc].Fill( ll.M(), t.weight * xsections[mc] )
+		llM[mc].Fill( ll.M(), t.mcWeight * xsections[mc] / nevents[mc] )
 		llPt[mc].Fill( ll.Pt() )
 		rho[mc].Fill( t.rho )
-	print "DONE"
+	print '\r'+stdout+"DONE"
 
 for data in datasets:
 	print " * for data",
