@@ -14,6 +14,8 @@ class BareVertex : virtual public BareCollection
         virtual void setBranchAddresses(TTree*);
         virtual inline string name(){return "BareVertex";};
 
+        int npv;
+
 };
 #endif
 // Local Variables:
