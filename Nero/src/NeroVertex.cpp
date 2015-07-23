@@ -34,8 +34,9 @@ int NeroVertex::analyze(const edm::Event& iEvent){
         if ( !isFake
                 && vtx->ndof()>=4. && vtx->position().Rho()<=2.0
                 && fabs(vtx->position().Z())<=24.0) {
-            firstGoodVertex = vtx;
-            break;
+            if(firstGoodVertex == handle->end() ) firstGoodVertex = vtx;
+            ++npv;
+            //break;
         }
     }
 
