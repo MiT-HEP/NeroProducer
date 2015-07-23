@@ -31,8 +31,8 @@ lumi=opts.lumi ## pb
 
 fileLimit=-1
 
-#book=['DY','WZ','ZZ','WW','WJets','TTJets'] ## WJets is very big with low eff for double muon
-book=['DY','WZ','ZZ','WW','TTJets']
+book=['DY','WZ','ZZ','WW','WJets','TTJets'] ## WJets is very big with low eff for double muon
+#book=['DY','WZ','ZZ','WW','TTJets']
 datasets=['SingleMuon','SingleElectron']
 ##configure
 if True:
@@ -124,8 +124,14 @@ def CMS():
 
 garbage=[]
 def DrawHistograms( dict, target="data" ) :
-	s=ROOT.THStack()
-	s.SetName( dict["data"].GetName() + "_mcstack")
+	data= dict[target]
+	data.SetMarkerStyle(20)
+	data.SetMarkerColor(ROOT.kBlack)
+	data.SetLineColor(ROOT.kBlack)
+
+	s=ROOT.THStack(data.GetName() + "_mcstack",data.GetTitle())
+	data.SetName( data.GetName() + "_data")
+
 	for mc in book:
 		dict[mc].SetLineColor(ROOT.kBlack)
 		dict[mc].SetLineWidth(2)
@@ -136,24 +142,22 @@ def DrawHistograms( dict, target="data" ) :
 		elif mc == 'WZ' : dict[mc].SetFillColor( ROOT.kGreen )
 		elif mc == 'ZZ' : dict[mc].SetFillColor( ROOT.kGreen )
 		else            : dict[mc].SetFillColor( ROOT.kGray )
+
 		s.Add(dict[mc])
-		print "Histogram DEBUG", mc,"norm",dict[mc].Integral() 
 
 	garbage.append(s)
 
-	data= dict[target]
-	data.SetMarkerStyle(20)
-	data.SetMarkerColor(ROOT.kBlack)
-	data.SetLineColor(ROOT.kBlack)
-
-	data.Draw("AXIS")
-	data.GetYaxis().SetTitleOffset(1.2)
 	
-	s.Draw("HIST SAME")
+	s.Draw("HIST")
+	s.GetXaxis().SetTitle( data.GetXaxis().GetTitle() )
+	s.GetYaxis().SetTitle( data.GetYaxis().GetTitle() )
+	s.GetYaxis().SetTitleOffset(1.2)
+	#data.Draw("AXIS")
+	#data.GetYaxis().SetTitleOffset(1.2)
 	data.Draw("PE SAME")	
 
-	data.Draw("AXIS SAME")
-	data.Draw("AXIS X+ Y+ SAME")
+	s.Draw("AXIS SAME")
+	s.Draw("AXIS X+ Y+ SAME")
 
 
 ## Loop
@@ -174,7 +178,7 @@ mmRho["data"] =ROOT.TH1D("mmRho","mmRho;#rho [GeV]; Events",150,0,50)
 eeM["data"] =ROOT.TH1D("eeM","eeM;M_{ee};Events",150,0,300)
 eePt["data"]=ROOT.TH1D("eePt","eePt;p_{T}^{ee};Events",150,0,300)
 eeMet["data"]=ROOT.TH1D("eeMet","eeMet;E_{T}^{miss}(DY#rightarrow ee); Events",150,0,300)
-eeRho["data"] =ROOT.TH1D("eeRho","eeRho;#rho [GeV];Events",150,0,300)
+eeRho["data"] =ROOT.TH1D("eeRho","eeRho;#rho [GeV];Events",150,0,50)
 
 print "-> compute observables"
 for mc in book:
