@@ -3,6 +3,7 @@ import os,sys
 from subprocess import call, check_output
 from optparse import OptionParser
 import re
+import json
 
 
 usage ='''prog [opts] args
@@ -11,6 +12,9 @@ usage ='''prog [opts] args
 parser= OptionParser(usage=usage)
 parser.add_option("-b","--batch",dest="batch",action="store_true",help="Run in Batch mode",default=False);
 parser.add_option("-l","--limit",dest="limit",type='int',help="max number of entries for mc.",default=-1); 
+parser.add_option("-L","--lumi",dest="lumi",type='float',help="Luminosity.",default=30); 
+parser.add_option("-j","--json",dest="json",type='string',help="json file",default=""); 
+parser.add_option("","--plotdir",dest="plotdir",type='string',help="plot directory [Default=%default].",default="plot"); 
 
 opts, args = parser.parse_args()
 
@@ -23,7 +27,7 @@ version="v1.0"
 disks={}
 xsections={}
 nevents={}
-lumi=30 ## pb
+lumi=opts.lumi ## pb
 
 fileLimit=-1
 
@@ -113,11 +117,12 @@ def CMS():
 	ltx.SetTextFont(42)
 	ltx.SetTextSize(0.03)
 	ltx.SetTextAlign(31)
-	ltx.DrawLatex(.96,.96,"%.1fpb^{-1}(13TeV)"%lumi)
+	ltx.DrawLatex(.96,.96,"%.1f pb^{-1} (13TeV)"%lumi)
 	ltx.SetTextAlign(13)
 	ltx.SetTextSize(0.05)
 	ltx.DrawLatex(.17,.93,"#bf{CMS},#scale[0.75]{#it{ Preliminary}}")
 
+garbage=[]
 def DrawHistograms( dict, target="data" ) :
 	s=ROOT.THStack()
 	s.SetName( dict["data"].GetName() + "_mcstack")
@@ -132,12 +137,17 @@ def DrawHistograms( dict, target="data" ) :
 		elif mc == 'ZZ' : dict[mc].SetFillColor( ROOT.kGreen )
 		else            : dict[mc].SetFillColor( ROOT.kGray )
 		s.Add(dict[mc])
+		print "Histogram DEBUG", mc,"norm",dict[mc].Integral() 
+
+	garbage.append(s)
+
 	data= dict[target]
 	data.SetMarkerStyle(20)
 	data.SetMarkerColor(ROOT.kBlack)
 	data.SetLineColor(ROOT.kBlack)
 
 	data.Draw("AXIS")
+	data.GetYaxis().SetTitleOffset(1.2)
 	
 	s.Draw("HIST SAME")
 	data.Draw("PE SAME")	
@@ -156,15 +166,15 @@ eePt={}
 eeMet={}
 eeRho={}
 
-mmM["data"] =ROOT.TH1D("mmM","mmM;M_{ll};Events",150,0,300)
-mmPt["data"]=ROOT.TH1D("mmPt","mmPt",150,0,300)
-mmMet["data"]=ROOT.TH1D("mmMet","mmMet",150,0,300)
-mmRho["data"] =ROOT.TH1D("mmRho","mmRho",150,0,300)
+mmM["data"] =ROOT.TH1D("mmM","mmM;M_{#mu#mu};Events",200,50,150)
+mmPt["data"]=ROOT.TH1D("mmPt","mmPt;p_{T}^{#mu#mu};Events",150,0,300)
+mmMet["data"]=ROOT.TH1D("mmMet","mmMet;E_{T}^{miss}(DY#rightarrow#mu#mu); Events",150,0,300)
+mmRho["data"] =ROOT.TH1D("mmRho","mmRho;#rho [GeV]; Events",150,0,50)
 
-eeM["data"] =ROOT.TH1D("eeM","eeM;M_{ll};Events",150,0,300)
-eePt["data"]=ROOT.TH1D("eePt","eePt",150,0,300)
-eeMet["data"]=ROOT.TH1D("eeMet","eeMet",150,0,300)
-eeRho["data"] =ROOT.TH1D("eeRho","eeRho",150,0,300)
+eeM["data"] =ROOT.TH1D("eeM","eeM;M_{ee};Events",150,0,300)
+eePt["data"]=ROOT.TH1D("eePt","eePt;p_{T}^{ee};Events",150,0,300)
+eeMet["data"]=ROOT.TH1D("eeMet","eeMet;E_{T}^{miss}(DY#rightarrow ee); Events",150,0,300)
+eeRho["data"] =ROOT.TH1D("eeRho","eeRho;#rho [GeV];Events",150,0,300)
 
 print "-> compute observables"
 for mc in book:
@@ -198,7 +208,14 @@ for mc in book:
 		if t.lepP4.GetEntries()<2 : continue ## 2leptons
 		if t.lepP4[1].Pt() < 20 : continue ## pt 20
 
-		w = t.mcWeight * xsections[mc] * lumi/ nevents[mc]
+		w = t.mcWeight * xsections[mc] * lumi / nevents[mc]
+		if w == 0 : 
+			print "MC weight for mc",mc,"is 0"
+			print "\t * mcWeight",t.mcWeight
+			print "\t * xsec",xsections[mc]
+			print "\t * lumi",lumi
+			print "\t * sumW",nevents[mc]
+
 		if t.lepPdgId[0]* t.lepPdgId[1] == -13*13 :  ## OS SF muon, leading two
 			ll = t.lepP4[0] + t.lepP4[1]
 			mmRho[mc].Fill( t.rho ,w)
@@ -216,9 +233,14 @@ for mc in book:
 			eeMet[mc].Fill( t.metP4[0].Pt() ,w)
 	print '\r'+stdout+" DONE                            "
 
+### if a json is given parse it
+if opts.json != "":
+	jstring = open(opts.json).read() 
+	goodLumis = json.loads( jstring )
+
 for data in datasets:
 
-	stdout=" * for data",data
+	stdout=" * for data "+ data
 	print stdout,
 	t=ROOT.TChain("nero/events")
 	n=0
@@ -233,6 +255,16 @@ for data in datasets:
 			print "\r"+stdout ,i,"/",t.GetEntriesFast(),
 			sys.stdout.flush()
 		t.GetEntry(i)
+		## JSON
+		if opts.json != "":
+			# filter accordingly to a json file
+			run= str(t.runNum)
+			if run not in goodLumis.keys(): continue
+			isGood=False
+			for lumis in goodLumis[run] :
+				if t.lumiNum >= lumis[0] and t.lumiNum <= lumis[1] : isGood = True
+			if not isGood: continue
+
                 if t.lepP4.GetEntries()<2 : continue ## 2leptons
                 if t.lepP4[1].Pt() < 20 : continue ## pt 20
                 if t.lepPdgId[0]* t.lepPdgId[1] == -13*13 and data=='SingleMuon' : ## OS SF muon, leading two
@@ -270,6 +302,13 @@ if not opts.batch:
 	raw_input("Looks ok?")
 
 for c in canvas:
-	c.SaveAs("plot/" + c.GetName() + ".pdf")
-	c.SaveAs("plot/" + c.GetName() + ".png")
-	c.SaveAs("plot/" + c.GetName() + ".root")
+	c.SaveAs(opts.plotdir + "/" + c.GetName() + ".pdf")
+	c.SaveAs(opts.plotdir + "/" + c.GetName() + ".png")
+	c.SaveAs(opts.plotdir + "/" + c.GetName() + ".root")
+	## SAVE ALSO THE HISTOGRAMS
+	f= ROOT.TFile.Open(opts.plotdir + "/" + c.GetName() + ".root","UPDATE")
+	f.cd()
+	exec("dict="+ c.GetName() )
+	for histo in dict: # c.GetName is also the dictionary
+		dict[histo].Write()
+	f.Close()
