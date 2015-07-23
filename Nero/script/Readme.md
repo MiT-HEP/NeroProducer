@@ -26,3 +26,6 @@
 
 ## validate.py
 * script to run on ntuples at the begginning and produce data/mc comparisons.
+
+## weight.py
+* create friend tree with the cross section weights.

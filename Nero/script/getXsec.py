@@ -7,7 +7,7 @@ from optparse import OptionParser
 from subprocess import call, check_output
 
 parser = OptionParser(usage = "usage");
-parser.add_option("-e","--eos",dest="eos",type="string",help="eos directory to scout, will not read the files in the pSet",default="");
+parser.add_option("-e","--eos",dest="eos",type="string",help="eos directory to scout.",default="");
 
 (opts,args)=parser.parse_args()
 
