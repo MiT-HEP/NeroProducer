@@ -47,9 +47,15 @@ fatJetCorrectionMod = mithep.JetCorrectionMod('FatJetCorrection',
     CorrectedJetsName = 'CorrectedFatJets',
     RhoAlgo = mithep.PileupEnergyDensity.kFixedGridFastjetAll
 )
-fatJetCorrectionMod.AddCorrectionFromFile(mitdata + "/MCRUN2_74_V9_L1FastJet_AK8PFchs.txt")
-fatJetCorrectionMod.AddCorrectionFromFile(mitdata + "/MCRUN2_74_V9_L2Relative_AK8PFchs.txt")
-fatJetCorrectionMod.AddCorrectionFromFile(mitdata + "/MCRUN2_74_V9_L3Absolute_AK8PFchs.txt")
+if analysis.isRealData:
+    fatJetCorrectionMod.AddCorrectionFromFile(mitdata + "/74X_dataRun2_Prompt-v1_L1FastJet_AK8PFchs.txt")
+    fatJetCorrectionMod.AddCorrectionFromFile(mitdata + "/74X_dataRun2_Prompt-v1_L2Relative_AK8PFchs.txt")
+    fatJetCorrectionMod.AddCorrectionFromFile(mitdata + "/74X_dataRun2_Prompt-v1_L3Absolute_AK8PFchs.txt")
+    fatJetCorrectionMod.AddCorrectionFromFile(mitdata + "/74X_dataRun2_Prompt-v1_L2L3Residual_AK8PFchs.txt")
+else:
+    fatJetCorrectionMod.AddCorrectionFromFile(mitdata + "/MCRUN2_74_V9_L1FastJet_AK8PFchs.txt")
+    fatJetCorrectionMod.AddCorrectionFromFile(mitdata + "/MCRUN2_74_V9_L2Relative_AK8PFchs.txt")
+    fatJetCorrectionMod.AddCorrectionFromFile(mitdata + "/MCRUN2_74_V9_L3Absolute_AK8PFchs.txt")
 
 fatJetIdMod = jetIdMod.clone('FatJetId',
     InputName = fatJetCorrectionMod.GetOutputName(),
@@ -138,23 +144,26 @@ neroMod = mithep.NeroMod(
 for filler in fillers:
     neroMod.AddFiller(filler)
 
-analysis.setSequence(
-    goodPVFilterMod *
-    generatorMod *
-    separatePileUpMod *
-    jetCorrectionMod *
-    jetIdMod *
-    metCorrectionMod *
-    pfTauIdMod *
-    electronIdMod *
-    muonIdMod *
-    photonIdMod *
-    electronTightId *
-    muonTightId *
-    muonTightIdMask *
-    fatJetCorrectionMod *
-    fatJetIdMod *
-    photonMediumId *
-    photonTightId *
+sequence = goodPVFilterMod
+if not analysis.isRealData:
+    sequence *= generatorMod
+
+sequence *= separatePileUpMod * \
+    jetCorrectionMod * \
+    jetIdMod * \
+    metCorrectionMod * \
+    pfTauIdMod * \
+    electronIdMod * \
+    muonIdMod * \
+    photonIdMod * \
+    electronTightId * \
+    muonTightId * \
+    muonTightIdMask * \
+    fatJetCorrectionMod * \
+    fatJetIdMod * \
+    photonMediumId * \
+    photonTightId * \
     neroMod
-)
+
+analysis.setSequence(sequence)
+
