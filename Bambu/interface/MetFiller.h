@@ -18,12 +18,14 @@ namespace mithep {
       void fill() override;
 
       void SetMetName(char const* _name) { metName_ = _name; }
+      void SetMuonsName(char const* _name) { muonsName_ = _name; }
       void SetGenMetName(char const* _name) { genMetName_ = _name; }
 
     private:
       BareMet out_{};
 
       TString metName_ = "PFMet";
+      TString muonsName_ = "Muons";
       TString genMetName_ = "GenMet";
 
       ClassDef(MetFiller, 0)

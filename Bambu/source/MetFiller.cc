@@ -2,6 +2,7 @@
 
 #include "MitAna/DataTree/interface/MetCol.h"
 #include "MitAna/DataTree/interface/GenMetCol.h"
+#include "MitAna/DataTree/interface/ParticleCol.h"
 #include "MitAna/DataTree/interface/EventHeader.h"
 #include "MitAna/DataTree/interface/Names.h"
 
@@ -18,6 +19,12 @@ mithep::nero::MetFiller::fill()
   // TODO
   out_.ptJESUP->push_back(0.);
   out_.ptJESDOWN->push_back(0.);
+
+  auto metNoMu(met.Mom());
+  auto* muons = getSource<mithep::ParticleCol>(muonsName_);
+  for (unsigned iM(0); iM != muons->GetEntries(); ++iM)
+    metNoMu += muons->At(iM)->Mom();
+  out_.metNoMu = metNoMu.Pt();
 
   if (getSource<mithep::EventHeader>(Names::gkEvtHeaderBrn)->IsMC()) {
     auto* genMetCol = getSource<mithep::MetCol>(genMetName_);
