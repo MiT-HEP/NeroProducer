@@ -220,7 +220,7 @@ for idx,fl in enumerate(fileChunks):
 	print >> sh, 'cd $WORKDIR'
 	print >> sh, "cmsRun " + os.environ['PWD'] + "/" + opts.dir + "/" + psetFileName, #+ " 2>&1 > log_%d.log"%idx
 	if opts.data: print >> sh, " isData=True"
-	else: print >>sh, "" ## ENDL
+	else: print >>sh, " isData=False" ## ENDL
 	print >> sh, "EXIT=$?"
 	print >> sh, "cd " + os.environ['PWD'] # support both absolute and relative path
 	print >> sh, "cd " + opts.dir
