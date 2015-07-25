@@ -8,7 +8,7 @@ from MitPhysics.Mods.JetCorrectionMod import jetCorrectionMod
 from MitPhysics.Mods.JetIdMod import jetIdMod
 from MitPhysics.Mods.MetCorrectionMod import metCorrectionMod
 from MitPhysics.Mods.PFTauIdMod import pfTauIdMod
-pfTauIdMod.AddCutDiscriminator(mithep.PFTau.kDiscriminationByRawCombinedIsolationDBSumPtCorr3Hits, 5.)
+pfTauIdMod.AddCutDiscriminator(mithep.PFTau.kDiscriminationByRawCombinedIsolationDBSumPtCorr3Hits, 5., False)
 from MitPhysics.Mods.ElectronIdMod import electronIdMod
 from MitPhysics.Mods.MuonIdMod import muonIdMod
 from MitPhysics.Mods.PhotonIdMod import photonIdMod
@@ -48,10 +48,10 @@ fatJetCorrectionMod = mithep.JetCorrectionMod('FatJetCorrection',
     RhoAlgo = mithep.PileupEnergyDensity.kFixedGridFastjetAll
 )
 if analysis.isRealData:
-    fatJetCorrectionMod.AddCorrectionFromFile(mitdata + "/74X_dataRun2_Prompt-v1_L1FastJet_AK8PFchs.txt")
-    fatJetCorrectionMod.AddCorrectionFromFile(mitdata + "/74X_dataRun2_Prompt-v1_L2Relative_AK8PFchs.txt")
-    fatJetCorrectionMod.AddCorrectionFromFile(mitdata + "/74X_dataRun2_Prompt-v1_L3Absolute_AK8PFchs.txt")
-    fatJetCorrectionMod.AddCorrectionFromFile(mitdata + "/74X_dataRun2_Prompt-v1_L2L3Residual_AK8PFchs.txt")
+    fatJetCorrectionMod.AddCorrectionFromFile(mitdata + "/74X_dataRun2_Prompt_v1_L1FastJet_AK8PFchs.txt")
+    fatJetCorrectionMod.AddCorrectionFromFile(mitdata + "/74X_dataRun2_Prompt_v1_L2Relative_AK8PFchs.txt")
+    fatJetCorrectionMod.AddCorrectionFromFile(mitdata + "/74X_dataRun2_Prompt_v1_L3Absolute_AK8PFchs.txt")
+    fatJetCorrectionMod.AddCorrectionFromFile(mitdata + "/74X_dataRun2_Prompt_v1_L2L3Residual_AK8PFchs.txt")
 else:
     fatJetCorrectionMod.AddCorrectionFromFile(mitdata + "/MCRUN2_74_V9_L1FastJet_AK8PFchs.txt")
     fatJetCorrectionMod.AddCorrectionFromFile(mitdata + "/MCRUN2_74_V9_L2Relative_AK8PFchs.txt")
@@ -164,6 +164,8 @@ sequence *= separatePileUpMod * \
     photonMediumId * \
     photonTightId * \
     neroMod
+
+analysis.SetAllowNoHLTTree(True)
 
 analysis.setSequence(sequence)
 
