@@ -3,6 +3,8 @@
 
 #include "NeroProducer/Nero/interface/NeroCollection.hpp"
 #include "NeroProducer/Core/interface/BarePhotons.hpp"
+#include "NeroProducer/Nero/interface/NeroPF.hpp"
+#include "NeroProducer/Nero/interface/NeroJets.hpp"
 
 
 class NeroPhotons : virtual public NeroCollection,
@@ -35,11 +37,17 @@ class NeroPhotons : virtual public NeroCollection,
         edm::EDGetTokenT<edm::ValueMap<float> > iso_nh_token;
         edm::EDGetTokenT<edm::ValueMap<float> > iso_pho_token;
 
+        // --- RC
+
         // --- configuration
         float mMinPt;
         int   mMinNpho;
         float mMinEta;
         float mMaxIso;
+
+        // -- PF
+        NeroPF *pf;
+        NeroJets *jets;
 
 };
 

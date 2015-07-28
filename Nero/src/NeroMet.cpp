@@ -2,6 +2,7 @@
 #include "NeroProducer/Nero/interface/Nero.hpp"
 
 NeroMet::NeroMet() : BareMet() {
+    pf = NULL;
 }
 
 NeroMet::~NeroMet(){
@@ -27,12 +28,14 @@ int NeroMet::analyze(const edm::Event& iEvent){
     float metnomu_y = met.py();
    
     
-    iEvent.getByToken(pfToken_, pfs);
-    for (unsigned int i = 0, n = pfs->size(); i < n; ++i) {
-        const pat::PackedCandidate &pf = (*pfs)[i];
-        if (std::abs(pf.pdgId()) == 13 ){
-            metnomu_x += pf.px();
-            metnomu_y += pf.py();
+    //iEvent.getByToken(pfToken_, pfs);
+    if ( pf == NULL ) cout<<"[NeroMet]::[analyze]::[ERROR] PF pointer is null. Run NeroPF. "<<endl; 
+
+    for (unsigned int i = 0, n = pf->handle->size(); i < n; ++i) {
+        const pat::PackedCandidate &cand = (*pf->handle)[i];
+        if (std::abs(cand.pdgId()) == 13 ){
+            metnomu_x += cand.px();
+            metnomu_y += cand.py();
         }
     }
     

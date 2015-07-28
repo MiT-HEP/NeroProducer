@@ -3,6 +3,7 @@
 
 #include "NeroProducer/Nero/interface/NeroCollection.hpp"
 #include "NeroProducer/Core/interface/BareMet.hpp"
+#include "NeroProducer/Nero/interface/NeroPF.hpp"
 
 
 class NeroMet : virtual public NeroCollection,
@@ -16,11 +17,13 @@ class NeroMet : virtual public NeroCollection,
 
         // --- Handle
         edm::Handle<pat::METCollection> handle;	
-        edm::Handle<pat::PackedCandidateCollection> pfs;
+        //edm::Handle<pat::PackedCandidateCollection> pfs;
 
         // --- Token
         edm::EDGetTokenT<pat::METCollection> token;
-        edm::EDGetTokenT<pat::PackedCandidateCollection> pfToken_;
+        //edm::EDGetTokenT<pat::PackedCandidateCollection> pfToken_;
+        //
+        NeroPF * pf;
 
 };
 

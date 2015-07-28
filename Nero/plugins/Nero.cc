@@ -125,12 +125,19 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     fatjets -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("fatjets"));
     obj.push_back(fatjets);
 
+    // 
+    NeroPF *pf = new NeroPF();
+    pf -> token = consumes<pat::PackedCandidateCollection>(iConfig.getParameter<edm::InputTag>("pfCands"));
+    obj.push_back (pf);
+
     //--
     NeroMet *met = new NeroMet();
     met -> mOnlyMc = onlyMc;
     met -> token = consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("mets"));
-    met -> pfToken_ = consumes<pat::PackedCandidateCollection>(iConfig.getParameter<edm::InputTag>("pfCands"));
+    //met -> pfToken_ = consumes<pat::PackedCandidateCollection>(iConfig.getParameter<edm::InputTag>("pfCands"));
+    met -> pf = pf;
     obj.push_back(met);
+
 
     // --
     NeroPhotons *phos = new NeroPhotons();
@@ -147,7 +154,8 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     phos -> mMinNpho = iConfig.getParameter<int>("minPhoN");
     phos -> mMinEta = iConfig.getParameter<double>("minPhoEta");
     phos -> SetMatch( iConfig.getParameter<bool>("matchPho") );
-
+    phos -> pf = pf;
+    phos -> jets = jets;
     obj.push_back(phos);
 
     NeroMonteCarlo *mc = new NeroMonteCarlo();
