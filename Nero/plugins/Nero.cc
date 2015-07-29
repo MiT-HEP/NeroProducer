@@ -66,6 +66,12 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     vtx -> token = consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("vertices"));
     obj.push_back(vtx);
 
+    // 
+    NeroPF *pf = new NeroPF();
+    pf -> token = consumes<pat::PackedCandidateCollection>(iConfig.getParameter<edm::InputTag>("pfCands"));
+    obj.push_back (pf);
+
+
     //now do what ever initialization is needed
     NeroJets *jets = new NeroJets();
     jets -> mOnlyMc = onlyMc;
@@ -76,6 +82,8 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     jets -> mMinEta = iConfig.getParameter<double>("minJetEta");
     jets -> mMinId = iConfig.getParameter<string>("minJetId");
     jets -> SetMatch( iConfig.getParameter<bool>("matchJet") );
+    jets -> pf = pf;
+    jets -> vtx = vtx;
     obj.push_back(jets);
 
     // --- 
@@ -124,11 +132,6 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     fatjets -> mOnlyMc = onlyMc;
     fatjets -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("fatjets"));
     obj.push_back(fatjets);
-
-    // 
-    NeroPF *pf = new NeroPF();
-    pf -> token = consumes<pat::PackedCandidateCollection>(iConfig.getParameter<edm::InputTag>("pfCands"));
-    obj.push_back (pf);
 
     //--
     NeroMet *met = new NeroMet();

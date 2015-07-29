@@ -24,6 +24,8 @@ class NeroVertex : virtual public NeroCollection,
         // -- variables
         const reco::Vertex *pv_;	
         const inline reco::Vertex* GetPV(){ return pv_ ; }
+
+        int firstGoodVertexIdx; // save this information
 };
 
 

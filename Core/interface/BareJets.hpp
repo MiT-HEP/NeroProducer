@@ -29,6 +29,9 @@ class BareJets : virtual public BareP4
         vector<bool>  *mjId;
         vector<bool>  *mjId_loose;
 
+        vector<float> *Q;
+        vector<float> *QnoPU;
+
 };
 
 #endif
