@@ -26,6 +26,7 @@ mithep::nero::MetFiller::fill()
   for (unsigned iM(0); iM != muons->GetEntries(); ++iM)
     metNoMu += muons->At(iM)->Mom();
   out_.metNoMu = metNoMu.Pt();
+  out_.phiNoMu = metNoMu.Phi();
 
   mithep::FourVectorM pChargedHadron;
   mithep::FourVectorM pNeutralHadron;
@@ -52,8 +53,11 @@ mithep::nero::MetFiller::fill()
   }
 
   out_.metChargedHadron = pChargedHadron.Pt();
+  out_.phiChargedHadron = pChargedHadron.Phi();
   out_.metNeutralHadron = pNeutralHadron.Pt();
+  out_.phiNeutralHadron = pNeutralHadron.Phi();
   out_.metNeutralEM = pNeutralEM.Pt();
+  out_.phiNeutralEM = pNeutralEM.Phi();
 
   if (getSource<mithep::EventHeader>(Names::gkEvtHeaderBrn)->IsMC()) {
     auto* genMetCol = getSource<mithep::MetCol>(genMetName_);
