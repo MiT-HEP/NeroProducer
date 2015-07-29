@@ -24,6 +24,13 @@ class BareMet : virtual public BareP4
         TClonesArray *genP4;
     
         float metNoMu;
+        float phiNoMu;
+        float metChargedHadron;
+        float phiChargedHadron;
+        float metNeutralHadron;
+        float phiNeutralHadron;
+        float metNeutralEM;
+        float phiNeutralEM;
 
 };
 #endif
