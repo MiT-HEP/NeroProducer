@@ -48,18 +48,23 @@ int NeroMet::analyze(const edm::Event& iEvent){
         if ( cand.charge() == 0 and cand.pdgId() != 22 ) 
             nhMet += TLorentzVector(cand.px(),cand.py(),cand.pz(),cand.energy());
     }
-    
+
     metNoMu = metnomu.Pt();
     phiNoMu = metnomu.Phi();
 
+    // met is the opposite of the sum.
+    chMet  *= -1;
+    nhMet  *= -1;
+    phoMet *= -1;
+    
     metChargedHadron = chMet.Pt();
-    phiChargedHadron = chMet.Phi();
+    phiChargedHadron = -chMet.Phi();
     
     metNeutralHadron = nhMet.Pt();
-    phiNeutralHadron = nhMet.Phi();
+    phiNeutralHadron = -nhMet.Phi();
 
     metNeutralEM = phoMet.Pt();
-    phiNeutralEM = phoMet.Phi();
+    phiNeutralEM = -phoMet.Phi();
 
     // GEN INFO
     if ( not iEvent.isRealData () ){
