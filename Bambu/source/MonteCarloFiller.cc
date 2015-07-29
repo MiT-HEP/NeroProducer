@@ -60,14 +60,16 @@ mithep::nero::MonteCarloFiller::fill()
     }
   }
 
-  minPt = std::max(20., minGenJetPt_);
+  auto* genJets = getSource<mithep::GenJetCol>(genJetsName_, false);
+  if (genJets) {
+    minPt = std::max(20., minGenJetPt_);
 
-  auto* genJets = getSource<mithep::GenJetCol>(genJetsName_);
-  for (unsigned iJ(0); iJ != genJets->GetEntries(); ++iJ) {
-    auto& jet(*genJets->At(iJ));
-    if (jet.Pt() < minPt)
-      continue;
+    for (unsigned iJ(0); iJ != genJets->GetEntries(); ++iJ) {
+      auto& jet(*genJets->At(iJ));
+      if (jet.Pt() < minPt)
+        continue;
 
-    newP4(out_, jet);
+      newP4(out_, jet);
+    }
   }
 }
