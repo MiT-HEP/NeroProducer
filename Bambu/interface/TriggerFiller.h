@@ -16,17 +16,23 @@ namespace mithep {
       BareCollection* getObject() override { return &out_; }
       mithep::nero::Collection collection() const override { return kTrigger; }
 
-      void setCrossRef(BaseFiller* fillers[]);
+      void initialize() override;
+      void setCrossRef(BaseFiller* fillers[]) override;
+      void begin() override;
       void fill() override;
 
       std::vector<TString> const& triggerNames() const { return triggerNames_; }
 
-      void AddTriggerName(char const* _name) { triggerNames_.emplace_back(_name); }
+      void AddTriggerName(char const* name);
+      void SetTriggerObjectsName(char const* _path, char const* _name) { triggerObjectsNames_[_path] = _name; }
 
     private:
       BareTrigger out_{};
 
       std::vector<TString> triggerNames_{};
+      std::vector<unsigned> triggerIds_{};
+
+      std::map<TString, TString> triggerObjectsNames_;
 
       BareP4* leptons_ = 0;
       BareP4* taus_ = 0;

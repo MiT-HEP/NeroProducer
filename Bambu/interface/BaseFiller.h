@@ -25,12 +25,17 @@ namespace mithep {
       virtual BareCollection* getObject() { return 0; }
       virtual mithep::nero::Collection collection() const = 0;
 
-      virtual void initialize() {}
       virtual void setCrossRef(BaseFiller*[]) {}
-      virtual void fill() = 0;
+
+      virtual void initialize() {} // @SlaveBegin      
+      void callBegin();
+      void callFill();
 
       typedef std::function<TObject*(char const*)> ProductGetter;
       void setProductGetter(ProductGetter _getter) { getter_ = _getter; }
+
+      void activate() { active_ = true; }
+      void disactivate() { active_ = false; }
 
     protected:
       template<class T>
@@ -39,11 +44,36 @@ namespace mithep {
       void newP4(BareP4&, mithep::Particle const&) const;
       void newP4(TClonesArray&, mithep::Particle const&) const;
 
+      virtual void begin() {} // @BeginRun
+      virtual void fill() = 0; // @Process
+
+      bool active_ = true;
+
     private:
       ProductGetter getter_;
     };
 
   }
+}
+
+inline
+void
+mithep::nero::BaseFiller::callBegin()
+{
+  if (!active_)
+    return;
+
+  begin();
+}
+
+inline
+void
+mithep::nero::BaseFiller::callFill()
+{
+  if (!active_)
+    return;
+
+  fill();
 }
 
 template<class T>
