@@ -25,10 +25,13 @@ class BareMet : virtual public BareP4
     
         float metNoMu;
         float phiNoMu;
+
         float metChargedHadron;
         float phiChargedHadron;
+
         float metNeutralHadron;
         float phiNeutralHadron;
+
         float metNeutralEM;
         float phiNeutralEM;
 

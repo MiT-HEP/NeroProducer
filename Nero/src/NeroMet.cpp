@@ -17,32 +17,59 @@ int NeroMet::analyze(const edm::Event& iEvent){
     iEvent.getByToken(token, handle);
     const pat::MET &met = handle->front();
 
-    //p4 -> AddLast(new TLorentzVector(met.px(),met.py(),met.pz(),met.energy()));
+    // FILL
     new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector( met.px(),met.py(),met.pz(),met.energy()  );
 
     ptJESUP -> push_back( met.shiftedPt(pat::MET::JetEnUp) );
     ptJESDOWN -> push_back( met.shiftedPt(pat::MET::JetEnDown) );
 
     //MetNoMu
-    float metnomu_x = met.px();
-    float metnomu_y = met.py();
-   
+    TLorentzVector metnomu(met.px(),met.py(),met.pz(),met.energy());
+
+    TLorentzVector chMet(0,0,0,0); 
+    TLorentzVector nhMet(0,0,0,0); 
+    TLorentzVector phoMet(0,0,0,0); 
+
     
-    //iEvent.getByToken(pfToken_, pfs);
     if ( pf == NULL ) cout<<"[NeroMet]::[analyze]::[ERROR] PF pointer is null. Run NeroPF. "<<endl; 
 
     for (unsigned int i = 0, n = pf->handle->size(); i < n; ++i) {
         const pat::PackedCandidate &cand = (*pf->handle)[i];
         if (std::abs(cand.pdgId()) == 13 ){
-            metnomu_x += cand.px();
-            metnomu_y += cand.py();
-        }
-    }
-    
-    metNoMu = sqrt(metnomu_x*metnomu_x + metnomu_y*metnomu_y);
+            metnomu += TLorentzVector(cand.px(),cand.py(),cand.pz(),cand.energy());
+            }
 
+        // only charge hadrons
+        if ( cand.charge() != 0 and cand.pdgId() > 20 )
+            chMet += TLorentzVector(cand.px(),cand.py(),cand.pz(),cand.energy());
+
+        if ( cand.charge() == 0 and cand.pdgId() == 22 ) 
+            phoMet += TLorentzVector(cand.px(),cand.py(),cand.pz(),cand.energy());
+        if ( cand.charge() == 0 and cand.pdgId() != 22 ) 
+            nhMet += TLorentzVector(cand.px(),cand.py(),cand.pz(),cand.energy());
+    }
+
+    metNoMu = metnomu.Pt();
+    phiNoMu = metnomu.Phi();
+
+    // met is the opposite of the sum.
+    chMet  *= -1;
+    nhMet  *= -1;
+    phoMet *= -1;
+    
+    metChargedHadron = chMet.Pt();
+    phiChargedHadron = -chMet.Phi();
+    
+    metNeutralHadron = nhMet.Pt();
+    phiNeutralHadron = -nhMet.Phi();
+
+    metNeutralEM = phoMet.Pt();
+    phiNeutralEM = -phoMet.Phi();
+
+    // GEN INFO
     if ( not iEvent.isRealData () ){
-    new ( (*genP4)[genP4->GetEntriesFast()]) TLorentzVector( met.genMET()->px(),met.genMET()->py(),met.genMET()->pz(),met.genMET()->energy()  );
+
+        new ( (*genP4)[genP4->GetEntriesFast()]) TLorentzVector( met.genMET()->px(),met.genMET()->py(),met.genMET()->pz(),met.genMET()->energy()  );
     }
 
 

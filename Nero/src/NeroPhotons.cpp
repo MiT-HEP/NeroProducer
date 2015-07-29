@@ -53,7 +53,7 @@ int NeroPhotons::analyze(const edm::Event& iEvent){
         if (not isPassLoose) continue;
         if (mMaxIso >=0 and totIso > mMaxIso) continue;
 
-        // RC
+        // RC -- no FPR for the moment TODO
         //
         float _chIsoRC_ = 0;
         float _nhIsoRC_ = 0;
@@ -64,7 +64,7 @@ int NeroPhotons::analyze(const edm::Event& iEvent){
         float dphis[] = { 0.5 * 3.14159 , -.5 *3.14159, 0.25*3.14150 , -0.25*3.14159, 0.75*3.14159,-0.75*3.14159} ;
 
         float DR=0.3; // close obj
-        float DRCone=0.3;
+        float DRCone=0.3; // default value for iso https://twiki.cern.ch/twiki/bin/view/CMS/EgammaPFBasedIsolationRun2
 
         float dphi = -100;
 
