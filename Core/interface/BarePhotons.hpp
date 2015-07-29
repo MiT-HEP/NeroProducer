@@ -21,6 +21,15 @@ class BarePhotons : virtual public BareP4
         vector<float> *iso;
         vector<int> *tightid;
         vector<int> *mediumid;
+
+        vector<float> *chIso;
+        vector<float> *chIsoRC;
+        vector<float> *nhIso;
+        vector<float> *nhIsoRC;
+        vector<float> *phoIso;
+        vector<float> *phoIsoRC;
+        vector<float> *puIso;
+        vector<float> *puIsoRC;
 };
 
 #endif

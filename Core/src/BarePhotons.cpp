@@ -7,6 +7,15 @@ BarePhotons::BarePhotons(){
     iso = NULL;
     tightid = NULL;
     mediumid = NULL;
+
+    chIso = NULL;
+    chIsoRC = NULL;
+    nhIso = NULL;
+    nhIsoRC = NULL;
+    phoIso = NULL;
+    phoIsoRC = NULL;
+    puIso = NULL;
+    puIsoRC = NULL;
 }
 
 BarePhotons::~BarePhotons(){}
@@ -18,6 +27,15 @@ void BarePhotons::clear(){
     sieie -> clear();
     tightid -> clear();
     mediumid -> clear();
+
+    chIso -> clear();
+    chIsoRC -> clear();
+    nhIso -> clear();
+    nhIsoRC -> clear();
+    phoIso -> clear();
+    phoIsoRC -> clear();
+    puIso -> clear();
+    puIsoRC -> clear();
 }
 
 void BarePhotons::defineBranches(TTree *t){
@@ -36,6 +54,23 @@ void BarePhotons::defineBranches(TTree *t){
     mediumid = new vector<int>;
     t->Branch("photonMediumId","vector<int>",&mediumid);
 
+    chIso = new vector<float>;
+    t->Branch("photonChIso","vector<float>",&chIso);
+    chIsoRC = new vector<float>;
+    t->Branch("photonChIsoRC","vector<float>",&chIsoRC);
+    nhIso = new vector<float>;
+    t->Branch("photonNhIso","vector<float>",&nhIso);
+    nhIsoRC = new vector<float>;
+    t->Branch("photonNhIsoRC","vector<float>",&nhIsoRC);
+    phoIso = new vector<float>;
+    t->Branch("photonPhoIso","vector<float>",&phoIso);
+    phoIsoRC = new vector<float>;
+    t->Branch("photonPhoIsoRC","vector<float>",&phoIsoRC);
+    puIso = new vector<float>;
+    t->Branch("photonPuIso","vector<float>",&puIso);
+    puIsoRC = new vector<float>;
+    t->Branch("photonPuIsoRC","vector<float>",&puIsoRC);
+
 }
 
 void BarePhotons::setBranchAddresses(TTree *t){
@@ -50,6 +85,23 @@ void BarePhotons::setBranchAddresses(TTree *t){
     t->Branch("photonTightId"	,&tightid);
     mediumid = new vector<int>;
     t->Branch("photonMediumId"	,&mediumid);
+
+    chIso = new vector<float>;
+    t->SetBranchAddress("photonChIso",&chIso);
+    chIsoRC = new vector<float>;
+    t->SetBranchAddress("photonChIsoRC",&chIsoRC);
+    nhIso = new vector<float>;
+    t->SetBranchAddress("photonNhIso",&nhIso);
+    nhIsoRC = new vector<float>;
+    t->SetBranchAddress("photonNhIsoRC",&nhIsoRC);
+    phoIso = new vector<float>;
+    t->SetBranchAddress("photonPhoIso",&phoIso);
+    phoIsoRC = new vector<float>;
+    t->SetBranchAddress("photonPhoIsoRC",&phoIsoRC);
+    puIso = new vector<float>;
+    t->SetBranchAddress("photonPuIso",&puIso);
+    puIsoRC = new vector<float>;
+    t->SetBranchAddress("photonPuIsoRC",&puIsoRC);
 }
 // Local Variables:
 // mode:c++
