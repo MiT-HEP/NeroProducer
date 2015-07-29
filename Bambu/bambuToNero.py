@@ -14,6 +14,23 @@ from MitPhysics.Mods.MuonIdMod import muonIdMod
 from MitPhysics.Mods.PhotonIdMod import photonIdMod
 from MitPhysics.Mods.SeparatePileUpMod import separatePileUpMod
 
+def addTrigger(path):
+    global mithep
+    global sequence
+    global triggerFiller
+
+    pathNoV = path.replace('_v*', '')
+    hltMod = mithep.HLTMod(pathNoV + 'Mod',
+        AbortIfNotAccepted = False,
+        AbortIfNoData = False
+    )
+    hltMod.AddTrigger(path)
+
+    sequence = hltMod * sequence
+    triggerFiller.AddTriggerName(pathNoV)
+    triggerFiller.SetTriggerObjectsName(pathNoV, hltMod.GetTrigObjsName())
+
+
 generatorMod = mithep.GeneratorMod(
     IsData = False,
     CopyArrays = False,
@@ -130,8 +147,6 @@ fillers.append(mithep.nero.PhotonsFiller(
 
 fillers.append(mithep.nero.MonteCarloFiller())
 
-fillers.append(mithep.nero.TriggerFiller())
-
 fillers.append(mithep.nero.AllFiller())
 
 neroMod = mithep.NeroMod(
@@ -164,6 +179,11 @@ sequence *= separatePileUpMod * \
     photonMediumId * \
     photonTightId * \
     neroMod
+
+triggerFiller = mithep.nero.TriggerFiller()
+addTrigger('HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v*')
+
+neroMod.AddFiller(triggerFiller)
 
 analysis.SetAllowNoHLTTree(True)
 

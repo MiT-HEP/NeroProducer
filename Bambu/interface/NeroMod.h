@@ -29,6 +29,7 @@ namespace mithep {
 
   private:
     void SlaveBegin() override;
+    void BeginRun() override;
     void SlaveTerminate() override;
     void Process() override;
 
