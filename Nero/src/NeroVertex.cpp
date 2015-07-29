@@ -27,14 +27,17 @@ int NeroVertex::analyze(const edm::Event& iEvent){
     // Find the first vertex in the collection that passes
     // good quality criteria
     VertexCollection::const_iterator firstGoodVertex = handle->end();
-    int firstGoodVertexIdx = 0;
+    firstGoodVertexIdx = -1;
     for (VertexCollection::const_iterator vtx = handle->begin(); 
-            vtx != handle->end(); ++vtx, ++firstGoodVertexIdx) {
+            vtx != handle->end(); ++vtx) {
         bool isFake = (vtx->chi2()==0 && vtx->ndof()==0);
         if ( !isFake
                 && vtx->ndof()>=4. && vtx->position().Rho()<=2.0
                 && fabs(vtx->position().Z())<=24.0) {
-            if(firstGoodVertex == handle->end() ) firstGoodVertex = vtx;
+            if(firstGoodVertex == handle->end() ) { 
+                firstGoodVertex = vtx; 
+                firstGoodVertexIdx = firstGoodVertex - handle->begin() ;
+            }
             ++npv;
             //break;
         }

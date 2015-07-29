@@ -3,6 +3,8 @@
 
 #include "NeroProducer/Nero/interface/NeroCollection.hpp"
 #include "NeroProducer/Core/interface/BareJets.hpp"
+#include "NeroProducer/Nero/interface/NeroPF.hpp"
+#include "NeroProducer/Nero/interface/NeroVertex.hpp"
 
 
 class NeroJets : virtual public NeroCollection, virtual public BareJets
@@ -29,6 +31,9 @@ class NeroJets : virtual public NeroCollection, virtual public BareJets
         float mMinEta;
         string mMinId;
 
+        // 
+        NeroPF *pf;
+        NeroVertex *vtx;
 };
 
 

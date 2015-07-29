@@ -14,6 +14,9 @@ BareJets::BareJets(){
     grMotherPdgId = NULL;
     mjId    = NULL;
     mjId_loose  = NULL;
+    //
+    Q=NULL;
+    QnoPU=NULL;
 }
 
 BareJets::~BareJets(){}
@@ -36,6 +39,9 @@ void BareJets::clear(){
 
     mjId -> clear();
     mjId_loose -> clear();
+
+    Q->clear();
+    QnoPU->clear();
 }
 
 void BareJets::defineBranches(TTree *t){
@@ -79,6 +85,11 @@ void BareJets::defineBranches(TTree *t){
 
     mjId_loose = new vector<bool>;
     t->Branch("jetMonojetIdLoose","vector<bool>",&mjId_loose);
+
+    Q = new vector<float>;
+    t->Branch("jetQ","vector<float>",&Q);
+    QnoPU = new vector<float>;
+    t->Branch("jetQnoPU","vector<float>",&QnoPU);
 }
 
 void BareJets::setBranchAddresses(TTree*t)
@@ -110,6 +121,13 @@ void BareJets::setBranchAddresses(TTree*t)
     t->SetBranchAddress("jetMonojetId", &mjId);
     mjId_loose= new vector<bool>;
     t->SetBranchAddress("jetMonojetIdLoose", &mjId_loose);
+
+    // ---
+    Q = new vector<float>;
+    t->SetBranchAddress("jetQ",&Q);
+    QnoPU = new vector<float>;
+    t->SetBranchAddress("jetQnoPU",&QnoPU);
+
 }
 // Local Variables:
 // mode:c++
