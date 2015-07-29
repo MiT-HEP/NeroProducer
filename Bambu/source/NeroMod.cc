@@ -1,6 +1,8 @@
 #include "NeroProducer/Bambu/interface/NeroMod.h"
 #include "NeroProducer/Bambu/interface/TriggerFiller.h"
 
+#include "MitAna/TreeMod/interface/HLTFwkMod.h"
+
 #include <exception>
 
 ClassImp(mithep::NeroMod)
@@ -45,16 +47,39 @@ mithep::NeroMod::SlaveBegin()
     if (!filler_[iC])
       continue;
 
-    if (printLevel_ > 0)
-      std::cout << "initializing " << filler_[iC]->getObject()->name() << std::endl;
-
-    filler_[iC]->initialize();
     filler_[iC]->setProductGetter(getter);
+
+    if (printLevel_ > 0)
+      std::cout << "creating branches for " << filler_[iC]->getObject()->name() << std::endl;
 
     if (iC < nero::nEventObjects)
       filler_[iC]->getObject()->defineBranches(eventsTree_);
     else
       filler_[iC]->getObject()->defineBranches(allTree_);
+
+    if (printLevel_ > 0)
+      std::cout << "initializing " << filler_[iC]->getObject()->name() << std::endl;
+
+    filler_[iC]->setCrossRef(filler_);
+    filler_[iC]->initialize();
+  }
+}
+
+void
+mithep::NeroMod::BeginRun()
+{
+  // if other fillers need similar switching, might make sense to define a conditions function on the filler side
+  if (filler_[nero::kTrigger] && (!HasHLTInfo() || !GetHltFwkMod()->HasData()))
+    filler_[nero::kTrigger]->disactivate();
+
+  for (unsigned iC(0); iC != nero::nCollections; ++iC) {
+    if (!filler_[iC])
+      continue;
+
+    if (printLevel_ > 0)
+      std::cout << "begin run for " << filler_[iC]->getObject()->name() << std::endl;
+
+    filler_[iC]->callBegin();
   }
 }
 
@@ -80,7 +105,7 @@ mithep::NeroMod::Process()
 
       filler->getObject()->clear();
       try {
-        filler->fill();
+        filler->callFill();
       }
       catch (std::exception& ex) {
         std::cerr << ex.what() << std::endl;
