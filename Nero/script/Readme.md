@@ -32,3 +32,6 @@
 
 ## findDuplicates.py
 * check if in the ntuples there are duplicates looking directly into the event tree.
+
+## neroSize.py
+* check the ntuples size, trees, and branches.
