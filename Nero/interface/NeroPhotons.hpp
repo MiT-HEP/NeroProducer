@@ -5,6 +5,7 @@
 #include "NeroProducer/Core/interface/BarePhotons.hpp"
 #include "NeroProducer/Nero/interface/NeroPF.hpp"
 #include "NeroProducer/Nero/interface/NeroJets.hpp"
+#include "NeroProducer/Nero/interface/NeroEvent.hpp"
 
 
 class NeroPhotons : virtual public NeroCollection,
@@ -48,7 +49,12 @@ class NeroPhotons : virtual public NeroCollection,
         // -- PF
         NeroPF *pf;
         NeroJets *jets;
+        // -- rho
+        NeroEvent *evt;
+        
+        bool cutBasedPhotonId( const pat::Photon& pho, string type="loose_50ns", bool withIso = true , bool withSieie=true);
 
+        float cutBasedPhotonIdEffArea( const pat::Photon&pho, string type="ch_50ns");
 };
 
 

@@ -7,6 +7,7 @@ BarePhotons::BarePhotons(){
     iso = NULL;
     tightid = NULL;
     mediumid = NULL;
+    looseid = NULL;
 
     chIso = NULL;
     chIsoRC = NULL;
@@ -27,6 +28,7 @@ void BarePhotons::clear(){
     sieie -> clear();
     tightid -> clear();
     mediumid -> clear();
+    looseid -> clear();
 
     chIso -> clear();
     chIsoRC -> clear();
@@ -53,6 +55,9 @@ void BarePhotons::defineBranches(TTree *t){
     //
     mediumid = new vector<int>;
     t->Branch("photonMediumId","vector<int>",&mediumid);
+
+    looseid = new vector<int>;
+    t->Branch("photonLooseId","vector<int>",&looseid);
 
     chIso = new vector<float>;
     t->Branch("photonChIso","vector<float>",&chIso);
@@ -85,6 +90,8 @@ void BarePhotons::setBranchAddresses(TTree *t){
     t->Branch("photonTightId"	,&tightid);
     mediumid = new vector<int>;
     t->Branch("photonMediumId"	,&mediumid);
+    looseid = new vector<int>;
+    t->Branch("photonLooseId"	,&looseid);
 
     chIso = new vector<float>;
     t->SetBranchAddress("photonChIso",&chIso);

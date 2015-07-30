@@ -43,14 +43,15 @@ int NeroPhotons::analyze(const edm::Event& iEvent){
         float _chIso_ =  (*iso_ch) [ref];
         float _nhIso_ =  (*iso_nh) [ref];
         float _phIso_ =  (*iso_pho)[ref];	
-        float _puIso_ =  -1 ;  // TODO
+        float _puIso_ =  pho.puChargedHadronIso() ;  // the other are eff area corrected, no need for this correction
         float totIso = _chIso_ + _nhIso_ + _phIso_;
 
         bool isPassLoose  = (*loose_id)[ref];	
         bool isPassMedium = (*medium_id)[ref];	
         bool isPassTight  = (*tight_id)[ref];	
+        bool isPassVLoose = cutBasedPhotonId( pho, "loose_50ns", false, false); // no pho iso , no sieie
 
-        if (not isPassLoose) continue;
+        if (not isPassVLoose) continue;
         if (mMaxIso >=0 and totIso > mMaxIso) continue;
 
         // RC -- no FPR for the moment TODO
@@ -124,6 +125,7 @@ int NeroPhotons::analyze(const edm::Event& iEvent){
 
         tightid->push_back(isPassTight);
         mediumid->push_back(isPassMedium);
+        looseid->push_back(isPassLoose);
 
         chIso -> push_back( _chIso_);
         phoIso -> push_back( _phIso_ ) ;
@@ -137,6 +139,221 @@ int NeroPhotons::analyze(const edm::Event& iEvent){
     }
 
     return 0;
+}
+
+bool NeroPhotons::cutBasedPhotonId( const pat::Photon& pho, string type, bool withIso, bool withSieie)
+{
+// https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedPhotonIdentificationRun2#
+    if ( not pho.passElectronVeto ()  )  return false; 
+
+    float hoe   = pho.hadTowOverEm();
+    float sieie = pho.full5x5_sigmaIetaIeta() ;
+    float chiso = pho.chargedHadronIso();
+    float nhiso= pho.neutralHadronIso() ;
+    float phoiso = pho.photonIso();
+    //float puiso = pho.puChargedHadronIso ();
+    float rho  = evt->rho;
+    //
+    //float aeta = fabs(pho.eta());
+
+    // ------------ BARREL ------------
+    if ( pho.isEB() )
+        {
+        if (not withSieie and sieie > 0.014) return false;  // pu a very loose sieie requirement
+        if (not withIso and phoiso > 10 ) return false; // put  a very loose pho-iso requirement
+
+        if ( type == "loose_50ns" ) 
+            {
+                if (hoe >= 0.0559  ) return false;
+                if (sieie >= 0.010 and withSieie  ) return false;
+                if ( chiso - cutBasedPhotonIdEffArea(pho,"ch_50ns") * rho >= 2.51 ) return false;// 
+                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_50ns")*rho >= 21.11 + 0.0065*pho.pt() ) return false;// 
+                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_50ns") *rho >= 3.70 + 0.0032*pho.pt() ) return false ;//  2.09 + 0.0032*pho_pt    1.60 + 0.0032*pho_pt 
+
+                return true;
+            }
+        if ( type == "medium_50ns" )
+            {
+                if (hoe >= 0.0138 ) return false;
+                if (sieie >= 0.010 and withSieie ) return false;
+                if (chiso -  cutBasedPhotonIdEffArea(pho,"ch_50ns")*rho >=2.23 ) return false;
+                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_50ns")*rho >= 8.85 + 0.0065*pho.pt() ) return false;
+                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_50ns") *rho >= 2.09 + 0.0032*pho.pt() ) return false ; 
+                return true;
+            }
+        if ( type == "tight_50ns" )
+            {
+                if (hoe >= 0.0099 ) return false;
+                if (sieie >= 0.0099 and withSieie ) return false;
+                if ( chiso - cutBasedPhotonIdEffArea(pho,"ch_50ns") * rho >= 1.96 ) return false;
+                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_50ns")*rho >= 4.18 + 0.0065*pho.pt() ) return false;
+                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_50ns") *rho >= 1.60 + 0.0032*pho.pt() ) return false ;
+                return true;
+            }
+        // ---------------- 25ns ---------------
+        if ( type == "loose_25ns" ) 
+            {
+                if (hoe >= 0.553   ) return false;
+                if (sieie >= 0.0099  and withSieie  ) return false;
+                if ( chiso - cutBasedPhotonIdEffArea(pho,"ch_25ns") * rho >= 2.49  ) return false;// 
+                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_25ns")*rho >= 15.43 + 0.007*pho.pt() ) return false;// 
+                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_25ns") *rho >= 9.42 + 0.0033*pho.pt() ) return false ;//
+
+                return true;
+            }
+        if ( type == "medium_25ns" )
+            {
+                if (hoe >= 0.058  ) return false;
+                if (sieie >= 0.0099  and withSieie ) return false;
+                if (chiso -  cutBasedPhotonIdEffArea(pho,"ch_25ns")*rho >= 1.91 ) return false;
+                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_25ns")*rho >= 4.66 + 0.007*pho.pt() ) return false;
+                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_25ns") *rho >= 4.29 + 0.0033*pho.pt() ) return false ; 
+                return true;
+            }
+        if ( type == "tight_25ns" )
+            {
+                if (hoe >= 0.0019 ) return false;
+                if (sieie >= 0.0099 and withSieie ) return false;
+                if ( chiso - cutBasedPhotonIdEffArea(pho,"ch_25ns") * rho >= 1.61 ) return false;
+                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_25ns")*rho >= 3.98 + 0.007*pho.pt() ) return false;
+                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_25ns") *rho >= 3.01 + 0.0033*pho.pt() ) return false ;
+                return true;
+            }
+        }
+    // ------------ ENDCAP ------------
+    else if (pho.isEE()){
+        if (not withSieie and sieie > 0.035) return false;  // pu a very loose sieie requirement
+        if (not withIso and phoiso > 20 ) return false; // put  a very loose pho-iso requirement
+        // ---------------- 50ns --------------- 
+        if ( type == "loose_50ns" ) 
+            {
+                if (hoe >= 0.049  ) return false;
+                if (sieie >= 0.0321 and withSieie  ) return false;
+                if ( chiso - cutBasedPhotonIdEffArea(pho,"ch_50ns") * rho >= 0.98 ) return false;// 
+                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_50ns")*rho >= 23.67 + 0.0116*pho.pt() ) return false;// 
+                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_50ns") *rho >= 6.57 + 0.0095 *pho.pt() ) return false ;//  2.09 + 0.0032*pho_pt    1.60 + 0.0032*pho_pt 
+
+                return true;
+            }
+        if ( type == "medium_50ns" )
+            {
+                if (hoe >= 0.016 ) return false;
+                if (sieie >= 0.0275 and withSieie ) return false;
+                if (chiso -  cutBasedPhotonIdEffArea(pho,"ch_50ns")*rho >= 0.89 ) return false;
+                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_50ns")*rho >= 14.48 + 0.0116*pho.pt() ) return false;
+                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_50ns") *rho >= 2.88 + 0.0095*pho.pt() ) return false ; 
+                return true;
+            }
+        if ( type == "tight_50ns" )
+            {
+                if (hoe >= 0.016  ) return false;
+                if (sieie >= 0.0275 and withSieie ) return false;
+                if ( chiso - cutBasedPhotonIdEffArea(pho,"ch_50ns") * rho >= .67 ) return false;
+                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_50ns")*rho >= 2.95 + 0.0116*pho.pt() ) return false;
+                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_50ns") *rho >= 1.56 + 0.0095*pho.pt() ) return false ;
+                return true;
+            }
+        // ---------------- 25ns ---------------  TODO
+        if ( type == "loose_25ns" ) 
+            {
+                if (hoe >= 0.062    ) return false;
+                if (sieie >=    0.0284   and withSieie  ) return false;
+                if ( chiso - cutBasedPhotonIdEffArea(pho,"ch_25ns") * rho >= 1.04   ) return false;// 
+                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_25ns")*rho >= 19.71 + 0.0129*pho.pt() ) return false;// 
+                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_25ns") *rho >= 11.88 + 0.0108*pho.pt() ) return false ;//
+
+                return true;
+            }
+        if ( type == "medium_25ns" )
+            {
+                if (hoe >= 0.020  ) return false;
+                if (sieie >= 0.0268   and withSieie ) return false;
+                if (chiso -  cutBasedPhotonIdEffArea(pho,"ch_25ns")*rho >= 0.82  ) return false;
+                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_25ns")*rho >= 14.65 + 0.0129*pho.pt() ) return false;
+                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_25ns") *rho >= 4.06 + 0.0108*pho.pt() ) return false ; 
+                return true;
+            }
+        if ( type == "tight_25ns" )
+            {
+                if (hoe >= 0.016  ) return false;
+                if (sieie >= 0.0263  and withSieie ) return false;
+                if ( chiso - cutBasedPhotonIdEffArea(pho,"ch_25ns") * rho >= 0.69  ) return false;
+                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_25ns")*rho >= 4.52+ 0.0129*pho.pt() ) return false;
+                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_25ns") *rho >= 3.61 + 0.0108*pho.pt() ) return false ;
+                return true;
+            }
+
+        }
+    return false;
+
+}
+
+float NeroPhotons::cutBasedPhotonIdEffArea( const pat::Photon & pho,string type){
+    float aeta = fabs( pho.eta() ) ;
+    // --------------- 50 ns ----------------
+    if (type == "ch_50ns")
+        {
+        if (aeta < 1.0   ) return 0.0064 ;
+        if (aeta < 1.479 ) return 0.0055 ;
+        if (aeta < 2.0   ) return 0.0055 ;
+        if (aeta < 2.2   ) return 0.0049 ;
+        if (aeta < 2.3   ) return 0.0047 ;
+        if (aeta < 2.4   ) return 0.0037 ;
+                           return 0.0017 ;
+        }
+    if (type == "nh_50ns")
+        {
+        if (aeta < 1.0   ) return  0.0129;
+        if (aeta < 1.479 ) return  0.0245;
+        if (aeta < 2.0   ) return  0.0125;
+        if (aeta < 2.2   ) return  0.0022;
+        if (aeta < 2.3   ) return  0.0039;
+        if (aeta < 2.4   ) return  0.0033;
+                           return  0.1147;
+        }
+    if (type == "pho_50ns")
+        {
+        if (aeta < 1.0   ) return  0.1020;
+        if (aeta < 1.479 ) return  0.0889;
+        if (aeta < 2.0   ) return  0.0423;
+        if (aeta < 2.2   ) return  0.0441;
+        if (aeta < 2.3   ) return  0.0559;
+        if (aeta < 2.4   ) return  0.0653;
+                           return  0.0862;
+        }
+    // --------------- 25 ns ----------------
+    if (type == "ch_25ns")
+        {
+        if (aeta < 1.0   ) return 0.0080;
+        if (aeta < 1.479 ) return 0.0079;
+        if (aeta < 2.0   ) return 0.0080;
+        if (aeta < 2.2   ) return 0.0048;
+        if (aeta < 2.3   ) return 0.0029;
+        if (aeta < 2.4   ) return 0.0036;
+                           return 0.0016;
+        }
+    if (type == "nh_25ns")
+        {
+        if (aeta < 1.0   ) return 0.0126 ;
+        if (aeta < 1.479 ) return 0.0237 ;
+        if (aeta < 2.0   ) return 0      ;
+        if (aeta < 2.2   ) return 0      ;
+        if (aeta < 2.3   ) return 0      ;
+        if (aeta < 2.4   ) return 0      ;
+                           return 0.0769 ;
+        }
+    if (type == "pho_25ns")
+        {
+        if (aeta < 1.0   ) return 0.0982;
+        if (aeta < 1.479 ) return 0.0857;
+        if (aeta < 2.0   ) return 0.0484;
+        if (aeta < 2.2   ) return 0.0668;
+        if (aeta < 2.3   ) return 0.0868;
+        if (aeta < 2.4   ) return 0.0982;
+                           return 0.1337;
+        }
+    
+    return -999.;
 }
 
 // Local Variables:

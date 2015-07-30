@@ -19,6 +19,7 @@ class BarePhotons : virtual public BareP4
         //TClonesArray *p4;
         vector<float> *sieie;
         vector<float> *iso;
+        vector<int> *looseid;
         vector<int> *tightid;
         vector<int> *mediumid;
 
