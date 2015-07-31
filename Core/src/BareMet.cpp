@@ -50,21 +50,21 @@ void BareMet::defineBranches(TTree *t){
     genP4 = new TClonesArray("TLorentzVector", 20);
     t->Branch("metP4_GEN","TClonesArray", &p4, 128000, 0);
     //
-    t->Branch("metNoMu",&metNoMu,"metNoMu/F");
+    t->Branch("metNoMu",&metNoMu,"Pt/F");
     //
-    t->Branch("phiNoMu",&phiNoMu,"phiNoMu/F");
+    t->Branch("metNoMu",&phiNoMu,"Phi/F");
     //
-    t->Branch("metChargedHadron",&metChargedHadron,"metChargedHadron/F");
+    t->Branch("metChargedHadron",&metChargedHadron,"Pt/F");
     //
-    t->Branch("phiChargedHadron",&phiChargedHadron,"phiChargedHadron/F");
+    t->Branch("metChargedHadron",&phiChargedHadron,"Phi/F");
     //
-    t->Branch("metNeutralHadron",&metNeutralHadron,"metNeutralHadron/F");
+    t->Branch("metNeutralHadron",&metNeutralHadron,"Pt/F");
     //
-    t->Branch("phiNeutralHadron",&phiNeutralHadron,"phiNeutralHadron/F");
+    t->Branch("metNeutralHadron",&phiNeutralHadron,"Phi/F");
     //
-    t->Branch("metNeutralEM",&metNeutralEM,"metNeutralEM/F");
+    t->Branch("metNeutralEM",&metNeutralEM,"Pt/F");
     //
-    t->Branch("phiNeutralEM",&phiNeutralEM,"phiNeutralEM/F");
+    t->Branch("metNeutralEM",&phiNeutralEM,"Phi/F");
 }
 
 void BareMet::setBranchAddresses(TTree *t){

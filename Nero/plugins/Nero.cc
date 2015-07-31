@@ -159,6 +159,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     phos -> SetMatch( iConfig.getParameter<bool>("matchPho") );
     phos -> pf = pf;
     phos -> jets = jets;
+    phos -> evt = evt;
     obj.push_back(phos);
 
     NeroMonteCarlo *mc = new NeroMonteCarlo();
