@@ -53,6 +53,9 @@ SuperClusterFootprintRemovalMiniAOD::SuperClusterFootprintRemovalMiniAOD(
   global_linkbyrechit_enlargement = iConfig.getUntrackedParameter<double>("rechit_link_enlargement_forSCremoval",0.25);
 
 
+  photonptMinRC = 10;
+  jetptMinRC = 20;
+  leptonptMinRC = 20;
   
   randomgen = new TRandom3(0);
 
