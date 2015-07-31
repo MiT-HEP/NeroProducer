@@ -54,12 +54,12 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         if (not isPassVLoose) continue;
         if (mMaxIso >=0 and totIso > mMaxIso) continue;
 
-        // RC -- no FPR for the moment TODO
+        // RC -- with FPR
         //
         float _chIsoRC_ = 0;
         float _nhIsoRC_ = 0;
         float _phIsoRC_ = 0;
-        float _puIsoRC_ = 0;
+        float _puIsoRC_ = 0;// not fill for the moment in the FPR TODO
 
         fpr -> Config(iSetup);
         fpr -> SetHandles(
@@ -75,6 +75,7 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         _nhIsoRC_ = FPR_out.neutraliso_rcone;
         _phIsoRC_ = FPR_out.photoniso_rcone;
 
+        // RC -- without FPR
         // allowed dphi
         // -- float dphis[] = { 0.5 * 3.14159 , -.5 *3.14159, 0.25*3.14150 , -0.25*3.14159, 0.75*3.14159,-0.75*3.14159} ;
 
