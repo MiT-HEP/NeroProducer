@@ -4,6 +4,8 @@
 #include "NeroProducer/Bambu/interface/BaseFiller.h"
 #include "NeroProducer/Core/interface/BareAll.hpp"
 
+#include "MitAna/DataTree/interface/EventHeaderFwd.h"
+
 namespace mithep {
   namespace nero {
 
@@ -17,8 +19,12 @@ namespace mithep {
 
       void fill() override;
 
+      void setSkippedEvents(EventHeaderCol* _col) { skippedEvents_ = _col; }
+
     private:
       BareAll out_{};
+
+      EventHeaderCol* skippedEvents_ = 0;
 
       ClassDef(AllFiller, 0)
     };

@@ -1,7 +1,9 @@
 #include "NeroProducer/Bambu/interface/NeroMod.h"
 #include "NeroProducer/Bambu/interface/TriggerFiller.h"
+#include "NeroProducer/Bambu/interface/AllFiller.h"
 
 #include "MitAna/TreeMod/interface/HLTFwkMod.h"
+#include "MitAna/DataTree/interface/EventHeaderCol.h"
 
 #include <exception>
 
@@ -38,6 +40,12 @@ mithep::NeroMod::SlaveBegin()
       triggerNames += n + ",";
   }
   TNamed("triggerNames", triggerNames.Data()).Write();
+
+  if (filler_[nero::kAll]) {
+    auto* skippedEvents = GetPublicObj<mithep::EventHeaderCol>(mithep::Names::gkSkimmedHeaders, false);
+    if (skippedEvents)
+      static_cast<nero::AllFiller*>(filler_[nero::kAll])->setSkippedEvents(skippedEvents);
+  }
 
   nero::BaseFiller::ProductGetter getter([this](char const* _name)->TObject* {
       return this->GetObject<TObject>(_name);
