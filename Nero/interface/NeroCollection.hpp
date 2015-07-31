@@ -18,6 +18,8 @@ class NeroCollection : virtual public BareCollection
     public:
         // --- Just virtual
         virtual int  analyze(const edm::Event &) = 0 ;
+        // -- usually just need the iEvent. This one will be the one called
+        virtual int  analyze(const edm::Event &iEvent,const edm::EventSetup& iSetup) { return analyze(iEvent) ; } ;
         virtual inline string name(){return "NeroCollection";};
 
         // -- configuration

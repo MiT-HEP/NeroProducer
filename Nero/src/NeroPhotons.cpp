@@ -15,7 +15,7 @@ NeroPhotons::~NeroPhotons(){
 }
 
 
-int NeroPhotons::analyze(const edm::Event& iEvent){
+int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup){
 
     if ( mOnlyMc  ) return 0;
 
@@ -61,61 +61,75 @@ int NeroPhotons::analyze(const edm::Event& iEvent){
         float _phIsoRC_ = 0;
         float _puIsoRC_ = 0;
 
+        fpr -> Config(iSetup);
+        fpr -> SetHandles(
+                pf  -> handle,
+                handle,
+                jets-> handle,
+                leps->mu_handle,
+                leps->el_handle
+                );
+
+        PFIsolation_struct FPR_out = fpr -> PFIsolation(pho.superCluster(), edm::Ptr<reco::Vertex>(vtx->handle,vtx->firstGoodVertexIdx) );
+        _chIsoRC_ = FPR_out.chargediso_primvtx_rcone;
+        _nhIsoRC_ = FPR_out.neutraliso_rcone;
+        _phIsoRC_ = FPR_out.photoniso_rcone;
+
         // allowed dphi
-        float dphis[] = { 0.5 * 3.14159 , -.5 *3.14159, 0.25*3.14150 , -0.25*3.14159, 0.75*3.14159,-0.75*3.14159} ;
+        // -- float dphis[] = { 0.5 * 3.14159 , -.5 *3.14159, 0.25*3.14150 , -0.25*3.14159, 0.75*3.14159,-0.75*3.14159} ;
 
-        float DR=0.3; // close obj
-        float DRCone=0.3; // default value for iso https://twiki.cern.ch/twiki/bin/view/CMS/EgammaPFBasedIsolationRun2
+        // -- float DR=0.3; // close obj
+        // -- float DRCone=0.3; // default value for iso https://twiki.cern.ch/twiki/bin/view/CMS/EgammaPFBasedIsolationRun2
 
-        float dphi = -100;
+        // -- float dphi = -100;
 
-        //select dphi
-        for(unsigned i =0 ;i< sizeof(dphis)/sizeof(float) ;++i)
-        {
-            float dphi_cand = dphis[i];
-            bool close_obj = false;
-            for(auto &j : *jets->handle) 
-            {
-                if (j.pt() <20 or j.eta() >2.5) continue; // it's own set of jets
-                TLorentzVector v1,v2;
-                v1.SetPtEtaPhiM( pho.pt(),pho.eta(),pho.phi() + dphi_cand,0 ) ;
-                v2.SetPtEtaPhiM( j.pt(),j.eta(),j.phi(),j.mass() );
-                if (v1.DeltaR(v2) <DR ) close_obj = true; 
-            } 
-            if ( not close_obj ) 
-            {
-            dphi = dphi_cand;
-            break;
-            }
-        }
+        // -- //select dphi
+        // -- for(unsigned i =0 ;i< sizeof(dphis)/sizeof(float) ;++i)
+        // -- {
+        // --     float dphi_cand = dphis[i];
+        // --     bool close_obj = false;
+        // --     for(auto &j : *jets->handle) 
+        // --     {
+        // --         if (j.pt() <20 or j.eta() >2.5) continue; // it's own set of jets
+        // --         TLorentzVector v1,v2;
+        // --         v1.SetPtEtaPhiM( pho.pt(),pho.eta(),pho.phi() + dphi_cand,0 ) ;
+        // --         v2.SetPtEtaPhiM( j.pt(),j.eta(),j.phi(),j.mass() );
+        // --         if (v1.DeltaR(v2) <DR ) close_obj = true; 
+        // --     } 
+        // --     if ( not close_obj ) 
+        // --     {
+        // --     dphi = dphi_cand;
+        // --     break;
+        // --     }
+        // -- }
 
-        if (dphi <-99)
-        {
-        _chIsoRC_ = -1;
-        _nhIsoRC_ = -1;
-        _phIsoRC_ = -1;
-        _puIsoRC_ = -1;
-        }
-        else
-        {
-            for( auto &cand : *pf->handle )
-            {
-                TLorentzVector v1,v2;
-                v1.SetPtEtaPhiM( pho.pt(),pho.eta(),pho.phi() + dphi,0 ) ;
-                v2.SetPtEtaPhiM( cand.pt(),cand.eta(),cand.phi(),cand.mass() );
-                if (v1.DeltaR(v2) < DRCone )
-                {
-                     // TO BE CHECKED !!! TODO FIXME
-                if (cand.charge() != 0  and abs(cand.pdgId())>20 and  fabs( cand.dz() ) <=0.1 and cand.fromPV()>1 and cand.trackHighPurity() ) _chIsoRC_ += cand.pt();
-                if (cand.charge() == 0 and cand.pdgId() == 22 ) _phIsoRC_ += cand.pt();
-                if (cand.charge() == 0 and cand.pdgId() != 22 ) _nhIsoRC_ += cand.pt();
-                if (cand.charge() != 0 and abs(cand.pdgId() )>20 and ( 
-                            fabs( cand.dz() ) >0.1  or cand.fromPV()<=1 or not cand.trackHighPurity() 
-                            ) ) _puIsoRC_ += cand.pt(); 
-                }
+        // -- if (dphi <-99)
+        // -- {
+        // -- _chIsoRC_ = -1;
+        // -- _nhIsoRC_ = -1;
+        // -- _phIsoRC_ = -1;
+        // -- _puIsoRC_ = -1;
+        // -- }
+        // -- else
+        // -- {
+        // --     for( auto &cand : *pf->handle )
+        // --     {
+        // --         TLorentzVector v1,v2;
+        // --         v1.SetPtEtaPhiM( pho.pt(),pho.eta(),pho.phi() + dphi,0 ) ;
+        // --         v2.SetPtEtaPhiM( cand.pt(),cand.eta(),cand.phi(),cand.mass() );
+        // --         if (v1.DeltaR(v2) < DRCone )
+        // --         {
+        // --              // TO BE CHECKED !!! TODO FIXME
+        // --         if (cand.charge() != 0  and abs(cand.pdgId())>20 and  fabs( cand.dz() ) <=0.1 and cand.fromPV()>1 and cand.trackHighPurity() ) _chIsoRC_ += cand.pt();
+        // --         if (cand.charge() == 0 and cand.pdgId() == 22 ) _phIsoRC_ += cand.pt();
+        // --         if (cand.charge() == 0 and cand.pdgId() != 22 ) _nhIsoRC_ += cand.pt();
+        // --         if (cand.charge() != 0 and abs(cand.pdgId() )>20 and ( 
+        // --                     fabs( cand.dz() ) >0.1  or cand.fromPV()<=1 or not cand.trackHighPurity() 
+        // --                     ) ) _puIsoRC_ += cand.pt(); 
+        // --         }
 
-            }
-        }
+        // --     }
+        // -- }
     
         //FILL
         new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(pho.px(),pho.py(),pho.pz(),pho.energy());

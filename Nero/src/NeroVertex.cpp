@@ -17,8 +17,6 @@ int NeroVertex::analyze(const edm::Event& iEvent){
     if ( mOnlyMc  ) return 0;
     iEvent.getByToken(token, handle);
     if (handle->empty()) return 1; // skip the event if no PV found
-    const reco::Vertex &PV = handle->front();
-    pv_ = &PV; // it should remain after ending
 
     using namespace std;
     using namespace edm;
@@ -44,6 +42,7 @@ int NeroVertex::analyze(const edm::Event& iEvent){
     }
 
     if ( firstGoodVertex==handle->end() ) return 1; // skip event if there are no good PVs
+    pv_ = &(*firstGoodVertex); // it should remain after ending
 
     return 0;
 }
