@@ -1,7 +1,7 @@
 #include "NeroProducer/Bambu/interface/AllFiller.h"
 
 #include "MitAna/DataTree/interface/Names.h"
-#include "MitAna/DataTree/interface/EventHeader.h"
+#include "MitAna/DataTree/interface/EventHeaderCol.h"
 #include "MitAna/DataTree/interface/MCEventInfo.h"
 #include "MitAna/DataTree/interface/PileupInfoCol.h"
 
@@ -12,7 +12,20 @@ ClassImp(mithep::nero::AllFiller)
 void
 mithep::nero::AllFiller::fill()
 {
-  auto* eventHeader = getSource<mithep::EventHeader>(Names::gkEvtHeaderBrn);
+  if (skippedEvents_) {
+    for (unsigned iS(0); iS != skippedEvents_->GetEntries(); ++iS) {
+      auto& header(*skippedEvents_->At(iS));
+
+      out_.isRealData = !header.IsMC();
+      out_.runNum = header.RunNum();
+      out_.lumiNum = header.LumiSec();
+      out_.eventNum = header.EvtNum();
+      out_.puTrueInt = 0;
+      out_.mcWeight = header.Weight();
+    }
+  }
+
+  auto* eventHeader = getSource<mithep::EventHeader>(mithep::Names::gkEvtHeaderBrn);
   if (!eventHeader)
     throw runtime_error("EventHeader not found");
 
