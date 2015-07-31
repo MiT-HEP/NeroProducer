@@ -182,6 +182,10 @@ sequence *= separatePileUpMod * \
 
 triggerFiller = mithep.nero.TriggerFiller()
 addTrigger('HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v*')
+addTrigger('HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight_v*')
+addTrigger('HLT_Ele27_eta2p1_WPLoose_Gsf_v*')
+addTrigger('HLT_IsoMu27_v*')
+addTrigger('HLT_PFMET170_NoiseCleaned_v*')
 
 neroMod.AddFiller(triggerFiller)
 
