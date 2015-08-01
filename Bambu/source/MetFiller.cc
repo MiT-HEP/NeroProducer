@@ -1,18 +1,21 @@
 #include "NeroProducer/Bambu/interface/MetFiller.h"
 
+#include "MitAna/DataTree/interface/PFMetCol.h"
 #include "MitAna/DataTree/interface/MetCol.h"
-#include "MitAna/DataTree/interface/GenMetCol.h"
 #include "MitAna/DataTree/interface/ParticleCol.h"
 #include "MitAna/DataTree/interface/PFCandidateCol.h"
 #include "MitAna/DataTree/interface/EventHeader.h"
 #include "MitAna/DataTree/interface/Names.h"
+
+#include "TVector2.h"
+#include "TMath.h"
 
 ClassImp(mithep::nero::MetFiller)
 
 void
 mithep::nero::MetFiller::fill()
 {
-  auto* metCol = getSource<mithep::MetCol>(metName_);
+  auto* metCol = getSource<mithep::PFMetCol>(metName_, false);
   auto& met(*metCol->At(0));
 
   newP4(out_, met);
@@ -53,11 +56,11 @@ mithep::nero::MetFiller::fill()
   }
 
   out_.metChargedHadron = pChargedHadron.Pt();
-  out_.phiChargedHadron = pChargedHadron.Phi();
+  out_.phiChargedHadron = TVector2::Phi_mpi_pi(pChargedHadron.Phi() + TMath::Pi());
   out_.metNeutralHadron = pNeutralHadron.Pt();
-  out_.phiNeutralHadron = pNeutralHadron.Phi();
+  out_.phiNeutralHadron = TVector2::Phi_mpi_pi(pNeutralHadron.Phi() + TMath::Pi());
   out_.metNeutralEM = pNeutralEM.Pt();
-  out_.phiNeutralEM = pNeutralEM.Phi();
+  out_.phiNeutralEM = TVector2::Phi_mpi_pi(pNeutralEM.Phi() + TMath::Pi());
 
   if (getSource<mithep::EventHeader>(Names::gkEvtHeaderBrn)->IsMC()) {
     auto* genMetCol = getSource<mithep::MetCol>(genMetName_);
