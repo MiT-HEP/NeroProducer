@@ -6,6 +6,9 @@
 #include "NeroProducer/Nero/interface/NeroPF.hpp"
 #include "NeroProducer/Nero/interface/NeroJets.hpp"
 #include "NeroProducer/Nero/interface/NeroEvent.hpp"
+#include "NeroProducer/Nero/interface/NeroVertex.hpp"
+#include "NeroProducer/Nero/interface/NeroLeptons.hpp"
+#include "NeroProducer/Nero/interface/SuperClusterFootprintRemovalMiniAOD.h"
 
 
 class NeroPhotons : virtual public NeroCollection,
@@ -14,7 +17,8 @@ class NeroPhotons : virtual public NeroCollection,
     public:
         NeroPhotons();
         ~NeroPhotons();
-        int analyze(const edm::Event& iEvent);
+        int analyze(const edm::Event& iEvent) {return 2;}; // this function should never be called
+        int analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup);
         virtual inline string name(){return "NeroPhotons";};
 
         // --- specific fuctions
@@ -49,12 +53,19 @@ class NeroPhotons : virtual public NeroCollection,
         // -- PF
         NeroPF *pf;
         NeroJets *jets;
+        // -- FPR
+        NeroVertex *vtx;
+        NeroLeptons*leps;
         // -- rho
         NeroEvent *evt;
-        
+
+        // needed to be constructed during the plugin construction
+        SuperClusterFootprintRemovalMiniAOD  *fpr;
+
         bool cutBasedPhotonId( const pat::Photon& pho, string type="loose_50ns", bool withIso = true , bool withSieie=true);
 
         float cutBasedPhotonIdEffArea( const pat::Photon&pho, string type="ch_50ns");
+
 };
 
 
