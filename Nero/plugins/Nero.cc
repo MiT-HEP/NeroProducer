@@ -139,6 +139,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     met -> token = consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("mets"));
     //met -> pfToken_ = consumes<pat::PackedCandidateCollection>(iConfig.getParameter<edm::InputTag>("pfCands"));
     met -> pf = pf;
+    met -> SetExtend (iConfig.getParameter<bool>("extendMet"));
     obj.push_back(met);
 
 

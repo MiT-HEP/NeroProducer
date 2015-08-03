@@ -29,18 +29,6 @@ class BareMet : virtual public BareP4
         TLorentzVector *metNeutralHadron;
         TLorentzVector *metNeutralEM;
     
-    //float metNoMu;
-    //float phiNoMu;
-
-    //  float metChargedHadron;
-    //  float phiChargedHadron;
-
-    //  float metNeutralHadron;
-    //  float phiNeutralHadron;
-
-    //  float metNeutralEM;
-    //  float phiNeutralEM;
-
 };
 #endif
 // Local Variables:

@@ -65,6 +65,8 @@ nero = cms.EDAnalyzer("Nero",
     ## CUSTOM CONFIGURATION
     onlyMc = cms.bool (False),  ## not completely supported yet
 
+    extendMet = cms.bool(False),
+                      
     minJetPt  = cms.double (25.),
     minJetEta = cms.double (4.7),
     minJetN   = cms.int32  (0),
