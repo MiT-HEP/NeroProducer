@@ -217,12 +217,6 @@ for filler in fillers:
 
 neroMod.SetCondition(photonTightId)
 
-addTrigger('HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v*')
-addTrigger('HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight_v*')
-addTrigger('HLT_Ele27_eta2p1_WPLoose_Gsf_v*')
-addTrigger('HLT_IsoMu27_v*')
-addTrigger('HLT_PFMET170_NoiseCleaned_v*')
-
 sequence = goodPVFilterMod
 if not analysis.isRealData:
     sequence *= generator
@@ -241,6 +235,15 @@ sequence *= separatePileUpMod * \
     fatJetId * \
     photonMediumId * \
     photonTightId
+
+addTrigger('HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v*')
+addTrigger('HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight_v*')
+addTrigger('HLT_IsoMu27_v*')
+addTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*")
+addTrigger("HLT_Ele27_eta2p1_WPLoose_Gsf_v*")
+addTrigger("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*")
+addTrigger('HLT_PFMET170_NoiseCleaned_v*')
+addTrigger("HLT_Photon175_v*")
 
 # neroMod must be independent of the main chain
 # to ensure that the all events tree is filled properly
