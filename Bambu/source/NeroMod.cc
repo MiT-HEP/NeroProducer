@@ -106,7 +106,35 @@ mithep::NeroMod::SlaveTerminate()
 void
 mithep::NeroMod::Process()
 {
+  // always fill allevents
+  nero::AllFiller* allFiller = 0;
+
+  if (filler_[nero::kAll]) {
+    allFiller = static_cast<nero::AllFiller*>(filler_[nero::kAll]);
+    if (printLevel_ > 1)
+      std::cout << "filling " << allFiller->getObject()->name() << std::endl;
+
+    allFiller->getObject()->clear();
+    try {
+      allFiller->callFill();
+    }
+    catch (std::exception& ex) {
+      std::cerr << ex.what() << std::endl;
+      AbortAnalysis();
+    }
+
+    if (printLevel_ > 1)
+      std::cout << "filled " << allFiller->getObject()->name() << std::endl;
+  }
+
+  // skip event if condition module is aborted
+  if (condition_ && !condition_->IsActive())
+    return;
+
   for (auto* filler : filler_) {
+    if (filler == allFiller)
+      continue;
+
     if (filler) {
       if (printLevel_ > 1)
         std::cout << "filling " << filler->getObject()->name() << std::endl;
