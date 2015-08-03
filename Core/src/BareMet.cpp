@@ -6,14 +6,17 @@ BareMet::BareMet(){
     ptJESUP = NULL;
     ptJESDOWN = NULL;
     genP4 = NULL;
-    metNoMu = -1.0;
-    phiNoMu = 0.;
-    metChargedHadron = -1.0;
-    phiChargedHadron = 0.;
-    metNeutralHadron = -1.0;
-    phiNeutralHadron = 0.;
-    metNeutralEM = -1.0;
-    phiNeutralEM = 0.;
+
+
+    metNoMu = NULL;
+    pfMet_e3p0 = NULL;
+    //phiNoMu = 0.;
+    metChargedHadron = NULL;
+    //phiChargedHadron = 0.;
+    metNeutralHadron = NULL;
+    //phiNeutralHadron = 0.;
+    metNeutralEM = NULL;
+    //phiNeutralEM = 0.;
 }
 
 BareMet::~BareMet(){
@@ -27,14 +30,15 @@ void BareMet::clear(){
     ptJESDOWN -> clear();
     genP4 -> Clear();
 
-    metNoMu = -1.0;
-    phiNoMu = 0.;
-    metChargedHadron = -1.0;
-    phiChargedHadron = 0.;
-    metNeutralHadron = -1.0;
-    phiNeutralHadron = 0.;
-    metNeutralEM = -1.0;
-    phiNeutralEM = 0.;
+    metNoMu -> Clear();
+    pfMet_e3p0 -> Clear();
+    //phiNoMu = 0.;
+    metChargedHadron -> Clear();
+    //phiChargedHadron = 0.;
+    metNeutralHadron -> Clear();
+    //phiNeutralHadron = 0.;
+    metNeutralEM -> Clear();
+    //phiNeutralEM = 0.;
 }
 
 void BareMet::defineBranches(TTree *t){
@@ -50,21 +54,22 @@ void BareMet::defineBranches(TTree *t){
     genP4 = new TClonesArray("TLorentzVector", 20);
     t->Branch("metP4_GEN","TClonesArray", &p4, 128000, 0);
     //
-    t->Branch("metNoMu",&metNoMu,"Pt/F");
+    t->Branch("metNoMu","TLorentzVector",&metNoMu);
+    t->Branch("pfMet_e3p0","TLorentzVector",&pfMet_e3p0);
     //
-    t->Branch("metNoMu",&phiNoMu,"Phi/F");
+    //t->Branch("metNoMu",&phiNoMu,"Phi/F");
     //
-    t->Branch("metChargedHadron",&metChargedHadron,"Pt/F");
+    t->Branch("metChargedHadron","TLorentzVector",&metChargedHadron);
     //
-    t->Branch("metChargedHadron",&phiChargedHadron,"Phi/F");
+    //t->Branch("metChargedHadron",&phiChargedHadron,"Phi/F");
     //
-    t->Branch("metNeutralHadron",&metNeutralHadron,"Pt/F");
+    t->Branch("metNeutralHadron","TLorentzVector",&metNeutralHadron);
     //
-    t->Branch("metNeutralHadron",&phiNeutralHadron,"Phi/F");
+    //t->Branch("metNeutralHadron",&phiNeutralHadron,"Phi/F");
     //
-    t->Branch("metNeutralEM",&metNeutralEM,"Pt/F");
+    t->Branch("metNeutralEM","TLorentzVector",&metNeutralEM);
     //
-    t->Branch("metNeutralEM",&phiNeutralEM,"Phi/F");
+    //t->Branch("metNeutralEM",&phiNeutralEM,"Phi/F");
 }
 
 void BareMet::setBranchAddresses(TTree *t){
@@ -79,13 +84,14 @@ void BareMet::setBranchAddresses(TTree *t){
     t->SetBranchAddress("metP4_GEN"	, &genP4 );
 
     t->SetBranchAddress("metNoMu", &metNoMu);
-    t->SetBranchAddress("phiNoMu", &phiNoMu);
+    t->SetBranchAddress("pfMet_e3p0", &pfMet_e3p0);
+    //t->SetBranchAddress("phiNoMu", &phiNoMu);
     t->SetBranchAddress("metChargedHadron", &metChargedHadron);
-    t->SetBranchAddress("phiChargedHadron", &phiChargedHadron);
+    //t->SetBranchAddress("phiChargedHadron", &phiChargedHadron);
     t->SetBranchAddress("metNeutralHadron", &metNeutralHadron);
-    t->SetBranchAddress("phiNeutralHadron", &phiNeutralHadron);
+    //t->SetBranchAddress("phiNeutralHadron", &phiNeutralHadron);
     t->SetBranchAddress("metNeutralEM", &metNeutralEM);
-    t->SetBranchAddress("phiNeutralEM", &phiNeutralEM);
+    //t->SetBranchAddress("phiNeutralEM", &phiNeutralEM);
 }
 
 // Local Variables:
