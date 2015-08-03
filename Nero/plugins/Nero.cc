@@ -139,6 +139,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     met -> token = consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("mets"));
     //met -> pfToken_ = consumes<pat::PackedCandidateCollection>(iConfig.getParameter<edm::InputTag>("pfCands"));
     met -> pf = pf;
+    met -> SetExtend (iConfig.getParameter<bool>("extendMet"));
     obj.push_back(met);
 
 
@@ -160,6 +161,9 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     phos -> pf = pf;
     phos -> jets = jets;
     phos -> evt = evt;
+    phos -> vtx = vtx;
+    phos -> leps = leps;
+    phos -> fpr = new SuperClusterFootprintRemovalMiniAOD( consumesCollector() );
     obj.push_back(phos);
 
     NeroMonteCarlo *mc = new NeroMonteCarlo();
@@ -245,7 +249,7 @@ Nero::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     {
         if (VERBOSE){sw_.Reset(); sw_.Start();}
 
-        if (o->analyze(iEvent) ) return; // analyze return 0 on success (VTX ..)
+        if (o->analyze(iEvent, iSetup) ) return; // analyze return 0 on success (VTX ..)
 
         if (VERBOSE)
         {
