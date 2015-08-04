@@ -22,19 +22,13 @@ class BareMet : virtual public BareP4
 
         // Should not stay here, but in MC -> we will esculed it if run on onlyMc
         TClonesArray *genP4;
+
+        TLorentzVector *metNoMu;
+        TLorentzVector *pfMet_e3p0;
+        TLorentzVector *metChargedHadron;
+        TLorentzVector *metNeutralHadron;
+        TLorentzVector *metNeutralEM;
     
-        float metNoMu;
-        float phiNoMu;
-
-        float metChargedHadron;
-        float phiChargedHadron;
-
-        float metNeutralHadron;
-        float phiNeutralHadron;
-
-        float metNeutralEM;
-        float phiNeutralEM;
-
 };
 #endif
 // Local Variables:

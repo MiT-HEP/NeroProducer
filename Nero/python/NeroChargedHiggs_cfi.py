@@ -11,4 +11,4 @@ nero.minJetEta = cms.double (4.7)
 nero.minTauId  = cms.string ('decayModeFindingNewDMs')
 nero.maxTauIso = cms.double (-1)
 nero.extendTau = cms.bool(True)
-
+nero.extendMet = cms.bool(False)
