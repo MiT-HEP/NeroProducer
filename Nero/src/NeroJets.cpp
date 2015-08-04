@@ -112,7 +112,7 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
         
         //JES UNCERTAINTY
         jecUnc_->setJetEta(j.eta());
-        jecUnc_->setJetPt(j.pt() * j.jecFactor("Uncorrected")); // raw or corrected pt?
+        jecUnc_->setJetPt(j.pt()) ;//https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections  corrected jet pt
         float jecunc = jecUnc_->getUncertainty(true);
 
 
