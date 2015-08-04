@@ -24,43 +24,40 @@ mithep::nero::MetFiller::fill()
   out_.ptJESUP->push_back(0.);
   out_.ptJESDOWN->push_back(0.);
 
-  auto metNoMu(met.Mom());
+  out_.metNoMu->SetXYZT(met.Px(), met.Py(), met.Pz(), met.E());
   auto* muons = getSource<mithep::ParticleCol>(muonsName_);
-  for (unsigned iM(0); iM != muons->GetEntries(); ++iM)
-    metNoMu += muons->At(iM)->Mom();
-  out_.metNoMu = metNoMu.Pt();
-  out_.phiNoMu = metNoMu.Phi();
+  for (unsigned iM(0); iM != muons->GetEntries(); ++iM) {
+    auto& muon(*muons->At(iM));
+    *out_.metNoMu += TLorentzVector(muon.Px(), muon.Py(), muon.Pz(), muon.E());
+  }
 
-  mithep::FourVectorM pChargedHadron;
-  mithep::FourVectorM pNeutralHadron;
-  mithep::FourVectorM pNeutralEM;
+  *out_.pfMet_e3p0 *= 0.;
+  *out_.metChargedHadron *= 0.;
+  *out_.metNeutralHadron *= 0.;
+  *out_.metNeutralEM *= 0.;
   auto* pfCandidates = getSource<mithep::PFCandidateCol>(pfCandidatesName_);
   for (unsigned iP(0); iP != pfCandidates->GetEntries(); ++iP) {
     auto& cand(*pfCandidates->At(iP));
 
+    if (cand.AbsEta() < 3.)
+      *out_.pfMet_e3p0 -= TLorentzVector(cand.Px(), cand.Py(), cand.Pz(), cand.E());
+
     switch (cand.PFType()) {
     case mithep::PFCandidate::eHadron:
-      pChargedHadron += cand.Mom();
+      *out_.metChargedHadron -= TLorentzVector(cand.Px(), cand.Py(), cand.Pz(), cand.E());
       break;
     case mithep::PFCandidate::eNeutralHadron:
     case mithep::PFCandidate::eHadronHF:
-      pNeutralHadron += cand.Mom();
+      *out_.metNeutralHadron -= TLorentzVector(cand.Px(), cand.Py(), cand.Pz(), cand.E());
       break;
     case mithep::PFCandidate::eGamma:
     case mithep::PFCandidate::eEGammaHF:
-      pNeutralEM += cand.Mom();
+      *out_.metNeutralEM -= TLorentzVector(cand.Px(), cand.Py(), cand.Pz(), cand.E());
       break;
     default:
       break;
     }
   }
-
-  out_.metChargedHadron = pChargedHadron.Pt();
-  out_.phiChargedHadron = TVector2::Phi_mpi_pi(pChargedHadron.Phi() + TMath::Pi());
-  out_.metNeutralHadron = pNeutralHadron.Pt();
-  out_.phiNeutralHadron = TVector2::Phi_mpi_pi(pNeutralHadron.Phi() + TMath::Pi());
-  out_.metNeutralEM = pNeutralEM.Pt();
-  out_.phiNeutralEM = TVector2::Phi_mpi_pi(pNeutralEM.Phi() + TMath::Pi());
 
   if (getSource<mithep::EventHeader>(Names::gkEvtHeaderBrn)->IsMC()) {
     auto* genMetCol = getSource<mithep::MetCol>(genMetName_);

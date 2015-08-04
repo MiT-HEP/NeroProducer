@@ -9,7 +9,7 @@ namespace mithep {
 
     class MetFiller : public BaseFiller {
     public:
-      MetFiller() {}
+      MetFiller() { out_.SetExtend(); }
       ~MetFiller() {}
 
       BareCollection* getObject() override { return &out_; }

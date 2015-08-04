@@ -24,6 +24,7 @@ namespace mithep {
     void SetInfo(char const* _info) { info_.SetTitle(_info); }
     void SetFileName(char const* _name) { fileName_ = _name; }
     void AddFiller(nero::BaseFiller* _filler) { filler_[_filler->collection()] = _filler; }
+    void SetCondition(BaseMod* _mod) { condition_ = _mod; }
 
     void SetPrintLevel(unsigned _l) { printLevel_ = _l; }
 
@@ -43,6 +44,8 @@ namespace mithep {
     TNamed info_{"info", "Nero"};
 
     nero::BaseFiller* filler_[nero::nCollections] = {};
+
+    BaseMod* condition_ = 0;
 
     unsigned printLevel_ = 0;
 
