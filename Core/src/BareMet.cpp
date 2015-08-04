@@ -28,11 +28,11 @@ void BareMet::clear(){
 
     if (extend_)
     {
-        metNoMu -> Clear();
-        pfMet_e3p0 -> Clear();
-        metChargedHadron -> Clear();
-        metNeutralHadron -> Clear();
-        metNeutralEM -> Clear();
+        *metNoMu *= 0.;
+        *pfMet_e3p0 *= 0.;
+        *metChargedHadron *= 0.;
+        *metNeutralHadron *= 0.;
+        *metNeutralEM *= 0.;
     }
 }
 
@@ -51,14 +51,19 @@ void BareMet::defineBranches(TTree *t){
     //
     if ( IsExtend() )
     {
+        metNoMu = new TLorentzVector;
         t->Branch("metNoMu","TLorentzVector",&metNoMu);
         //
+        pfMet_e3p0 = new TLorentzVector;
         t->Branch("pfMet_e3p0","TLorentzVector",&pfMet_e3p0);
         //
+        metChargedHadron = new TLorentzVector;
         t->Branch("metChargedHadron","TLorentzVector",&metChargedHadron);
         //
+        metNeutralHadron = new TLorentzVector;
         t->Branch("metNeutralHadron","TLorentzVector",&metNeutralHadron);
         //
+        metNeutralEM = new TLorentzVector;
         t->Branch("metNeutralEM","TLorentzVector",&metNeutralEM);
     }
     //
@@ -77,10 +82,15 @@ void BareMet::setBranchAddresses(TTree *t){
 
     if ( IsExtend() ) 
     {
+        metNoMu = new TLorentzVector;
         t->SetBranchAddress("metNoMu", &metNoMu);
+        pfMet_e3p0 = new TLorentzVector;
         t->SetBranchAddress("pfMet_e3p0", &pfMet_e3p0);
+        metChargedHadron = new TLorentzVector;
         t->SetBranchAddress("metChargedHadron", &metChargedHadron);
+        metNeutralHadron = new TLorentzVector;
         t->SetBranchAddress("metNeutralHadron", &metNeutralHadron);
+        metNeutralEM = new TLorentzVector;
         t->SetBranchAddress("metNeutralEM", &metNeutralEM);
     }
 }
