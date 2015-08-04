@@ -1,7 +1,10 @@
 #include "NeroProducer/Nero/interface/NeroPhotons.hpp"
 #include "NeroProducer/Nero/interface/Nero.hpp"
 
-NeroPhotons::NeroPhotons() : BarePhotons(){
+NeroPhotons::NeroPhotons() : 
+        NeroCollection(),
+        BarePhotons()
+{
 
     mMinPt = 15;
     mMaxIso = -1;

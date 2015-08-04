@@ -2,7 +2,10 @@
 #include "NeroProducer/Nero/interface/NeroJets.hpp" // JetId
 #include "NeroProducer/Nero/interface/Nero.hpp"
 
-NeroFatJets::NeroFatJets() : BareFatJets(){
+NeroFatJets::NeroFatJets() : 
+        NeroCollection(),
+        BareFatJets()
+{
 }
 
 NeroFatJets::~NeroFatJets(){

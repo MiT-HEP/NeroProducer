@@ -14,7 +14,9 @@ const reco::Candidate * getMother(const reco::Candidate * part){
     }
 }
 
-NeroJets::NeroJets() : BareJets()
+NeroJets::NeroJets() : 
+        NeroCollection(),
+        BareJets()
 {
     mMinPt = 20.;
     mMinNjets = 0;

@@ -1,7 +1,14 @@
 #include "NeroProducer/Nero/interface/NeroAll.hpp"
 #define VERBOSE 0
 
-NeroAll::NeroAll(){isSkim_=1;isMc_=-1;}
+NeroAll::NeroAll():
+        NeroCollection(),
+        BareAll(),
+        NeroLumi()
+{
+    isSkim_=1;
+    isMc_=-1;
+}
 NeroAll::~NeroAll(){}
 
 int NeroAll::analyze(const edm::Event&iEvent)

@@ -1,6 +1,6 @@
 #include "NeroProducer/Core/interface/BareLeptons.hpp"
 
-BareLeptons::BareLeptons(){
+BareLeptons::BareLeptons():BareP4(){
     p4 = NULL;
     pdgId = NULL;
     iso = NULL;

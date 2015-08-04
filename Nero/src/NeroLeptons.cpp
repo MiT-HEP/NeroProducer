@@ -2,7 +2,10 @@
 #include "NeroProducer/Nero/interface/Nero.hpp"
 
 // -- Electron Isolation
-NeroLeptons::NeroLeptons(): BareLeptons(){
+NeroLeptons::NeroLeptons(): 
+        NeroCollection(),
+        BareLeptons()
+{
     vtx_   = NULL;
 
     mMinPt_mu = 10;

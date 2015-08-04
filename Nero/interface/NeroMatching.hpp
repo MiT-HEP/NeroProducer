@@ -35,7 +35,7 @@ class NeroMatching :virtual public NeroCollection
 {
     // This analyzer needs to be run after both the reco and the gen information is filled
     public:
-        NeroMatching(){};
+        NeroMatching():NeroCollection(){};
         ~NeroMatching(){};
         int analyze(const edm::Event& iEvent);
         void clear(){};

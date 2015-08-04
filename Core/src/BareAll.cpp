@@ -1,6 +1,7 @@
 #include "NeroProducer/Core/interface/BareAll.hpp"
 
-BareAll::BareAll(){};
+BareAll::BareAll(): BareCollection(){
+};
 BareAll::~BareAll(){};
 
 void BareAll::clear()

@@ -1,7 +1,7 @@
 #include "NeroProducer/Core/interface/BarePhotons.hpp"
 
 
-BarePhotons::BarePhotons(){
+BarePhotons::BarePhotons():BareP4(){
     p4 = NULL;
     sieie = NULL;
     iso = NULL;

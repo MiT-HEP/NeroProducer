@@ -1,7 +1,10 @@
 #include "NeroProducer/Nero/interface/NeroEvent.hpp"
 #include "NeroProducer/Nero/interface/Nero.hpp"
 
-NeroEvent::NeroEvent(){
+NeroEvent::NeroEvent():
+        NeroCollection(),
+        BareEvent()
+{
 }
 
 NeroEvent::~NeroEvent(){

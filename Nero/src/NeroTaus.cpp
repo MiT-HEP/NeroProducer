@@ -1,8 +1,10 @@
 #include "NeroProducer/Nero/interface/NeroTaus.hpp"
 #include "NeroProducer/Nero/interface/Nero.hpp"
 
-NeroTaus::NeroTaus(): BareTaus(){
-
+NeroTaus::NeroTaus(): 
+        NeroCollection(),
+        BareTaus()
+{
     mMinPt = 18;
     mMinNtaus = 0;
     mMinEta = 2.3;

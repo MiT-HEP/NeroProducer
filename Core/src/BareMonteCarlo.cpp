@@ -1,6 +1,6 @@
 #include "NeroProducer/Core/interface/BareMonteCarlo.hpp"
 
-BareMonteCarlo::BareMonteCarlo() {
+BareMonteCarlo::BareMonteCarlo() : BareP4(){
     p4 = NULL;
     pdgId = NULL;
     jetP4 = NULL;
