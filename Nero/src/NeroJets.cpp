@@ -1,6 +1,9 @@
 #include "NeroProducer/Nero/interface/NeroJets.hpp"
 #include "NeroProducer/Nero/interface/Nero.hpp"
 
+//JES
+#include "FWCore/Framework/interface/ESHandle.h"
+
 
 const reco::Candidate * getMother(const reco::Candidate * part){
     if(part==NULL){return NULL;}
@@ -23,18 +26,23 @@ NeroJets::NeroJets() :
     mMinEta = 2.5;
     mMinId = "loose";
     pf = NULL;
+    // JES
+    isJecUncSet_= false;
 }
 
 NeroJets::~NeroJets(){
 }
 
-int NeroJets::analyze(const edm::Event& iEvent){
+int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
 
     if ( mOnlyMc  ) return 0;
 
     // maybe handle should be taken before
     iEvent.getByToken(token, handle);
     iEvent.getByToken(qg_token,qg_handle);
+
+    // -- need to init JES here, where there is the iSetup
+    InitJes(iSetup);
 
     int ijetRef = -1;
     for (const pat::Jet& j : *handle)
@@ -101,6 +109,12 @@ int NeroJets::analyze(const edm::Event& iEvent){
             
             }
         }
+        
+        //JES UNCERTAINTY
+        jecUnc_->setJetEta(j.eta());
+        jecUnc_->setJetPt(j.pt() * j.jecFactor("Uncorrected")); // raw or corrected pt?
+        float jecunc = jecUnc_->getUncertainty(true);
+
 
         // Fill output object	
         new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(j.px(), j.py(), j.pz(), j.energy());
@@ -117,6 +131,7 @@ int NeroJets::analyze(const edm::Event& iEvent){
         mjId_loose -> push_back( JetId(j,"monojetloose"));
         Q      -> push_back( charge/charge_den);
         QnoPU  -> push_back( charge_nopu/charge_nopu_den);
+        unc -> push_back( jecunc );
     }
 
     if ( int(rawPt -> size()) < mMinNjets ) return 1;
@@ -161,6 +176,25 @@ bool NeroJets::JetId(const pat::Jet &j, std::string id)
 
     return jetid;
 }
+
+// JES
+void NeroJets::InitJes(const edm::EventSetup& iSetup){
+
+    if (isJecUncSet_) return;
+
+    string payload = "AK4PFchs";
+
+    cout <<"[NeroJets]::[InitJes]::[INFO] Init Jes with Payload"<<payload<<endl;
+
+    edm::ESHandle<JetCorrectorParametersCollection> JetCorParColl;
+    iSetup.get<JetCorrectionsRecord>().get(payload ,JetCorParColl); 
+    JetCorrectorParameters const& par = (*JetCorParColl)["Uncertainty"];
+    jecUnc_ = new JetCorrectionUncertainty(par);
+
+    isJecUncSet_ = true;
+    return;
+}
+
 // Local Variables:
 // mode:c++
 // indent-tabs-mode:nil
