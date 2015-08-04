@@ -32,6 +32,8 @@
 <use name="DataFormats/EcalRecHit"/>
 <use name="MagneticField/Records"/>
 <use name="MagneticField/Engine"/>
+<!-- JES UNC -->
+<use name="JetMETCorrections/Objects"/>
 <!--  -->
 <use name="clhep"/>
 <use name="RooFit"/>

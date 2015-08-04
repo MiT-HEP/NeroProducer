@@ -7,12 +7,21 @@
 #include "NeroProducer/Nero/interface/NeroVertex.hpp"
 
 
+// --- JEC UNCERTAINTY ---
+#include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
+#include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
+#include "JetMETCorrections/Objects/interface/JetCorrectionsRecord.h"
+#include "JetMETCorrections/Objects/interface/JetCorrector.h"
+//  ----
+
+
 class NeroJets : virtual public NeroCollection, virtual public BareJets
 {
     public:
         NeroJets();
         ~NeroJets();
-        int analyze(const edm::Event& iEvent);
+        int analyze(const edm::Event& iEvent, const edm::EventSetup&iSetup);
+        int analyze(const edm::Event& iEvent){return 2;} // never called
         virtual inline string name(){return "NeroJets";};
 
         // --- specific fuctions
@@ -34,6 +43,14 @@ class NeroJets : virtual public NeroCollection, virtual public BareJets
         // 
         NeroPF *pf;
         NeroVertex *vtx;
+        
+        // JES
+        void InitJes(const edm::EventSetup& iSetup);
+
+// JES
+    private:
+        JetCorrectionUncertainty *jecUnc_;
+        bool isJecUncSet_;
 };
 
 
