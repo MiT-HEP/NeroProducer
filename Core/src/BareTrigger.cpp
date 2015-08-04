@@ -1,6 +1,6 @@
 #include "NeroProducer/Core/interface/BareTrigger.hpp"
 
-BareTrigger::BareTrigger(){
+BareTrigger::BareTrigger():BareCollection(){
     triggerFired=NULL;
     triggerNames = new vector<string>;
 }

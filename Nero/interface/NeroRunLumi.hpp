@@ -6,6 +6,8 @@
 
 class NeroLumi: virtual public BareCollection{
     public:
+        NeroLumi() : BareCollection(){}
+        virtual ~NeroLumi(){}
         // --- Just virtual
         virtual int  analyzeLumi(const edm::LuminosityBlock &,TTree*) {return 0;}
         virtual int  analyzeLumi(const edm::LuminosityBlock &,TH1F*) {return 0;}
@@ -14,6 +16,8 @@ class NeroLumi: virtual public BareCollection{
 
 class NeroRun: virtual public BareCollection{
     public:
+        NeroRun() : BareCollection(){}
+        virtual ~NeroRun(){}
         // --- Just virtual
         virtual inline int  analyzeRun(const edm::Run &,TTree*) {return 0;}
         virtual inline int  analyzeRun(const edm::Run &,TH1F*) {return 0;} 

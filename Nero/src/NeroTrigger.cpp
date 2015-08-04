@@ -5,7 +5,9 @@
 
 #define VERBOSE 0
 
-NeroTrigger::NeroTrigger() : BareTrigger()
+NeroTrigger::NeroTrigger() : 
+        NeroCollection(),
+        BareTrigger()
 {
     leps_=NULL;
     jets_=NULL;

@@ -1,7 +1,7 @@
 #include "NeroProducer/Core/interface/BareVertex.hpp"
 
 
-BareVertex::BareVertex(){
+BareVertex::BareVertex():BareCollection(){
 }
 
 BareVertex::~BareVertex(){

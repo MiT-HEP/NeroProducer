@@ -1,7 +1,7 @@
 #include "NeroProducer/Core/interface/BareMet.hpp"
 
 
-BareMet::BareMet(){
+BareMet::BareMet() : BareP4() {
     p4 = NULL;
     ptJESUP = NULL;
     ptJESDOWN = NULL;

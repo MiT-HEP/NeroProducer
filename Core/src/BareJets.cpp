@@ -1,6 +1,6 @@
 #include "NeroProducer/Core/interface/BareJets.hpp"
 
-BareJets::BareJets(){
+BareJets::BareJets(): BareP4(){
     p4      = NULL;
     rawPt   = NULL;
     bDiscr = NULL;

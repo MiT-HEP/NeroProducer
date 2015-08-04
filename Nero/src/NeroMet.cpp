@@ -1,7 +1,10 @@
 #include "NeroProducer/Nero/interface/NeroMet.hpp"
 #include "NeroProducer/Nero/interface/Nero.hpp"
 
-NeroMet::NeroMet() : BareMet() {
+NeroMet::NeroMet() : 
+        NeroCollection(),
+        BareMet() 
+{
     pf = NULL;
 }
 

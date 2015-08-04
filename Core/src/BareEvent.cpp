@@ -1,6 +1,6 @@
 #include "NeroProducer/Core/interface/BareEvent.hpp"
 
-BareEvent::BareEvent(){};
+BareEvent::BareEvent():BareCollection(){};
 BareEvent::~BareEvent(){};
 
 void BareEvent::clear()

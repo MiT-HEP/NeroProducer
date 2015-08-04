@@ -1,6 +1,6 @@
 #include "NeroProducer/Core/interface/BareTaus.hpp"
 
-BareTaus::BareTaus(): BareCollection() {
+BareTaus::BareTaus(): BareP4() {
     p4 = NULL;
     id = NULL;
     Q = NULL;

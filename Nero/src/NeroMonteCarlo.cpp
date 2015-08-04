@@ -4,7 +4,10 @@
 #include "TStopwatch.h"
 #define VERBOSE 0
 
-NeroMonteCarlo::NeroMonteCarlo(): BareMonteCarlo()
+NeroMonteCarlo::NeroMonteCarlo() :  
+        NeroCollection(),
+        BareMonteCarlo(),
+        NeroRun()
 {
     mMinGenParticlePt = 5.;
     mMinGenJetPt = 20.;

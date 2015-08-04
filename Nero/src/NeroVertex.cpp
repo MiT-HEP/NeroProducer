@@ -1,8 +1,9 @@
 #include "NeroProducer/Nero/interface/NeroVertex.hpp"
 #include "NeroProducer/Nero/interface/Nero.hpp"
 
-NeroVertex::NeroVertex():BareVertex(){
-}
+NeroVertex::NeroVertex() :
+        NeroCollection(),
+        BareVertex(){}
 
 NeroVertex::~NeroVertex(){
 }

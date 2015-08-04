@@ -1,7 +1,7 @@
 #include "NeroProducer/Core/interface/BareFatJets.hpp"
 
 
-BareFatJets::BareFatJets(){
+BareFatJets::BareFatJets(): BareP4(){
     p4 = NULL;
     rawPt = NULL;
     flavour = NULL;

@@ -8,7 +8,7 @@ class BareP4 : virtual public BareCollection
     // just a container to identify all the objects that are based on p4
     bool doMatch_;
     public:
-        BareP4(){ p4=NULL;doMatch_=false;match=NULL;}
+        BareP4():BareCollection(){ p4=NULL;doMatch_=false;match=NULL;}
 
         virtual inline string name(){ return "BareP4";}
 

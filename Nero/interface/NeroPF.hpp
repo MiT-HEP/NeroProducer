@@ -7,7 +7,7 @@ class NeroPF : virtual public NeroCollection
 {
 // class to handle the PFCandidates
     public:
-        NeroPF(){}
+        NeroPF():NeroCollection(){}
         ~NeroPF(){}
         edm::Handle<pat::PackedCandidateCollection> handle;	
         edm::EDGetTokenT<pat::PackedCandidateCollection> token;
