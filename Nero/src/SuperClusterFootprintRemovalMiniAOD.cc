@@ -375,20 +375,27 @@ PFIsolation_struct SuperClusterFootprintRemovalMiniAOD::PFIsolation_worker(reco:
     if (type==0) out.neutraliso+=(*pfCandidates)[i].pt(); 
     if (type==1) out.chargediso+=(*pfCandidates)[i].pt();
     if (type==2) out.photoniso+=(*pfCandidates)[i].pt();
+	
+    float dxy=0;
+    float dz=0;
 
     if (type==1 && vertexforchargediso.isNonnull()){
       TVector3 pfvertex((*pfCandidates)[i].vx(),(*pfCandidates)[i].vy(),(*pfCandidates)[i].vz());
       if((*pfCandidates)[i].bestTrack()==NULL){
-	continue;
+        //can calculate dxy,dz only with available info, for candidates with track info available both functions lead to the same result
+        dxy=(*pfCandidates)[i].dxy(vertexforchargediso.get()->position());
+        dz=(*pfCandidates)[i].dz(vertexforchargediso.get()->position());
+      }else{
+        TVector3 vtxmom((*pfCandidates)[i].bestTrack()->px(),(*pfCandidates)[i].bestTrack()->py(),(*pfCandidates)[i].bestTrack()->pz());
+        TVector3 phovtx(vertexforchargediso.get()->x(),vertexforchargediso.get()->y(),vertexforchargediso.get()->z());
+        dxy = ( -(pfvertex.x()-phovtx.x())*vtxmom.y() +(pfvertex.y()-phovtx.y())*vtxmom.x() ) / vtxmom.Perp();
+        dz = (pfvertex.z()-phovtx.z()) - ( (pfvertex.x()-phovtx.x())*vtxmom.x() + (pfvertex.y()-phovtx.y())*vtxmom.y() ) / vtxmom.Perp() * vtxmom.z() / vtxmom.Perp();
       }
-      TVector3 vtxmom((*pfCandidates)[i].bestTrack()->px(),(*pfCandidates)[i].bestTrack()->py(),(*pfCandidates)[i].bestTrack()->pz());
-      TVector3 phovtx(vertexforchargediso.get()->x(),vertexforchargediso.get()->y(),vertexforchargediso.get()->z());
-      float dxy = ( -(pfvertex.x()-phovtx.x())*vtxmom.y() +(pfvertex.y()-phovtx.y())*vtxmom.x() ) / vtxmom.Perp();
-      float dz = (pfvertex.z()-phovtx.z()) - ( (pfvertex.x()-phovtx.x())*vtxmom.x() + (pfvertex.y()-phovtx.y())*vtxmom.y() ) / vtxmom.Perp() * vtxmom.z() / vtxmom.Perp();
+
       dxy=fabs(dxy);
       dz=fabs(dz);
       if (dz<0.2 && dxy<0.1) out.chargediso_primvtx+=(*pfCandidates)[i].pt();
-    }
+    } // end type==1
 
   }
 
