@@ -19,9 +19,9 @@ $(BAREOBJ) : $(BINDIR)/%.o : $(SRCDIR)/%.cpp interface/%.hpp | $(BINDIR)
 	$(GCC) $(CXXFLAGS) -c -o $(BINDIR)/$*.o $<
 
 .PHONY: Dict
-Dict: $(BINDIR)/dict.o
+Dict: $(BINDIR)/dict.o | $(BINDIR)
 
-$(BINDIR)/dict.o:
+$(BINDIR)/dict.o: | $(BINDIR)
 	cd $(BINDIR) && rootcint -v4 -f dict.cc -c -I../../.. $(BAREHPPLINKDEF)  ../interface/BareLinkDef.hpp 
 	cd $(BINDIR) && $(GCC) -c -o dict.o $(CXXFLAGS) -I../../../ dict.cc
 $(BINDIR):
