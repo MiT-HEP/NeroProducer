@@ -1,7 +1,7 @@
 from CRABClient.UserUtilities import config, getUsernameFromSiteDB
 from subprocess import call,check_output
 
-#### THIS IS AN EXAMPLE, not tested yet
+import sys
 
 config = config()
 
@@ -32,6 +32,7 @@ config.Data.publication = False
 config.Data.publishDataName =''
 
 config.Site.storageSite = 'T2_CH_CERN'
+#config.Site.blacklist = [ 'T2_US_Florida','T2_US_Vanderbilt']
 
 
 if __name__ == '__main__':
@@ -45,6 +46,17 @@ if __name__ == '__main__':
     config.General.workArea = 'NeroSubmission'
 
     def submit(config):
+	### for some reason only the first dataset is submitted correctly, work around
+	if len(sys.argv) ==1:
+		## book the command and run python
+		cmd = "python " + sys.argv[0] + " '" + config.General.requestName + "'"
+		print "calling: "+cmd
+		call(cmd,shell=True)
+		return
+	if len(sys.argv) > 1:
+		## if it is not in the request try the next
+		if sys.argv[1] !=  config.General.requestName: return
+	###
 	print "--- Submitting " + "\033[01;32m" + config.Data.inputDataset.split('/')[1] + "\033[00m"  + " ---"
         try:
             crabCommand('submit', config = config)
@@ -155,7 +167,7 @@ if __name__ == '__main__':
     config.Data.inputDataset = '/QCD_Pt_1800to2400_TuneCUETP8M1_13TeV_pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'
     submit(config)
     
-    config.General.requestName = '-25ns'
+    config.General.requestName = 'QCD-2400-3200-25ns'
     config.Data.inputDataset = '/QCD_Pt_2400to3200_TuneCUETP8M1_13TeV_pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'
     submit(config)
     
