@@ -17,7 +17,8 @@ config.JobType.pyCfgParams=['isGrid=True','isData=False','nerohead='+check_outpu
 
 ### DATA configuration
 config.Data.inputDataset = '/HplusToTauNu-M500/amarini-amarini_PrivateMC_HPlusToTauNu_June2015-16aa19d591b8b49c55c4508e7a7c9233/USER'
-config.Data.inputDBS = 'phys03'
+#config.Data.inputDBS = 'phys03'
+config.Data.inputDBS = 'global'
 config.Data.ignoreLocality = True
 
 config.Data.splitting = 'FileBased'
@@ -38,7 +39,7 @@ if __name__ == '__main__':
 
     # We want to put all the CRAB project directories from the tasks we submit here into one common directory.
     # That's why we need to set this parameter (here or above in the configuration file, it does not matter, we will not overwrite it).
-    config.General.workArea = 'crab_projects'
+    config.General.workArea = 'NeroSubmission'
 
     def submit(config):
         try:
@@ -48,9 +49,16 @@ if __name__ == '__main__':
         except ClientException as cle:
             print "Failed submitting task: %s" % (cle)
 
+    def setdata(value="True"):
+	    for idx,par in enumerate(config.JobType.pyCfgParams):
+		    if "isData" in par:
+			config.JobType.pyCfgParams[idx] = "isData=" + value
+
     #############################################################################################
     ## From now on that's what users should modify: this is the a-la-CRAB2 configuration part. ##
     #############################################################################################
+
+    setdata("False")
 
     config.General.requestName = 'WZ-25ns'
     config.Data.inputDataset = '/WZ_TuneCUETP8M1_13TeV-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'
@@ -62,3 +70,8 @@ if __name__ == '__main__':
     config.Data.unitsPerJob = 10
     submit(config)
 
+    setdata("True")
+    #config.General.requestName = 'ZZ-25ns'
+    #config.Data.inputDataset = ''
+    #config.Data.unitsPerJob = 10
+    #submit(config)

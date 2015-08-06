@@ -76,6 +76,17 @@ cd NeroProducer/Nero/script
 vers=v0.2;dir=TTbar_HBWB_HToTauNu_M-90_13TeV_pythia6 ;python sendOnBatch.py -i ../test/testNeroSkimmed.py -e /store/user/amarini/v0.1/${dir} --put-in=/store/user/amarini/Nero/${vers}/${dir} -d ${dir} -n 10 -q 8nh
 ```
 
+### Grid submit
+* MINIAOD
+* edit test/crabNero.py to match the datasets you want
+```
+python crabNero.py
+```
+* check the status with
+```
+python multicrab.py  -c status -w NeroSubmission
+```
+
 ### Core
 * Compile
 ```

@@ -32,12 +32,6 @@ def getOptions():
                       help = "work area directory (only if CMD != 'submit')",
                       metavar = 'WAD')
 
-    parser.add_option('-i', '--inputDatasets',
-                      dest = 'input',
-                      default = '',
-                      help = "file with the list of input datasets",
-                      metavar = 'FILE')
-
     parser.add_option('-o', '--crabCmdOpts',
                       dest = 'crabCmdOpts',
                       default = '',
