@@ -34,20 +34,27 @@ generator = mithep.GeneratorMod(
     MCMETName = "GenMet"
 )
 
-jetCorrectionMod = mithep.JetCorrectionMod(
+jetCorrection = mithep.JetCorrectionMod(
     InputName = 'AKt4PFJetsCHS',
     CorrectedJetsName = 'CorrectedJets',
     RhoAlgo = mithep.PileupEnergyDensity.kFixedGridFastjetAll
 )
 if analysis.isRealData:
-    jetCorrectionMod.AddCorrectionFromFile(mitdata + "/74X_dataRun2_Prompt_v1_L1FastJet_AK4PFchs.txt")
-    jetCorrectionMod.AddCorrectionFromFile(mitdata + "/74X_dataRun2_Prompt_v1_L2Relative_AK4PFchs.txt")
-    jetCorrectionMod.AddCorrectionFromFile(mitdata + "/74X_dataRun2_Prompt_v1_L3Absolute_AK4PFchs.txt")
-    jetCorrectionMod.AddCorrectionFromFile(mitdata + "/74X_dataRun2_Prompt_v1_L2L3Residual_AK4PFchs.txt")
+    jecSources = [
+        "74X_dataRun2_Prompt_v1_L1FastJet_AK4PFchs.txt",
+        "74X_dataRun2_Prompt_v1_L2Relative_AK4PFchs.txt",
+        "74X_dataRun2_Prompt_v1_L3Absolute_AK4PFchs.txt",
+        "74X_dataRun2_Prompt_v1_L2L3Residual_AK4PFchs.txt"
+    ]
 else:
-    jetCorrectionMod.AddCorrectionFromFile(mitdata + "/MCRUN2_74_V9_L1FastJet_AK4PFchs.txt")
-    jetCorrectionMod.AddCorrectionFromFile(mitdata + "/MCRUN2_74_V9_L2Relative_AK4PFchs.txt")
-    jetCorrectionMod.AddCorrectionFromFile(mitdata + "/MCRUN2_74_V9_L3Absolute_AK4PFchs.txt")
+    jecSources = [
+        "MCRUN2_74_V9_L1FastJet_AK4PFchs.txt",
+        "MCRUN2_74_V9_L2Relative_AK4PFchs.txt",
+        "MCRUN2_74_V9_L3Absolute_AK4PFchs.txt"
+    ]
+
+for jec in jecSources:
+    jetCorrection.AddCorrectionFromFile(mitdata + '/' + jec)
 
 # Will use independent JetIDMVA that can be used by Nero too
 jetId = jetIdMod.clone(
@@ -59,7 +66,7 @@ jetIdMVA.Initialize(jetIdMod.GetMVACutWP(), mithep.JetIDMVA.kLoose, jetIdMod.Get
 
 jetId.SetJetIDMVA(jetIdMVA)
 
-metCorrectionMod = mithep.MetCorrectionMod(
+metCorrection = mithep.MetCorrectionMod('MetCorrection',
     InputName = 'PFMet',
     OutputName = 'PFType1CorrectedMet',
     JetsName = 'AKt4PFJets',
@@ -67,19 +74,42 @@ metCorrectionMod = mithep.MetCorrectionMod(
     MaxEMFraction = 0.9,
     SkipMuons = True
 )
-metCorrectionMod.ApplyType0(False)
-metCorrectionMod.ApplyType1(True)
-metCorrectionMod.ApplyShift(False)
-metCorrectionMod.IsData(analysis.isRealData)
+metCorrection.ApplyType0(False)
+metCorrection.ApplyType1(True)
+metCorrection.ApplyShift(False)
+metCorrection.IsData(analysis.isRealData)
+
+metCorrectionJESUp = metCorrection.clone('MetCorrectionJESUp',
+    OutputName = 'PFType1CorrectedMetJESUp',
+    JESUncertaintySigma = 1.
+)
+metCorrectionJESDown = metCorrection.clone('MetCorrectionJESDown',
+    OutputName = 'PFType1CorrectedMetJESDown',
+    JESUncertaintySigma = -1.
+)
 if analysis.isRealData:
-    metCorrectionMod.AddJetCorrectionFromFile(mitdata + "/74X_dataRun2_Prompt_v1_L1FastJet_AK4PFchs.txt")
-    metCorrectionMod.AddJetCorrectionFromFile(mitdata + "/74X_dataRun2_Prompt_v1_L2Relative_AK4PFchs.txt")
-    metCorrectionMod.AddJetCorrectionFromFile(mitdata + "/74X_dataRun2_Prompt_v1_L3Absolute_AK4PFchs.txt")
-    metCorrectionMod.AddJetCorrectionFromFile(mitdata + "/74X_dataRun2_Prompt_v1_L2L3Residual_AK4PFchs.txt")
+    jecSourcesMET = [
+        "74X_dataRun2_Prompt_v1_L1FastJet_AK4PF.txt",
+        "74X_dataRun2_Prompt_v1_L2Relative_AK4PF.txt",
+        "74X_dataRun2_Prompt_v1_L3Absolute_AK4PF.txt",
+        "74X_dataRun2_Prompt_v1_L2L3Residual_AK4PF.txt"
+    ]
+    jecUncert = "74X_dataRun2_Prompt_v1_Uncertainty_AK4PF.txt"
 else:
-    metCorrectionMod.AddJetCorrectionFromFile(mitdata + "/MCRUN2_74_V9_L1FastJet_AK4PF.txt")
-    metCorrectionMod.AddJetCorrectionFromFile(mitdata + "/MCRUN2_74_V9_L2Relative_AK4PF.txt")
-    metCorrectionMod.AddJetCorrectionFromFile(mitdata + "/MCRUN2_74_V9_L3Absolute_AK4PF.txt")
+    jecSourcesMET = [
+        "MCRUN2_74_V9_L1FastJet_AK4PF.txt",
+        "MCRUN2_74_V9_L2Relative_AK4PF.txt",
+        "MCRUN2_74_V9_L3Absolute_AK4PF.txt"
+    ]
+    jecUncert = "MCRUN2_74_V9_Uncertainty_AK4PF.txt"
+
+for jec in jecSourcesMET:
+    metCorrection.AddJetCorrectionFromFile(mitdata + '/' + jec)
+    metCorrectionJESUp.AddJetCorrectionFromFile(mitdata + '/' + jec)
+    metCorrectionJESDown.AddJetCorrectionFromFile(mitdata + '/' + jec)
+
+metCorrectionJESUp.AddJetCorrectionFromFile(mitdata + '/' + jecUncert)
+metCorrectionJESDown.AddJetCorrectionFromFile(mitdata + '/' + jecUncert)
 
 pfTauId = pfTauIdMod.clone('PFTauId')
 pfTauId.AddCutDiscriminator(mithep.PFTau.kDiscriminationByRawCombinedIsolationDBSumPtCorr3Hits, 5., False)
@@ -110,23 +140,23 @@ muonTightIdMask = mithep.MaskCollectionMod('TightMuons',
     OutputName = 'TightMuons'
 )
 
-fatJetCorrectionMod = mithep.JetCorrectionMod('FatJetCorrection',
-    InputName = 'AKt8PFJetsCHS',
+fatJetCorrection = mithep.JetCorrectionMod('FatJetCorrection',
+    InputName = 'AKt8FatJetsCHS',
     CorrectedJetsName = 'CorrectedFatJets',
     RhoAlgo = mithep.PileupEnergyDensity.kFixedGridFastjetAll
 )
 if analysis.isRealData:
-    fatJetCorrectionMod.AddCorrectionFromFile(mitdata + "/74X_dataRun2_Prompt_v1_L1FastJet_AK8PFchs.txt")
-    fatJetCorrectionMod.AddCorrectionFromFile(mitdata + "/74X_dataRun2_Prompt_v1_L2Relative_AK8PFchs.txt")
-    fatJetCorrectionMod.AddCorrectionFromFile(mitdata + "/74X_dataRun2_Prompt_v1_L3Absolute_AK8PFchs.txt")
-    fatJetCorrectionMod.AddCorrectionFromFile(mitdata + "/74X_dataRun2_Prompt_v1_L2L3Residual_AK8PFchs.txt")
+    fatJetCorrection.AddCorrectionFromFile(mitdata + "/74X_dataRun2_Prompt_v1_L1FastJet_AK8PFchs.txt")
+    fatJetCorrection.AddCorrectionFromFile(mitdata + "/74X_dataRun2_Prompt_v1_L2Relative_AK8PFchs.txt")
+    fatJetCorrection.AddCorrectionFromFile(mitdata + "/74X_dataRun2_Prompt_v1_L3Absolute_AK8PFchs.txt")
+    fatJetCorrection.AddCorrectionFromFile(mitdata + "/74X_dataRun2_Prompt_v1_L2L3Residual_AK8PFchs.txt")
 else:
-    fatJetCorrectionMod.AddCorrectionFromFile(mitdata + "/MCRUN2_74_V9_L1FastJet_AK8PFchs.txt")
-    fatJetCorrectionMod.AddCorrectionFromFile(mitdata + "/MCRUN2_74_V9_L2Relative_AK8PFchs.txt")
-    fatJetCorrectionMod.AddCorrectionFromFile(mitdata + "/MCRUN2_74_V9_L3Absolute_AK8PFchs.txt")
+    fatJetCorrection.AddCorrectionFromFile(mitdata + "/MCRUN2_74_V9_L1FastJet_AK8PFchs.txt")
+    fatJetCorrection.AddCorrectionFromFile(mitdata + "/MCRUN2_74_V9_L2Relative_AK8PFchs.txt")
+    fatJetCorrection.AddCorrectionFromFile(mitdata + "/MCRUN2_74_V9_L3Absolute_AK8PFchs.txt")
 
 fatJetId = jetIdMod.clone('FatJetId',
-    InputName = fatJetCorrectionMod.GetOutputName(),
+    InputName = fatJetCorrection.GetOutputName(),
     OutputName = 'GoodFatJets',
     MVATrainingSet = mithep.JetIDMVA.nMVATypes
 )
@@ -186,7 +216,9 @@ fillers.append(mithep.nero.FatJetsFiller(
 ))
 
 fillers.append(mithep.nero.MetFiller(
-    MetName = metCorrectionMod.GetOutputName(),
+    MetName = metCorrection.GetOutputName(),
+    JESUpMetName = metCorrectionJESUp.GetOutputName(),
+    JESDownMetName = metCorrectionJESDown.GetOutputName(),
     MuonsName = muonTightIdMask.GetOutputName(),
     GenMetName = generator.GetMCMETName()
 ))
@@ -221,9 +253,11 @@ sequence = goodPVFilterMod
 if not analysis.isRealData:
     sequence *= generator
 sequence *= separatePileUpMod * \
-    jetCorrectionMod * \
+    jetCorrection * \
     jetId * \
-    metCorrectionMod * \
+    metCorrection * \
+    metCorrectionJESUp * \
+    metCorrectionJESDown * \
     pfTauId * \
     electronLooseId * \
     muonLooseId * \
@@ -231,10 +265,10 @@ sequence *= separatePileUpMod * \
     electronTightId * \
     muonTightId * \
     muonTightIdMask * \
-    fatJetCorrectionMod * \
-    fatJetId * \
     photonMediumId * \
-    photonTightId
+    photonTightId * \
+    fatJetCorrection * \
+    fatJetId
 
 addTrigger('HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v*')
 addTrigger('HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight_v*')

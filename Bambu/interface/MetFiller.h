@@ -18,6 +18,8 @@ namespace mithep {
       void fill() override;
 
       void SetMetName(char const* _name) { metName_ = _name; }
+      void SetJESUpMetName(char const* _name) { jesUpMetName_ = _name; }
+      void SetJESDownMetName(char const* _name) { jesDownMetName_ = _name; }
       void SetMuonsName(char const* _name) { muonsName_ = _name; }
       void SetPFCandidatesName(char const* _name) { pfCandidatesName_ = _name; }
       void SetGenMetName(char const* _name) { genMetName_ = _name; }
@@ -26,6 +28,8 @@ namespace mithep {
       BareMet out_{};
 
       TString metName_ = "PFMet";
+      TString jesUpMetName_ = "PFMet";
+      TString jesDownMetName_ = "PFMet";
       TString muonsName_ = "Muons";
       TString pfCandidatesName_ = "PFCandidates";
       TString genMetName_ = "GenMet";
