@@ -9,6 +9,7 @@ from optparse import OptionParser
 if __name__ == "__main__":
 	parser = OptionParser()
 	parser.add_option("-f", "--file", dest="file", default='NeroNtuple.root', help="input root file [default: %default]")
+	parser.add_option("-c", "--core", dest="core", action='store_true',default=False, help="Only Test Core [default: %default]")
 	(opts,args) = parser.parse_args()
 
 colors= {
@@ -157,5 +158,6 @@ def TestMonoJet():
 # test that loading the library and try to access it is fine
 if __name__ == "__main__":
 	TestCore()
-	TestChargedHiggs()
-	TestMonoJet()
+	if not opts.core:
+		TestChargedHiggs()
+		TestMonoJet()

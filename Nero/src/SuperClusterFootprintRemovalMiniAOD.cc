@@ -53,6 +53,7 @@ SuperClusterFootprintRemovalMiniAOD::SuperClusterFootprintRemovalMiniAOD(
   global_linkbyrechit_enlargement = iConfig.getUntrackedParameter<double>("rechit_link_enlargement_forSCremoval",0.25);
 
 
+  // never set this to 0
   photonptMinRC = 10;
   jetptMinRC = 20;
   leptonptMinRC = 20;
@@ -298,7 +299,7 @@ angular_distances_struct SuperClusterFootprintRemovalMiniAOD::GetPFCandHitDistan
 
   TVector3 ecalpfhit = PropagatePFCandToEcal(pfindex,isbarrel ? sc_position.Perp() : sc_position.z(),isbarrel);
 
-  if (ecalpfhit.Perp()==0){
+  if (ecalpfhit.Perp()==0 or ecalpfhit.Perp() >  1.e+10){ // I had   -> ecalpfhit.Perp()2.36219e+29 in data ?!? 
     std::cout << "GetPFCandHitDistanceFromSC: impact position found in the origin of the transverse plane. Returning error state." << std::endl;
     angular_distances_struct out;
     out.dR = 999;
