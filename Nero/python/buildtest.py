@@ -173,7 +173,7 @@ def  SetStatus(sha,state="success",description="build"):
 			return
 
 	payload= {"state" :state, ## pending failure error
-		"target_url":"https://%(USER)s.cern.ch/%(USER)s/%(REPONAME)s/%(SHA)s/%(CONTX)s.txt"%{'USER':os.environ['USER'],
+		"target_url":"https://%(USER)s.web.cern.ch/%(USER)s/%(REPONAME)s/%(SHA)s/%(CONTX)s.txt"%{'USER':os.environ['USER'],
 					'SHA': sha,
 					'CONTX': description,
 					'REPONAME': repo.split('/')[1]
