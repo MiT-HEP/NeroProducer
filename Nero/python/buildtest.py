@@ -208,7 +208,11 @@ if __name__ == "__main__":
 			ans=raw_input("Do you want to test Pull Req. " +id+": "+ dict[id]['title'] + "? [y/n]" )
 			if ans.lower() != "y"  and ans.lower() != "yes" :  continue;
 
+		## push a work in progress Status, for building
+		SetStatus( dict[id]['sha'],'pending','build')
+
 		status=TryPullReq(dict[id]['sha'], dict[id]['origin'])
+
 		if status == 1: #scram
 			pass
 		if status == 2: #repo

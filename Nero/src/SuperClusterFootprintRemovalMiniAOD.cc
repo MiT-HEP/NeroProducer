@@ -299,7 +299,7 @@ angular_distances_struct SuperClusterFootprintRemovalMiniAOD::GetPFCandHitDistan
 
   TVector3 ecalpfhit = PropagatePFCandToEcal(pfindex,isbarrel ? sc_position.Perp() : sc_position.z(),isbarrel);
 
-  if (ecalpfhit.Perp()==0 or ecalpfhit.Perp() >  1.e+10){ // I had   -> ecalpfhit.Perp()2.36219e+29 in data ?!? 
+  if (ecalpfhit.Perp()==0 or ecalpfhit.Perp() >  1.e+10 or ecalpfhit.Pz() > 1e+10){ // I had   -> ecalpfhit.Perp()2.36219e+29 in data ?!?  pz = inf ?!?
     std::cout << "GetPFCandHitDistanceFromSC: impact position found in the origin of the transverse plane. Returning error state." << std::endl;
     angular_distances_struct out;
     out.dR = 999;
