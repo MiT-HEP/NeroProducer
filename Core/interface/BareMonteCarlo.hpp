@@ -14,6 +14,7 @@ class BareMonteCarlo : virtual public BareP4
         void defineBranches(TTree *t);
         void setBranchAddresses(TTree*) ;
         virtual inline string name(){return "BareMonteCarlo";};
+        virtual void compress();
 
         // -- variables
         //TClonesArray *p4; // gen particles
