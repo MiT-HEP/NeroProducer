@@ -113,6 +113,19 @@ mithep::NeroMod::SlaveTerminate()
   hXsec_ = 0;
 }
 
+Bool_t
+mithep::NeroMod::Notify()
+{
+  for (unsigned iC(0); iC != nero::nCollections; ++iC) {
+    if (!filler_[iC])
+      continue;
+
+    filler_[iC]->notify();
+  }
+
+  return true;
+}
+
 void
 mithep::NeroMod::Process()
 {

@@ -35,6 +35,7 @@ namespace mithep {
     void SlaveBegin() override;
     void BeginRun() override;
     void SlaveTerminate() override;
+    Bool_t Notify() override;
     void Process() override;
 
     TString fileName_{"nero.root"};
