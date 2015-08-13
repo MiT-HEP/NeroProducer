@@ -62,7 +62,7 @@ process.source = cms.Source("PoolSource",
 # ---- define the output file -------------------------------------------
 process.TFileService = cms.Service("TFileService",
 			closeFileFast = cms.untracked.bool(True),
-			fileName = cms.string("NeroNtuples_singleel.root"),
+			fileName = cms.string("NeroNtuples.root"),
                 )
 # ------------------------QG-----------------------------------------------
 process.load('RecoJets.JetProducers.QGTagger_cfi')
@@ -80,7 +80,7 @@ if (isData):
     process.GlobalTag.globaltag = '74X_dataRun2_Prompt_v0'
     
     import FWCore.PythonUtilities.LumiList as LumiList
-    process.source.lumisToProcess = LumiList.LumiList(filename='/afs/cern.ch/work/z/zdemirag/work/run2/monojet/CMSSW_7_4_5/src/NeroProducer/Nero/test/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt').getVLuminosityBlockRange()
+    process.source.lumisToProcess = LumiList.LumiList(filename='/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt').getVLuminosityBlockRange()
 else:
     process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
     process.GlobalTag.globaltag = 'MCRUN2_74_V9::All'
