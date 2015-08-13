@@ -28,8 +28,8 @@ namespace mithep {
       BareMet out_{};
 
       TString metName_ = "PFMet";
-      TString jesUpMetName_ = "PFMet";
-      TString jesDownMetName_ = "PFMet";
+      TString jesUpMetName_ = "";
+      TString jesDownMetName_ = "";
       TString muonsName_ = "Muons";
       TString pfCandidatesName_ = "PFCandidates";
       TString genMetName_ = "GenMet";
