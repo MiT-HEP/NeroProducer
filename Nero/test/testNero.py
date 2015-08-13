@@ -25,13 +25,31 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 fileList = [
-    #'/store/data/Run2015B/MET/MINIAOD/PromptReco-v1/000/251/643/00000/CC77B94F-902C-E511-9A26-02163E01369B.root'
-    #'/store/relval/CMSSW_7_4_1/RelValADDMonoJet_d3MD3_13/MINIAODSIM/MCRUN2_74_V9_gensim71X-v1/00000/80CF5456-B9EC-E411-93DA-002618FDA248.root'
-    '/store/user/arapyan/mc/SUSYGluGluToTBHPTohbbW/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2/MINIAODSIM2/MINIAOD_99.root'
-    #'/store/relval/CMSSW_7_4_1/RelValProdTTbar_13/MINIAODSIM/MCRUN2_74_V9_gensim71X-v1/00000/0A9E2CED-C9EC-E411-A8E4-003048FFCBA8.root']
-    #'/store/data/Run2015B/DoubleMuon/MINIAOD/PromptReco-v1/000/251/164/00000/402F0995-A326-E511-86BB-02163E013948.root',
-    #'/store/data/Run2015B/DoubleMuon/MINIAOD/PromptReco-v1/000/251/167/00000/70C4A781-A826-E511-95B4-02163E013414.root',
-]
+    'file:eos/cms/store/data/Run2015B/SingleElectron//MINIAOD/17Jul2015-v1/30000/109023E8-C02E-E511-8913-0025905A610A.root',
+    'file:eos/cms/store/data/Run2015B/SingleElectron//MINIAOD/17Jul2015-v1/30000/18EA30CE-C02E-E511-AAAE-0025905B859E.root',
+    'file:eos/cms/store/data/Run2015B/SingleElectron//MINIAOD/17Jul2015-v1/30000/1C847DE8-C02E-E511-8D41-0025905A60DA.root',
+    'file:eos/cms/store/data/Run2015B/SingleElectron//MINIAOD/17Jul2015-v1/30000/3861A09F-C02E-E511-B4B3-0025905A613C.root',
+    'file:eos/cms/store/data/Run2015B/SingleElectron//MINIAOD/17Jul2015-v1/30000/3A979A2B-C12E-E511-A5F7-0025905A48D6.root',
+    'file:eos/cms/store/data/Run2015B/SingleElectron//MINIAOD/17Jul2015-v1/30000/3C61DCE6-C02E-E511-ADD1-002618943971.root',
+    'file:eos/cms/store/data/Run2015B/SingleElectron//MINIAOD/17Jul2015-v1/30000/3E4B2930-C12E-E511-872B-002590593920.root',
+    'file:eos/cms/store/data/Run2015B/SingleElectron//MINIAOD/17Jul2015-v1/30000/48C83128-C12E-E511-B235-003048FFCC0A.root',
+    'file:eos/cms/store/data/Run2015B/SingleElectron//MINIAOD/17Jul2015-v1/30000/4A52C8E2-C02E-E511-8FF3-0025905A60A0.root',
+    'file:eos/cms/store/data/Run2015B/SingleElectron//MINIAOD/17Jul2015-v1/30000/5097CCE8-C02E-E511-B31C-002618FDA28E.root',
+    'file:eos/cms/store/data/Run2015B/SingleElectron//MINIAOD/17Jul2015-v1/30000/52D4A025-C12E-E511-89FD-00261894382D.root',
+    'file:eos/cms/store/data/Run2015B/SingleElectron//MINIAOD/17Jul2015-v1/30000/584065EA-C02E-E511-A27B-0025905A613C.root',
+    'file:eos/cms/store/data/Run2015B/SingleElectron//MINIAOD/17Jul2015-v1/30000/58C331BE-C02E-E511-A2B2-0025905A608C.root',
+    'file:eos/cms/store/data/Run2015B/SingleElectron//MINIAOD/17Jul2015-v1/30000/6012E4D2-C02E-E511-A24C-0025905B858E.root',
+    'file:eos/cms/store/data/Run2015B/SingleElectron//MINIAOD/17Jul2015-v1/30000/6CFFA52B-C12E-E511-B60B-0025905A60F2.root',
+    'file:eos/cms/store/data/Run2015B/SingleElectron//MINIAOD/17Jul2015-v1/30000/783F7796-C02E-E511-ABBE-003048FFD770.root',
+    'file:eos/cms/store/data/Run2015B/SingleElectron//MINIAOD/17Jul2015-v1/30000/7E1814E8-C02E-E511-8E7E-0025905AA9CC.root',
+    'file:eos/cms/store/data/Run2015B/SingleElectron//MINIAOD/17Jul2015-v1/30000/9261D028-C12E-E511-BBBF-0025905A60B4.root',
+    'file:eos/cms/store/data/Run2015B/SingleElectron//MINIAOD/17Jul2015-v1/30000/96D4049C-C02E-E511-92C9-00261894397A.root',
+    'file:eos/cms/store/data/Run2015B/SingleElectron//MINIAOD/17Jul2015-v1/30000/B2000C33-C12E-E511-BD6C-002618943849.root',
+    'file:eos/cms/store/data/Run2015B/SingleElectron//MINIAOD/17Jul2015-v1/30000/B6D0E4CB-C12E-E511-AA9F-0025905B85AA.root',
+    'file:eos/cms/store/data/Run2015B/SingleElectron//MINIAOD/17Jul2015-v1/30000/C68F6A2C-C12E-E511-8407-0025905A48BC.root',
+    'file:eos/cms/store/data/Run2015B/SingleElectron//MINIAOD/17Jul2015-v1/30000/CC503EEC-C02E-E511-93A3-002618943982.root',
+    'file:eos/cms/store/data/Run2015B/SingleElectron//MINIAOD/17Jul2015-v1/30000/F40EF063-C02E-E511-A074-0025905A612A.root',
+    ]
 
 
 ### do not remove the line below!
@@ -44,7 +62,7 @@ process.source = cms.Source("PoolSource",
 # ---- define the output file -------------------------------------------
 process.TFileService = cms.Service("TFileService",
 			closeFileFast = cms.untracked.bool(True),
-			fileName = cms.string("NeroNtuples.root"),
+			fileName = cms.string("NeroNtuples_singleel.root"),
                 )
 # ------------------------QG-----------------------------------------------
 process.load('RecoJets.JetProducers.QGTagger_cfi')
@@ -62,10 +80,7 @@ if (isData):
     process.GlobalTag.globaltag = '74X_dataRun2_Prompt_v0'
     
     import FWCore.PythonUtilities.LumiList as LumiList
-    process.source.lumisToProcess = LumiList.LumiList(filename='/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/DCSOnly/json_DCSONLY_Run2015B.txt').getVLuminosityBlockRange()
-    # GoldenJsn
-    #process.source.lumisToProcess = LumiList.LumiList(filename='/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Cert_246908-251642_13TeV_PromptReco_Collisions15_JSON.txt').getVLuminosityBlockRange()
-
+    process.source.lumisToProcess = LumiList.LumiList(filename='/afs/cern.ch/work/z/zdemirag/work/run2/monojet/CMSSW_7_4_5/src/NeroProducer/Nero/test/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt').getVLuminosityBlockRange()
 else:
     process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
     process.GlobalTag.globaltag = 'MCRUN2_74_V9::All'
@@ -127,7 +142,7 @@ process.pfInclusiveSecondaryVertexFinderTagInfosAK8.extSVCollection = cms.InputT
 ## DEBUG
 ## process.output = cms.OutputModule(
 ## 		   "PoolOutputModule",
-## 		         fileName = cms.untracked.string('output.root'),
+## 		         fileName = cms.untracked.string('output.root','),
 ## 			 )
 ## process.output_step = cms.EndPath(process.output)
 process.HBB = cms.Sequence(
