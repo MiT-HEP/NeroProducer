@@ -18,6 +18,16 @@ mithep::NeroMod::~NeroMod()
 {
 }
 
+TObjArray*
+mithep::NeroMod::GetFillers() const
+{
+  auto* arr = new TObjArray();
+  for (unsigned iC(0); iC != nero::nCollections; ++iC)
+    arr->Add(filler_[iC]);
+
+  return arr;
+}
+
 void
 mithep::NeroMod::SlaveBegin()
 {
