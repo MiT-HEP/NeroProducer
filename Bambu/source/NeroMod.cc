@@ -18,6 +18,16 @@ mithep::NeroMod::~NeroMod()
 {
 }
 
+TObjArray*
+mithep::NeroMod::GetFillers() const
+{
+  auto* arr = new TObjArray();
+  for (unsigned iC(0); iC != nero::nCollections; ++iC)
+    arr->Add(filler_[iC]);
+
+  return arr;
+}
+
 void
 mithep::NeroMod::SlaveBegin()
 {
@@ -101,6 +111,19 @@ mithep::NeroMod::SlaveTerminate()
 
   eventsTree_ = allTree_ = 0;
   hXsec_ = 0;
+}
+
+Bool_t
+mithep::NeroMod::Notify()
+{
+  for (unsigned iC(0); iC != nero::nCollections; ++iC) {
+    if (!filler_[iC])
+      continue;
+
+    filler_[iC]->notify();
+  }
+
+  return true;
 }
 
 void

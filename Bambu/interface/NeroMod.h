@@ -11,6 +11,7 @@
 #include "TH1F.h"
 #include "TNamed.h"
 #include "TString.h"
+#include "TObjArray.h"
 
 namespace mithep {
 
@@ -18,6 +19,8 @@ namespace mithep {
   public:
     NeroMod(char const* name = "NeroMod", char const* title = "Nero-Bambu interface");
     ~NeroMod();
+
+    TObjArray* GetFillers() const;
 
     void SetTag(char const* _tag) { tag_.SetTitle(_tag); }
     void SetHead(char const* _head) { head_.SetTitle(_head); }
@@ -32,6 +35,7 @@ namespace mithep {
     void SlaveBegin() override;
     void BeginRun() override;
     void SlaveTerminate() override;
+    Bool_t Notify() override;
     void Process() override;
 
     TString fileName_{"nero.root"};

@@ -28,6 +28,7 @@ namespace mithep {
       virtual void setCrossRef(BaseFiller*[]) {}
 
       virtual void initialize() {} // @SlaveBegin      
+      virtual void notify() {}
       void callBegin();
       void callFill();
 

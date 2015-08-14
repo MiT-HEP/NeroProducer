@@ -28,6 +28,9 @@ mithep::nero::TriggerFiller::setCrossRef(BaseFiller* _fillers[])
 void
 mithep::nero::TriggerFiller::begin()
 {
+  // load new trigger table
+  triggerIds_.clear();
+  
   auto* hltTable = getSource<mithep::TriggerTable>(TString::Format("%sFwk", Names::gkHltTableBrn));
   for (auto trigger : triggerNames_) {
     if (trigger.EndsWith("*"))

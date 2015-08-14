@@ -16,13 +16,21 @@ void
 mithep::nero::MetFiller::fill()
 {
   auto* metCol = getSource<mithep::PFMetCol>(metName_, false);
+  mithep::PFMetCol* jesUpMetCol(0);
+  mithep::PFMetCol* jesDownMetCol(0);
+  if (jesUpMetName_.Length() != 0) 
+    jesUpMetCol = getSource<mithep::PFMetCol>(jesUpMetName_, false);
+  if (jesDownMetName_.Length() != 0)
+    jesDownMetCol = getSource<mithep::PFMetCol>(jesDownMetName_, false);
+
   auto& met(*metCol->At(0));
 
   newP4(out_, met);
 
-  // TODO
-  out_.ptJESUP->push_back(0.);
-  out_.ptJESDOWN->push_back(0.);
+  if (jesUpMetCol)
+    out_.ptJESUP->push_back(jesUpMetCol->At(0)->Pt());
+  if (jesDownMetCol)
+    out_.ptJESDOWN->push_back(jesDownMetCol->At(0)->Pt());
 
   out_.metNoMu->SetXYZT(met.Px(), met.Py(), met.Pz(), met.E());
   auto* muons = getSource<mithep::ParticleCol>(muonsName_);
