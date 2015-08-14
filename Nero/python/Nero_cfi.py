@@ -49,10 +49,9 @@ nero = cms.EDAnalyzer("Nero",
                                 'HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight',
 				#### Control triggers, extra
 				'HLT_IsoMu27', # SingleMuon, Iso20 is not always available in 25ns
-				'HLT_LooseIsoPFTau50_Trk30_eta2p1', ## Prescaled, Tau, for turn on studies
+				'HLT_LooseIsoPFTau50_Trk30_eta2p1_v', ## Prescaled, Tau, for turn on studies
 				'HLT_Ele15_IsoVVL_PFHT350_PFMET70',  ## Unprescaled, SingleElectron
 				'HLT_Mu15_IsoVVVL_PFHT350_PFMET70',  ## Unprescaled ,SingleMuon
-				'HLT_LooseIsoPFTau50_Trk30_v',  # PRESCALED! , Tau, control on met performance at trigger level
 				'HLT_PFMET120_NoiseCleaned_BtagCSV0p72',## unprescaled, MET, control on tau turn on
 				'HLT_PFMET120_PFMHT120_IDTight',## unprescaled, MET, control on tau turn on
 				#### Photon triggers
