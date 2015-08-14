@@ -80,7 +80,8 @@ for jec in jecSources:
 
 # Will use independent JetIDMVA that can be used by Nero too
 jetId = jetIdMod.clone(
-    MVATrainingSet = mithep.JetIDMVA.nMVATypes
+    MVATrainingSet = mithep.JetIDMVA.nMVATypes,
+    PtMin = 20.
 )
 
 jetIdMVA = mithep.JetIDMVA()
