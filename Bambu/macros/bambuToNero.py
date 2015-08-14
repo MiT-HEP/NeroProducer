@@ -119,7 +119,7 @@ muonTightIdMask = mithep.MaskCollectionMod('TightMuons',
 )
 
 fatJetCorrection = mithep.JetCorrectionMod('FatJetCorrection',
-    InputName = 'AKt8PFJetsCHS',
+    InputName = 'AKt8FatJetsCHS',
     CorrectedJetsName = 'CorrectedFatJets',
     RhoAlgo = mithep.PileupEnergyDensity.kFixedGridFastjetAll
 )
