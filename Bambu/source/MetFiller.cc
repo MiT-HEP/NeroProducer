@@ -67,7 +67,7 @@ mithep::nero::MetFiller::fill()
     }
   }
 
-  if (getSource<mithep::EventHeader>(Names::gkEvtHeaderBrn)->IsMC()) {
+  if (genMetName_ != "" && getSource<mithep::EventHeader>(Names::gkEvtHeaderBrn)->IsMC()) {
     auto* genMetCol = getSource<mithep::MetCol>(genMetName_);
     auto& genMet(*genMetCol->At(0));
 

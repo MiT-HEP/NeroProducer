@@ -3,6 +3,7 @@ import os
 
 mitdata = os.environ['MIT_DATA']
 
+from MitPhysics.SelMods.BadEventsFilterMod import badEventsFilterMod
 from MitPhysics.Mods.GoodPVFilterMod import goodPVFilterMod
 from MitPhysics.Mods.JetIdMod import jetIdMod
 from MitPhysics.Mods.PFTauIdMod import pfTauIdMod
@@ -230,7 +231,8 @@ neroMod.SetCondition(photonTightId)
 #metCorrSequence = metCorrection * metCorrectionJESUp * metCorrectionJESDown
 metCorrSequence = metCorrection
 
-sequence = goodPVFilterMod
+sequence = badEventsFilterMod * \
+    goodPVFilterMod
 if not analysis.isRealData:
     sequence *= generator
 sequence *= separatePileUpMod * \
