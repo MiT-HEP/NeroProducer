@@ -150,6 +150,8 @@ mithep::NeroMod::Process()
       std::cout << "filled " << allFiller->getObject()->name() << std::endl;
   }
 
+  allTree_->Fill();
+
   // skip event if condition module is aborted
   if (condition_ && !condition_->IsActive())
     return;
@@ -177,5 +179,4 @@ mithep::NeroMod::Process()
   }
 
   eventsTree_->Fill();
-  allTree_->Fill();
 }

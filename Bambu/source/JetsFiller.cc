@@ -45,10 +45,13 @@ mithep::nero::JetsFiller::fill()
 
       if (jetId_ && vertices)
         out_.puId->push_back(jetId_->MVAValue(&pfJet, vertices->At(0), vertices));
+      else
+        out_.puId->push_back(-999.);
     }
     else {
       out_.mjId->push_back(false);
       out_.mjId_loose->push_back(false);
+      out_.puId->push_back(-999.);
     }
   }
 }
