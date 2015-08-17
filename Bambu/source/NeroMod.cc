@@ -104,6 +104,16 @@ mithep::NeroMod::BeginRun()
 void
 mithep::NeroMod::SlaveTerminate()
 {
+  for (unsigned iC(0); iC != nero::nCollections; ++iC) {
+    if (!filler_[iC])
+      continue;
+
+    if (printLevel_ > 0)
+      std::cout << "finalizing " << filler_[iC]->getObject()->name() << std::endl;
+
+    filler_[iC]->finalize();
+  }
+
   TFile* outputFile = eventsTree_->GetCurrentFile();
   outputFile->cd();
   outputFile->Write();
