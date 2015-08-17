@@ -85,11 +85,6 @@ jetId = jetIdMod.clone(
     PtMin = 20.
 )
 
-jetIdMVA = mithep.JetIDMVA()
-jetIdMVA.Initialize(jetIdMod.GetMVACutWP(), mithep.JetIDMVA.kLoose, jetIdMod.GetMVAWeightsFile(), jetIdMod.GetMVACutsFile())
-
-jetId.SetJetIDMVA(jetIdMVA)
-
 pfTauId = pfTauIdMod.clone('PFTauId')
 pfTauId.AddCutDiscriminator(mithep.PFTau.kDiscriminationByRawCombinedIsolationDBSumPtCorr3Hits, 5., False)
 
@@ -172,7 +167,10 @@ fillers.append(mithep.nero.VertexFiller(
 fillers.append(mithep.nero.JetsFiller(
     JetsName = jetId.GetOutputName(),
     VerticesName = goodPVFilterMod.GetOutputName(),
-    JetIDMVA = jetIdMVA
+    JetIdCutWP = mithep.JetIDMVA.kLoose,
+    JetIdMVATrainingSet = mithep.JetIDMVA.k53BDTCHSFullPlusRMS,
+    JetIdMVAWeightsFile = mitdata + '/TMVAClassification_5x_BDT_chsFullPlusRMS.weights.xml',
+    JetIdCutsFile = mitdata + '/jetIDCuts_121221.dat'
 ))
 
 fillers.append(mithep.nero.TausFiller(

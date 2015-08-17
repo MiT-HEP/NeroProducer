@@ -6,6 +6,29 @@
 ClassImp(mithep::nero::JetsFiller)
 
 void
+mithep::nero::JetsFiller::initialize()
+{
+  if (!jetId_ && jetIdMVATrainingSet_ != mithep::JetIDMVA::nMVATypes) {
+    jetId_ = new JetIDMVA();
+    jetId_->Initialize(JetIDMVA::CutType(jetIdCutWP_), JetIDMVA::MVAType(jetIdMVATrainingSet_), jetIdMVAWeightsFile_, jetIdCutsFile_);
+
+    ownJetId_ = true;
+  }
+
+  if (jetId_ && !jetId_->IsInitialized())
+    throw std::runtime_error("JetID not initialized");
+}
+
+void
+mithep::nero::JetsFiller::finalize()
+{
+  if (jetId_ && ownJetId_) {
+    delete jetId_;
+    jetId_ = 0;
+  }
+}
+
+void
 mithep::nero::JetsFiller::fill()
 {
   auto* jets = getSource<mithep::JetCol>(jetsName_);
