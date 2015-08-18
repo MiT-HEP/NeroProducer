@@ -66,8 +66,15 @@ def TryPullReq(sha, origin):
 	cmd = "mkdir -p %s" % os.environ["HOME"]+"/www/%s/"%(repo.split('/')[1]) + sha + "/"
 	call(cmd,shell=True)
 
+	print cyan+"-> Removing CMSSW"+white
+	cmd = "cd %s &&"% tmpdir	
+	cmd += "rm -rf %s/%s 2>/dev/null"%(tmpdir,CMSSW)
+	cmd += " || true" #ignore failure
+	status = call(cmd,shell=True)
+
 	cmsenv="eval `scramv1 runtime -sh`"
 	cmd = "cd "+ tmpdir +"; "
+	## cmsrel
 	cmd +="/cvmfs/cms.cern.ch/common/scramv1 project CMSSW  %s && "%CMSSW #cmsrel
 	cmd +="cd %s/src &&" % CMSSW
 	#https://raw.githubusercontent.com/amarini/NeroProducer/17006845ca21076e6f6966b4576dd228f9d4555c/Nero/script/setup.sh
@@ -118,7 +125,8 @@ def TryPullReq(sha, origin):
 
 	print cyan+"-> Build"+white
 	cmd = "cd %s/%s/src && %s &&" %(tmpdir,CMSSW,cmsenv)
-	cmd += "scram b -j 16 | tee %s "%  (os.environ["HOME"]+"/www/%s/"%(repo.split('/')[1]) + sha + "/build.txt")
+	cmd += "scram b -j 16 2>&1 | tee %s "%  (os.environ["HOME"]+"/www/%s/"%(repo.split('/')[1]) + sha + "/build.txt")
+	cmd += "; EXIT= ${PIPESTATUS[0]};  exit $EXIT ; "
 	status = call( cmd ,shell=True)
 	if status >0 : 
 		print red +"ERROR: "+white + "unable to build"
@@ -128,7 +136,8 @@ def TryPullReq(sha, origin):
 	print cyan+"-> Test"+white
 	cmd = "cd %s/%s/src && %s &&" %(tmpdir,CMSSW,cmsenv)
 	cmd += "cd NeroProducer/Nero/test && "
-	cmd += "cmsRun testNero.py | tee %s "%(  os.environ["HOME"]+"/www/%s/"%(repo.split('/')[1]) + sha + "/run.txt")
+	cmd += "cmsRun testNero.py 2>&1 | tee %s "%(  os.environ["HOME"]+"/www/%s/"%(repo.split('/')[1]) + sha + "/run.txt")
+	cmd += "; EXIT= ${PIPESTATUS[0]};  exit $EXIT ; "
 	status = call( cmd , shell=True ) 
 	if status >0 : 
 		print red +"ERROR: "+white + "unable to run"
@@ -139,6 +148,7 @@ def TryPullReq(sha, origin):
 	cmd = "cd %s/%s/src && %s &&" %(tmpdir,CMSSW,cmsenv)
 	cmd += "cd NeroProducer/Nero/script &&"
 	cmd += "python testUnit.py -c -f ../test/NeroNtuples.root | tee %s "% ( os.environ["HOME"]+"/www/%s/"%(repo.split('/')[1]) + sha + "/core.txt" )
+	cmd += "; EXIT= ${PIPESTATUS[0]};  exit $EXIT ; "
 	status = call(cmd, shell=True)
 
 	if status >0 :
