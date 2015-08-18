@@ -95,7 +95,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 
         l.iso = chIso + nhIso + phoIso; 
         l.p4.SetPxPyPzE( el.px(),el.py(),el.pz(),el.energy());
-        l.tightId = int(isPassTight)*2  + int(inPassMedium);
+        l.tightId = int(isPassTight)*2  + int(isPassMedium);
         l.pfPt = 0.;
     
         l.chiso  = chIso;
