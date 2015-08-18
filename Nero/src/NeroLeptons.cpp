@@ -55,7 +55,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         l.pdgId = mu.charge()*13;
         l.iso = totiso;
         l.p4.SetPxPyPzE( mu.px(),mu.py(),mu.pz(),mu.energy());
-        l.tightId = int(mu.isTightMuon( * vtx_->GetPV() ));
+        l.tightId = int(mu.isTightMuon( * vtx_->GetPV() ))*2 + int(mu.isMediumMuon() );
         l.pfPt = mu.pfP4().pt();
 
         l.chiso  = chiso;
@@ -80,6 +80,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 
         bool isPassVeto = (*el_veto_id)[ref];
         bool isPassTight = (*el_tight_id)[ref];
+        bool isPassMedium = (*el_medium_id)[ref];
 
         if (not isPassVeto ) continue;
 
@@ -94,7 +95,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 
         l.iso = chIso + nhIso + phoIso; 
         l.p4.SetPxPyPzE( el.px(),el.py(),el.pz(),el.energy());
-        l.tightId = int(isPassTight);
+        l.tightId = int(isPassTight)*2  + int(inPassMedium);
         l.pfPt = 0.;
     
         l.chiso  = chIso;
