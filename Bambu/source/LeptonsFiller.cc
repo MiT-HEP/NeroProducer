@@ -14,11 +14,15 @@ ClassImp(mithep::nero::LeptonsFiller)
 void
 mithep::nero::LeptonsFiller::fill()
 {
+
   auto* electrons = getSource<mithep::ElectronCol>(electronsName_);
   auto* muons = getSource<mithep::MuonCol>(muonsName_);
 
-  auto* eleTightId = getSource<mithep::NFArrBool>(electronIdsName_);
-  auto* muTightId = getSource<mithep::NFArrBool>(muonIdsName_);
+  auto* eleAId = getSource<mithep::NFArrBool>(electronIdsAName_);
+  auto* muAId = getSource<mithep::NFArrBool>(muonIdsAName_);
+
+  auto* eleBId = getSource<mithep::NFArrBool>(electronIdsBName_);
+  auto* muBId = getSource<mithep::NFArrBool>(muonIdsBName_);
 
   auto* pfCands = getSource<mithep::PFCandidateCol>(pfCandsName_);
   auto* nopuPFCands = getSource<mithep::PFCandidateCol>(nopuPFCandsName_);
@@ -61,7 +65,7 @@ mithep::nero::LeptonsFiller::fill()
 
       out_.pdgId->push_back(11 * ele->Charge());
       out_.iso->push_back(chIso + nhIso + phoIso);
-      out_.tightId->push_back(eleTightId->At(iE));
+      out_.tightId->push_back(eleAId->At(iE)+2*eleBId->At(iE));
       out_.lepPfPt->push_back(0.);
       out_.chIso->push_back(chIso);
       out_.nhIso->push_back(nhIso);
@@ -83,7 +87,7 @@ mithep::nero::LeptonsFiller::fill()
 
       out_.pdgId->push_back(13 * mu->Charge());
       out_.iso->push_back(iso);
-      out_.tightId->push_back(muTightId->At(iM));
+      out_.tightId->push_back(muAId->At(iM)+2*muBId->At(iM));
       if (pf)
         out_.lepPfPt->push_back(pf->Pt());
       else
