@@ -17,16 +17,15 @@ def addTrigger(path):
     global sequence
     global triggerFiller
 
-    pathNoV = path.replace('_v*', '')
-    hltMod = mithep.HLTMod(pathNoV + 'Mod',
+    hltMod = mithep.HLTMod(path.replace('_v*', 'Mod'),
         AbortIfNotAccepted = False,
         AbortIfNoData = False
     )
     hltMod.AddTrigger(path)
 
     sequence = hltMod * sequence
-    triggerFiller.AddTriggerName(pathNoV)
-    triggerFiller.SetTriggerObjectsName(pathNoV, hltMod.GetTrigObjsName())
+    triggerFiller.AddTriggerName(path)
+    triggerFiller.SetTriggerObjectsName(path, hltMod.GetTrigObjsName())
 
 
 generator = mithep.GeneratorMod(
