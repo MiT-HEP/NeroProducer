@@ -126,7 +126,7 @@ def TryPullReq(sha, origin):
 	print cyan+"-> Build"+white
 	cmd = "cd %s/%s/src && %s &&" %(tmpdir,CMSSW,cmsenv)
 	cmd += "scram b -j 16 2>&1 | tee %s "%  (os.environ["HOME"]+"/www/%s/"%(repo.split('/')[1]) + sha + "/build.txt")
-	cmd += "; EXIT= ${PIPESTATUS[0]};  exit $EXIT ; "
+	cmd += "; EXIT=${PIPESTATUS[0]};  echo \"<-> EXIT STATUS is ${EXIT}\" ; exit $EXIT ; "
 	status = call( cmd ,shell=True)
 	if status >0 : 
 		print red +"ERROR: "+white + "unable to build"
@@ -137,7 +137,7 @@ def TryPullReq(sha, origin):
 	cmd = "cd %s/%s/src && %s &&" %(tmpdir,CMSSW,cmsenv)
 	cmd += "cd NeroProducer/Nero/test && "
 	cmd += "cmsRun testNero.py 2>&1 | tee %s "%(  os.environ["HOME"]+"/www/%s/"%(repo.split('/')[1]) + sha + "/run.txt")
-	cmd += "; EXIT= ${PIPESTATUS[0]};  exit $EXIT ; "
+	cmd += "; EXIT=${PIPESTATUS[0]};  echo \"<-> EXIT STATUS is ${EXIT}\" ; exit $EXIT ; "
 	status = call( cmd , shell=True ) 
 	if status >0 : 
 		print red +"ERROR: "+white + "unable to run"
@@ -148,7 +148,7 @@ def TryPullReq(sha, origin):
 	cmd = "cd %s/%s/src && %s &&" %(tmpdir,CMSSW,cmsenv)
 	cmd += "cd NeroProducer/Nero/script &&"
 	cmd += "python testUnit.py -c -f ../test/NeroNtuples.root | tee %s "% ( os.environ["HOME"]+"/www/%s/"%(repo.split('/')[1]) + sha + "/core.txt" )
-	cmd += "; EXIT= ${PIPESTATUS[0]};  exit $EXIT ; "
+	cmd += "; EXIT=${PIPESTATUS[0]};  echo \"<-> EXIT STATUS is ${EXIT}\" ; exit $EXIT ; "
 	status = call(cmd, shell=True)
 
 	if status >0 :
