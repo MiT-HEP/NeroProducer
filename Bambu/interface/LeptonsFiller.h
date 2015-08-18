@@ -19,8 +19,10 @@ namespace mithep {
 
       void SetElectronsName(char const* _name) { electronsName_ = _name; }
       void SetMuonsName(char const* _name) { muonsName_ = _name; }
-      void SetElectronIdsName(char const* _name) { electronIdsName_ = _name; }
-      void SetMuonIdsName(char const* _name) { muonIdsName_ = _name; }
+      void SetElectronIdsAName(char const* _name) { electronIdsAName_ = _name; }
+      void SetMuonIdsAName(char const* _name) { muonIdsAName_ = _name; }
+      void SetElectronIdsBName(char const* _name) { electronIdsBName_ = _name; }
+      void SetMuonIdsBName(char const* _name) { muonIdsBName_ = _name; }
       void SetVerticesName(char const* _name) { verticesName_ = _name; }
       void SetPFCandsName(char const* _name) { pfCandsName_ = _name; }
       void SetNoPUPFCandsName(char const* _name) { nopuPFCandsName_ = _name; }
@@ -31,8 +33,10 @@ namespace mithep {
 
       TString electronsName_ = "Electrons";
       TString muonsName_ = "Muons";
-      TString electronIdsName_ = "ElectronIds";
-      TString muonIdsName_ = "MuonIds";
+      TString electronIdsAName_ = "ElectronIdsA";
+      TString muonIdsAName_ = "MuonIdsA";
+      TString electronIdsBName_ = "ElectronIdsB";
+      TString muonIdsBName_ = "MuonIdsB";
       TString verticesName_ = "PrimaryVertexes";
       TString pfCandsName_ = "PFCandidates";
       TString nopuPFCandsName_ = "PFNoPileup";

@@ -82,13 +82,21 @@ for jec in jecSources:
 # Will use independent JetIDMVA that can be used by Nero too
 jetId = jetIdMod.clone(
     MVATrainingSet = mithep.JetIDMVA.nMVATypes,
-    PtMin = 20.
+    PtMin = 15.
 )
 
 pfTauId = pfTauIdMod.clone('PFTauId')
 pfTauId.AddCutDiscriminator(mithep.PFTau.kDiscriminationByRawCombinedIsolationDBSumPtCorr3Hits, 5., False)
 
 electronLooseId = electronIdMod.clone('ElectronLooseId')
+
+electronMediumId = electronIdMod.clone('ElectronMediumId',
+    IsFilterMode = False,
+    InputName = electronLooseId.GetOutputName(),
+    OutputName = 'MediumElectronId',
+    IdType = mithep.ElectronTools.kPhys14Loose,
+    IsoType = mithep.ElectronTools.kPhys14LooseIso
+)
 
 electronTightId = electronIdMod.clone('ElectronTightId',
     IsFilterMode = False,
@@ -100,12 +108,20 @@ electronTightId = electronIdMod.clone('ElectronTightId',
 
 muonLooseId = muonIdMod.clone('MuonLooseId')
 
+muonMediumId = muonIdMod.clone('MuonMediumId',
+    IsFilterMode = False,
+    InputName = muonLooseId.GetOutputName(),
+    OutputName = 'MediumMuonId',
+    IdType = mithep.MuonTools.kMuonPOG2012CutBasedIdTight,
+    IsoType = mithep.MuonTools.kPFIsoBetaPUCorrected
+)
+
 muonTightId = muonIdMod.clone('MuonTightId',
     IsFilterMode = False,
     InputName = muonLooseId.GetOutputName(),
     OutputName = 'TightMuonId',
     IdType = mithep.MuonTools.kMuonPOG2012CutBasedIdTight,
-    IsoType = mithep.MuonTools.kPFIsoBetaPUCorrected
+    IsoType = mithep.MuonTools.kPFIsoBetaPUCorrectedTight
 )
 
 muonTightIdMask = mithep.MaskCollectionMod('TightMuons',
@@ -180,8 +196,10 @@ fillers.append(mithep.nero.TausFiller(
 fillers.append(mithep.nero.LeptonsFiller(
     ElectronsName = electronLooseId.GetOutputName(),
     MuonsName = muonLooseId.GetOutputName(),
-    ElectronIdsName = electronTightId.GetOutputName(),
-    MuonIdsName = muonTightId.GetOutputName(),
+    ElectronIdsAName = electronMediumId.GetOutputName(),
+    MuonIdsAName = muonMediumId.GetOutputName(),
+    ElectronIdsBName = electronTightId.GetOutputName(),
+    MuonIdsBName = muonTightId.GetOutputName(),
     VerticesName = goodPVFilterMod.GetOutputName(),
     PFCandsName = mithep.Names.gkPFCandidatesBrn,
     NoPUPFCandsName = separatePileUpMod.GetPFNoPileUpName(),
@@ -241,6 +259,8 @@ sequence *= separatePileUpMod * \
     electronLooseId * \
     muonLooseId * \
     photonLooseId * \
+    electronMediumId * \
+    muonMediumId * \
     electronTightId * \
     muonTightId * \
     muonTightIdMask * \
