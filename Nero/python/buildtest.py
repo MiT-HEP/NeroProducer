@@ -205,13 +205,20 @@ if __name__ == "__main__":
 		## check 'build' 'run' and 'core'
 		available={}
 		for key in GetStatus(dict[id]['sha']):
-			available[key['description'] ] = key['state']
+			if key['state'] == 'success' :  key['state'] = green + key['state'] + white
+			elif key['state'] == 'pending' :  key['state'] = yellow + key['state'] + white
+			else : key['state'] = red+ key['state'] + white
+
+			# key are ordered
+			if key['description'] not in available:
+				available[key['description'] ] = key['state']
 
 		if 'run' in available and 'build' in available and 'core' in available : ## 
 			print "PR already checked:"
-			print "\t* build"+ available['build']
-			print "\t* run"+ available['run']
-			print "\t* core"+ available['core']
+			print "\t* build: " + available['build'] 
+			print "\t* run: "+ available['run'] 
+			print "\t* core: "+ available['core'] 
+			print "\t* size: "+ available['size'] 
 			continue
 
 		if opts.yes<1:
