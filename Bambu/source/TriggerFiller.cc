@@ -33,9 +33,18 @@ mithep::nero::TriggerFiller::begin()
   
   auto* hltTable = getSource<mithep::TriggerTable>(TString::Format("%sFwk", Names::gkHltTableBrn));
   for (auto trigger : triggerNames_) {
-    if (trigger.EndsWith("*"))
+    bool isWildcard(false);
+    if (trigger.EndsWith("*")) {
       trigger.ReplaceAll("*", "");
-    auto* triggerName = hltTable->GetWildcard(trigger);
+      isWildcard = true;
+    }
+
+    TriggerName const* triggerName(0);
+    if (isWildcard)
+      triggerName = hltTable->GetWildcard(trigger);
+    else
+      triggerName = hltTable->Get(trigger);
+
     if (triggerName)
       triggerIds_.push_back(triggerName->Id());
     else
