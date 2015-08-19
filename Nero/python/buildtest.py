@@ -218,7 +218,7 @@ if __name__ == "__main__":
 			print "\t* build: " + available['build'] 
 			print "\t* run: "+ available['run'] 
 			print "\t* core: "+ available['core'] 
-			print "\t* size: "+ available['size'] 
+			if 'size' in available: print "\t* size: "+ available['size'] 
 			continue
 
 		if opts.yes<1:
