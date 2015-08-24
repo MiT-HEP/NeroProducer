@@ -1,4 +1,5 @@
 #include "NeroProducer/Core/interface/BareMet.hpp"
+#include "NeroProducer/Core/interface/BareFunctions.hpp"
 
 
 BareMet::BareMet() : BareP4() {
@@ -106,6 +107,24 @@ void BareMet::setBranchAddresses(TTree *t){
         t->SetBranchAddress("caloMet_Phi", &caloMet_Phi);
         t->SetBranchAddress("caloMet_SumEt", &caloMet_SumEt);
     }
+}
+
+void BareMet::compress(){
+
+    BareP4::compress();
+
+	for(int i=0;i<genP4->GetEntries();++i)
+		BareFunctions::Compress( * (TLorentzVector*) genP4->At(i)  );
+
+    if ( IsExtend() ) 
+    {
+        BareFunctions::Compress(*metNoMu );
+        BareFunctions::Compress(*pfMet_e3p0 );
+        BareFunctions::Compress(*metChargedHadron );
+        BareFunctions::Compress(*metNeutralHadron );
+        BareFunctions::Compress(*metNeutralEM );
+    }
+
 }
 
 // Local Variables:

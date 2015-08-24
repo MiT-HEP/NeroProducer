@@ -1,4 +1,5 @@
 #include "NeroProducer/Core/interface/BareMonteCarlo.hpp"
+#include "NeroProducer/Core/interface/BareFunctions.hpp"
 
 BareMonteCarlo::BareMonteCarlo() : BareP4(){
     p4 = NULL;
@@ -67,6 +68,13 @@ void BareMonteCarlo::setBranchAddresses(TTree *t){
     t->SetBranchAddress("pdfId2"	,&pdf2Id	);
     t->SetBranchAddress("pdfScalePdf"	,&scalePdf	);
 }
+
+void BareMonteCarlo::compress(){
+    BareP4::compress();
+	for(int i=0;i<jetP4->GetEntries();++i)
+		BareFunctions::Compress( * (TLorentzVector*) jetP4->At(i)  );
+}
+
 // Local Variables:
 // mode:c++
 // indent-tabs-mode:nil

@@ -23,6 +23,8 @@ class BareP4 : virtual public BareCollection
         virtual void clear();
         void defineBranches(TTree *t,string prefix="");
         void setBranchAddresses(TTree*t,string prefix ="");
+
+        virtual void compress();
 };
 
 #endif
