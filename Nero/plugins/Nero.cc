@@ -176,6 +176,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     mc -> runinfo_token = consumes<GenRunInfoProduct>(iConfig.getParameter<edm::InputTag>("genruninfo") );
     mc -> mMinGenParticlePt = iConfig.getParameter<double>("minGenParticlePt");
     mc -> mMinGenJetPt = iConfig.getParameter<double>("minGenJetPt");
+    mc -> mParticleGun = iConfig.getUntrackedParameter<bool>("particleGun",false);
 
     obj.push_back(mc);
     runObj.push_back(mc);

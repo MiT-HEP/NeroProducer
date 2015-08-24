@@ -100,6 +100,7 @@ nero = cms.EDAnalyzer("Nero",
 
     minGenParticlePt = cms.double(5.),
     minGenJetPt = cms.double(20.),
+    particleGun = cms.untracked.bool(False),
                       
     minPhoPt  = cms.double (15.),
     minPhoEta = cms.double (2.5),

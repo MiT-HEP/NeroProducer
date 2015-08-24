@@ -13,6 +13,7 @@ options.register('isData',
 options.register('isGrid', False, VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Set it to true if running on Grid")
 options.register('nerohead', "XXX", VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.string,"Set to the head of the repository. use check_output 'git rev-parse HEAD' in the crab py file. active only if isGrid.")
 options.register("nerotag", "YYY", VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.string,"Set to the tag of the repository. use check_output 'git rev-parse HEAD' in the crab py file. active only if isGrid.")
+options.register('isParticleGun', False, VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Set it to true if MonteCarlo is ParticleGun")
 
 options.parseArguments()
 isData = options.isData
@@ -149,6 +150,9 @@ process.load('NeroProducer.Nero.Nero_cfi')
 if options.isGrid:
 	process.nero.head=options.nerohead ##'git rev-parse HEAD'
 	process.nero.tag=options.nerotag ## git describe --tags
+
+if options.isParticleGun:
+	process.nero.particleGun = cms.untracked.bool(True)
 
 #------------------------------------------------------
 process.p = cms.Path(

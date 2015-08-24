@@ -38,20 +38,43 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
     iEvent.getByToken(pu_token, pu_handle);
     iEvent.getByToken(jet_token, jet_handle);
 
+    if ( not info_handle.isValid() ) cout<<"[NeroMonteCarlo]::[analyze]::[ERROR] info_handle is not valid"<<endl;
+    if ( not packed_handle.isValid() ) cout<<"[NeroMonteCarlo]::[analyze]::[ERROR] packed_handle is not valid"<<endl;
+    if ( not pruned_handle.isValid() ) cout<<"[NeroMonteCarlo]::[analyze]::[ERROR] pruned_handle is not valid"<<endl;
+    if ( not pu_handle.isValid() ) cout<<"[NeroMonteCarlo]::[analyze]::[ERROR] pu_handle is not valid"<<endl;
+    if ( not jet_handle.isValid() ) cout<<"[NeroMonteCarlo]::[analyze]::[ERROR] jet_handle is not valid"<<endl;
+
     if(VERBOSE){ sw.Stop() ; cout<<"[NeroMonteCarlo]::[analyze] getToken took "<<sw.CpuTime()<<" Cpu and "<<sw.RealTime()<<" RealTime"<<endl; sw.Reset(); sw.Start();}
     // INFO
+    if(VERBOSE>1) cout<<"[NeroMonteCarlo]::[analyze]::[DEBUG] mcWeight="<<endl;
     mcWeight = info_handle -> weight();
+    if(VERBOSE>1) cout<<"                                     mcWeight="<<mcWeight<<endl;
     //weights() 
-    qScale   = info_handle -> qScale();
-    alphaQED = info_handle -> alphaQED();
-    alphaQCD = info_handle -> alphaQCD();
-    x1       = info_handle -> pdf() -> x.first;
-    x2       = info_handle -> pdf() -> x.second;
-    pdf1Id   = info_handle -> pdf() -> id.first;
-    pdf2Id   = info_handle -> pdf() -> id.second;
-    scalePdf = info_handle -> pdf() -> scalePDF;
+    if(VERBOSE>1) cout<<"[NeroMonteCarlo]::[analyze]::[DEBUG] PDF="<<endl;
+    if ( mParticleGun ) {
+        qScale   = -999 ;
+        alphaQED = -999 ;
+        alphaQCD = -999 ;
+        x1       = -999 ;
+        x2       = -999 ;
+        pdf1Id   = -999 ;
+        pdf2Id   = -999 ;
+        scalePdf = -999 ;
+    }
+    else {
+        qScale   = info_handle -> qScale();
+        alphaQED = info_handle -> alphaQED();
+        alphaQCD = info_handle -> alphaQCD();
+        x1       = info_handle -> pdf() -> x.first;
+        x2       = info_handle -> pdf() -> x.second;
+        pdf1Id   = info_handle -> pdf() -> id.first;
+        pdf2Id   = info_handle -> pdf() -> id.second;
+        scalePdf = info_handle -> pdf() -> scalePDF;
+    }
+    if(VERBOSE>1) cout<<"                                     PDF="<<qScale<<" "<< alphaQED<<endl;
 
     //PU
+    if(VERBOSE>1){ cout<<endl<<"[NeroMonteCarlo]::[analyze] PU LOOP"<<endl;}
     puTrueInt = 0;
     for(const auto & pu : *pu_handle)
     {
