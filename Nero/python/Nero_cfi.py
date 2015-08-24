@@ -20,6 +20,7 @@ nero = cms.EDAnalyzer("Nero",
     mets = cms.InputTag("slimmedMETs"),
     pfCands = cms.InputTag("packedPFCandidates"),
 
+
     # gen
     pileup = cms.InputTag("addPileupInfo"),
     generator = cms.InputTag("generator"),
@@ -67,6 +68,9 @@ nero = cms.EDAnalyzer("Nero",
     objects = cms.InputTag('selectedPatTrigger'),
     ## CUSTOM CONFIGURATION
     onlyMc = cms.bool (False),  ## not completely supported yet
+
+    #evt
+    extendEvent = cms.untracked.bool(False),
 
     extendMet = cms.bool(True),
                       

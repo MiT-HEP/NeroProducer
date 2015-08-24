@@ -153,6 +153,7 @@ if options.isGrid:
 
 if options.isParticleGun:
 	process.nero.particleGun = cms.untracked.bool(True)
+	process.nero.extendEvent = cms.untracked.bool(True)
 
 #------------------------------------------------------
 process.p = cms.Path(

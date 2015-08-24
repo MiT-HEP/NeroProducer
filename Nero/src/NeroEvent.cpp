@@ -21,6 +21,18 @@ int NeroEvent::analyze(const edm::Event& iEvent){
     if ( not rho_handle.isValid() ) cout <<"[NeroEvent]::[analyze]::[ERROR] rho_handle is not valid"<<endl;
 
     rho 	   =  *rho_handle;
+
+    if (IsExtend() ) {
+
+        iEvent.getByToken( originalRun_token , originalRun_handle); 
+        iEvent.getByToken( originalLumi_token , originalLumi_handle); 
+        iEvent.getByToken( originalEvent_token , originalEvent_handle); 
+
+        // -- these are under the 'isValid' condition, so program will not crash if not present
+        if( originalRun_handle.isValid() ) originalRun = *originalRun_handle;
+        if( originalLumi_handle.isValid()) originalLumi = *originalLumi_handle;
+        if( originalEvent_handle.isValid()) originalEvent = *originalEvent_handle;
+    }
     return 0;
 }
 
