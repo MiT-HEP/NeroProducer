@@ -156,6 +156,17 @@ def TryPullReq(sha, origin):
 		print "\t'"+cmd+"'"
 		return 6
 
+	print cyan+"-> Producing NeroSize" + white
+	cmd = "cd %s/%s/src && %s &&" %(tmpdir,CMSSW,cmsenv)  
+	cmd += "cd NeroProducer/Nero/ && "
+	cmd += "python script/neroSize.py -f test/NeroNtuples.root -b -o size &&"
+	cmd += "cp -v size.* %s/" %( os.environ["HOME"]+"/www/%s/"%(repo.split('/')[1]) + sha ) 
+	status = call( cmd, shell=True)
+	if status >0 :
+		print red + "ERROR: "+ white + " unable to produce NeroSize"
+		print "\t'"+cmd+"'"
+		return 7
+
 	print cyan+"-> Removing CMSSW"+white
 	cmd = "cd %s &&"% tmpdir	
 	cmd += "rm -rf %s"%CMSSW
@@ -168,12 +179,14 @@ def TryPullReq(sha, origin):
 
 def GetStatus(sha):
 	mystring="/statuses/"+sha 
+	# GET /repos/:owner/:repo/statuses/:ref
 	# or /repos/:owner/:repo/commits/:ref/statuses
+	#Statuses are returned in reverse chronological order. The first status in the list will be the latest one.
 	print "get:"+url+mystring
 	r = requests.get(url+mystring)
 	return r.json()
 
-def  SetStatus(sha,state="success",description="build"):
+def  SetStatus(sha,state="success",description="build",ext='.txt'):
 	print pink+"<-> Setting Status:"+white,description,state, " to ", sha
 	for key in GetStatus(sha):
 		if key['context'] == description and key['state'] == state: 
@@ -183,10 +196,11 @@ def  SetStatus(sha,state="success",description="build"):
 			return
 
 	payload= {"state" :state, ## pending failure error
-		"target_url":"https://%(USER)s.web.cern.ch/%(USER)s/%(REPONAME)s/%(SHA)s/%(CONTX)s.txt"%{'USER':os.environ['USER'],
+		"target_url":"https://%(USER)s.web.cern.ch/%(USER)s/%(REPONAME)s/%(SHA)s/%(CONTX)s.%(EXT)s"%{'USER':os.environ['USER'],
 					'SHA': sha,
 					'CONTX': description,
-					'REPONAME': repo.split('/')[1]
+					'REPONAME': repo.split('/')[1],
+					'EXT':ext
 					},
 		 "description":description,
 		 "context":description
@@ -253,6 +267,12 @@ if __name__ == "__main__":
 			continue
 		else:
 			SetStatus(dict[id]['sha'],'success','core')
+
+		if status == 7: #testcore
+			SetStatus(dict[id]['sha'],'error','size','png')
+			continue
+		else:
+			SetStatus(dict[id]['sha'],'success','size','png')
 
 		if status == 0:
 			print id+":", dict[id]["title"] + ":"

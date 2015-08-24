@@ -264,6 +264,12 @@ Nero::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
         }
     }
 
+    // compress double precision to float precision
+    for(auto o : obj)
+    {
+        o->compress();
+    }
+
     if (VERBOSE>1) cout<<"------- fill event --------"<<endl;
     tree_->Fill();
     if (VERBOSE>1) cout<<"------- end event (success) --------"<<endl;

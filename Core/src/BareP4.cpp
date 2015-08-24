@@ -1,4 +1,5 @@
 #include "NeroProducer/Core/interface/BareP4.hpp"
+#include "NeroProducer/Core/interface/BareFunctions.hpp"
 
 void BareP4::clear(){ 
 
@@ -27,4 +28,9 @@ void BareP4::setBranchAddresses(TTree*t,string prefix)
     	match = new vector<int>;
     	t->SetBranchAddress((prefix+"Match").c_str()	,&match);
     }
+}
+
+void BareP4::compress(){
+	for(int i=0;i<p4->GetEntries();++i)
+		BareFunctions::Compress( * (TLorentzVector*) p4->At(i)  );
 }

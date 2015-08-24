@@ -1,4 +1,5 @@
 #include "NeroProducer/Core/interface/BareFatJets.hpp"
+#include "NeroProducer/Core/interface/BareFunctions.hpp"
 
 
 BareFatJets::BareFatJets(): BareP4(){
@@ -117,6 +118,11 @@ void BareFatJets::setBranchAddresses(TTree *t){
 
     hbb =  new vector<float>;
     t->SetBranchAddress("fatjetHbb",&hbb);
+}
+void BareFatJets::compress(){
+    BareP4::compress();
+	for(int i=0;i<ak8_subjet->GetEntries();++i)
+		BareFunctions::Compress( * (TLorentzVector*) ak8_subjet->At(i)  );
 }
 // Local Variables:
 // mode:c++
