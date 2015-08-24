@@ -176,6 +176,8 @@ if __name__ == '__main__':
     submit(config)
     
     ###################################################
+    ########              50ns                 ########
+    ###################################################
     setdata("True")
     ###################################################
 
@@ -183,20 +185,40 @@ if __name__ == '__main__':
     config.Data.inputDataset = '/MET/Run2015B-17Jul2015-v1/MINIAOD'
     submit(config)
 
+    config.General.requestName = 'MET-50ns-PromptReco'
+    config.Data.inputDataset = '/MET/Run2015B-PromptReco-v1/MINIAOD'
+    submit(config)
+
     config.General.requestName = 'Tau-50ns'
     config.Data.inputDataset = '/Tau/Run2015B-17Jul2015-v1/MINIAOD'
+    submit(config)
+
+    config.General.requestName = 'Tau-50ns-PromptReco'
+    config.Data.inputDataset = '/Tau/Run2015B-PromptReco-v1/MINIAOD'
     submit(config)
 
     config.General.requestName = 'SingleMuon-50ns'
     config.Data.inputDataset = '/SingleMuon/Run2015B-17Jul2015-v1/MINIAOD'
     submit(config)
 
+    config.General.requestName = 'SingleMuon-50ns-PromptReco'
+    config.Data.inputDataset = '/SingleMuon/Run2015B-PromptReco-v1/MINIAOD'
+    submit(config)
+
     config.General.requestName = 'SingleElectron-50ns'
     config.Data.inputDataset = '/SingleElectron/Run2015B-17Jul2015-v1/MINIAOD'
     submit(config)
 
+    config.General.requestName = 'SingleElectron-50ns-PrompReco'
+    config.Data.inputDataset = '/SingleElectron/Run2015B-PromptReco-v1/MINIAOD'
+    submit(config)
+
     config.General.requestName = 'SinglePhoton-50ns'
     config.Data.inputDataset = '/SinglePhoton/Run2015B-17Jul2015-v1/MINIAOD'
+    submit(config)
+
+    config.General.requestName = 'SinglePhoton-50ns-PromptReco'
+    config.Data.inputDataset = '/SinglePhoton/Run2015B-PromptReco-v1/MINIAOD'
     submit(config)
 
     ###################################################
