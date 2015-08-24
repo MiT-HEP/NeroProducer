@@ -5,6 +5,7 @@ int NeroPF::analyze(const edm::Event& iEvent)
 {
 	
     	iEvent.getByToken( token , handle);
+        if ( not handle.isValid() ) cout<<"[NeroPF]::[analyze]::[ERROR] handle is not valid"<<endl;
 	return 0;
 }
 

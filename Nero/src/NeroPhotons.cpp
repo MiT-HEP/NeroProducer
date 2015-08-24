@@ -33,6 +33,14 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
     iEvent.getByToken(iso_nh_token, iso_nh);
     iEvent.getByToken(iso_pho_token, iso_pho);
 
+    if ( not handle.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] handle is not valid"<<endl;
+    if ( not loose_id.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] loose_id is not valid"<<endl;
+    if ( not medium_id.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] medium_id is not valid"<<endl;
+    if ( not tight_id.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] tight_id is not valid"<<endl;
+    if ( not iso_ch.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] iso_ch is not valid"<<endl;
+    if ( not iso_nh.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] iso_nh is not valid"<<endl;
+    if ( not iso_pho.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] iso_pho is not valid"<<endl;
+
     int iPho = -1;	
     for (auto &pho : *handle)
     {

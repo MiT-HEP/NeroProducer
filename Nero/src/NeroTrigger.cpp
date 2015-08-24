@@ -28,6 +28,8 @@ int NeroTrigger::analyze(const edm::Event& iEvent){
 
     iEvent.getByToken(token,handle);
     iEvent.getByToken(prescale_token,prescale_handle);
+    if ( not handle.isValid() ) cout<<"[NeroTrigger]::[analyze]::[ERROR] handle is not valid"<<endl;
+    if ( not prescale_handle.isValid() ) cout<<"[NeroTrigger]::[analyze]::[ERROR] prescale_handle is not valid"<<endl;
 
     const pat::helper::TriggerMatchHelper matchHelper; 
 
@@ -70,6 +72,8 @@ int NeroTrigger::analyze(const edm::Event& iEvent){
 
 
     iEvent.getByToken(object_token,object_handle);
+    if ( not object_handle.isValid() ) cout<<"[NeroTrigger]::[analyze]::[ERROR] object_handle is not valid"<<endl;
+
     for (pat::TriggerObjectStandAlone obj : *object_handle) { 
         obj.unpackPathNames(names);
 

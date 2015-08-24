@@ -18,6 +18,7 @@ int NeroEvent::analyze(const edm::Event& iEvent){
 
     if ( mOnlyMc  ) return 0;
     iEvent.getByToken(rho_token,rho_handle);
+    if ( not rho_handle.isValid() ) cout <<"[NeroEvent]::[analyze]::[ERROR] rho_handle is not valid"<<endl;
 
     rho 	   =  *rho_handle;
     return 0;

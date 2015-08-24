@@ -9,6 +9,7 @@ NeroMonteCarlo::NeroMonteCarlo() :
         BareMonteCarlo(),
         NeroRun()
 {
+    mParticleGun = false;
     mMinGenParticlePt = 5.;
     mMinGenJetPt = 20.;
     isRealData = 0;
@@ -140,7 +141,8 @@ int NeroMonteCarlo::crossSection(edm::Run const & iRun, TH1F* h)
 
     //iRun.getByToken( runinfo_token, runinfo_handle);
     iRun.getByLabel( "generator", runinfo_handle);
-    
+
+    if ( not runinfo_handle.isValid() ) cout<<"[NeroMonteCarlo]::[crossSection]::[ERROR] runinfo_handle is not valid"<<endl;
     if (not runinfo_handle . isValid() ) return 0;
 
     cout<<"in begin Run  intXS/extXSLO/extXSNLO "<<runinfo_handle->internalXSec().value()<<"/"<<runinfo_handle->externalXSecLO().value()<<"/"<<runinfo_handle->externalXSecNLO().value()<<endl;	
