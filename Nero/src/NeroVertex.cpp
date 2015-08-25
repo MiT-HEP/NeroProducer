@@ -17,6 +17,8 @@ void NeroVertex::clear(){
 int NeroVertex::analyze(const edm::Event& iEvent){
     if ( mOnlyMc  ) return 0;
     iEvent.getByToken(token, handle);
+    if ( not handle.isValid() ) cout<<"[NeroVertex]::[analyze]::[ERROR] handle is not valid"<<endl;
+
     if (handle->empty()) return 1; // skip the event if no PV found
 
     using namespace std;

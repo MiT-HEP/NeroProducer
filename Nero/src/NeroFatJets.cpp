@@ -21,6 +21,9 @@ int NeroFatJets::analyze(const edm::Event& iEvent){
     edm::Handle<reco::JetTagCollection> pfBoostedDoubleSecondaryVertex;  //HBB 74X
     iEvent.getByLabel("pfBoostedDoubleSecondaryVertexAK8BJetTags",pfBoostedDoubleSecondaryVertex); //HBB 74X
 
+    if ( not handle.isValid() ) cout<<"[NeroFatJets]::[analyze]::[ERROR] handle is not valid"<<endl;
+    if ( not pfBoostedDoubleSecondaryVertex.isValid() )  cout<<"[NeroFatJets]::[analyze]::[ERROR] pfBoosted.. handle is not valid"<<endl;
+
     int ijetRef = -1;
     int nsubjet = 0;
     for (const pat::Jet& j : *handle)

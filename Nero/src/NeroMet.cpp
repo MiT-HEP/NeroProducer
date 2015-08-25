@@ -18,6 +18,7 @@ int NeroMet::analyze(const edm::Event& iEvent){
 
     // maybe handle should be taken before
     iEvent.getByToken(token, handle);
+    if ( not handle.isValid() ) cout<<"[NeroMet]::[analyze]::[ERROR] handle is not valid"<<endl;
     const pat::MET &met = handle->front();
 
     caloMet_Pt = met.caloMETPt();

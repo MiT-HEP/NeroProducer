@@ -20,6 +20,8 @@ int NeroTaus::analyze(const edm::Event & iEvent)
     if ( mOnlyMc  ) return 0;
 
     iEvent.getByToken(token, handle);
+    if ( not handle.isValid() ) cout<<"[NeroTaus]::[analyze]::[ERROR] handle is not valid"<<endl;
+
     for (const pat::Tau &tau : *handle) {
 
         if (tau.pt() < 18 ) continue;	

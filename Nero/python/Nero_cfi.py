@@ -20,6 +20,7 @@ nero = cms.EDAnalyzer("Nero",
     mets = cms.InputTag("slimmedMETs"),
     pfCands = cms.InputTag("packedPFCandidates"),
 
+
     # gen
     pileup = cms.InputTag("addPileupInfo"),
     generator = cms.InputTag("generator"),
@@ -68,6 +69,9 @@ nero = cms.EDAnalyzer("Nero",
     ## CUSTOM CONFIGURATION
     onlyMc = cms.bool (False),  ## not completely supported yet
 
+    #evt
+    extendEvent = cms.untracked.bool(False),
+
     extendMet = cms.bool(True),
                       
     minJetPt  = cms.double (20.),
@@ -100,6 +104,7 @@ nero = cms.EDAnalyzer("Nero",
 
     minGenParticlePt = cms.double(5.),
     minGenJetPt = cms.double(20.),
+    particleGun = cms.untracked.bool(False),
                       
     minPhoPt  = cms.double (15.),
     minPhoEta = cms.double (2.5),

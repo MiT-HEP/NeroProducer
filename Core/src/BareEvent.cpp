@@ -11,6 +11,9 @@ void BareEvent::clear()
     lumiNum = -1;
     eventNum = 0;
     rho = -999;
+    originalRun = -999;
+    originalLumi = -999;
+    originalEvent = -999;
 
 }
 
@@ -21,6 +24,13 @@ void BareEvent::defineBranches(TTree *t){
     t->Branch("lumiNum"     ,&lumiNum      ,"lumiNum/I");
     t->Branch("eventNum"    ,&eventNum     ,"eventNum/l");
     t->Branch("rho"    ,&rho     ,"rho/F");
+    if ( IsExtend() ) 
+    {
+        t->Branch("originalRun"      ,&originalRun       ,"originalRun/I");
+        t->Branch("originalLumi"      ,&originalLumi       ,"originalLumi/I");
+        t->Branch("originalEvent"      ,&originalEvent       ,"originalEvent/I");
+    
+    }
 }
 
 void BareEvent::setBranchAddresses(TTree *t){
@@ -30,6 +40,12 @@ void BareEvent::setBranchAddresses(TTree *t){
     t->SetBranchAddress("lumiNum"     ,&lumiNum     );
     t->SetBranchAddress("eventNum"    ,&eventNum    );
     t->SetBranchAddress("rho"    	,&rho         );
+    if (IsExtend() )
+    {
+        t->SetBranchAddress("originalRun"      ,&originalRun      );
+        t->SetBranchAddress("originalLumi"      ,&originalLumi      );
+        t->SetBranchAddress("originalEvent"      ,&originalEvent      );
+    }
 }
 
 // Local Variables:

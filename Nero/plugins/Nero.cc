@@ -58,6 +58,14 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     NeroEvent *evt = new NeroEvent();
     evt -> mOnlyMc = onlyMc;
     evt -> rho_token = consumes<double>(iConfig.getParameter<edm::InputTag>("rho"));
+    evt -> SetExtend ( iConfig.getUntrackedParameter<bool>("extendEvent",false) );
+
+    if ( evt -> IsExtend() )
+        {
+        evt -> originalRun_token   = consumes<unsigned int>(edm::InputTag("InfoProducer","originalRun")   ); 
+        evt -> originalLumi_token  = consumes<unsigned int>(edm::InputTag("InfoProducer","originalLumi")  ); 
+        evt -> originalEvent_token = consumes<unsigned int>(edm::InputTag("InfoProducer","originalEvent") ); 
+        }
     obj.push_back(evt);
 
     // -- Before Leptons (mu uses Vtx)
@@ -176,6 +184,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     mc -> runinfo_token = consumes<GenRunInfoProduct>(iConfig.getParameter<edm::InputTag>("genruninfo") );
     mc -> mMinGenParticlePt = iConfig.getParameter<double>("minGenParticlePt");
     mc -> mMinGenJetPt = iConfig.getParameter<double>("minGenJetPt");
+    mc -> mParticleGun = iConfig.getUntrackedParameter<bool>("particleGun",false);
 
     obj.push_back(mc);
     runObj.push_back(mc);
