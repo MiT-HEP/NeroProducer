@@ -235,6 +235,13 @@ if __name__ == "__main__":
 			if 'size' in available: print "\t* size: "+ available['size'] 
 			continue
 
+		## if failed to build, continue
+		if 'build' in available and ('success' not in available['build'] or 'pending' not in available['build']): continue
+		## if failed to run, continue
+		if 'run' in available and 'success' not in available['run']: continue
+		## if failed to core, continue
+		if 'core' in available and 'success' not in available['core']: continue
+
 		if opts.yes<1:
 			ans=raw_input("Do you want to test Pull Req. " +id+": "+ dict[id]['title'] + "? [y/n]" )
 			if ans.lower() != "y"  and ans.lower() != "yes" :  continue;
