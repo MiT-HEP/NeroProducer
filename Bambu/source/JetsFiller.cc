@@ -3,14 +3,22 @@
 #include "MitAna/DataTree/interface/JetCol.h"
 #include "MitAna/DataTree/interface/PFJet.h"
 
+#include "TDirectory.h"
+#include "TROOT.h"
+
 ClassImp(mithep::nero::JetsFiller)
 
 void
 mithep::nero::JetsFiller::initialize()
 {
   if (!jetId_ && jetIdMVATrainingSet_ != mithep::JetIDMVA::nMVATypes) {
+    auto* cwd = gDirectory;
+
+    gROOT->cd();
     jetId_ = new JetIDMVA();
     jetId_->Initialize(JetIDMVA::CutType(jetIdCutWP_), JetIDMVA::MVAType(jetIdMVATrainingSet_), jetIdMVAWeightsFile_, jetIdCutsFile_);
+
+    cwd->cd();
 
     ownJetId_ = true;
   }
