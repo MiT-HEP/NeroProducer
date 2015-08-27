@@ -186,7 +186,7 @@ def GetStatus(sha):
 	r = requests.get(url+mystring)
 	return r.json()
 
-def  SetStatus(sha,state="success",description="build",ext='.txt'):
+def  SetStatus(sha,state="success",description="build",ext='txt'):
 	print pink+"<-> Setting Status:"+white,description,state, " to ", sha
 	for key in GetStatus(sha):
 		if key['context'] == description and key['state'] == state: 
