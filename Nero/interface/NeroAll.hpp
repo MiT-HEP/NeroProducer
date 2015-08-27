@@ -37,7 +37,10 @@ class NeroAll : virtual public NeroCollection,
         edm::Handle< std::vector<PileupSummaryInfo> > pu_handle;
 
         // --- Token
-
+        // this are constructed by tFileservice at beginJob
+        TH1D * hDEvents;
+        TH1D * hDTotalMcWeight;
+        TH1D * hDPileup;
 
 };
 

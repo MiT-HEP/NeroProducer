@@ -8,6 +8,9 @@ NeroAll::NeroAll():
 {
     isSkim_=1;
     isMc_=-1;
+    hDEvents=NULL;
+    hDTotalMcWeight=NULL;
+    hDPileup=NULL;
 }
 NeroAll::~NeroAll(){}
 
@@ -95,6 +98,10 @@ int NeroAll::analyzeLumi(const edm::LuminosityBlock &iLumi, TTree *t)
                 << "| p:"<<puTrueInt
                 <<endl;
         t->Fill();
+
+        if(hDEvents) hDEvents->Fill(0.5);
+        if(hDTotalMcWeight) hDTotalMcWeight->Fill(0.5,mcWeight);
+        if(hDPileup) hDPileup->Fill(puTrueInt,1.0); // generation is independent
     }
     return 0;
 }
