@@ -186,7 +186,7 @@ def GetStatus(sha):
 	r = requests.get(url+mystring)
 	return r.json()
 
-def  SetStatus(sha,state="success",description="build",ext='.txt'):
+def  SetStatus(sha,state="success",description="build",ext='txt'):
 	print pink+"<-> Setting Status:"+white,description,state, " to ", sha
 	for key in GetStatus(sha):
 		if key['context'] == description and key['state'] == state: 
@@ -228,11 +228,30 @@ if __name__ == "__main__":
 				available[key['description'] ] = key['state']
 
 		if 'run' in available and 'build' in available and 'core' in available : ## 
-			print "PR already checked:"
+			print "PR:" +dict[id]["title"]+ " already checked:"
 			print "\t* build: " + available['build'] 
 			print "\t* run: "+ available['run'] 
 			print "\t* core: "+ available['core'] 
 			if 'size' in available: print "\t* size: "+ available['size'] 
+			continue
+
+		## if failed to build, continue
+		if 'build' in available and ('success' not in available['build'] or 'pending' not in available['build']): 
+			print "PR:" +dict[id]["title"]+ " already checked:"
+			print "\t* build: " + available['build'] 
+			continue
+		## if failed to run, continue
+		if 'run' in available and 'success' not in available['run']:
+			print "PR:" +dict[id]["title"]+ " already checked:"
+			if 'bulid' in available: print "\t* build: " + available['build'] 
+			print "\t* run: " + available['run'] 
+			continue
+		## if failed to core, continue
+		if 'core' in available and 'success' not in available['core']: 
+			print "PR:" +dict[id]["title"]+ " already checked:"
+			if 'build' in available: print "\t* build: " + available['build'] 
+			if 'run' in available: print "\t* run: " + available['run'] 
+			print "\t* core: " + available['core'] 
 			continue
 
 		if opts.yes<1:
