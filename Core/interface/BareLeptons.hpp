@@ -14,15 +14,15 @@ class BareLeptons : virtual public BareP4
         void setBranchAddresses(TTree*);
         virtual inline string name(){return "BareLeptons";};
         // ----
-        vector<int>   *pdgId;	
-        vector<float> *iso;	
-        vector<int>   *tightId;	
-        vector<float> *lepPfPt;
+        vector<int>      *pdgId;	
+        vector<float>    *iso;	
+        vector<unsigned> *tightId;	
+        vector<float>    *lepPfPt;
 
-        vector<float> *chIso;
-        vector<float> *nhIso;
-        vector<float> *phoIso;
-        vector<float> *puIso;
+        vector<float>    *chIso;
+        vector<float>    *nhIso;
+        vector<float>    *phoIso;
+        vector<float>    *puIso;
 };
 
 #endif
