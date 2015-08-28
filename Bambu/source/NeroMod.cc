@@ -115,8 +115,9 @@ mithep::NeroMod::SlaveTerminate()
   }
 
   TFile* outputFile = eventsTree_->GetCurrentFile();
-  outputFile->cd();
-  outputFile->Write();
+  outputFile->cd("nero");
+  eventsTree_->Write();
+  allTree_->Write();
   delete outputFile;
 
   eventsTree_ = allTree_ = 0;
