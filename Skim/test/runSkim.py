@@ -103,7 +103,24 @@ process.HBB = cms.Sequence(
 		process.softPFElectronsTagInfosAK8 *
 		process.pfBoostedDoubleSecondaryVertexAK8BJetTags 
 		)
+####################JEC
+process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
+jecLevels= ['L1FastJet',  'L2Relative', 'L3Absolute']
 
+if options.isData: ## TODO options
+	jecLevels.append( 'L2L3Residuals')
+process.patJetCorrFactorsReapplyJEC = process.patJetCorrFactorsUpdated.clone(
+		  src = cms.InputTag("slimmedJets"),
+		  levels = ['L1FastJet',  'L2Relative', 'L3Absolute'],
+		  payload = 'AK4PFchs' ) # Make sure to choose the appropriate levels and payload here!
+
+process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
+process.patJetsReapplyJEC = process.patJetsUpdated.clone(
+		  jetSource = cms.InputTag("slimmedJets"),
+		  jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
+		  )
+
+process.jec = cms.Sequence( process.patJetCorrFactorsReapplyJEC + process. patJetsReapplyJEC )
 
 #################################
 process.extraPath = cms.Path(
@@ -111,6 +128,7 @@ process.extraPath = cms.Path(
                 	process.egmGsfElectronIDSequence *
                 	process.egmPhotonIDSequence *
                 	process.photonIDValueMapProducer * ## ISO MAP FOR PHOTONS
+			process.jec *
 			process.HBB ## HBB 74X
 		)
 
