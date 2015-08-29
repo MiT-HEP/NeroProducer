@@ -1,12 +1,9 @@
-## DATA Run2015C
-t2mit/filefi/042 SingleMuon+Run2015C-PromptReco-v1+AOD - Cert_246908-254879_13TeV_PromptReco_Collisions15_JSON.txt
-t2mit/filefi/042 SingleElectron+Run2015C-PromptReco-v1+AOD - Cert_246908-254879_13TeV_PromptReco_Collisions15_JSON.txt
-t2mit/filefi/042 SinglePhoton+Run2015C-PromptReco-v1+AOD - Cert_246908-254879_13TeV_PromptReco_Collisions15_JSON.txt
+## DATA Run2015B
+t2mit/filefi/042 DoubleMuon+Run2015B-PromptReco-v1+AOD - Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt
+t2mit/filefi/042 MET+Run2015B-PromptReco-v1+AOD - Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt
+t2mit/filefi/042 SingleMuon+Run2015B-PromptReco-v1+AOD - Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt
 
 ## SM MC (PU 50 ns)
-t2mit/filefi/042 DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8+RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v3+AODSIM - ~
-t2mit/filefi/042 WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8+RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1+AODSIM - ~
-t2mit/filefi/042 TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8+RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1+AODSIM - ~
 t2mit/filefi/042 ZJetsToNuNu_HT-100To200_13TeV-madgraph+RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1+AODSIM - ~
 t2mit/filefi/042 ZJetsToNuNu_HT-200To400_13TeV-madgraph+RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1+AODSIM - ~
 t2mit/filefi/042 ZJetsToNuNu_HT-400To600_13TeV-madgraph+RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1+AODSIM - ~
@@ -16,9 +13,6 @@ t2mit/filefi/042 GJets_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8+RunIIS
 t2mit/filefi/042 GJets_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8+RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1+AODSIM - ~
 t2mit/filefi/042 GJets_HT-40To100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8+RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1+AODSIM - ~
 t2mit/filefi/042 GJets_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8+RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1+AODSIM - ~
-t2mit/filefi/042 WW_TuneCUETP8M1_13TeV-pythia8+RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1+AODSIM - ~
-t2mit/filefi/042 WZ_TuneCUETP8M1_13TeV-pythia8+RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1+AODSIM - ~
-t2mit/filefi/042 ZZ_TuneCUETP8M1_13TeV-pythia8+RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v3+AODSIM - ~
 
 ## Dark matter MC
 t2mit/filefi/042 POWHEG_DMS_NNPDF30_13TeV_Scalar_1000_1+dmytro-RunIISpring15DR74-1437634873-108ae665ec5ce369aaa85823c807edf1+USER - ~
