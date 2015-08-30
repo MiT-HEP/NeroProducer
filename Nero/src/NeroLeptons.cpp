@@ -55,7 +55,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         l.pdgId = mu.charge()*13;
         l.iso = totiso;
         l.p4.SetPxPyPzE( mu.px(),mu.py(),mu.pz(),mu.energy());
-        l.tightId = unsigned(mu.isTightMuon( * vtx_->GetPV() ))*2 + unsigned(mu.isMediumMuon() );
+        l.selBits = unsigned(mu.isTightMuon( * vtx_->GetPV() ))*LepTight + unsigned(mu.isMediumMuon() * LepMedium);
         l.pfPt = mu.pfP4().pt();
 
         l.chiso  = chiso;
@@ -95,7 +95,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 
         l.iso = chIso + nhIso + phoIso; 
         l.p4.SetPxPyPzE( el.px(),el.py(),el.pz(),el.energy());
-        l.tightId = unsigned(isPassTight)*2  + unsigned(isPassMedium);
+        l.selBits = unsigned(isPassTight)*LepTight  + unsigned(isPassMedium) * LepMedium;
         l.pfPt = 0.;
     
         l.chiso  = chIso;
@@ -117,7 +117,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
     {
         new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(l.p4);
         iso     -> push_back(l.iso);
-        tightId -> push_back(l.tightId);
+        selBits -> push_back(l.selBits);
         pdgId   -> push_back(l.pdgId);
         lepPfPt -> push_back(l.pfPt);
 

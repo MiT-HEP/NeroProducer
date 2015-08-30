@@ -4,7 +4,7 @@ BareLeptons::BareLeptons():BareP4(){
     p4 = NULL;
     pdgId = NULL;
     iso = NULL;
-    tightId = NULL;
+    selBits = NULL;
     lepPfPt = NULL;
 
     //
@@ -22,7 +22,7 @@ void BareLeptons::clear(){
 
     pdgId -> clear();
     iso -> clear();
-    tightId ->clear();
+    selBits ->clear();
     lepPfPt->clear();    
 
     chIso->clear();
@@ -41,8 +41,8 @@ void BareLeptons::defineBranches(TTree*t){
     iso = new vector<float>;
     t->Branch("lepIso","vector<float>",&iso);
     //
-    tightId = new vector<unsigned>;
-    t->Branch("lepTightId","vector<int>",&tightId);
+    selBits = new vector<unsigned>;
+    t->Branch("lepSelBits","vector<unsigned>",&selBits);
     //
     lepPfPt = new vector<float>;
     t->Branch("lepPfPt","vector<float>",&lepPfPt);
@@ -68,8 +68,8 @@ void BareLeptons::setBranchAddresses(TTree*t){
     t->SetBranchAddress("lepPdgId"	,&pdgId);
     iso = new vector<float>;
     t->SetBranchAddress("lepIso"	,&iso);
-    tightId = new vector<unsigned>;
-    t->SetBranchAddress("lepTightId"	,&tightId);
+    selBits = new vector<unsigned>;
+    t->SetBranchAddress("lepSelBits"	,&selBits);
     lepPfPt = new vector<float>;
     t->SetBranchAddress("lepPfPt"	,&lepPfPt);
 

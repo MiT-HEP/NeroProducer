@@ -21,7 +21,7 @@ class NeroLeptons : virtual public NeroCollection,
                 myLepton(){ chiso=-999; nhiso=-999; phoiso=-999; puiso=-999;}
                 float iso;
                 TLorentzVector p4;
-                int tightId;
+                unsigned selBits;
                 int pdgId;
                 float pfPt;
 
