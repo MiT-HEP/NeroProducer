@@ -14,6 +14,7 @@ class BareFatJets : virtual public BareP4
         void defineBranches(TTree *t);
         virtual void setBranchAddresses(TTree*);
         virtual inline string name(){return "BareFatJets";};
+        virtual void compress();
 
         // -- variables
         //TClonesArray  *p4;

@@ -41,6 +41,9 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
     iEvent.getByToken(token, handle);
     iEvent.getByToken(qg_token,qg_handle);
 
+    if ( not handle.isValid() ) cout<<"[NeroJets]::[analyze]::[ERROR] handle is not valid"<<endl;
+    if ( not qg_handle.isValid() ) cout<<"[NeroJets]::[analyze]::[ERROR] qg_handle is not valid"<<endl;
+
     // -- need to init JES here, where there is the iSetup
     InitJes(iSetup);
 

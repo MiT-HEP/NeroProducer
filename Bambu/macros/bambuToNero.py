@@ -78,7 +78,7 @@ for jec in jecSources:
 #metCorrectionJESUp.AddJetCorrectionFromFile(mitdata + '/JEC/' + jecUncert)
 #metCorrectionJESDown.AddJetCorrectionFromFile(mitdata + '/JEC/' + jecUncert)
 
-# Will use independent JetIDMVA that can be used by Nero too
+# Will not use PU jet ID here (MVA values to be stored in Nero tree)
 jetId = jetIdMod.clone(
     MVATrainingSet = mithep.JetIDMVA.nMVATypes,
     PtMin = 15.

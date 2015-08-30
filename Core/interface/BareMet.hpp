@@ -14,6 +14,7 @@ class BareMet : virtual public BareP4
         void defineBranches(TTree *t);
         virtual void setBranchAddresses(TTree*) ;
         virtual inline string name(){return "BareMet";};
+        virtual void compress();
 
         // -- variables
         //TClonesArray *p4;
@@ -28,7 +29,10 @@ class BareMet : virtual public BareP4
         TLorentzVector *metChargedHadron;
         TLorentzVector *metNeutralHadron;
         TLorentzVector *metNeutralEM;
-    
+  
+        float caloMet_Pt;
+        float caloMet_Phi;
+        float caloMet_SumEt;
 };
 #endif
 // Local Variables:

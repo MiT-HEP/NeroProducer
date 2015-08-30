@@ -38,6 +38,7 @@ class Nero : public edm::EDAnalyzer {
         TTree *tree_;
         TTree *all_;
         TH1F  *hXsec_;
+        map<string,TH1D*> hD_;
         edm::Service<TFileService> fileService_;
         // collection to be moved into a tree
         vector<NeroCollection*> obj;

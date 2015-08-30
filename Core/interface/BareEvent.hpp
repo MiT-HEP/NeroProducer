@@ -21,6 +21,10 @@ class BareEvent : virtual public BareCollection
 
         float rho;	
         //
+        //extend
+        int originalRun;
+        int originalLumi;
+        int originalEvent;
 };
 
 #endif

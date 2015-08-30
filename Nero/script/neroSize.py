@@ -10,6 +10,8 @@ from optparse import OptionParser
 
 parser=OptionParser()
 parser.add_option("-f","--file",dest="file",type="string",help="fileName [Default=%default]",default="root://eoscms///store/user/amarini/Nero/v1.0//RunIISpring15DR74/Asympt50ns_MCRUN2_74_V9A-v2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/NeroNtuples_10.root")
+parser.add_option("-b","--batch",dest="batch",action='store_true',help="batch [Default=%default]",default=False)
+parser.add_option("-o","--out",dest="out",type='string',help="output filename [Default=%default]",default='NeroSize')
 
 opts,args = parser.parse_args()
 
@@ -175,4 +177,9 @@ for idx,elem in enumerate(trees):
 	pie.Draw("rcs")
 
 c.Update()
-raw_input("Looks ok ? ")
+
+if not opts.batch: raw_input("Looks ok ? ")
+
+if opts.out != "":
+	c.SaveAs(opts.out + ".png")
+	c.SaveAs(opts.out + ".pdf")

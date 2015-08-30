@@ -58,6 +58,14 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     NeroEvent *evt = new NeroEvent();
     evt -> mOnlyMc = onlyMc;
     evt -> rho_token = consumes<double>(iConfig.getParameter<edm::InputTag>("rho"));
+    evt -> SetExtend ( iConfig.getUntrackedParameter<bool>("extendEvent",false) );
+
+    if ( evt -> IsExtend() )
+        {
+        evt -> originalRun_token   = consumes<unsigned int>(edm::InputTag("InfoProducer","originalRun")   ); 
+        evt -> originalLumi_token  = consumes<unsigned int>(edm::InputTag("InfoProducer","originalLumi")  ); 
+        evt -> originalEvent_token = consumes<unsigned int>(edm::InputTag("InfoProducer","originalEvent") ); 
+        }
     obj.push_back(evt);
 
     // -- Before Leptons (mu uses Vtx)
@@ -176,6 +184,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     mc -> runinfo_token = consumes<GenRunInfoProduct>(iConfig.getParameter<edm::InputTag>("genruninfo") );
     mc -> mMinGenParticlePt = iConfig.getParameter<double>("minGenParticlePt");
     mc -> mMinGenJetPt = iConfig.getParameter<double>("minGenJetPt");
+    mc -> mParticleGun = iConfig.getUntrackedParameter<bool>("particleGun",false);
 
     obj.push_back(mc);
     runObj.push_back(mc);
@@ -264,6 +273,12 @@ Nero::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
         }
     }
 
+    // compress double precision to float precision
+    for(auto o : obj)
+    {
+        o->compress();
+    }
+
     if (VERBOSE>1) cout<<"------- fill event --------"<<endl;
     tree_->Fill();
     if (VERBOSE>1) cout<<"------- end event (success) --------"<<endl;
@@ -294,6 +309,10 @@ Nero::beginJob()
     all_     = fileService_ -> make<TTree>("all", "all");	  
     hXsec_   = fileService_ -> make<TH1F>("xSec", "xSec",20,-0.5,19.5); hXsec_ ->Sumw2();
 
+    hD_["Events"]   = fileService_ -> make<TH1D>("hDEvents", "hDEvents",1,0,1); hD_["Events"] ->Sumw2();
+    hD_["TotalMcWeight"]   = fileService_ -> make<TH1D>("hDTotalMcWeight", "hDTotalMcWeight",1,0,1); hD_["TotalMcWeight"] ->Sumw2();
+    hD_["Pileup"]   = fileService_ -> make<TH1D>("hDPileup", "hDPileup",100,0,100); hD_["Pileup"] ->Sumw2();
+
     fileService_ ->make<TNamed>("tag",tag_.c_str() );
     fileService_ ->make<TNamed>("head",head_.c_str() );
     fileService_ ->make<TNamed>("info",info_.c_str() );
@@ -310,12 +329,23 @@ Nero::beginJob()
 
     fileService_ -> make<TNamed>("triggerNames",myString.c_str());
 
+    // define branches
     for(auto o : obj)
         o -> defineBranches(tree_);
 
     for(auto o : lumiObj)
         o -> defineBranches(all_);
-}
+    
+    //set histogram map
+    for(auto o : lumiObj){
+        if (dynamic_cast<NeroAll*> (o) !=NULL ) {
+            NeroAll * na = dynamic_cast<NeroAll*> (o);
+            na->hDEvents =  hD_["Events"];
+            na->hDTotalMcWeight = hD_["TotalMcWeight"];
+            na->hDPileup = hD_["Pileup"];
+        } // end if
+        } // end for o in lumiObj
+} //end beginJob
 
 
 // ------------ method called once each job just after ending the event loop  ------------

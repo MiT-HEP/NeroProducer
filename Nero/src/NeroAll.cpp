@@ -8,6 +8,9 @@ NeroAll::NeroAll():
 {
     isSkim_=1;
     isMc_=-1;
+    hDEvents=NULL;
+    hDTotalMcWeight=NULL;
+    hDPileup=NULL;
 }
 NeroAll::~NeroAll(){}
 
@@ -34,6 +37,8 @@ int NeroAll::analyze(const edm::Event&iEvent)
         if( not isRealData ) {
             iEvent.getByLabel(edm::InputTag("generator"), info_handle); // USE TOKEN AND INPUT TAG ?
             iEvent.getByLabel(edm::InputTag("addPileupInfo"), pu_handle);
+            if (not info_handle.isValid() ) cout<<"[NeroAll]::[analyze]::[ERROR] Info handle is not valid"<<endl;
+            if (not pu_handle.isValid() ) cout <<"[NeroAll]::[analyze]::[ERROR] PU handle is not valide"<<endl;
             mcWeight = info_handle->weight();
             //PU
             puTrueInt = 0;
@@ -59,6 +64,10 @@ int NeroAll::analyzeLumi(const edm::LuminosityBlock &iLumi, TTree *t)
 
     iLumi.getByLabel(edm::InputTag("InfoProducer","vecMcWeights"), weights_handle);
     iLumi.getByLabel(edm::InputTag("InfoProducer","vecPuTrueInt"), putrue_handle);
+
+    if ( not events_handle.isValid() ) cout<<"[NeroAll]::[analyzeLumi]::[ERROR] events_handle is not valid"<<endl;
+    if ( not weights_handle.isValid() ) cout<<"[NeroAll]::[analyzeLumi]::[ERROR] weights_handle is not valid"<<endl;
+    if ( not putrue_handle.isValid() ) cout<<"[NeroAll]::[analyzeLumi]::[ERROR] putrue_handle is not valid"<<endl;
 
     if(isMc_<0) isMc_ = weights_handle->size() > 0 ; // if the n.events is 0, doesn't matter, because the loop will exit
 
@@ -89,6 +98,10 @@ int NeroAll::analyzeLumi(const edm::LuminosityBlock &iLumi, TTree *t)
                 << "| p:"<<puTrueInt
                 <<endl;
         t->Fill();
+
+        if(hDEvents) hDEvents->Fill(0.5);
+        if(hDTotalMcWeight) hDTotalMcWeight->Fill(0.5,mcWeight);
+        if(hDPileup) hDPileup->Fill(puTrueInt,1.0); // generation is independent
     }
     return 0;
 }

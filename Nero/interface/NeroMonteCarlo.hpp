@@ -40,6 +40,7 @@ class NeroMonteCarlo : virtual public NeroCollection,
         // --- configuration
         float mMinGenParticlePt;
         float mMinGenJetPt;
+        bool mParticleGun; 
         int isRealData;
 
 };

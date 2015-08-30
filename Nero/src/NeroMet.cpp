@@ -18,7 +18,13 @@ int NeroMet::analyze(const edm::Event& iEvent){
 
     // maybe handle should be taken before
     iEvent.getByToken(token, handle);
+    if ( not handle.isValid() ) cout<<"[NeroMet]::[analyze]::[ERROR] handle is not valid"<<endl;
     const pat::MET &met = handle->front();
+
+    caloMet_Pt = met.caloMETPt();
+    caloMet_Phi = met.caloMETPhi();
+    caloMet_SumEt = met.caloMETSumEt();
+    
 
     // FILL
     new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector( met.px(),met.py(),met.pz(),met.energy()  );
@@ -35,8 +41,7 @@ int NeroMet::analyze(const edm::Event& iEvent){
         TLorentzVector chMet(0,0,0,0); 
         TLorentzVector nhMet(0,0,0,0); 
         TLorentzVector phoMet(0,0,0,0); 
-        
-    
+       
         if ( pf == NULL ) cout<<"[NeroMet]::[analyze]::[ERROR] PF pointer is null. Run NeroPF. "<<endl; 
         
         for (unsigned int i = 0, n = pf->handle->size(); i < n; ++i) {

@@ -1,4 +1,5 @@
 #include "NeroProducer/Core/interface/BareMet.hpp"
+#include "NeroProducer/Core/interface/BareFunctions.hpp"
 
 
 BareMet::BareMet() : BareP4() {
@@ -7,6 +8,9 @@ BareMet::BareMet() : BareP4() {
     ptJESDOWN = NULL;
     genP4 = NULL;
 
+    caloMet_Pt = 0.0;
+    caloMet_Phi = 0.0;
+    caloMet_SumEt = 0.0;
 
     metNoMu = NULL;
     pfMet_e3p0 = NULL;
@@ -49,6 +53,7 @@ void BareMet::defineBranches(TTree *t){
     genP4 = new TClonesArray("TLorentzVector", 20);
     t->Branch("metP4_GEN","TClonesArray", &p4, 128000, 0);
     //
+
     if ( IsExtend() )
     {
         metNoMu = new TLorentzVector;
@@ -65,6 +70,10 @@ void BareMet::defineBranches(TTree *t){
         //
         metNeutralEM = new TLorentzVector;
         t->Branch("metNeutralEM","TLorentzVector",&metNeutralEM);
+        // calo Met
+        t->Branch("caloMet_Pt",&caloMet_Pt,"caloMet_Pt/F");
+        t->Branch("caloMet_Phi",&caloMet_Phi,"caloMet_Phi/F");
+        t->Branch("caloMet_SumEt",&caloMet_SumEt,"caloMet_SumEt/F");
     }
     //
 }
@@ -79,6 +88,7 @@ void BareMet::setBranchAddresses(TTree *t){
     t->SetBranchAddress("metPtJESDOWN",&ptJESDOWN);
     genP4 = new TClonesArray("TLorentzVector", 20);
     t->SetBranchAddress("metP4_GEN"	, &genP4 );
+    
 
     if ( IsExtend() ) 
     {
@@ -92,7 +102,29 @@ void BareMet::setBranchAddresses(TTree *t){
         t->SetBranchAddress("metNeutralHadron", &metNeutralHadron);
         metNeutralEM = new TLorentzVector;
         t->SetBranchAddress("metNeutralEM", &metNeutralEM);
+        // calo met
+        t->SetBranchAddress("caloMet_Pt", &caloMet_Pt);
+        t->SetBranchAddress("caloMet_Phi", &caloMet_Phi);
+        t->SetBranchAddress("caloMet_SumEt", &caloMet_SumEt);
     }
+}
+
+void BareMet::compress(){
+
+    BareP4::compress();
+
+	for(int i=0;i<genP4->GetEntries();++i)
+		BareFunctions::Compress( * (TLorentzVector*) genP4->At(i)  );
+
+    if ( IsExtend() ) 
+    {
+        BareFunctions::Compress(*metNoMu );
+        BareFunctions::Compress(*pfMet_e3p0 );
+        BareFunctions::Compress(*metChargedHadron );
+        BareFunctions::Compress(*metNeutralHadron );
+        BareFunctions::Compress(*metNeutralEM );
+    }
+
 }
 
 // Local Variables:

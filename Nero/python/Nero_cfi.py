@@ -20,6 +20,7 @@ nero = cms.EDAnalyzer("Nero",
     mets = cms.InputTag("slimmedMETs"),
     pfCands = cms.InputTag("packedPFCandidates"),
 
+
     # gen
     pileup = cms.InputTag("addPileupInfo"),
     generator = cms.InputTag("generator"),
@@ -60,12 +61,16 @@ nero = cms.EDAnalyzer("Nero",
 				### DoubleMu / DoubleE cross check and sync with Z
 				'HLT_Mu17_v1',
 				'HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v1',
+                                'HLT_CaloMET200_NoiseCleaned'
 				]),
     prescales = cms.InputTag('patTrigger'),
     trigger = cms.InputTag("TriggerResults","","HLT"),
     objects = cms.InputTag('selectedPatTrigger'),
     ## CUSTOM CONFIGURATION
     onlyMc = cms.bool (False),  ## not completely supported yet
+
+    #evt
+    extendEvent = cms.untracked.bool(False),
 
     extendMet = cms.bool(True),
                       
@@ -99,6 +104,7 @@ nero = cms.EDAnalyzer("Nero",
 
     minGenParticlePt = cms.double(5.),
     minGenJetPt = cms.double(20.),
+    particleGun = cms.untracked.bool(False),
                       
     minPhoPt  = cms.double (15.),
     minPhoEta = cms.double (2.5),
