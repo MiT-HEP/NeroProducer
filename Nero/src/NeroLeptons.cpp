@@ -58,7 +58,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         if ( totiso/mu.pt() > mMaxIso_mu ) continue;
 
         myLepton l;
-        l.pdgId = mu.charge()*13;
+        l.pdgId = -mu.charge()*13;
         l.iso = totiso;
         l.p4.SetPxPyPzE( mu.px(),mu.py(),mu.pz(),mu.energy());
         l.selBits = unsigned(mu.isTightMuon( * vtx_->GetPV() ))*LepTight + unsigned(mu.isMediumMuon() * LepMedium);
@@ -91,7 +91,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         if (not isPassVeto ) continue;
 
         myLepton l;
-        l.pdgId = el.charge()*11;
+        l.pdgId = -el.charge()*11;
         //l.iso = el.ecalPFClusterIso() + el.hcalPFClusterIso(); //not working, use GEDIdTools or ValueMap
         
         float chIso = el.chargedHadronIso();

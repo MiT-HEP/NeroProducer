@@ -69,7 +69,7 @@ mithep::nero::LeptonsFiller::fill()
         // dZ cut at 10000. -> vertex information is not used
         double puIso(IsolationTools::PFElectronIsolation(ele, puPFCands, vertices->At(0), 10000., 0., 0.3, 0., mithep::PFCandidate::eHadron));
 
-        out_.pdgId->push_back(11 * ele->Charge());
+        out_.pdgId->push_back(-11 * ele->Charge());
         out_.iso->push_back(chIso + nhIso + phoIso);
 
         unsigned selBits = 0;
@@ -104,7 +104,7 @@ mithep::nero::LeptonsFiller::fill()
             pf = pfCands->At(iPF);
         }
 
-        out_.pdgId->push_back(13 * mu->Charge());
+        out_.pdgId->push_back(-13 * mu->Charge());
         out_.iso->push_back(iso);
 
         // careful, different treatment for muons and electrons
