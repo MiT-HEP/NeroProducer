@@ -31,7 +31,7 @@ Implementation:
 #include "NeroProducer/Nero/interface/NeroTrigger.hpp"
 #include "NeroProducer/Nero/interface/NeroMatching.hpp"
 
-#define VERBOSE 0
+//#define VERBOSE 2
 
 //
 // constants, enums and typedefs
@@ -248,29 +248,39 @@ Nero::~Nero()
 Nero::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
     using namespace edm;
-    if (VERBOSE>1) cout<<"------- begin event --------"<<endl;
+    #ifdef VERBOSE
+        if (VERBOSE>1) cout<<"------- begin event --------"<<endl;
+    #endif
 
     for(auto o : obj)
         o->clear();
 
-    if (VERBOSE>1) cout<<"------- analyze event --------"<<endl;
+    #ifdef VERBOSE
+        if (VERBOSE>1) cout<<"------- analyze event --------"<<endl;
+    #endif
+
     for(auto o : obj)
     {
-        if (VERBOSE){sw_.Reset(); sw_.Start();}
+        #ifdef VERBOSE
+            if (VERBOSE > 1) { cout<<"[Nero]::[analyze] going to analyze "<<o->name() <<endl; }
+            if (VERBOSE){sw_.Reset(); sw_.Start();}
+        #endif
 
         if (o->analyze(iEvent, iSetup) ) return; // analyze return 0 on success (VTX ..)
 
-        if (VERBOSE)
-        {
-            sw_.Stop(); 
-            times_[o->name()] += sw_.CpuTime() ;
-        }
-        if(VERBOSE>1)
-        {
-            cout<< "[Nero]::[analyze] object "<<o->name()
-                <<" took:"<< sw_.CpuTime()<< "CPU Time and "
-                <<sw_.RealTime()<<"RealTime"<<endl;
-        }
+        #ifdef VERBOSE
+            if (VERBOSE)
+            {
+                sw_.Stop(); 
+                times_[o->name()] += sw_.CpuTime() ;
+            }
+            if(VERBOSE>1)
+            {
+                cout<< "[Nero]::[analyze] object "<<o->name()
+                    <<" took:"<< sw_.CpuTime()<< "CPU Time and "
+                    <<sw_.RealTime()<<"RealTime"<<endl;
+            }
+        #endif
     }
 
     // compress double precision to float precision
@@ -279,23 +289,28 @@ Nero::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
         o->compress();
     }
 
-    if (VERBOSE>1) cout<<"------- fill event --------"<<endl;
+    #ifdef VERBOSE
+        if (VERBOSE>1) cout<<"------- fill event --------"<<endl;
+    #endif
+
     tree_->Fill();
-    if (VERBOSE>1) cout<<"------- end event (success) --------"<<endl;
-    if (VERBOSE){
-        times_[ "counter" ] +=1;
-        if(times_[ "counter"] > 3000 )
-        {
-            cout<< " --- CPU TIMES ----" <<endl;
-            for(auto &x : times_)
+    #ifdef VERBOSE
+        if (VERBOSE>1) cout<<"------- end event (success) --------"<<endl;
+        if (VERBOSE){
+            times_[ "counter" ] +=1;
+            if(times_[ "counter"] > 3000 )
             {
-                cout << x.first <<": "<<x.second<<endl;
-                x.second = 0;
+                cout<< " --- CPU TIMES ----" <<endl;
+                for(auto &x : times_)
+                {
+                    cout << x.first <<": "<<x.second<<endl;
+                    x.second = 0;
+                }
+                cout<< " ------------" <<endl;
+                times_[ "counter"] = 0;
             }
-            cout<< " ------------" <<endl;
-            times_[ "counter"] = 0;
-        }
-    } // end VERBOSE
+        } // end VERBOSE
+    #endif
 
 }
 
@@ -304,7 +319,10 @@ Nero::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     void 
 Nero::beginJob()
 {
-    if(VERBOSE) cout<<" >>>>>>> BEGIN JOB <<<<<<<<<"<<endl;
+    #ifdef VERBOSE
+        if(VERBOSE) cout<<" >>>>>>> BEGIN JOB <<<<<<<<<"<<endl;
+    #endif
+
     tree_    = fileService_ -> make<TTree>("events", "events");
     all_     = fileService_ -> make<TTree>("all", "all");	  
     hXsec_   = fileService_ -> make<TH1F>("xSec", "xSec",20,-0.5,19.5); hXsec_ ->Sumw2();
@@ -352,7 +370,9 @@ Nero::beginJob()
     void 
 Nero::endJob() 
 {
-    if(VERBOSE) cout<<" >>>>>>> END JOB <<<<<<<<<"<<endl;
+    #ifdef VERBOSE
+        if(VERBOSE) cout<<" >>>>>>> END JOB <<<<<<<<<"<<endl;
+    #endif
 }
 
 // ------------ method called when starting to processes a run  ------------
@@ -360,7 +380,9 @@ Nero::endJob()
     void 
 Nero::beginRun(edm::Run const&iRun, edm::EventSetup const&)
 {
-    if(VERBOSE) cout<<" ======= BEGIN RUN ======="<<endl;
+    #ifdef VERBOSE
+        if(VERBOSE) cout<<" ======= BEGIN RUN ======="<<endl;
+    #endif
 }
 
 
@@ -379,10 +401,15 @@ Nero::endRun(edm::Run const&iRun, edm::EventSetup const&iSetup)
 
     for(auto o : runObj )
     {
-        if(VERBOSE> 1) cout<<"[Nero]::[endRun]::[DEBUG] calling object"<<o->name()<<endl;
+        #ifdef VERBOSE
+            if(VERBOSE> 1) cout<<"[Nero]::[endRun]::[DEBUG] calling object"<<o->name()<<endl;
+        #endif
         o->analyzeRun(iRun, hXsec_);
     }
-    if(VERBOSE) cout <<" ======== END RUN ======="<<endl;
+    #ifdef VERBOSE
+        if(VERBOSE) cout <<" ======== END RUN ======="<<endl;
+    #endif
+
 }
 
 
@@ -391,7 +418,10 @@ Nero::endRun(edm::Run const&iRun, edm::EventSetup const&iSetup)
     void 
 Nero::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
 {
-    if(VERBOSE) cout <<" -------- BEGIN LUMI --------"<<endl;
+    #ifdef VERBOSE
+        if(VERBOSE) cout <<" -------- BEGIN LUMI --------"<<endl;
+    #endif
+
 }
 
 
@@ -402,11 +432,16 @@ Nero::endLuminosityBlock(edm::LuminosityBlock const&iLumi, edm::EventSetup const
 {
     for(auto o :lumiObj)
     {
-        if(VERBOSE>1) cout<<"[Nero]::[endLuminosityBlock]::[DEBUG] calling object"<<o->name()<<endl;
+        #ifdef VERBOSE
+            if(VERBOSE>1) cout<<"[Nero]::[endLuminosityBlock]::[DEBUG] calling object"<<o->name()<<endl;
+        #endif
+
         o->analyzeLumi(iLumi,all_);
     }
 
-    if(VERBOSE) cout <<" -------- END LUMI --------"<<endl;
+    #ifdef VERBOSE
+        if(VERBOSE) cout <<" -------- END LUMI --------"<<endl;
+    #endif
 }
 
 

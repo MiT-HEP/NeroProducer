@@ -1,6 +1,8 @@
 #include "NeroProducer/Nero/interface/NeroPhotons.hpp"
 #include "NeroProducer/Nero/interface/Nero.hpp"
 
+//#define VERBOSE 1
+
 NeroPhotons::NeroPhotons() : 
         NeroCollection(),
         BarePhotons()
@@ -45,6 +47,9 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
     for (auto &pho : *handle)
     {
         ++iPho;
+        #ifdef VERBOSE
+        if (VERBOSE>0) cout<<"[NeroPhotons]::[analyze]::[DEBUG] analyzing photon"<<iPho<<" pt="<<pho.pt() <<" pz"<<pho.pz() <<endl;
+        #endif
 
         if (pho.pt() <15 or pho.chargedHadronIso()/pho.pt() > 0.3) continue;		
         if (fabs(pho.eta()) > mMinEta ) continue;
@@ -72,6 +77,10 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         float _phIsoRC_ = 0;
         float _puIsoRC_ = 0;// not fill for the moment in the FPR TODO
 
+        #ifdef VERBOSE
+            if (VERBOSE >0 ) cout <<"[NeroPhotons]::[analyze]::[DEBUG] FPR START"<<endl;
+        #endif
+
         fpr -> Config(iSetup);
         fpr -> SetHandles(
                 pf  -> handle,
@@ -85,6 +94,10 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         _chIsoRC_ = FPR_out.chargediso_primvtx_rcone;
         _nhIsoRC_ = FPR_out.neutraliso_rcone;
         _phIsoRC_ = FPR_out.photoniso_rcone;
+
+        #ifdef VERBOSE
+            if (VERBOSE >0 ) cout <<"[NeroPhotons]::[analyze]::[DEBUG] FPR END"<<endl;
+        #endif
 
         // RC -- without FPR
         // allowed dphi

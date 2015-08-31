@@ -22,6 +22,7 @@
 #define __SUPERCLUSTERFOOTPRINTREMOVALMINIAOD__CC__
 
 #include "NeroProducer/Nero/interface/SuperClusterFootprintRemovalMiniAOD.h"
+//#define VERBOSE 2
 
 using namespace std;
 
@@ -29,6 +30,9 @@ using namespace std;
 // constructors and destructor
 //
 void SuperClusterFootprintRemovalMiniAOD::Config(const edm::EventSetup& iSetup){
+  #ifdef VERBOSE
+  	if(VERBOSE >1) cout<<"[SuperClusterFootprintRemovalMiniAOD]::[Config]"<<endl;
+  #endif
   edm::ESHandle<CaloGeometry> geometry ;
   iSetup.get<CaloGeometryRecord>().get(geometry);
   barrelGeometry = (CaloSubdetectorGeometry*)(geometry->getSubdetectorGeometry(DetId::Ecal, EcalBarrel));
@@ -38,6 +42,9 @@ void SuperClusterFootprintRemovalMiniAOD::Config(const edm::EventSetup& iSetup){
   iSetup.get<IdealMagneticFieldRecord>().get(magneticField);
   magField = (MagneticField*)(magneticField.product());
 
+  #ifdef VERBOSE
+   	if(VERBOSE >1) cout<<"[SuperClusterFootprintRemovalMiniAOD]::[Config] END"<<endl;
+  #endif
 }
 
 SuperClusterFootprintRemovalMiniAOD::SuperClusterFootprintRemovalMiniAOD(
@@ -46,6 +53,10 @@ SuperClusterFootprintRemovalMiniAOD::SuperClusterFootprintRemovalMiniAOD(
 		)
 {
    //now do what ever initialization is needed
+  #ifdef VERBOSE
+   	if(VERBOSE >1) cout<<"[SuperClusterFootprintRemovalMiniAOD]::[SuperClusterFootprintRemovalMiniAOD] Constructor"<<endl;
+  #endif
+
 
   eegeom = TGeoPara(1.,1.,1.,0.,0.,0.);
 
@@ -84,6 +95,9 @@ SuperClusterFootprintRemovalMiniAOD::~SuperClusterFootprintRemovalMiniAOD()
 
 TVector3 SuperClusterFootprintRemovalMiniAOD::PropagatePFCandToEcal(int pfcandindex, float position, bool isbarrel){
   // WARNING: this propagates until EE+ or EE- at the given TMath::Abs(position.z()) for isbarrel=0, depending on where the candidate is pointing.
+  #ifdef VERBOSE
+   	if(VERBOSE >1) cout<<"[SuperClusterFootprintRemovalMiniAOD]::[PropagatePFCandToEcal] PropagatePFCandToEcal"<< pfcandindex<<":"<<position<<":"<<isbarrel<<endl;
+  #endif
 
   int type = FindPFCandType((*pfCandidates)[pfcandindex].pdgId());
 
@@ -91,6 +105,13 @@ TVector3 SuperClusterFootprintRemovalMiniAOD::PropagatePFCandToEcal(int pfcandin
     std::cout << "Warning: called propagation to ECAL for object with negative or zero pt. Returning TVector3(0,0,1e10)." << std::endl;
     return TVector3(0,0,1e10);
   }
+
+  if ( (*pfCandidates)[pfcandindex].pt() > 1e10 
+          or (*pfCandidates)[pfcandindex].pz() > 1e10
+     ) {
+    std::cout << "Warning: called propagation to ECAL for object with infinite pt or pz. Returning TVector3(0,0,1e10)." << std::endl;
+    return TVector3(0,0,1e10);
+    }
 
   if (type>2) {
     std::cout << "Asking propagation for lepton, not implemented. Returning TVector3(0,0,1e10)." << std::endl;
@@ -129,12 +150,19 @@ TVector3 SuperClusterFootprintRemovalMiniAOD::PropagatePFCandToEcal(int pfcandin
     ecalpfhit *= r;
 
   }
+  #ifdef VERBOSE
+   	if(VERBOSE >1) cout<<"[SuperClusterFootprintRemovalMiniAOD]::[PropagatePFCandToEcal] grace EXIT"<<endl;
+  #endif
 
   return ecalpfhit;
 
 }
 
 sc_xtal_information SuperClusterFootprintRemovalMiniAOD::GetSCXtalInfo(reco::SuperClusterRef sc){
+
+  #ifdef VERBOSE
+   	if(VERBOSE >1) cout<<"[SuperClusterFootprintRemovalMiniAOD]::[GetSCXtalInfo] sc"<<endl;
+  #endif
 
   sc_xtal_information out;
 
@@ -215,6 +243,9 @@ bool SuperClusterFootprintRemovalMiniAOD::CheckMatchedPFCandidate(int i){
 */
 
 bool SuperClusterFootprintRemovalMiniAOD::CheckPFCandInFootprint(int i, float rotation_phi){
+  #ifdef VERBOSE
+   	if(VERBOSE >1) cout<<"[SuperClusterFootprintRemovalMiniAOD]::[CheckPFCandInFootprint]"<<endl;
+  #endif
 
   bool isbarrel = (fabs(sc->eta())<1.5);
 
@@ -239,7 +270,7 @@ bool SuperClusterFootprintRemovalMiniAOD::CheckPFCandInFootprint(int i, float ro
       
       TVector3 ecalpfhit = PropagatePFCandToEcal(i,isbarrel ? xtal_position.Perp() : xtal_position.z(), isbarrel);
 
-      if (ecalpfhit.Perp()==0) continue;
+      if (ecalpfhit.Perp()==0 or ecalpfhit.Perp() >  1.e+10 or ecalpfhit.Pz() > 1e+10)  continue;
       
       if (isbarrel){
 	float xtalEtaWidth = infos.xtaletawidth[j]*(1.0+global_linkbyrechit_enlargement);
@@ -275,6 +306,9 @@ bool SuperClusterFootprintRemovalMiniAOD::CheckPFCandInFootprint(int i, float ro
 
 
 angular_distances_struct SuperClusterFootprintRemovalMiniAOD::GetPFCandHitDistanceFromSC(int pfindex, float rotation_phi){
+  #ifdef VERBOSE
+   	if(VERBOSE >1) cout<<"[SuperClusterFootprintRemovalMiniAOD]::[GetPFCandHitDistanceFromSC]: sc"<<sc->x()<<":"<<sc->y()<<":"<<sc->z()<<endl;
+  #endif
 
   int type = FindPFCandType((*pfCandidates)[pfindex].pdgId());
 
@@ -299,7 +333,7 @@ angular_distances_struct SuperClusterFootprintRemovalMiniAOD::GetPFCandHitDistan
 
   TVector3 ecalpfhit = PropagatePFCandToEcal(pfindex,isbarrel ? sc_position.Perp() : sc_position.z(),isbarrel);
 
-  if (ecalpfhit.Perp()==0 or ecalpfhit.Perp() >  1.e+10 or ecalpfhit.Pz() > 1e+10){ // I had   -> ecalpfhit.Perp()2.36219e+29 in data ?!?  pz = inf ?!?
+  if (ecalpfhit.Perp()==0 or ecalpfhit.Perp() >  1.e+10 or ecalpfhit.Pz() > 1e+10 or ecalpfhit.Pz() < -1e+10){ // I had   -> ecalpfhit.Perp()2.36219e+29 in data ?!?  pz = inf ?!? pz= -inf?!?
     std::cout << "GetPFCandHitDistanceFromSC: impact position found in the origin of the transverse plane. Returning error state." << std::endl;
     angular_distances_struct out;
     out.dR = 999;
@@ -308,16 +342,28 @@ angular_distances_struct SuperClusterFootprintRemovalMiniAOD::GetPFCandHitDistan
     return out;
   }
 
+
+  #ifdef VERBOSE
+   	if(VERBOSE >1) cout<<"[SuperClusterFootprintRemovalMiniAOD]::[GetPFCandHitDistanceFromSC]::[DEBUG] sc"<<sc_position.X()<<":"<<sc_position.Y()<<":"<<sc_position.Z()<<endl;
+   	if(VERBOSE >1) cout<<"[SuperClusterFootprintRemovalMiniAOD]::[GetPFCandHitDistanceFromSC]::[DEBUG] ecalpfhit"<<ecalpfhit.Px()<<":"<<ecalpfhit.Py()<<":"<<ecalpfhit.Pz()<<endl;
+  #endif
+
   angular_distances_struct out;
   out.dR = reco::deltaR(sc_position.Eta(),sc_position.Phi(),ecalpfhit.Eta(),ecalpfhit.Phi());
   out.dEta = ecalpfhit.Eta()-sc_position.Eta();
   out.dPhi = reco::deltaPhi(ecalpfhit.Phi(),sc_position.Phi());
 
+  #ifdef VERBOSE
+   	if(VERBOSE >1) cout<<"[SuperClusterFootprintRemovalMiniAOD]::[GetPFCandHitDistanceFromSC] grace exit"<<endl;
+  #endif
   return out;
 
 }
 
 int SuperClusterFootprintRemovalMiniAOD::FindPFCandType(int id){
+  #ifdef VERBOSE
+   	if(VERBOSE >1) cout<<"[SuperClusterFootprintRemovalMiniAOD]::[FindPFCandType]"<<endl;
+  #endif
 
   int type = -1;
 
@@ -335,6 +381,9 @@ PFIsolation_struct SuperClusterFootprintRemovalMiniAOD::PFIsolation(reco::SuperC
 }
 
 PFIsolation_struct SuperClusterFootprintRemovalMiniAOD::PFIsolation_worker(reco::SuperClusterRef sc_, edm::Ptr<reco::Vertex> vertexforchargediso, float rotation_phi, bool is_recursive_rcone){
+  #ifdef VERBOSE
+   	if(VERBOSE >1) cout<<"[SuperClusterFootprintRemovalMiniAOD]::[PFIsolation_worker]"<<endl;
+  #endif
 
   if (!is_recursive_rcone){
     sc = sc_;
@@ -406,6 +455,9 @@ PFIsolation_struct SuperClusterFootprintRemovalMiniAOD::PFIsolation_worker(reco:
 }
 
 bool SuperClusterFootprintRemovalMiniAOD::FindCloseJetsAndPhotons(float rotation_phi){
+  #ifdef VERBOSE
+   	if(VERBOSE >1) cout<<"[SuperClusterFootprintRemovalMiniAOD]::[FindCloseJetsAndPhotons] "<<endl;
+  #endif
 
   TVector3 photon_position = TVector3(sc->x(),sc->y(),sc->z());
   if (rotation_phi!=0) {
@@ -445,6 +497,9 @@ bool SuperClusterFootprintRemovalMiniAOD::FindCloseJetsAndPhotons(float rotation
 }
 
 void SuperClusterFootprintRemovalMiniAOD::RandomConeIsolation(edm::Ptr<reco::Vertex> vertexforchargediso, PFIsolation_struct *output){
+  #ifdef VERBOSE
+   	if(VERBOSE >1) cout<<"[SuperClusterFootprintRemovalMiniAOD]::[RandomConeIsolation]"<<endl;
+  #endif
 
   const double pi = TMath::Pi();
   double rotation_phi = pi/2;
@@ -483,3 +538,10 @@ void SuperClusterFootprintRemovalMiniAOD::RandomConeIsolation(edm::Ptr<reco::Ver
 }
 
 #endif
+// Local Variables:
+// mode:c++
+// indent-tabs-mode:nil
+// tab-width:4
+// c-basic-offset:4
+// End:
+// vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
