@@ -7,22 +7,33 @@
 class BareLeptons : virtual public BareP4
 {
     public:
+        enum Selection {
+          LepVeto   = 1UL<<0,
+          LepFake   = 1UL<<1,
+          LepSoft   = 1UL<<2,
+          LepMedium = 1UL<<3,
+          LepTight  = 1UL<<4
+        };
+
         BareLeptons();
         ~BareLeptons();
         void clear();
         void defineBranches(TTree *t);
         void setBranchAddresses(TTree*);
         virtual inline string name(){return "BareLeptons";};
-        // ----
-        vector<int>   *pdgId;	
-        vector<float> *iso;	
-        vector<int>   *tightId;	
-        vector<float> *lepPfPt;
 
-        vector<float> *chIso;
-        vector<float> *nhIso;
-        vector<float> *phoIso;
-        vector<float> *puIso;
+        bool passSelection(unsigned idx, Selection sel) { return (selBits->at(idx) & sel) != 0; }
+
+        // ----
+        vector<int>      *pdgId;	
+        vector<float>    *iso;
+        vector<unsigned> *selBits;
+        vector<float>    *lepPfPt;
+
+        vector<float>    *chIso;
+        vector<float>    *nhIso;
+        vector<float>    *phoIso;
+        vector<float>    *puIso;
 };
 
 #endif

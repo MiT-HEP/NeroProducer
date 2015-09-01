@@ -58,10 +58,10 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         if ( totiso/mu.pt() > mMaxIso_mu ) continue;
 
         myLepton l;
-        l.pdgId = mu.charge()*13;
+        l.pdgId = -mu.charge()*13;
         l.iso = totiso;
         l.p4.SetPxPyPzE( mu.px(),mu.py(),mu.pz(),mu.energy());
-        l.tightId = int(mu.isTightMuon( * vtx_->GetPV() ))*2 + int(mu.isMediumMuon() );
+        l.selBits = unsigned(mu.isTightMuon( * vtx_->GetPV() ))*LepTight + unsigned(mu.isMediumMuon() * LepMedium);
         l.pfPt = mu.pfP4().pt();
 
         l.chiso  = chiso;
@@ -91,7 +91,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         if (not isPassVeto ) continue;
 
         myLepton l;
-        l.pdgId = el.charge()*11;
+        l.pdgId = -el.charge()*11;
         //l.iso = el.ecalPFClusterIso() + el.hcalPFClusterIso(); //not working, use GEDIdTools or ValueMap
         
         float chIso = el.chargedHadronIso();
@@ -101,7 +101,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 
         l.iso = chIso + nhIso + phoIso; 
         l.p4.SetPxPyPzE( el.px(),el.py(),el.pz(),el.energy());
-        l.tightId = int(isPassTight)*2  + int(isPassMedium);
+        l.selBits = unsigned(isPassTight)*LepTight  + unsigned(isPassMedium) * LepMedium;
         l.pfPt = 0.;
     
         l.chiso  = chIso;
@@ -123,7 +123,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
     {
         new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(l.p4);
         iso     -> push_back(l.iso);
-        tightId -> push_back(l.tightId);
+        selBits -> push_back(l.selBits);
         pdgId   -> push_back(l.pdgId);
         lepPfPt -> push_back(l.pfPt);
 
