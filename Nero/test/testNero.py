@@ -148,6 +148,66 @@ process.load('NeroProducer.Nero.Nero_cfi')
 #process.load('NeroProducer.Nero.NeroMonojet_cfi')
 #process.load('NeroProducer.Nero.NeroChargedHiggs_cfi')
 
+############################### JEC
+### Load from a sqlite db, if not read from the global tag
+process.load("CondCore.DBCommon.CondDBCommon_cfi")
+from CondCore.DBCommon.CondDBSetup_cfi import *
+
+if options.isData:
+	connectString = cms.string('sqlite:Summer15_50nsV4_DATA.db')
+	tagName = 'Summer15_50nsV4_DATA_AK4PFchs'
+else:
+	connectString = cms.string('sqlite:Summer15_50nsV4_MC.db')
+	tagName = 'Summer15_50nsV4_MC_AK4PFchs'
+
+process.jec = cms.ESSource("PoolDBESSource",
+      DBParameters = cms.PSet(
+        messageLevel = cms.untracked.int32(0)
+        ),
+      timetype = cms.string('runnumber'),
+      toGet = cms.VPSet(
+      cms.PSet(
+            record = cms.string('JetCorrectionsRecord'),
+            tag    = cms.string('JetCorrectorParametersCollection_%s'%tagName),
+            label  = cms.untracked.string('AK4PFchs')
+            ),
+      ## here you add as many jet types as you need
+      ## note that the tag name is specific for the particular sqlite file 
+      ), 
+      connect = connectString
+     # uncomment above tag lines and this comment to use MC JEC
+)
+## add an es_prefer statement to resolve a possible conflict from simultaneous connection to a global tag
+process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
+
+################ end sqlite connection
+#from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetCorrFactorsUpdated
+#from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetsUpdated
+process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
+
+jecLevels= ['L1FastJet',  'L2Relative', 'L3Absolute']
+
+if options.isData:
+	print "NO L2L3 Residual Applied so far. FIXME"
+	#jecLevels.append( 'L2L3Residuals')
+
+process.patJetCorrFactorsReapplyJEC = process.patJetCorrFactorsUpdated.clone(
+		  src = cms.InputTag("slimmedJets"),
+		  levels = jecLevels,
+		  payload = 'AK4PFchs' ) # 
+
+process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
+process.patJetsReapplyJEC = process.patJetsUpdated.clone(
+		  jetSource = cms.InputTag("slimmedJets"),
+		  jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
+		  )
+
+process.jecSequence = cms.Sequence( 
+		process.patJetCorrFactorsReapplyJEC + 
+		process. patJetsReapplyJEC 
+		)
+###############################
+
 if options.isGrid:
 	process.nero.head=options.nerohead ##'git rev-parse HEAD'
 	process.nero.tag=options.nerotag ## git describe --tags
@@ -165,6 +225,7 @@ process.p = cms.Path(
                 process.photonIDValueMapProducer * ## ISO MAP FOR PHOTONS
                 process.electronIDValueMapProducer * ## ISO MAP FOR PHOTONS
 		process.HBB * ## HBB 74X
+		process.jecSequence *
                 process.nero
                 )
 

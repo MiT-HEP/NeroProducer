@@ -236,16 +236,18 @@ if __name__ == "__main__":
 			continue
 
 		## if failed to build, continue
-		if 'build' in available and ('success' not in available['build'] or 'pending' not in available['build']): 
+		if 'build' in available and ('success' not in available['build'] and 'pending' not in available['build']): 
 			print "PR:" +dict[id]["title"]+ " already checked:"
 			print "\t* build: " + available['build'] 
 			continue
+
 		## if failed to run, continue
 		if 'run' in available and 'success' not in available['run']:
 			print "PR:" +dict[id]["title"]+ " already checked:"
-			if 'bulid' in available: print "\t* build: " + available['build'] 
+			if 'build' in available: print "\t* build: " + available['build'] 
 			print "\t* run: " + available['run'] 
 			continue
+
 		## if failed to core, continue
 		if 'core' in available and 'success' not in available['core']: 
 			print "PR:" +dict[id]["title"]+ " already checked:"
