@@ -36,12 +36,14 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
     iEvent.getByToken(el_mediumid_token,el_medium_id);
     iEvent.getByToken(el_tightid_token,el_tight_id);
     iEvent.getByToken(el_vetoid_token,el_veto_id);
+    iEvent.getByToken(el_looseid_token,el_loose_id);
 
     if ( not mu_handle.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] mu_handle is not valid"<<endl;
     if ( not el_handle.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_handle is not valid"<<endl;
     if ( not el_medium_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_medium_id is not valid"<<endl;
     if ( not el_tight_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_tight_id is not valid"<<endl;
     if ( not el_veto_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_veto_id is not valid"<<endl;
+    if ( not el_loose_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_loose_id is not valid"<<endl;
 
     vector<myLepton> leptons;
 
@@ -61,7 +63,10 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         l.pdgId = -mu.charge()*13;
         l.iso = totiso;
         l.p4.SetPxPyPzE( mu.px(),mu.py(),mu.pz(),mu.energy());
-        l.selBits = unsigned(mu.isTightMuon( * vtx_->GetPV() ))*LepTight + unsigned(mu.isMediumMuon() * LepMedium);
+        l.selBits =  0 ;
+            l.selBits |= unsigned(mu.isLooseMuon()) * LepSoft;
+            l.selBits |= unsigned(mu.isTightMuon( * vtx_->GetPV() ))*LepTight ;
+            l.selBits |= unsigned(mu.isMediumMuon() * LepMedium);
         l.pfPt = mu.pfP4().pt();
 
         l.chiso  = chiso;
@@ -87,6 +92,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         bool isPassVeto = (*el_veto_id)[ref];
         bool isPassTight = (*el_tight_id)[ref];
         bool isPassMedium = (*el_medium_id)[ref];
+        bool isPassLoose = (*el_loose_id)[ref];
 
         if (not isPassVeto ) continue;
 
@@ -101,7 +107,11 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 
         l.iso = chIso + nhIso + phoIso; 
         l.p4.SetPxPyPzE( el.px(),el.py(),el.pz(),el.energy());
-        l.selBits = unsigned(isPassTight)*LepTight  + unsigned(isPassMedium) * LepMedium;
+        l.selBits = 0 ;
+            l.selBits |= unsigned(isPassTight)*LepTight;
+            l.selBits |= unsigned(isPassMedium) * LepMedium;
+            l.selBits |= unsigned(isPassVeto) * LepVeto;
+            l.selBits |= unsigned(isPassLoose) * LepSoft;
         l.pfPt = 0.;
     
         l.chiso  = chIso;
