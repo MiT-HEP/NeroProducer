@@ -64,7 +64,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         l.iso = totiso;
         l.p4.SetPxPyPzE( mu.px(),mu.py(),mu.pz(),mu.energy());
         l.selBits =  0 ;
-            l.selBits |= unsigned(mu.isLooseMuon()) * LepSoft;
+            l.selBits |= unsigned(mu.isLooseMuon()) * LepLoose;
             l.selBits |= unsigned(mu.isTightMuon( * vtx_->GetPV() ))*LepTight ;
             l.selBits |= unsigned(mu.isMediumMuon() * LepMedium);
         l.pfPt = mu.pfP4().pt();
@@ -111,7 +111,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
             l.selBits |= unsigned(isPassTight)*LepTight;
             l.selBits |= unsigned(isPassMedium) * LepMedium;
             l.selBits |= unsigned(isPassVeto) * LepVeto;
-            l.selBits |= unsigned(isPassLoose) * LepSoft;
+            l.selBits |= unsigned(isPassLoose) * LepLoose;
         l.pfPt = 0.;
     
         l.chiso  = chIso;

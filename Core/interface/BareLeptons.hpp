@@ -11,8 +11,9 @@ class BareLeptons : virtual public BareP4
           LepVeto   = 1UL<<0,
           LepFake   = 1UL<<1,
           LepSoft   = 1UL<<2,
-          LepMedium = 1UL<<3,
-          LepTight  = 1UL<<4
+          LepLoose  = 1UL<<3,
+          LepMedium = 1UL<<4,
+          LepTight  = 1UL<<5
         };
 
         BareLeptons();
@@ -22,7 +23,7 @@ class BareLeptons : virtual public BareP4
         void setBranchAddresses(TTree*);
         virtual inline string name(){return "BareLeptons";};
 
-        bool passSelection(unsigned idx, Selection sel) { return (selBits->at(idx) & sel) != 0; }
+        bool inline passSelection(const unsigned &idx, const Selection &sel) const  { return (selBits->at(idx) & sel) != 0; }
 
         // ----
         vector<int>      *pdgId;	
