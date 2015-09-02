@@ -1,11 +1,37 @@
 #include "NeroProducer/Core/interface/BareTrigger.hpp"
 
-BareTrigger::BareTrigger():BareCollection(){
-    triggerFired=NULL;
-    triggerNames = new vector<string>;
+BareTrigger::BareTrigger():
+    BareCollection(),
+    triggerNames(new vector<string>)
+{
 }
-BareTrigger::~BareTrigger(){}
 
+BareTrigger::~BareTrigger(){
+    delete triggerNames;
+
+    delete triggerFired;
+    delete triggerPrescale;
+    delete triggerLeps;
+    delete triggerJets;
+    delete triggerTaus;
+    delete triggerPhotons;
+}
+
+void BareTrigger::init(){
+    if (!triggerFired)
+        triggerFired =new vector<int>;
+    if (!triggerPrescale)
+        triggerPrescale =new vector<float>;
+    // ---
+    if (!triggerLeps)
+        triggerLeps =new vector<int>;
+    if (!triggerJets)
+        triggerJets =new vector<int>;
+    if (!triggerTaus)
+        triggerTaus =new vector<int>;
+    if (!triggerPhotons)
+        triggerPhotons =new vector<int>;
+}
 
 void BareTrigger::clear(){
 
@@ -19,37 +45,34 @@ void BareTrigger::clear(){
 }
 
 void BareTrigger::defineBranches(TTree *t){
-    triggerFired =new vector<int>;
+    init();
+
     t->Branch("triggerFired","vector<int>",&triggerFired);
-    triggerPrescale =new vector<float>;
     t->Branch("triggerPrescale","vector<float>",&triggerPrescale);
     // ---
-    triggerLeps =new vector<int>;
     t->Branch("triggerLeps","vector<int>",&triggerLeps);
-    triggerJets =new vector<int>;
     t->Branch("triggerJets","vector<int>",&triggerLeps);
-    triggerTaus =new vector<int>;
     t->Branch("triggerTaus","vector<int>",&triggerTaus);
-    triggerPhotons =new vector<int>;
     t->Branch("triggerPhotons","vector<int>",&triggerPhotons);
 }
 
 void BareTrigger::setBranchAddresses(TTree*t)
 {
-    triggerFired =new vector<int>;
-    triggerPrescale =new vector<float>;
+    init();
+
+    if (t->GetBranchStatus("triggerFired"))
+        t -> SetBranchAddress("triggerFired", &triggerFired);
+    if (t->GetBranchStatus("triggerPrescale"))
+        t -> SetBranchAddress("triggerPrescale", &triggerPrescale);
     // ---
-    triggerLeps =new vector<int>;
-    triggerJets =new vector<int>;
-    triggerTaus =new vector<int>;
-    triggerPhotons =new vector<int>;
-    t -> SetBranchAddress("triggerFired", &triggerFired);
-    t -> SetBranchAddress("triggerPrescale", &triggerPrescale);
-    // ---
-    t -> SetBranchAddress("triggerLeps", &triggerLeps);
-    t -> SetBranchAddress("triggerJets", &triggerJets);
-    t -> SetBranchAddress("triggerTaus", &triggerTaus);
-    t -> SetBranchAddress("triggerPhotons", &triggerPhotons);
+    if (t->GetBranchStatus("triggerLeps"))
+        t -> SetBranchAddress("triggerLeps", &triggerLeps);
+    if (t->GetBranchStatus("triggerJets"))
+        t -> SetBranchAddress("triggerJets", &triggerJets);
+    if (t->GetBranchStatus("triggerTaus"))
+        t -> SetBranchAddress("triggerTaus", &triggerTaus);
+    if (t->GetBranchStatus("triggerPhotons"))
+        t -> SetBranchAddress("triggerPhotons", &triggerPhotons);
 }
 
 // Local Variables:

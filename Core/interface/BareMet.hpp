@@ -10,25 +10,26 @@ class BareMet : virtual public BareP4
     public:
         BareMet();
         ~BareMet();
+        void init();
         void clear();
         void defineBranches(TTree *t);
         virtual void setBranchAddresses(TTree*) ;
-        virtual inline string name(){return "BareMet";};
+        virtual inline string name() { return "BareMet"; }
         virtual void compress();
 
         // -- variables
         //TClonesArray *p4;
-        vector<float> *ptJESUP;
-        vector<float> *ptJESDOWN;
+        vector<float> *ptJESUP{0};
+        vector<float> *ptJESDOWN{0};
 
         // Should not stay here, but in MC -> we will esculed it if run on onlyMc
-        TClonesArray *genP4;
+        TClonesArray *genP4{0};
 
-        TLorentzVector *metNoMu;
-        TLorentzVector *pfMet_e3p0;
-        TLorentzVector *metChargedHadron;
-        TLorentzVector *metNeutralHadron;
-        TLorentzVector *metNeutralEM;
+        TLorentzVector *metNoMu{0};
+        TLorentzVector *pfMet_e3p0{0};
+        TLorentzVector *metChargedHadron{0};
+        TLorentzVector *metNeutralHadron{0};
+        TLorentzVector *metNeutralEM{0};
   
         float caloMet_Pt;
         float caloMet_Phi;

@@ -1,21 +1,54 @@
 #include "NeroProducer/Core/interface/BareTaus.hpp"
 
 BareTaus::BareTaus(): BareP4() {
-    p4 = NULL;
-    id = NULL;
-    Q = NULL;
-    M = NULL;
-    iso = NULL;
-    chargedIsoPtSum = NULL;
-    neutralIsoPtSum = NULL;
-    isoDeltaBetaCorr = NULL;
-    againstEleLoose = NULL;
-    againstEleMedium = NULL;
-    againstMuLoose = NULL;
-    againstMuTight = NULL;
 }
 
 BareTaus::~BareTaus(){
+    delete id;
+    delete Q;
+    delete M;
+    delete iso;
+    delete chargedIsoPtSum;
+    delete neutralIsoPtSum;
+    delete isoDeltaBetaCorr;
+    delete againstEleLoose;
+    delete againstEleMedium;
+    delete againstMuLoose;
+    delete againstMuTight;
+}
+
+void BareTaus::init(){
+    BareP4::init();
+
+    if (!id)
+        id = new vector<float>;
+    //
+    if (!Q)
+        Q = new vector<int>;
+    //
+    if (!M)
+        M = new vector<float>;
+    //
+    if (!iso)
+        iso = new vector<float>;
+
+    if ( IsExtend() )
+        {
+            if (!chargedIsoPtSum)
+                chargedIsoPtSum = new vector<float>;
+            if (!neutralIsoPtSum)
+                neutralIsoPtSum = new vector<float> ;
+            if (!isoDeltaBetaCorr)
+                isoDeltaBetaCorr = new vector<float>;
+            if (!againstEleLoose)
+                againstEleLoose = new vector<int>;
+            if (!againstEleMedium)
+                againstEleMedium = new vector<int>;
+            if (!againstMuLoose)
+                againstMuLoose = new vector<int>;
+            if (!againstMuTight)
+                againstMuTight = new vector<int>;
+        }
 }
 
 void BareTaus::clear(){
@@ -39,33 +72,22 @@ void BareTaus::clear(){
 void BareTaus::defineBranches(TTree *t){
     BareP4::defineBranches(t, "tau" );
     //
-    id = new vector<float>;
     t->Branch("tauId","vector<float>",&id);
     //
-    Q = new vector<int>;
     t->Branch("tauQ","vector<int>",&Q);
     //
-    M = new vector<float>;
     t->Branch("tauM","vector<float>",&M);
     //
-    iso = new vector<float>;
     t->Branch("tauIso","vector<float>",&iso);
 
     if ( IsExtend() )
         {
-        chargedIsoPtSum = new vector<float>;
         t->Branch("tauChargedIsoPtSum","vector<float>",&chargedIsoPtSum);
-        neutralIsoPtSum = new vector<float> ;
         t->Branch("tauNeutralIsoPtSum","vector<float>",&neutralIsoPtSum);
-        isoDeltaBetaCorr = new vector<float>;
         t->Branch("tauIsoDeltaBetaCorr","vector<float>",&isoDeltaBetaCorr);
-        againstEleLoose = new vector<int>;
         t->Branch("tauAgainstEleLoose","vector<int>",&againstEleLoose);
-        againstEleMedium = new vector<int>;
         t->Branch("tauAgainstEleMedium","vector<int>",&againstEleMedium);
-        againstMuLoose = new vector<int>;
         t->Branch("tauAgainstMuLoose","vector<int>",&againstMuLoose);
-        againstMuTight = new vector<int>  ;
         t->Branch("tauAgainstMuTight","vector<int>",&againstMuTight);
         }
 
@@ -74,41 +96,35 @@ void BareTaus::defineBranches(TTree *t){
 void BareTaus::setBranchAddresses(TTree *t){
     BareP4::setBranchAddresses(t,"tau");
 
-    id = new vector<float>;
-    t->SetBranchAddress("tauId"	,&id);
+    if (t->GetBranchStatus("tauId"))
+        t->SetBranchAddress("tauId"	,&id);
     //
-    Q = new vector<int>;
-    t->SetBranchAddress("tauQ"	,&Q);
+    if (t->GetBranchStatus("tauQ"))
+        t->SetBranchAddress("tauQ"	,&Q);
     //
-    M = new vector<float>;
-    t->SetBranchAddress("tauM"	,&M);
+    if (t->GetBranchStatus("tauM"))
+        t->SetBranchAddress("tauM"	,&M);
     //
-    iso = new vector<float>;
-    t->SetBranchAddress("tauIso"	,&iso);
+    if (t->GetBranchStatus("tauIso"))
+        t->SetBranchAddress("tauIso"	,&iso);
 
     // EXTENDED VARIBALES
     if ( IsExtend() )
         {
-        chargedIsoPtSum = new vector<float>;
-        t->SetBranchAddress("tauChargedIsoPtSum",&chargedIsoPtSum);
-
-        neutralIsoPtSum = new vector<float> ;
-        t->SetBranchAddress("tauNeutralIsoPtSum",&neutralIsoPtSum);
-
-        isoDeltaBetaCorr = new vector<float>;
-        t->SetBranchAddress("tauIsoDeltaBetaCorr",&isoDeltaBetaCorr);
-
-        againstEleLoose = new vector<int>;
-        t->SetBranchAddress("tauAgainstEleLoose",&againstEleLoose);
-
-        againstEleMedium = new vector<int>;
-        t->SetBranchAddress("tauAgainstEleMedium",&againstEleMedium);
-
-        againstMuLoose = new vector<int>;
-        t->SetBranchAddress("tauAgainstMuLoose",&againstMuLoose);
-
-        againstMuTight = new vector<int>  ;
-        t->SetBranchAddress("tauAgainstMuTight",&againstMuTight);
+            if (t->GetBranchStatus("tauChargedIsoPtSum"))
+                  t->SetBranchAddress("tauChargedIsoPtSum",&chargedIsoPtSum);
+            if (t->GetBranchStatus("tauNeutralIsoPtSum"))
+                t->SetBranchAddress("tauNeutralIsoPtSum",&neutralIsoPtSum);
+            if (t->GetBranchStatus("tauIsoDeltaBetaCorr"))
+                t->SetBranchAddress("tauIsoDeltaBetaCorr",&isoDeltaBetaCorr);
+            if (t->GetBranchStatus("tauAgainstEleLoose"))
+                t->SetBranchAddress("tauAgainstEleLoose",&againstEleLoose);
+            if (t->GetBranchStatus("tauAgainstEleMedium"))
+                t->SetBranchAddress("tauAgainstEleMedium",&againstEleMedium);
+            if (t->GetBranchStatus("tauAgainstMuLoose"))
+                t->SetBranchAddress("tauAgainstMuLoose",&againstMuLoose);
+            if (t->GetBranchStatus("tauAgainstMuTight"))
+                t->SetBranchAddress("tauAgainstMuTight",&againstMuTight);
         }
 }
 // Local Variables:

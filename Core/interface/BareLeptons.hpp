@@ -18,23 +18,24 @@ class BareLeptons : virtual public BareP4
 
         BareLeptons();
         ~BareLeptons();
+        void init();
         void clear();
         void defineBranches(TTree *t);
         void setBranchAddresses(TTree*);
-        virtual inline string name(){return "BareLeptons";};
+        virtual inline string name() { return "BareLeptons"; }
 
         bool inline passSelection(const unsigned &idx, const Selection &sel) const  { return (selBits->at(idx) & sel) != 0; }
 
         // ----
-        vector<int>      *pdgId;	
-        vector<float>    *iso;
-        vector<unsigned> *selBits;
-        vector<float>    *lepPfPt;
+        vector<int>      *pdgId{0};	
+        vector<float>    *iso{0};
+        vector<unsigned> *selBits{0};
+        vector<float>    *lepPfPt{0};
 
-        vector<float>    *chIso;
-        vector<float>    *nhIso;
-        vector<float>    *phoIso;
-        vector<float>    *puIso;
+        vector<float>    *chIso{0};
+        vector<float>    *nhIso{0};
+        vector<float>    *phoIso{0};
+        vector<float>    *puIso{0};
 };
 
 #endif

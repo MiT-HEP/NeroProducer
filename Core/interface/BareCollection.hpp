@@ -21,9 +21,11 @@ class BareCollection
         BareCollection(){ extend_=false;}
         virtual ~BareCollection() {}
         virtual void clear() = 0;
+        virtual void init() {}
         virtual void defineBranches(TTree*) = 0 ;
         virtual void setBranchAddresses(TTree*) = 0;
         virtual string name() = 0;
+        virtual unsigned size() const { return 0; }
         virtual void compress(){}; // compress all double pointers
         
         inline void SetExtend(bool value=true){extend_=value;}

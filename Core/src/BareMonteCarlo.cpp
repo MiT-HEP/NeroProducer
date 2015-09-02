@@ -2,12 +2,20 @@
 #include "NeroProducer/Core/interface/BareFunctions.hpp"
 
 BareMonteCarlo::BareMonteCarlo() : BareP4(){
-    p4 = NULL;
-    pdgId = NULL;
-    jetP4 = NULL;
 }
 
 BareMonteCarlo::~BareMonteCarlo(){
+    delete jetP4;
+    delete pdgId;
+}
+
+void BareMonteCarlo::init(){
+    BareP4::init();
+
+    if (!jetP4)
+        jetP4 = new TClonesArray("TLorentzVector", 20);
+    if (!pdgId)
+        pdgId = new vector<int>;
 }
 
 void BareMonteCarlo::clear(){
@@ -31,10 +39,8 @@ void BareMonteCarlo::defineBranches(TTree *t){
     //
     BareP4::defineBranches(t, "gen" );
     //
-    jetP4 = new TClonesArray("TLorentzVector", 20);
     t->Branch("genjetP4","TClonesArray", &jetP4, 128000, 0);
     //
-    pdgId = new vector<int>;
     t->Branch("genPdgId","vector<int>", &pdgId);
     //
     t->Branch("puTrueInt",&puTrueInt,"puTrueInt/I");
@@ -52,21 +58,31 @@ void BareMonteCarlo::defineBranches(TTree *t){
 void BareMonteCarlo::setBranchAddresses(TTree *t){
     BareP4::setBranchAddresses(t,"gen");
     //
-    jetP4 = new TClonesArray("TLorentzVector", 20);
-    t->SetBranchAddress("genjetP4"	, &jetP4 );
-    pdgId = new vector<int>;
-    t->SetBranchAddress("genPdgId"	, &pdgId);
+    if (t->GetBranchStatus("genjetP4"))
+        t->SetBranchAddress("genjetP4"	, &jetP4 );
+    if (t->GetBranchStatus("genPdgId"))
+        t->SetBranchAddress("genPdgId"	, &pdgId);
     //
-    t->SetBranchAddress("puTrueInt"	,&puTrueInt	);
-    t->SetBranchAddress("mcWeight"	,&mcWeight	);
-    t->SetBranchAddress("pdfQscale"	,&qScale	);
-    t->SetBranchAddress("pdfAlphaQED"	,&alphaQED	);
-    t->SetBranchAddress("pdfAlphaQCD"	,&alphaQCD	);
-    t->SetBranchAddress("pdfX1"	,&x1		);
-    t->SetBranchAddress("pdfX2"	,&x2		);
-    t->SetBranchAddress("pdfId1"	,&pdf1Id	);
-    t->SetBranchAddress("pdfId2"	,&pdf2Id	);
-    t->SetBranchAddress("pdfScalePdf"	,&scalePdf	);
+    if (t->GetBranchStatus("puTrueInt"))
+        t->SetBranchAddress("puTrueInt"	,&puTrueInt	);
+    if (t->GetBranchStatus("mcWeight"))
+        t->SetBranchAddress("mcWeight"	,&mcWeight	);
+    if (t->GetBranchStatus("pdfQscale"))
+        t->SetBranchAddress("pdfQscale"	,&qScale	);
+    if (t->GetBranchStatus("pdfAlphaQED"))
+        t->SetBranchAddress("pdfAlphaQED"	,&alphaQED	);
+    if (t->GetBranchStatus("pdfAlphaQCD"))
+        t->SetBranchAddress("pdfAlphaQCD"	,&alphaQCD	);
+    if (t->GetBranchStatus("pdfX1"))
+        t->SetBranchAddress("pdfX1"	,&x1		);
+    if (t->GetBranchStatus("pdfX2"))
+        t->SetBranchAddress("pdfX2"	,&x2		);
+    if (t->GetBranchStatus("pdfId1"))
+        t->SetBranchAddress("pdfId1"	,&pdf1Id	);
+    if (t->GetBranchStatus("pdfId2"))
+        t->SetBranchAddress("pdfId2"	,&pdf2Id	);
+    if (t->GetBranchStatus("pdfScalePdf"))
+        t->SetBranchAddress("pdfScalePdf"	,&scalePdf	);
 }
 
 void BareMonteCarlo::compress(){

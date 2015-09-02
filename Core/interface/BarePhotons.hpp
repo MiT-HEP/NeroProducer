@@ -10,27 +10,28 @@ class BarePhotons : virtual public BareP4
     public:
         BarePhotons();
         ~BarePhotons();
+        void init();
         void clear();
         void defineBranches(TTree *t);
         void setBranchAddresses(TTree*) ;
-        virtual inline string name(){return "BarePhotons";};
+        virtual inline string name() { return "BarePhotons"; }
 
         // -- variables
-        //TClonesArray *p4;
-        vector<float> *sieie;
-        vector<float> *iso;
-        vector<int> *looseid;
-        vector<int> *tightid;
-        vector<int> *mediumid;
+        //TClonesArray *p4{0};
+        vector<float> *sieie{0};
+        vector<float> *iso{0};
+        vector<int> *looseid{0};
+        vector<int> *tightid{0};
+        vector<int> *mediumid{0};
 
-        vector<float> *chIso;
-        vector<float> *chIsoRC;
-        vector<float> *nhIso;
-        vector<float> *nhIsoRC;
-        vector<float> *phoIso;
-        vector<float> *phoIsoRC;
-        vector<float> *puIso;
-        vector<float> *puIsoRC;
+        vector<float> *chIso{0};
+        vector<float> *chIsoRC{0};
+        vector<float> *nhIso{0};
+        vector<float> *nhIsoRC{0};
+        vector<float> *phoIso{0};
+        vector<float> *phoIsoRC{0};
+        vector<float> *puIso{0};
+        vector<float> *puIsoRC{0};
 };
 
 #endif

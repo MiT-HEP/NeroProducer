@@ -26,12 +26,18 @@ void BareAll::defineBranches(TTree *t){
 
 void BareAll::setBranchAddresses(TTree *t){
     //
-    t->SetBranchAddress("isRealData"  ,&isRealData   );
-    t->SetBranchAddress("runNum"      ,&runNum       );
-    t->SetBranchAddress("lumiNum"     ,&lumiNum      );
-    t->SetBranchAddress("eventNum"    ,&eventNum     );
-    t->SetBranchAddress("mcWeight"    ,&mcWeight     );
-    t->SetBranchAddress("puTrueInt"     ,&puTrueInt  );
+    if (t->GetBranchStatus("isRealData"))
+        t->SetBranchAddress("isRealData"  ,&isRealData   );
+    if (t->GetBranchStatus("runNum"))
+        t->SetBranchAddress("runNum"      ,&runNum       );
+    if (t->GetBranchStatus("lumiNum"))
+        t->SetBranchAddress("lumiNum"     ,&lumiNum      );
+    if (t->GetBranchStatus("eventNum"))
+        t->SetBranchAddress("eventNum"    ,&eventNum     );
+    if (t->GetBranchStatus("mcWeight"))
+        t->SetBranchAddress("mcWeight"    ,&mcWeight     );
+    if (t->GetBranchStatus("puTrueInt"))
+        t->SetBranchAddress("puTrueInt"     ,&puTrueInt  );
 }
 
 // Local Variables:

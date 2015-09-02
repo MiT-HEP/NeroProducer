@@ -9,26 +9,27 @@ class BareTaus : virtual public BareP4
     public:
         BareTaus();
         ~BareTaus();
+        void init();
         void clear();
         void defineBranches(TTree *t);
         void setBranchAddresses(TTree*) ;
-        virtual inline string name(){return "BareTaus";};
+        virtual inline string name() { return "BareTaus"; }
 
         // --  members
-        //TClonesArray    *p4;
-        vector<float>   *id ; 
-        vector<int>     *Q ; // charge
-        vector<float>   *M ; // mass
-        vector<float>   *iso ;
+        //TClonesArray    *p4{0};
+        vector<float>   *id{0}; 
+        vector<int>     *Q{0}; // charge
+        vector<float>   *M{0}; // mass
+        vector<float>   *iso{0};
 
         // EXTENDED VARIABLES
-        vector<float>   *chargedIsoPtSum;
-        vector<float>   *neutralIsoPtSum;
-        vector<float>   *isoDeltaBetaCorr;
-        vector<int>   *againstEleLoose;
-        vector<int>   *againstEleMedium;
-        vector<int>   *againstMuLoose;
-        vector<int>   *againstMuTight;
+        vector<float>   *chargedIsoPtSum{0};
+        vector<float>   *neutralIsoPtSum{0};
+        vector<float>   *isoDeltaBetaCorr{0};
+        vector<int>   *againstEleLoose{0};
+        vector<int>   *againstEleMedium{0};
+        vector<int>   *againstMuLoose{0};
+        vector<int>   *againstMuTight{0};
 };
 
 #endif

@@ -9,28 +9,29 @@ class BareJets : virtual public BareP4
     public:
         BareJets();
         ~BareJets();
+        void init();
         void clear();
         void defineBranches(TTree*);
         virtual void setBranchAddresses(TTree*);
-        virtual inline string name(){ return "BareJets";}
+        virtual inline string name() { return "BareJets"; }
 
         // -- variables
-        //TClonesArray  *p4;
-        vector<float> *rawPt;
-        vector<float> *bDiscr;
-        vector<float> *bDiscrLegacy;
-        vector<float> *puId;
-        vector<float> *unc;
-        vector<float> *qgl;
-        vector<int>   *flavour;
-        vector<int>   *matchedPartonPdgId;
-        vector<int>   *motherPdgId;
-        vector<int>   *grMotherPdgId;
-        vector<bool>  *mjId;
-        vector<bool>  *mjId_loose;
+        //TClonesArray  *p4{0};
+        vector<float> *rawPt{0};
+        vector<float> *bDiscr{0};
+        vector<float> *bDiscrLegacy{0};
+        vector<float> *puId{0};
+        vector<float> *unc{0};
+        vector<float> *qgl{0};
+        vector<int>   *flavour{0};
+        vector<int>   *matchedPartonPdgId{0};
+        vector<int>   *motherPdgId{0};
+        vector<int>   *grMotherPdgId{0};
+        vector<bool>  *mjId{0};
+        vector<bool>  *mjId_loose{0};
 
-        vector<float> *Q;
-        vector<float> *QnoPU;
+        vector<float> *Q{0};
+        vector<float> *QnoPU{0};
 
 };
 

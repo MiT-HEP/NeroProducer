@@ -1,20 +1,42 @@
 #include "NeroProducer/Core/interface/BareLeptons.hpp"
 
 BareLeptons::BareLeptons():BareP4(){
-    p4 = NULL;
-    pdgId = NULL;
-    iso = NULL;
-    selBits = NULL;
-    lepPfPt = NULL;
-
-    //
-    chIso=NULL;
-    nhIso=NULL;
-    phoIso=NULL;
-    puIso=NULL;
 }
 
 BareLeptons::~BareLeptons(){
+    delete pdgId;
+    delete iso;
+    delete selBits;
+    delete lepPfPt;
+    delete chIso;
+    delete nhIso;
+    delete phoIso;
+    delete puIso;
+}
+
+void BareLeptons::init(){
+    BareP4::init();
+
+    if (!pdgId)
+        pdgId = new vector<int>;
+    //
+    if (!iso)
+        iso = new vector<float>;
+    //
+    if (!selBits)
+        selBits = new vector<unsigned>;
+    //
+    if (!lepPfPt)
+        lepPfPt = new vector<float>;
+    // 
+    if (!chIso)
+        chIso=new vector<float>;
+    if (!nhIso)
+        nhIso=new vector<float>;
+    if (!phoIso)
+        phoIso=new vector<float>;
+    if (!puIso)
+        puIso=new vector<float>;
 }
 
 void BareLeptons::clear(){
@@ -35,53 +57,42 @@ void BareLeptons::defineBranches(TTree*t){
     //
     BareP4::defineBranches(t, "lep" );
     //
-    pdgId = new vector<int>;
     t->Branch("lepPdgId","vector<int>",&pdgId);
     //
-    iso = new vector<float>;
     t->Branch("lepIso","vector<float>",&iso);
     //
-    selBits = new vector<unsigned>;
     t->Branch("lepSelBits","vector<unsigned>",&selBits);
     //
-    lepPfPt = new vector<float>;
     t->Branch("lepPfPt","vector<float>",&lepPfPt);
 
     // 
-    chIso=new vector<float>;
     t->Branch("lepChIso","vector<float>",&chIso);
-    nhIso=new vector<float>;
     t->Branch("lepNhIso","vector<float>",&nhIso);
-    phoIso=new vector<float>;
     t->Branch("lepPhoIso","vector<float>",&phoIso);
-    puIso=new vector<float>;
     t->Branch("lepPuIso","vector<float>",&puIso);
-    
-
 }
 
 void BareLeptons::setBranchAddresses(TTree*t){
 
     BareP4::setBranchAddresses(t,"lep");
 
-    pdgId = new vector<int>;
-    t->SetBranchAddress("lepPdgId"	,&pdgId);
-    iso = new vector<float>;
-    t->SetBranchAddress("lepIso"	,&iso);
-    selBits = new vector<unsigned>;
-    t->SetBranchAddress("lepSelBits"	,&selBits);
-    lepPfPt = new vector<float>;
-    t->SetBranchAddress("lepPfPt"	,&lepPfPt);
+    if (t->GetBranchStatus("lepPdgId"))
+        t->SetBranchAddress("lepPdgId"	,&pdgId);
+    if (t->GetBranchStatus("lepIso"))
+        t->SetBranchAddress("lepIso"	,&iso);
+    if (t->GetBranchStatus("lepSelBits"))
+        t->SetBranchAddress("lepSelBits"	,&selBits);
+    if (t->GetBranchStatus("lepPfPt"))
+        t->SetBranchAddress("lepPfPt"	,&lepPfPt);
 
-    chIso=new vector<float>;
-    t->SetBranchAddress("lepChIso",&chIso);
-    nhIso=new vector<float>;
-    t->SetBranchAddress("lepNhIso",&nhIso);
-    phoIso=new vector<float>;
-    t->SetBranchAddress("lepPhoIso",&phoIso);
-    puIso=new vector<float>;
-    t->SetBranchAddress("lepPuIso",&puIso);
-
+    if (t->GetBranchStatus("lepChIso"))
+        t->SetBranchAddress("lepChIso",&chIso);
+    if (t->GetBranchStatus("lepNhIso"))
+        t->SetBranchAddress("lepNhIso",&nhIso);
+    if (t->GetBranchStatus("lepPhoIso"))
+        t->SetBranchAddress("lepPhoIso",&phoIso);
+    if (t->GetBranchStatus("lepPuIso"))
+        t->SetBranchAddress("lepPuIso",&puIso);
 }
 
 // Local Variables:

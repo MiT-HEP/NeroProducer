@@ -10,18 +10,19 @@ class BareMonteCarlo : virtual public BareP4
     public:
         BareMonteCarlo();
         ~BareMonteCarlo();
+        void init();
         void clear();
         void defineBranches(TTree *t);
         void setBranchAddresses(TTree*) ;
-        virtual inline string name(){return "BareMonteCarlo";};
+        virtual inline string name() { return "BareMonteCarlo"; }
         virtual void compress();
 
         // -- variables
-        //TClonesArray *p4; // gen particles
-        vector<int>  *pdgId;
+        //TClonesArray *p4{0}; // gen particles
+        vector<int>  *pdgId{0};
 
         // genjets
-        TClonesArray *jetP4;
+        TClonesArray *jetP4{0};
 
         //
         int puTrueInt;
