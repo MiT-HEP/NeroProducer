@@ -72,7 +72,7 @@ mithep::nero::LeptonsFiller::fill()
         out_.pdgId->push_back(-11 * ele->Charge());
         out_.iso->push_back(chIso + nhIso + phoIso);
 
-        unsigned selBits = 0;
+        unsigned selBits = BareLeptons::LepLoose;
         if (eleAId->At(iE))
           selBits |= BareLeptons::LepVeto;
         if (eleBId->At(iE))
@@ -108,7 +108,7 @@ mithep::nero::LeptonsFiller::fill()
         out_.iso->push_back(iso);
 
         // careful, different treatment for muons and electrons
-        unsigned selBits = 0;
+        unsigned selBits = BareLeptons::LepLoose;
         if (muAId->At(iM))
           selBits |= BareLeptons::LepVeto;
         if (muBId->At(iM))
