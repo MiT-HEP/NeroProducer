@@ -105,6 +105,14 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         float phoIso = el.photonIso();
         float puChIso= el.puChargedHadronIso();
 
+        bool isEB = el.isEB();
+        bool isEE = el.isEE();
+        bool isEBEEGap  = el.isEBEEGap(); // for EB EE
+        bool isEBEtaGap = el.isEBEtaGap(); //for EB
+        bool isEBPhiGap = el.isEBPhiGap (); //for EB
+        bool isEERingGap = el.isEERingGap(); //for EE
+        bool isEEDeeGap = el.isEEDeeGap ();//for EE
+
         l.iso = chIso + nhIso + phoIso; 
         l.p4.SetPxPyPzE( el.px(),el.py(),el.pz(),el.energy());
         l.selBits = 0 ;
@@ -112,6 +120,9 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
             l.selBits |= unsigned(isPassMedium) * LepMedium;
             l.selBits |= unsigned(isPassVeto) * LepVeto;
             l.selBits |= unsigned(isPassLoose) * LepLoose;
+            //--
+            l.selBits |= unsigned(isEB and (not isEBEEGap and not isEBEtaGap and not isEBPhiGap)  ) * LepEBEE;
+            l.selBits |= unsigned(isEE and (not isEBEEGap and not isEERingGap and not isEEDeeGap)  ) * LepEBEE;
         l.pfPt = 0.;
     
         l.chiso  = chIso;
