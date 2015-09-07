@@ -29,6 +29,7 @@ class NeroLeptons : virtual public NeroCollection,
                 float nhiso;
                 float phoiso;
                 float puiso;
+                float etasc{-999};
         };
 
         // to be setted by the vertex

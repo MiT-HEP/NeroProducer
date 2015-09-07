@@ -35,6 +35,8 @@ class BareLeptons : virtual public BareP4
         vector<float>    *nhIso;
         vector<float>    *phoIso;
         vector<float>    *puIso;
+
+        vector<float>    *etaSC{0};
 };
 
 #endif
