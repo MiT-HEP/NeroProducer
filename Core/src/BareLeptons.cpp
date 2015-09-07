@@ -57,6 +57,8 @@ void BareLeptons::defineBranches(TTree*t){
     puIso=new vector<float>;
     t->Branch("lepPuIso","vector<float>",&puIso);
     
+    etaSC= new vector<float>;    
+    t->Branch("lepEtaSC","vector<float>",&etaSC);
 
 }
 
@@ -81,6 +83,9 @@ void BareLeptons::setBranchAddresses(TTree*t){
     t->SetBranchAddress("lepPhoIso",&phoIso);
     puIso=new vector<float>;
     t->SetBranchAddress("lepPuIso",&puIso);
+
+    etaSC= new vector<float>;    
+    t->SetBranchAddress("lepEtaSC",&etaSC);
 
 }
 

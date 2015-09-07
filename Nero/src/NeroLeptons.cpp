@@ -74,6 +74,8 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         l.phoiso = phoiso;
         l.puiso  = puiso;
 
+        l.sceta = -999;
+
         leptons.push_back(l);
     }
 
@@ -118,8 +120,10 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         l.nhiso  = nhIso;
         l.phoiso = phoIso;
         l.puiso  = puChIso;
+        l.etasc = 
 
         leptons.push_back(l);
+        l.etasc = el.superCluster()->eta();
 
     }
 
@@ -141,6 +145,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         nhIso	-> push_back(l.nhiso);
         phoIso	-> push_back(l.phoiso);
         puIso	-> push_back(l.puiso);
+        etaSC   -> push_back(l.etasc);
     }
     return 0;
 }
