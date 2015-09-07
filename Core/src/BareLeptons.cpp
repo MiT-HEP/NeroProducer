@@ -29,6 +29,8 @@ void BareLeptons::clear(){
     nhIso->clear();
     phoIso->clear();
     puIso->clear();
+
+    etaSC->clear();
 }
 
 void BareLeptons::defineBranches(TTree*t){
