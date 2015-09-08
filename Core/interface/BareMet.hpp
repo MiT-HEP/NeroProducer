@@ -27,9 +27,7 @@ class BareMet : virtual public BareP4
 
         TLorentzVector *metNoMu{0};
         TLorentzVector *pfMet_e3p0{0};
-        TLorentzVector *metChargedHadron{0};
-        TLorentzVector *metNeutralHadron{0};
-        TLorentzVector *metNeutralEM{0};
+        TLorentzVector *trackMet{0};
   
         float caloMet_Pt;
         float caloMet_Phi;

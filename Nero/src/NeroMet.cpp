@@ -38,9 +38,7 @@ int NeroMet::analyze(const edm::Event& iEvent){
         //MetNoMu
         TLorentzVector metnomu(met.px(),met.py(),met.pz(),met.energy());
         TLorentzVector pfmet_e3p0(0,0,0,0);
-        TLorentzVector chMet(0,0,0,0); 
-        TLorentzVector nhMet(0,0,0,0); 
-        TLorentzVector phoMet(0,0,0,0); 
+        TLorentzVector tkMet(0,0,0,0); 
        
         if ( pf == NULL ) cout<<"[NeroMet]::[analyze]::[ERROR] PF pointer is null. Run NeroPF. "<<endl; 
         
@@ -55,18 +53,12 @@ int NeroMet::analyze(const edm::Event& iEvent){
                 metnomu += TLorentzVector(cand.px(),cand.py(),cand.pz(),cand.energy());  
             
             // only charge hadrons
-            if ( cand.charge() != 0 and cand.pdgId() > 20 )
-                chMet += TLorentzVector(cand.px(),cand.py(),cand.pz(),cand.energy());
-            if ( cand.charge() == 0 and cand.pdgId() == 22 ) 
-                phoMet += TLorentzVector(cand.px(),cand.py(),cand.pz(),cand.energy());
-            if ( cand.charge() == 0 and cand.pdgId() != 22 ) 
-                nhMet += TLorentzVector(cand.px(),cand.py(),cand.pz(),cand.energy());
+            if ( cand.charge() != 0 )
+                tkMet += TLorentzVector(cand.px(),cand.py(),cand.pz(),cand.energy());
         }
         
         *metNoMu = TLorentzVector(metnomu);    
-        *metChargedHadron = TLorentzVector(chMet);
-        *metNeutralHadron = TLorentzVector(nhMet);
-        *metNeutralEM = TLorentzVector(phoMet);
+        *trackMet = TLorentzVector(tkMet);
         *pfMet_e3p0 = TLorentzVector(pfmet_e3p0);
     
     }    
