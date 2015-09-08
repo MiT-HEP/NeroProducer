@@ -8,7 +8,6 @@ BareFatJets::BareFatJets(): BareP4(){
 BareFatJets::~BareFatJets(){
 
     BareFunctions::Delete(rawPt);
-    BareFunctions::Delete(flavour);
     BareFunctions::Delete(flavour        );
     BareFunctions::Delete(tau1           );
     BareFunctions::Delete(tau2           );
