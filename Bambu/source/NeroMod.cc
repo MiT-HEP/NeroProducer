@@ -22,7 +22,7 @@ TObjArray*
 mithep::NeroMod::GetFillers() const
 {
   auto* arr = new TObjArray();
-  for (unsigned iC(0); iC != nero::nCollections; ++iC)
+  for (unsigned iC(0); iC != nero::BaseFiller::nCollections; ++iC)
     arr->Add(filler_[iC]);
 
   return arr;
@@ -44,24 +44,24 @@ mithep::NeroMod::SlaveBegin()
   info_.Write();
 
   TString triggerNames;
-  if (filler_[nero::kTrigger]) {
-    auto& filler(*static_cast<nero::TriggerFiller*>(filler_[nero::kTrigger]));
+  if (filler_[nero::BaseFiller::kTrigger]) {
+    auto& filler(*static_cast<nero::TriggerFiller*>(filler_[nero::BaseFiller::kTrigger]));
     for (auto& n : filler.triggerNames())
       triggerNames += n + ",";
   }
   TNamed("triggerNames", triggerNames.Data()).Write();
 
-  if (filler_[nero::kAll]) {
+  if (filler_[nero::BaseFiller::kAll]) {
     auto* skippedEvents = GetPublicObj<mithep::EventHeaderCol>(mithep::Names::gkSkimmedHeaders, false);
     if (skippedEvents)
-      static_cast<nero::AllFiller*>(filler_[nero::kAll])->setSkippedEvents(skippedEvents);
+      static_cast<nero::AllFiller*>(filler_[nero::BaseFiller::kAll])->setSkippedEvents(skippedEvents);
   }
 
   nero::BaseFiller::ProductGetter getter([this](char const* _name)->TObject* {
       return this->GetObject<TObject>(_name);
     });
 
-  for (unsigned iC(0); iC != nero::nCollections; ++iC) {
+  for (unsigned iC(0); iC != nero::BaseFiller::nCollections; ++iC) {
     if (!filler_[iC])
       continue;
 
@@ -70,10 +70,10 @@ mithep::NeroMod::SlaveBegin()
     if (printLevel_ > 0)
       std::cout << "creating branches for " << filler_[iC]->getObject()->name() << std::endl;
 
-    if (iC < nero::nEventObjects)
-      filler_[iC]->getObject()->defineBranches(eventsTree_);
+    if (iC < nero::BaseFiller::nEventObjects)
+      filler_[iC]->defineBranches(eventsTree_);
     else
-      filler_[iC]->getObject()->defineBranches(allTree_);
+      filler_[iC]->defineBranches(allTree_);
 
     if (printLevel_ > 0)
       std::cout << "initializing " << filler_[iC]->getObject()->name() << std::endl;
@@ -87,10 +87,10 @@ void
 mithep::NeroMod::BeginRun()
 {
   // if other fillers need similar switching, might make sense to define a conditions function on the filler side
-  if (filler_[nero::kTrigger] && (!HasHLTInfo() || !GetHltFwkMod()->HasData()))
-    filler_[nero::kTrigger]->disactivate();
+  if (filler_[nero::BaseFiller::kTrigger] && (!HasHLTInfo() || !GetHltFwkMod()->HasData()))
+    filler_[nero::BaseFiller::kTrigger]->disactivate();
 
-  for (unsigned iC(0); iC != nero::nCollections; ++iC) {
+  for (unsigned iC(0); iC != nero::BaseFiller::nCollections; ++iC) {
     if (!filler_[iC])
       continue;
 
@@ -104,7 +104,7 @@ mithep::NeroMod::BeginRun()
 void
 mithep::NeroMod::SlaveTerminate()
 {
-  for (unsigned iC(0); iC != nero::nCollections; ++iC) {
+  for (unsigned iC(0); iC != nero::BaseFiller::nCollections; ++iC) {
     if (!filler_[iC])
       continue;
 
@@ -127,7 +127,7 @@ mithep::NeroMod::SlaveTerminate()
 Bool_t
 mithep::NeroMod::Notify()
 {
-  for (unsigned iC(0); iC != nero::nCollections; ++iC) {
+  for (unsigned iC(0); iC != nero::BaseFiller::nCollections; ++iC) {
     if (!filler_[iC])
       continue;
 
@@ -143,8 +143,8 @@ mithep::NeroMod::Process()
   // always fill allevents
   nero::AllFiller* allFiller = 0;
 
-  if (filler_[nero::kAll]) {
-    allFiller = static_cast<nero::AllFiller*>(filler_[nero::kAll]);
+  if (filler_[nero::BaseFiller::kAll]) {
+    allFiller = static_cast<nero::AllFiller*>(filler_[nero::BaseFiller::kAll]);
     if (printLevel_ > 1)
       std::cout << "filling " << allFiller->getObject()->name() << std::endl;
 

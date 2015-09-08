@@ -13,7 +13,7 @@ namespace mithep {
       ~TausFiller() {}
 
       BareCollection* getObject() override { return &out_; }
-      mithep::nero::Collection collection() const override { return kTaus; }
+      BaseFiller::Collection collection() const override { return BaseFiller::kTaus; }
 
       void fill() override;
 

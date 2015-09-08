@@ -13,7 +13,7 @@ namespace mithep {
       ~MetFiller() {}
 
       BareCollection* getObject() override { return &out_; }
-      mithep::nero::Collection collection() const override { return kMet; }
+      BaseFiller::Collection collection() const override { return BaseFiller::kMet; }
 
       void fill() override;
 

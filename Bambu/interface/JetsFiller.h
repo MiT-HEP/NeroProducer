@@ -15,7 +15,7 @@ namespace mithep {
       ~JetsFiller() {}
 
       BareCollection* getObject() override { return &out_; }
-      mithep::nero::Collection collection() const override { return kJets; }
+      BaseFiller::Collection collection() const override { return BaseFiller::kJets; }
 
       void initialize() override;
       void finalize() override;

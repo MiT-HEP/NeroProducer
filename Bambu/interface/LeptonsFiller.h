@@ -13,7 +13,7 @@ namespace mithep {
       ~LeptonsFiller() {}
 
       BareCollection* getObject() override { return &out_; }
-      mithep::nero::Collection collection() const override { return kLeptons; }
+      BaseFiller::Collection collection() const override { return BaseFiller::kLeptons; }
 
       void fill() override;
 

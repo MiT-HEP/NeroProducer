@@ -9,11 +9,13 @@ namespace mithep {
 
     class FatJetsFiller : public BaseFiller {
     public:
-      FatJetsFiller() {}
+      FatJetsFiller(BaseFiller::Collection col) : collection_(col) {}
       ~FatJetsFiller() {}
 
       BareCollection* getObject() override { return &out_; }
-      mithep::nero::Collection collection() const override { return kFatJets; }
+      BaseFiller::Collection collection() const override { return collection_; }
+
+      void defineBranches(TTree*) override;
 
       void fill() override;
 
@@ -22,6 +24,8 @@ namespace mithep {
 
     private:
       BareFatJets out_{};
+
+      BaseFiller::Collection collection_;
 
       TString fatJetsName_ = "AKt8PFJetsCHS";
 

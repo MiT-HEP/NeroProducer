@@ -47,7 +47,7 @@ namespace mithep {
     TNamed head_{"head", ""};
     TNamed info_{"info", "Nero"};
 
-    nero::BaseFiller* filler_[nero::nCollections] = {};
+    nero::BaseFiller* filler_[nero::BaseFiller::nCollections] = {};
 
     BaseMod* condition_ = 0;
 
