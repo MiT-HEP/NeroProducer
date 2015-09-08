@@ -1,42 +1,32 @@
 #include "NeroProducer/Core/interface/BareLeptons.hpp"
+#include "NeroProducer/Core/interface/BareFunctions.hpp"
 
 BareLeptons::BareLeptons():BareP4(){
 }
 
 BareLeptons::~BareLeptons(){
-    delete pdgId;
-    delete iso;
-    delete selBits;
-    delete lepPfPt;
-    delete chIso;
-    delete nhIso;
-    delete phoIso;
-    delete puIso;
+    BareFunctions::Delete(pdgId);
+    BareFunctions::Delete(iso);
+    BareFunctions::Delete(selBits);
+    BareFunctions::Delete(lepPfPt);
+    BareFunctions::Delete(chIso);
+    BareFunctions::Delete(nhIso);
+    BareFunctions::Delete(phoIso);
+    BareFunctions::Delete(puIso);
 }
 
 void BareLeptons::init(){
     BareP4::init();
 
-    if (!pdgId)
-        pdgId = new vector<int>;
-    //
-    if (!iso)
-        iso = new vector<float>;
-    //
-    if (!selBits)
-        selBits = new vector<unsigned>;
-    //
-    if (!lepPfPt)
-        lepPfPt = new vector<float>;
-    // 
-    if (!chIso)
-        chIso=new vector<float>;
-    if (!nhIso)
-        nhIso=new vector<float>;
-    if (!phoIso)
-        phoIso=new vector<float>;
-    if (!puIso)
-        puIso=new vector<float>;
+    BareFunctions::New(pdgId);
+    BareFunctions::New(iso);
+    BareFunctions::New(selBits);
+    BareFunctions::New(lepPfPt);
+    BareFunctions::New(chIso);
+    BareFunctions::New(nhIso);
+    BareFunctions::New(phoIso);
+    BareFunctions::New(puIso);
+
 }
 
 void BareLeptons::clear(){
@@ -76,23 +66,15 @@ void BareLeptons::setBranchAddresses(TTree*t){
 
     BareP4::setBranchAddresses(t,"lep");
 
-    if (t->GetBranchStatus("lepPdgId"))
-        t->SetBranchAddress("lepPdgId"	,&pdgId);
-    if (t->GetBranchStatus("lepIso"))
-        t->SetBranchAddress("lepIso"	,&iso);
-    if (t->GetBranchStatus("lepSelBits"))
-        t->SetBranchAddress("lepSelBits"	,&selBits);
-    if (t->GetBranchStatus("lepPfPt"))
-        t->SetBranchAddress("lepPfPt"	,&lepPfPt);
+    BareFunctions::SetBranchAddress(t,"lepPdgId"	,&pdgId);
+    BareFunctions::SetBranchAddress(t,"lepIso"	,&iso);
+    BareFunctions::SetBranchAddress(t,"lepSelBits"	,&selBits);
+    BareFunctions::SetBranchAddress(t,"lepPfPt"	,&lepPfPt);
 
-    if (t->GetBranchStatus("lepChIso"))
-        t->SetBranchAddress("lepChIso",&chIso);
-    if (t->GetBranchStatus("lepNhIso"))
-        t->SetBranchAddress("lepNhIso",&nhIso);
-    if (t->GetBranchStatus("lepPhoIso"))
-        t->SetBranchAddress("lepPhoIso",&phoIso);
-    if (t->GetBranchStatus("lepPuIso"))
-        t->SetBranchAddress("lepPuIso",&puIso);
+    BareFunctions::SetBranchAddress(t,"lepChIso",&chIso);
+    BareFunctions::SetBranchAddress(t,"lepNhIso",&nhIso);
+    BareFunctions::SetBranchAddress(t,"lepPhoIso",&phoIso);
+    BareFunctions::SetBranchAddress(t,"lepPuIso",&puIso);
 }
 
 // Local Variables:

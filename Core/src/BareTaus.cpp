@@ -1,54 +1,42 @@
 #include "NeroProducer/Core/interface/BareTaus.hpp"
+#include "NeroProducer/Core/interface/BareFunctions.hpp"
 
 BareTaus::BareTaus(): BareP4() {
 }
 
 BareTaus::~BareTaus(){
-    delete id;
-    delete Q;
-    delete M;
-    delete iso;
-    delete chargedIsoPtSum;
-    delete neutralIsoPtSum;
-    delete isoDeltaBetaCorr;
-    delete againstEleLoose;
-    delete againstEleMedium;
-    delete againstMuLoose;
-    delete againstMuTight;
+    BareFunctions::Delete(id);
+    BareFunctions::Delete(Q);
+    BareFunctions::Delete(M);
+    BareFunctions::Delete(iso);
+    BareFunctions::Delete(chargedIsoPtSum);
+    BareFunctions::Delete(neutralIsoPtSum);
+    BareFunctions::Delete(isoDeltaBetaCorr);
+    BareFunctions::Delete(againstEleLoose);
+    BareFunctions::Delete(againstEleMedium);
+    BareFunctions::Delete(againstMuLoose);
+    BareFunctions::Delete(againstMuTight);
 }
 
 void BareTaus::init(){
     BareP4::init();
 
-    if (!id)
-        id = new vector<float>;
-    //
-    if (!Q)
-        Q = new vector<int>;
-    //
-    if (!M)
-        M = new vector<float>;
-    //
-    if (!iso)
-        iso = new vector<float>;
+    BareFunctions::New(id);
+    BareFunctions::New(Q);
+    BareFunctions::New(M);
+    BareFunctions::New(iso);
+
 
     if ( IsExtend() )
-        {
-            if (!chargedIsoPtSum)
-                chargedIsoPtSum = new vector<float>;
-            if (!neutralIsoPtSum)
-                neutralIsoPtSum = new vector<float> ;
-            if (!isoDeltaBetaCorr)
-                isoDeltaBetaCorr = new vector<float>;
-            if (!againstEleLoose)
-                againstEleLoose = new vector<int>;
-            if (!againstEleMedium)
-                againstEleMedium = new vector<int>;
-            if (!againstMuLoose)
-                againstMuLoose = new vector<int>;
-            if (!againstMuTight)
-                againstMuTight = new vector<int>;
-        }
+    {
+        BareFunctions::New(chargedIsoPtSum);
+        BareFunctions::New(neutralIsoPtSum);
+        BareFunctions::New(isoDeltaBetaCorr);
+        BareFunctions::New(againstEleLoose);
+        BareFunctions::New(againstEleMedium);
+        BareFunctions::New(againstMuLoose);
+        BareFunctions::New(againstMuTight);
+    }
 }
 
 void BareTaus::clear(){
@@ -58,7 +46,7 @@ void BareTaus::clear(){
     M->clear();
     iso -> clear();
     if ( extend_ ) 
-        {
+    {
         chargedIsoPtSum->clear();
         neutralIsoPtSum->clear() ;
         isoDeltaBetaCorr->clear();
@@ -66,7 +54,7 @@ void BareTaus::clear(){
         againstEleMedium->clear();
         againstMuLoose->clear();
         againstMuTight->clear()  ;
-        }
+    }
 }
 
 void BareTaus::defineBranches(TTree *t){
@@ -81,7 +69,7 @@ void BareTaus::defineBranches(TTree *t){
     t->Branch("tauIso","vector<float>",&iso);
 
     if ( IsExtend() )
-        {
+    {
         t->Branch("tauChargedIsoPtSum","vector<float>",&chargedIsoPtSum);
         t->Branch("tauNeutralIsoPtSum","vector<float>",&neutralIsoPtSum);
         t->Branch("tauIsoDeltaBetaCorr","vector<float>",&isoDeltaBetaCorr);
@@ -89,43 +77,29 @@ void BareTaus::defineBranches(TTree *t){
         t->Branch("tauAgainstEleMedium","vector<int>",&againstEleMedium);
         t->Branch("tauAgainstMuLoose","vector<int>",&againstMuLoose);
         t->Branch("tauAgainstMuTight","vector<int>",&againstMuTight);
-        }
+    }
 
 }
 
 void BareTaus::setBranchAddresses(TTree *t){
     BareP4::setBranchAddresses(t,"tau");
 
-    if (t->GetBranchStatus("tauId"))
-        t->SetBranchAddress("tauId"	,&id);
-    //
-    if (t->GetBranchStatus("tauQ"))
-        t->SetBranchAddress("tauQ"	,&Q);
-    //
-    if (t->GetBranchStatus("tauM"))
-        t->SetBranchAddress("tauM"	,&M);
-    //
-    if (t->GetBranchStatus("tauIso"))
-        t->SetBranchAddress("tauIso"	,&iso);
+    BareFunctions::SetBranchAddress(t,"tauId"	,&id);
+    BareFunctions::SetBranchAddress(t,"tauQ"	,&Q);
+    BareFunctions::SetBranchAddress(t,"tauM"	,&M);
+    BareFunctions::SetBranchAddress(t,"tauIso"	,&iso);
 
     // EXTENDED VARIBALES
     if ( IsExtend() )
-        {
-            if (t->GetBranchStatus("tauChargedIsoPtSum"))
-                  t->SetBranchAddress("tauChargedIsoPtSum",&chargedIsoPtSum);
-            if (t->GetBranchStatus("tauNeutralIsoPtSum"))
-                t->SetBranchAddress("tauNeutralIsoPtSum",&neutralIsoPtSum);
-            if (t->GetBranchStatus("tauIsoDeltaBetaCorr"))
-                t->SetBranchAddress("tauIsoDeltaBetaCorr",&isoDeltaBetaCorr);
-            if (t->GetBranchStatus("tauAgainstEleLoose"))
-                t->SetBranchAddress("tauAgainstEleLoose",&againstEleLoose);
-            if (t->GetBranchStatus("tauAgainstEleMedium"))
-                t->SetBranchAddress("tauAgainstEleMedium",&againstEleMedium);
-            if (t->GetBranchStatus("tauAgainstMuLoose"))
-                t->SetBranchAddress("tauAgainstMuLoose",&againstMuLoose);
-            if (t->GetBranchStatus("tauAgainstMuTight"))
-                t->SetBranchAddress("tauAgainstMuTight",&againstMuTight);
-        }
+    {
+        BareFunctions::SetBranchAddress(t,"tauChargedIsoPtSum",&chargedIsoPtSum);
+        BareFunctions::SetBranchAddress(t,"tauNeutralIsoPtSum",&neutralIsoPtSum);
+        BareFunctions::SetBranchAddress(t,"tauIsoDeltaBetaCorr",&isoDeltaBetaCorr);
+        BareFunctions::SetBranchAddress(t,"tauAgainstEleLoose",&againstEleLoose);
+        BareFunctions::SetBranchAddress(t,"tauAgainstEleMedium",&againstEleMedium);
+        BareFunctions::SetBranchAddress(t,"tauAgainstMuLoose",&againstMuLoose);
+        BareFunctions::SetBranchAddress(t,"tauAgainstMuTight",&againstMuTight);
+    }
 }
 // Local Variables:
 // mode:c++

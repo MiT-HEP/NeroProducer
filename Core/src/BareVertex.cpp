@@ -1,4 +1,5 @@
 #include "NeroProducer/Core/interface/BareVertex.hpp"
+#include "NeroProducer/Core/interface/BareFunctions.hpp"
 
 
 BareVertex::BareVertex():BareCollection(){
@@ -17,8 +18,7 @@ void BareVertex::defineBranches(TTree *t){
 }
 void BareVertex::setBranchAddresses(TTree *t){
     // nothing to be done
-    if (t->GetBranchStatus("npv"))
-        t->SetBranchAddress("npv"     ,&npv );
+    BareFunctions::SetBranchAddress(t,"npv"     ,&npv );
 }
 
 // Local Variables:
