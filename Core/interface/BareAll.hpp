@@ -12,7 +12,8 @@ class BareAll : virtual public BareCollection
         void clear();
         void defineBranches(TTree*);
         virtual void setBranchAddresses(TTree*);
-        virtual inline string name(){ return "BareAll";}
+        virtual inline string name() { return "BareAll"; }
+        virtual inline unsigned size() const { return 1; }
 
         // -- variables
         int isRealData;

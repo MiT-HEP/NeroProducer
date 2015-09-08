@@ -35,16 +35,24 @@ void BareEvent::defineBranches(TTree *t){
 
 void BareEvent::setBranchAddresses(TTree *t){
     //
-    t->SetBranchAddress("isRealData"  ,&isRealData  );
-    t->SetBranchAddress("runNum"      ,&runNum      );
-    t->SetBranchAddress("lumiNum"     ,&lumiNum     );
-    t->SetBranchAddress("eventNum"    ,&eventNum    );
-    t->SetBranchAddress("rho"    	,&rho         );
+    if (t->GetBranchStatus("isRealData"))
+        t->SetBranchAddress("isRealData"  ,&isRealData  );
+    if (t->GetBranchStatus("runNum"))
+        t->SetBranchAddress("runNum"      ,&runNum      );
+    if (t->GetBranchStatus("lumiNum"))
+        t->SetBranchAddress("lumiNum"     ,&lumiNum     );
+    if (t->GetBranchStatus("eventNum"))
+        t->SetBranchAddress("eventNum"    ,&eventNum    );
+    if (t->GetBranchStatus("rho"))
+        t->SetBranchAddress("rho"    	,&rho         );
     if (IsExtend() )
     {
-        t->SetBranchAddress("originalRun"      ,&originalRun      );
-        t->SetBranchAddress("originalLumi"      ,&originalLumi      );
-        t->SetBranchAddress("originalEvent"      ,&originalEvent      );
+        if (t->GetBranchStatus("originalRun"))
+            t->SetBranchAddress("originalRun"      ,&originalRun      );
+        if (t->GetBranchStatus("originalLumi"))
+            t->SetBranchAddress("originalLumi"      ,&originalLumi      );
+        if (t->GetBranchStatus("originalEvent"))
+            t->SetBranchAddress("originalEvent"      ,&originalEvent      );
     }
 }
 

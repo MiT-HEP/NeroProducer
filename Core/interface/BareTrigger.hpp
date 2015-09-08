@@ -10,22 +10,25 @@ class BareTrigger: virtual public BareCollection
     public:
         BareTrigger();
         ~BareTrigger();
+        void init();
         void clear();
         void defineBranches(TTree*);
         virtual void setBranchAddresses(TTree*);
-        virtual inline string name(){ return "BareTrigger";}
+        virtual inline string name() { return "BareTrigger"; }
+        virtual inline unsigned size() const { return triggerNames->size(); }
 
         //variables
-        vector<int>  *triggerFired; // bool vector are not supported in TTree
-        vector<float>  *triggerPrescale; // bool vector are not supported in TTree
+        vector<int>  *triggerFired{0}; // bool vector are not supported in TTree
+        vector<float>  *triggerPrescale{0}; // bool vector are not supported in TTree
 
         //configuration
+        // new'ed in the constructor
         vector<string> *triggerNames;
 
-        vector<int>  *triggerLeps;
-        vector<int>  *triggerJets;
-        vector<int>  *triggerTaus;
-        vector<int>  *triggerPhotons;
+        vector<int>  *triggerLeps{0};
+        vector<int>  *triggerJets{0};
+        vector<int>  *triggerTaus{0};
+        vector<int>  *triggerPhotons{0};
 
 };
 

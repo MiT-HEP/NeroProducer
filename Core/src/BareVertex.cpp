@@ -17,7 +17,8 @@ void BareVertex::defineBranches(TTree *t){
 }
 void BareVertex::setBranchAddresses(TTree *t){
     // nothing to be done
-    t->SetBranchAddress("npv"     ,&npv );
+    if (t->GetBranchStatus("npv"))
+        t->SetBranchAddress("npv"     ,&npv );
 }
 
 // Local Variables:

@@ -1,6 +1,22 @@
 #include "NeroProducer/Core/interface/BareP4.hpp"
 #include "NeroProducer/Core/interface/BareFunctions.hpp"
 
+BareP4::BareP4() : BareCollection(){
+}
+
+BareP4::~BareP4(){
+    delete p4;
+    delete match;
+}
+
+void BareP4::init(){
+    if (!p4)
+        p4 = new TClonesArray("TLorentzVector", 20);
+
+    if (doMatch_ && !match)
+        match = new vector<int>;
+}
+
 void BareP4::clear(){ 
 
 	p4->Clear() ; 
@@ -10,24 +26,24 @@ void BareP4::clear(){
 
 void BareP4::defineBranches(TTree * t, string prefix)
 {
-    p4 = new TClonesArray("TLorentzVector", 20);
+    init();
+
     t->Branch( (prefix + "P4").c_str(),"TClonesArray", &p4, 128000, 0);
 
     if (doMatch_){
-    	match = new vector<int>;
     	t->Branch( (prefix+"Match").c_str(),"vector<int>",&match);
     }
 }
 
-void BareP4::setBranchAddresses(TTree*t,string prefix)
+void BareP4::setBranchAddresses(TTree* t, string prefix)
 {
-    p4 = new TClonesArray("TLorentzVector", 20);
-    t->SetBranchAddress( (prefix+"P4").c_str(), &p4	);
+    init();
 
-    if ( doMatch_){
-    	match = new vector<int>;
+    if (t->GetBranchStatus((prefix + "P4").c_str()))
+      t->SetBranchAddress( (prefix+"P4").c_str(), &p4	);
+
+    if ( doMatch_ && t->GetBranchStatus((prefix + "Match").c_str()) )
     	t->SetBranchAddress((prefix+"Match").c_str()	,&match);
-    }
 }
 
 void BareP4::compress(){

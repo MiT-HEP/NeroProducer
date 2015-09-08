@@ -11,29 +11,30 @@ class BareFatJets : virtual public BareP4
         BareFatJets();
         ~BareFatJets();
         void clear();
+        void init();
         void defineBranches(TTree *t);
         virtual void setBranchAddresses(TTree*);
-        virtual inline string name(){return "BareFatJets";};
+        virtual inline string name() { return "BareFatJets"; }
         virtual void compress();
 
         // -- variables
         //TClonesArray  *p4;
-        vector<float> *rawPt;
-        vector<int>   *flavour;
-        vector<float> *tau1;
-        vector<float> *tau2;
-        vector<float> *tau3;
+        vector<float> *rawPt{0};
+        vector<int>   *flavour{0};
+        vector<float> *tau1{0};
+        vector<float> *tau2{0};
+        vector<float> *tau3{0};
 
-        vector<float> *trimmedMass;
-        vector<float> *prunedMass;
-        vector<float> *filteredMass;
-        vector<float> *softdropMass;
+        vector<float> *trimmedMass{0};
+        vector<float> *prunedMass{0};
+        vector<float> *filteredMass{0};
+        vector<float> *softdropMass{0};
 
-        TClonesArray  *ak8_subjet;
-        vector<int>   *ak8jet_hasSubjet;
-        vector<float> *ak8subjet_btag;
+        TClonesArray  *ak8_subjet{0};
+        vector<int>   *ak8jet_hasSubjet{0};
+        vector<float> *ak8subjet_btag{0};
     
-        vector<float> *hbb;
+        vector<float> *hbb{0};
 
 };
 

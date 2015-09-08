@@ -11,7 +11,9 @@ class BareEvent : virtual public BareCollection
         void clear();
         void defineBranches(TTree*);
         void setBranchAddresses(TTree*);
-        virtual inline string name(){ return "BareEvent";}
+        virtual inline string name() { return "BareEvent"; }
+        virtual inline unsigned size() const { return 1; }
+    
 
         // -- variables
         int isRealData;

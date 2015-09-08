@@ -3,23 +3,49 @@
 
 
 BareMet::BareMet() : BareP4() {
-    p4 = NULL;
-    ptJESUP = NULL;
-    ptJESDOWN = NULL;
-    genP4 = NULL;
-
-    caloMet_Pt = 0.0;
-    caloMet_Phi = 0.0;
-    caloMet_SumEt = 0.0;
-
-    metNoMu = NULL;
-    pfMet_e3p0 = NULL;
-    metChargedHadron = NULL;
-    metNeutralHadron = NULL;
-    metNeutralEM = NULL;
 }
 
 BareMet::~BareMet(){
+    delete ptJESUP;
+    delete ptJESDOWN;
+    delete genP4;
+    delete metNoMu;
+    delete pfMet_e3p0;
+    delete metChargedHadron;
+    delete metNeutralHadron;
+    delete metNeutralEM;
+}
+
+void BareMet::init(){
+    BareP4::init();
+
+    if (!ptJESUP)
+        ptJESUP = new vector<float>;
+    //
+    if (!ptJESDOWN)
+        ptJESDOWN = new vector<float>;
+    //	
+    if (!genP4)
+        genP4 = new TClonesArray("TLorentzVector", 20);
+    //
+
+    if ( IsExtend() )
+    {
+        if (!metNoMu)
+            metNoMu = new TLorentzVector;
+        //
+        if (!pfMet_e3p0)
+            pfMet_e3p0 = new TLorentzVector;
+        //
+        if (!metChargedHadron)
+            metChargedHadron = new TLorentzVector;
+        //
+        if (!metNeutralHadron)
+            metNeutralHadron = new TLorentzVector;
+        //
+        if (!metNeutralEM)
+            metNeutralEM = new TLorentzVector;
+    }
 }
 
 void BareMet::clear(){
@@ -44,31 +70,23 @@ void BareMet::defineBranches(TTree *t){
     //
     BareP4::defineBranches(t, "met" );
     //
-    ptJESUP = new vector<float>;
     t->Branch("metPtJESUP","vector<float>",&ptJESUP);
     //
-    ptJESDOWN = new vector<float>;
     t->Branch("metPtJESDOWN","vector<float>",&ptJESDOWN);
     //	
-    genP4 = new TClonesArray("TLorentzVector", 20);
     t->Branch("metP4_GEN","TClonesArray", &p4, 128000, 0);
     //
 
     if ( IsExtend() )
     {
-        metNoMu = new TLorentzVector;
         t->Branch("metNoMu","TLorentzVector",&metNoMu);
         //
-        pfMet_e3p0 = new TLorentzVector;
         t->Branch("pfMet_e3p0","TLorentzVector",&pfMet_e3p0);
         //
-        metChargedHadron = new TLorentzVector;
         t->Branch("metChargedHadron","TLorentzVector",&metChargedHadron);
         //
-        metNeutralHadron = new TLorentzVector;
         t->Branch("metNeutralHadron","TLorentzVector",&metNeutralHadron);
         //
-        metNeutralEM = new TLorentzVector;
         t->Branch("metNeutralEM","TLorentzVector",&metNeutralEM);
         // calo Met
         t->Branch("caloMet_Pt",&caloMet_Pt,"caloMet_Pt/F");
@@ -82,30 +100,32 @@ void BareMet::setBranchAddresses(TTree *t){
 
     BareP4::setBranchAddresses(t,"met");
 
-    ptJESUP = new vector<float>;
-    t->SetBranchAddress("metPtJESUP"	,&ptJESUP);
-    ptJESDOWN = new vector<float>;
-    t->SetBranchAddress("metPtJESDOWN",&ptJESDOWN);
-    genP4 = new TClonesArray("TLorentzVector", 20);
-    t->SetBranchAddress("metP4_GEN"	, &genP4 );
-    
+    if (t->GetBranchStatus("metPtJESUP"))
+        t->SetBranchAddress("metPtJESUP"	,&ptJESUP);
+    if (t->GetBranchStatus("metPtJESDOWN"))
+        t->SetBranchAddress("metPtJESDOWN",&ptJESDOWN);
+    if (t->GetBranchStatus("metP4_GEN"))
+        t->SetBranchAddress("metP4_GEN"	, &genP4 );
 
     if ( IsExtend() ) 
     {
-        metNoMu = new TLorentzVector;
-        t->SetBranchAddress("metNoMu", &metNoMu);
-        pfMet_e3p0 = new TLorentzVector;
-        t->SetBranchAddress("pfMet_e3p0", &pfMet_e3p0);
-        metChargedHadron = new TLorentzVector;
-        t->SetBranchAddress("metChargedHadron", &metChargedHadron);
-        metNeutralHadron = new TLorentzVector;
-        t->SetBranchAddress("metNeutralHadron", &metNeutralHadron);
-        metNeutralEM = new TLorentzVector;
-        t->SetBranchAddress("metNeutralEM", &metNeutralEM);
-        // calo met
-        t->SetBranchAddress("caloMet_Pt", &caloMet_Pt);
-        t->SetBranchAddress("caloMet_Phi", &caloMet_Phi);
-        t->SetBranchAddress("caloMet_SumEt", &caloMet_SumEt);
+        if (t->GetBranchStatus("metNoMu"))
+            t->SetBranchAddress("metNoMu", &metNoMu);
+        if (t->GetBranchStatus("pfMet_e3p0"))
+            t->SetBranchAddress("pfMet_e3p0", &pfMet_e3p0);
+        if (t->GetBranchStatus("metChargedHadron"))
+            t->SetBranchAddress("metChargedHadron", &metChargedHadron);
+        if (t->GetBranchStatus("metNeutralHadron"))
+            t->SetBranchAddress("metNeutralHadron", &metNeutralHadron);
+        if (t->GetBranchStatus("metNeutralEM"))
+            t->SetBranchAddress("metNeutralEM", &metNeutralEM);
+            // calo met
+        if (t->GetBranchStatus("caloMet_Pt"))
+            t->SetBranchAddress("caloMet_Pt", &caloMet_Pt);
+        if (t->GetBranchStatus("caloMet_Phi"))
+            t->SetBranchAddress("caloMet_Phi", &caloMet_Phi);
+        if (t->GetBranchStatus("caloMet_SumEt"))
+            t->SetBranchAddress("caloMet_SumEt", &caloMet_SumEt);
     }
 }
 
