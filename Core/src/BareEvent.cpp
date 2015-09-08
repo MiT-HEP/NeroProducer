@@ -1,4 +1,5 @@
 #include "NeroProducer/Core/interface/BareEvent.hpp"
+#include "NeroProducer/Core/interface/BareFunctions.hpp"
 
 BareEvent::BareEvent():BareCollection(){};
 BareEvent::~BareEvent(){};
@@ -35,24 +36,17 @@ void BareEvent::defineBranches(TTree *t){
 
 void BareEvent::setBranchAddresses(TTree *t){
     //
-    if (t->GetBranchStatus("isRealData"))
-        t->SetBranchAddress("isRealData"  ,&isRealData  );
-    if (t->GetBranchStatus("runNum"))
-        t->SetBranchAddress("runNum"      ,&runNum      );
-    if (t->GetBranchStatus("lumiNum"))
-        t->SetBranchAddress("lumiNum"     ,&lumiNum     );
-    if (t->GetBranchStatus("eventNum"))
-        t->SetBranchAddress("eventNum"    ,&eventNum    );
-    if (t->GetBranchStatus("rho"))
-        t->SetBranchAddress("rho"    	,&rho         );
+    BareFunctions::SetBranchAddress(t,"isRealData", &isRealData);
+    BareFunctions::SetBranchAddress(t,"runNum", &runNum);
+    BareFunctions::SetBranchAddress(t,"lumiNum", &lumiNum);
+    BareFunctions::SetBranchAddress(t,"eventNum", &eventNum);
+    BareFunctions::SetBranchAddress(t,"rho", &rho);
+
     if (IsExtend() )
     {
-        if (t->GetBranchStatus("originalRun"))
-            t->SetBranchAddress("originalRun"      ,&originalRun      );
-        if (t->GetBranchStatus("originalLumi"))
-            t->SetBranchAddress("originalLumi"      ,&originalLumi      );
-        if (t->GetBranchStatus("originalEvent"))
-            t->SetBranchAddress("originalEvent"      ,&originalEvent      );
+        BareFunctions::SetBranchAddress(t,"originalRun", &originalRun);
+        BareFunctions::SetBranchAddress(t,"originalLumi", &originalLumi);
+        BareFunctions::SetBranchAddress(t,"originalEvent", &originalEvent);
     }
 }
 

@@ -1,59 +1,43 @@
 #include "NeroProducer/Core/interface/BarePhotons.hpp"
+#include "NeroProducer/Core/interface/BareFunctions.hpp"
 
 
 BarePhotons::BarePhotons():BareP4(){
 }
 
 BarePhotons::~BarePhotons(){
-    delete iso;
-    delete sieie;
-    delete tightid;
-    delete mediumid;
-    delete looseid;
-    delete chIso;
-    delete chIsoRC;
-    delete nhIso;
-    delete nhIsoRC;
-    delete phoIso;
-    delete phoIsoRC;
-    delete puIso;
-    delete puIsoRC;
+    BareFunctions::Delete(iso);
+    BareFunctions::Delete(sieie);
+    BareFunctions::Delete(tightid);
+    BareFunctions::Delete(mediumid);
+    BareFunctions::Delete(looseid);
+    BareFunctions::Delete(chIso);
+    BareFunctions::Delete(chIsoRC);
+    BareFunctions::Delete(nhIso);
+    BareFunctions::Delete(nhIsoRC);
+    BareFunctions::Delete(phoIso);
+    BareFunctions::Delete(phoIsoRC);
+    BareFunctions::Delete(puIso);
+    BareFunctions::Delete(puIsoRC);
 }
 
 void BarePhotons::init(){
     BareP4::init();
 
-    if (!iso)
-        iso = new vector<float>;
-    //
-    if (!sieie)
-        sieie = new vector<float>;
-    //
-    if (!tightid)
-        tightid = new vector<int>;
-    //
-    if (!mediumid)
-        mediumid = new vector<int>;
+    BareFunctions::New(iso);
+    BareFunctions::New(sieie);
+    BareFunctions::New(tightid);
+    BareFunctions::New(mediumid);
+    BareFunctions::New(looseid);
+    BareFunctions::New(chIso);
+    BareFunctions::New(chIsoRC);
+    BareFunctions::New(nhIso);
+    BareFunctions::New(nhIsoRC);
+    BareFunctions::New(phoIso);
+    BareFunctions::New(phoIsoRC);
+    BareFunctions::New(puIso);
+    BareFunctions::New(puIsoRC);
 
-    if (!looseid)
-        looseid = new vector<int>;
-
-    if (!chIso)
-        chIso = new vector<float>;
-    if (!chIsoRC)
-        chIsoRC = new vector<float>;
-    if (!nhIso)
-        nhIso = new vector<float>;
-    if (!nhIsoRC)
-        nhIsoRC = new vector<float>;
-    if (!phoIso)
-        phoIso = new vector<float>;
-    if (!phoIsoRC)
-        phoIsoRC = new vector<float>;
-    if (!puIso)
-        puIso = new vector<float>;
-    if (!puIsoRC)
-        puIsoRC = new vector<float>;
 }
 
 void BarePhotons::clear(){
@@ -103,33 +87,20 @@ void BarePhotons::setBranchAddresses(TTree *t){
 
     BareP4::setBranchAddresses(t,"photon");
 
-    if (t->GetBranchStatus("photonIso"))
-        t->SetBranchAddress("photonIso"	,&iso);
-    if (t->GetBranchStatus("photonSieie"))
-        t->SetBranchAddress("photonSieie"	,&sieie);
-    if (t->GetBranchStatus("photonTightId"))
-        t->SetBranchAddress("photonTightId"	,&tightid);
-    if (t->GetBranchStatus("photonMediumId"))
-        t->SetBranchAddress("photonMediumId"	,&mediumid);
-    if (t->GetBranchStatus("photonLooseId"))
-        t->SetBranchAddress("photonLooseId"	,&looseid);
+    BareFunctions::SetBranchAddress(t,"photonIso"	,&iso);
+    BareFunctions::SetBranchAddress(t,"photonSieie"	,&sieie);
+    BareFunctions::SetBranchAddress(t,"photonTightId"	,&tightid);
+    BareFunctions::SetBranchAddress(t,"photonMediumId"	,&mediumid);
+    BareFunctions::SetBranchAddress(t,"photonLooseId"	,&looseid);
 
-    if (t->GetBranchStatus("photonChIso"))
-        t->SetBranchAddress("photonChIso",&chIso);
-    if (t->GetBranchStatus("photonChIsoRC"))
-        t->SetBranchAddress("photonChIsoRC",&chIsoRC);
-    if (t->GetBranchStatus("photonNhIso"))
-        t->SetBranchAddress("photonNhIso",&nhIso);
-    if (t->GetBranchStatus("photonNhIsoRC"))
-        t->SetBranchAddress("photonNhIsoRC",&nhIsoRC);
-    if (t->GetBranchStatus("photonPhoIso"))
-        t->SetBranchAddress("photonPhoIso",&phoIso);
-    if (t->GetBranchStatus("photonPhoIsoRC"))
-        t->SetBranchAddress("photonPhoIsoRC",&phoIsoRC);
-    if (t->GetBranchStatus("photonPuIso"))
-        t->SetBranchAddress("photonPuIso",&puIso);
-    if (t->GetBranchStatus("photonPuIsoRC"))
-        t->SetBranchAddress("photonPuIsoRC",&puIsoRC);
+    BareFunctions::SetBranchAddress(t,"photonChIso",&chIso);
+    BareFunctions::SetBranchAddress(t,"photonChIsoRC",&chIsoRC);
+    BareFunctions::SetBranchAddress(t,"photonNhIso",&nhIso);
+    BareFunctions::SetBranchAddress(t,"photonNhIsoRC",&nhIsoRC);
+    BareFunctions::SetBranchAddress(t,"photonPhoIso",&phoIso);
+    BareFunctions::SetBranchAddress(t,"photonPhoIsoRC",&phoIsoRC);
+    BareFunctions::SetBranchAddress(t,"photonPuIso",&puIso);
+    BareFunctions::SetBranchAddress(t,"photonPuIsoRC",&puIsoRC);
 }
 // Local Variables:
 // mode:c++

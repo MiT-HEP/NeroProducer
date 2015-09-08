@@ -1,4 +1,5 @@
 #include "NeroProducer/Core/interface/BareTrigger.hpp"
+#include "NeroProducer/Core/interface/BareFunctions.hpp"
 
 BareTrigger::BareTrigger():
     BareCollection(),
@@ -7,30 +8,23 @@ BareTrigger::BareTrigger():
 }
 
 BareTrigger::~BareTrigger(){
-    delete triggerNames;
+    BareFunctions::Delete(triggerNames);
 
-    delete triggerFired;
-    delete triggerPrescale;
-    delete triggerLeps;
-    delete triggerJets;
-    delete triggerTaus;
-    delete triggerPhotons;
+    BareFunctions::Delete(triggerFired);
+    BareFunctions::Delete(triggerPrescale);
+    BareFunctions::Delete(triggerLeps);
+    BareFunctions::Delete(triggerJets);
+    BareFunctions::Delete(triggerTaus);
+    BareFunctions::Delete(triggerPhotons);
 }
 
 void BareTrigger::init(){
-    if (!triggerFired)
-        triggerFired =new vector<int>;
-    if (!triggerPrescale)
-        triggerPrescale =new vector<float>;
-    // ---
-    if (!triggerLeps)
-        triggerLeps =new vector<int>;
-    if (!triggerJets)
-        triggerJets =new vector<int>;
-    if (!triggerTaus)
-        triggerTaus =new vector<int>;
-    if (!triggerPhotons)
-        triggerPhotons =new vector<int>;
+    BareFunctions::New(triggerFired);
+    BareFunctions::New(triggerPrescale);
+    BareFunctions::New(triggerLeps);
+    BareFunctions::New(triggerJets);
+    BareFunctions::New(triggerTaus);
+    BareFunctions::New(triggerPhotons);
 }
 
 void BareTrigger::clear(){
@@ -60,19 +54,13 @@ void BareTrigger::setBranchAddresses(TTree*t)
 {
     init();
 
-    if (t->GetBranchStatus("triggerFired"))
-        t -> SetBranchAddress("triggerFired", &triggerFired);
-    if (t->GetBranchStatus("triggerPrescale"))
-        t -> SetBranchAddress("triggerPrescale", &triggerPrescale);
-    // ---
-    if (t->GetBranchStatus("triggerLeps"))
-        t -> SetBranchAddress("triggerLeps", &triggerLeps);
-    if (t->GetBranchStatus("triggerJets"))
-        t -> SetBranchAddress("triggerJets", &triggerJets);
-    if (t->GetBranchStatus("triggerTaus"))
-        t -> SetBranchAddress("triggerTaus", &triggerTaus);
-    if (t->GetBranchStatus("triggerPhotons"))
-        t -> SetBranchAddress("triggerPhotons", &triggerPhotons);
+    BareFunctions::SetBranchAddress(t,"triggerFired", &triggerFired);
+    BareFunctions::SetBranchAddress(t,"triggerPrescale", &triggerPrescale);
+
+    BareFunctions::SetBranchAddress(t,"triggerLeps", &triggerLeps);
+    BareFunctions::SetBranchAddress(t,"triggerJets", &triggerJets);
+    BareFunctions::SetBranchAddress(t,"triggerTaus", &triggerTaus);
+    BareFunctions::SetBranchAddress(t,"triggerPhotons", &triggerPhotons);
 }
 
 // Local Variables:
