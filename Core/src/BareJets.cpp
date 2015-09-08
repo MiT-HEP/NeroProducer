@@ -1,65 +1,45 @@
 #include "NeroProducer/Core/interface/BareJets.hpp"
+#include "NeroProducer/Core/interface/BareFunctions.hpp"
+
 
 BareJets::BareJets(): BareP4(){
 }
 
 BareJets::~BareJets(){
-    delete rawPt;
-    delete bDiscr;
-    delete bDiscrLegacy;
-    delete puId;
-    delete unc;
-    delete qgl;
-    delete flavour;
-    delete matchedPartonPdgId;
-    delete motherPdgId;
-    delete grMotherPdgId;
-    delete mjId;
-    delete mjId_loose;
-    delete Q;
-    delete QnoPU;
+    BareFunctions::Delete(rawPt);
+    BareFunctions::Delete(bDiscr);
+    BareFunctions::Delete(bDiscrLegacy);
+    BareFunctions::Delete(puId);
+    BareFunctions::Delete(unc);
+    BareFunctions::Delete(qgl);
+    BareFunctions::Delete(flavour);
+    BareFunctions::Delete(matchedPartonPdgId);
+    BareFunctions::Delete(motherPdgId);
+    BareFunctions::Delete(grMotherPdgId);
+    BareFunctions::Delete(mjId);
+    BareFunctions::Delete(mjId_loose);
+    BareFunctions::Delete(Q);
+    BareFunctions::Delete(QnoPU);
 }
 
 void BareJets::init(){
     BareP4::init();
 
-    if (!rawPt)
-        rawPt = new vector<float>;
-    //
-    if (!bDiscr)
-        bDiscr = new vector<float>;
-    //
-    if (!bDiscrLegacy)
-        bDiscrLegacy = new vector<float>;
-    //	
-    if (!puId)
-        puId = new vector<float>;
-    // -- JES uncertainty
-    if (!unc)
-        unc = new vector<float>;
-    // --QGL
-    if (!qgl)
-        qgl = new vector<float>;
-    // -- Jet Flavour by PAT
-    if (!flavour)
-        flavour = new vector<int>;
+    BareFunctions::New(rawPt);
+    BareFunctions::New(bDiscr);
+    BareFunctions::New(bDiscrLegacy);
+    BareFunctions::New(puId);
+    BareFunctions::New(unc);
+    BareFunctions::New(qgl);
+    BareFunctions::New(flavour);
+    BareFunctions::New(matchedPartonPdgId);
+    BareFunctions::New(motherPdgId);
+    BareFunctions::New(grMotherPdgId);
+    BareFunctions::New(mjId);
+    BareFunctions::New(mjId_loose);
+    BareFunctions::New(Q);
+    BareFunctions::New(QnoPU);
 
-    if (!matchedPartonPdgId)
-        matchedPartonPdgId = new vector<int>;
-    if (!motherPdgId)
-        motherPdgId = new vector<int>;
-    if (!grMotherPdgId)
-        grMotherPdgId = new vector<int>;
-
-    if (!mjId)
-        mjId = new vector<bool>;
-    if (!mjId_loose)
-        mjId_loose = new vector<bool>;
-
-    if (!Q)
-        Q = new vector<float>;
-    if (!QnoPU)
-        QnoPU = new vector<float>;
 }
 
 void BareJets::clear(){
@@ -84,76 +64,63 @@ void BareJets::clear(){
     QnoPU->clear();
 }
 
-void BareJets::defineBranches(TTree *t){
+void BareJets::defineBranches(TTree *t, std::string prefix){
+    TString jetName("jet" + prefix);
+
     //
-    //t->Branch("jetP4","TClonesArray", &p4, 128000, 0);
-    BareP4::defineBranches(t, "jet" );
+    //t->Branch(jetName + "P4","TClonesArray", &p4, 128000, 0);
+    BareP4::defineBranches(t, jetName.Data());
     //
-    t->Branch("jetRawPt","vector<float>",&rawPt);
+    t->Branch(jetName + "RawPt","vector<float>",&rawPt);
     //
-    t->Branch("jetBdiscr","vector<float>",&bDiscr);
+    t->Branch(jetName + "Bdiscr","vector<float>",&bDiscr);
     //
-    t->Branch("jetBdiscrLegacy","vector<float>",&bDiscrLegacy);
+    t->Branch(jetName + "BdiscrLegacy","vector<float>",&bDiscrLegacy);
     //	
-    t->Branch("jetPuId","vector<float>",&puId);
+    t->Branch(jetName + "PuId","vector<float>",&puId);
     // -- JES uncertainty
-    t->Branch("jetUnc","vector<float>",&unc);
+    t->Branch(jetName + "Unc","vector<float>",&unc);
     // --QGL
-    t->Branch("jetQGL","vector<float>",&qgl);
+    t->Branch(jetName + "QGL","vector<float>",&qgl);
     // -- Jet Flavour by PAT
-    t->Branch("jetFlavour","vector<int>",&flavour);
+    t->Branch(jetName + "Flavour","vector<int>",&flavour);
 
-    t->Branch("jetMatchedPartonPdgId","vector<int>",&matchedPartonPdgId);
+    t->Branch(jetName + "MatchedPartonPdgId","vector<int>",&matchedPartonPdgId);
     
-    t->Branch("jetMotherPdgId","vector<int>",&motherPdgId);
+    t->Branch(jetName + "MotherPdgId","vector<int>",&motherPdgId);
     
-    t->Branch("jetGrMotherPdgId","vector<int>",&grMotherPdgId);
+    t->Branch(jetName + "GrMotherPdgId","vector<int>",&grMotherPdgId);
     
-    t->Branch("jetMonojetId","vector<bool>",&mjId);
+    t->Branch(jetName + "MonojetId","vector<bool>",&mjId);
 
-    t->Branch("jetMonojetIdLoose","vector<bool>",&mjId_loose);
+    t->Branch(jetName + "MonojetIdLoose","vector<bool>",&mjId_loose);
 
-    t->Branch("jetQ","vector<float>",&Q);
+    t->Branch(jetName + "Q","vector<float>",&Q);
 
-    t->Branch("jetQnoPU","vector<float>",&QnoPU);
+    t->Branch(jetName + "QnoPU","vector<float>",&QnoPU);
 }
 
-void BareJets::setBranchAddresses(TTree* t)
+void BareJets::setBranchAddresses(TTree* t, std::string prefix)
 {
-    BareP4::setBranchAddresses(t,"jet");
-    //p4 = new TClonesArray("TLorentzVector", 20);
-    //if (t->GetBranchStatus("jetP4"))
-        //t->SetBranchAddress("jetP4"	, &p4	);
-    if (t->GetBranchStatus("jetRawPt"))
-        t->SetBranchAddress("jetRawPt"	,&rawPt);
-    if (t->GetBranchStatus("jetBdiscr"))
-        t->SetBranchAddress("jetBdiscr"	,&bDiscr);
-    if (t->GetBranchStatus("jetBdiscrLegacy"))
-        t->SetBranchAddress("jetBdiscrLegacy"	,&bDiscrLegacy);
-    if (t->GetBranchStatus("jetPuId"))
-        t->SetBranchAddress("jetPuId"	,&puId);
-    if (t->GetBranchStatus("jetUnc"))
-        t->SetBranchAddress("jetUnc"	,&unc);
-    if (t->GetBranchStatus("jetQGL"))
-        t->SetBranchAddress("jetQGL"	,&qgl);
-    if (t->GetBranchStatus("jetFlavour"))
-        t->SetBranchAddress("jetFlavour"	,&flavour);
-    if (t->GetBranchStatus("jetMatchedPartonPdgId"))
-        t->SetBranchAddress("jetMatchedPartonPdgId", &matchedPartonPdgId);
-    if (t->GetBranchStatus("jetMotherPdgId"))
-        t->SetBranchAddress("jetMotherPdgId", &motherPdgId);
-    if (t->GetBranchStatus("jetGrMotherPdgId"))
-        t->SetBranchAddress("jetGrMotherPdgId", &grMotherPdgId);
-    if (t->GetBranchStatus("jetMonojetId"))
-        t->SetBranchAddress("jetMonojetId", &mjId);
-    if (t->GetBranchStatus("jetMonojetIdLoose"))
-        t->SetBranchAddress("jetMonojetIdLoose", &mjId_loose);
+    TString jetName("jet" + prefix);
+
+    BareP4::setBranchAddresses(t,jetName.Data());
+    BareFunctions::SetBranchAddress(t,jetName + "RawPt"	,&rawPt);
+    BareFunctions::SetBranchAddress(t,jetName + "Bdiscr"	,&bDiscr);
+    BareFunctions::SetBranchAddress(t,jetName + "BdiscrLegacy"	,&bDiscrLegacy);
+    BareFunctions::SetBranchAddress(t,jetName + "PuId"	,&puId);
+    BareFunctions::SetBranchAddress(t,jetName + "Unc"	,&unc);
+    BareFunctions::SetBranchAddress(t,jetName + "QGL"	,&qgl);
+    BareFunctions::SetBranchAddress(t,jetName + "Flavour"	,&flavour);
+    BareFunctions::SetBranchAddress(t,jetName + "MatchedPartonPdgId", &matchedPartonPdgId);
+    BareFunctions::SetBranchAddress(t,jetName + "MotherPdgId", &motherPdgId);
+    BareFunctions::SetBranchAddress(t,jetName + "GrMotherPdgId", &grMotherPdgId);
+    BareFunctions::SetBranchAddress(t,jetName + "MonojetId", &mjId);
+    BareFunctions::SetBranchAddress(t,jetName + "MonojetIdLoose", &mjId_loose);
 
     // ---
-    if (t->GetBranchStatus("jetQ"))
-        t->SetBranchAddress("jetQ",&Q);
-    if (t->GetBranchStatus("jetQnoPU"))
-        t->SetBranchAddress("jetQnoPU",&QnoPU);
+    BareFunctions::SetBranchAddress(t,jetName + "Q",&Q);
+    BareFunctions::SetBranchAddress(t,jetName + "QnoPU",&QnoPU);
 
 }
 // Local Variables:

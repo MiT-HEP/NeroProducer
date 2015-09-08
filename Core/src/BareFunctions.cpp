@@ -1,6 +1,7 @@
 #include "NeroProducer/Core/interface/BareFunctions.hpp"
 #include "TMath.h"
 
+
 void BareFunctions::Compress(TLorentzVector &a)
 {
 	float x = a.Px();
@@ -12,4 +13,10 @@ void BareFunctions::Compress(TLorentzVector &a)
 	a.SetPxPyPzE( x, y, z, e);
 	//a.SetXYZM( x, y, z, m); // e is double precision to preserve m
 
+}
+
+template<>
+void BareFunctions::New<TClonesArray>(TClonesArray* &x)
+{
+	if(x==NULL) x=new TClonesArray("TLorentzVector",20);
 }

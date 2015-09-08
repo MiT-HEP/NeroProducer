@@ -34,8 +34,10 @@ class BareP4 : virtual public BareCollection
 
         virtual void init();
         virtual void clear();
-        void defineBranches(TTree *t,string prefix="");
-        void setBranchAddresses(TTree*t,string prefix ="");
+        virtual void defineBranches(TTree* t, std::string prefix);
+        virtual void setBranchAddresses(TTree* t, std::string prefix);
+        void defineBranches(TTree* t) override { defineBranches(t, ""); }
+        void setBranchAddresses(TTree* t) override { setBranchAddresses(t, ""); }
 
         virtual void compress();
 };

@@ -6,37 +6,27 @@ BareMet::BareMet() : BareP4() {
 }
 
 BareMet::~BareMet(){
-    delete ptJESUP;
-    delete ptJESDOWN;
-    delete genP4;
-    delete metNoMu;
-    delete pfMet_e3p0;
-    delete trackMet;
+    BareFunctions::Delete(ptJESUP);
+    BareFunctions::Delete(ptJESDOWN);
+    BareFunctions::Delete(genP4);
+    BareFunctions::Delete(metNoMu);
+    BareFunctions::Delete(pfMet_e3p0);
+    BareFunctions::Delete(trackMet);
 }
 
 void BareMet::init(){
     BareP4::init();
 
-    if (!ptJESUP)
-        ptJESUP = new vector<float>;
-    //
-    if (!ptJESDOWN)
-        ptJESDOWN = new vector<float>;
-    //	
-    if (!genP4)
-        genP4 = new TClonesArray("TLorentzVector", 20);
-    //
+    BareFunctions::New(ptJESUP);
+    BareFunctions::New(ptJESDOWN);
+    BareFunctions::New(genP4);
+
 
     if ( IsExtend() )
     {
-        if (!metNoMu)
-            metNoMu = new TLorentzVector;
-        //
-        if (!pfMet_e3p0)
-            pfMet_e3p0 = new TLorentzVector;
-        //
-        if (!trackMet)
-            trackMet = new TLorentzVector;
+        BareFunctions::New(metNoMu);
+        BareFunctions::New(pfMet_e3p0);
+        BareFunctions::New(trackMet);
     }
 }
 
@@ -86,19 +76,19 @@ void BareMet::setBranchAddresses(TTree *t){
 
     BareP4::setBranchAddresses(t,"met");
 
-    setBranchAddress(t, "metPtJESUP", ptJESUP);
-    setBranchAddress(t, "metPtJESDOWN", ptJESDOWN);
-    setBranchAddress(t, "metP4_GEN", genP4);
+    BareFunctions::SetBranchAddress(t,"metPtJESUP"	,&ptJESUP);
+    BareFunctions::SetBranchAddress(t,"metPtJESDOWN",&ptJESDOWN);
+    BareFunctions::SetBranchAddress(t,"metP4_GEN"	, &genP4 );
 
     if ( IsExtend() ) 
     {
-        setBranchAddress(t, "metNoMu", metNoMu);
-        setBranchAddress(t, "pfMet_e3p0", pfMet_e3p0);
-        setBranchAddress(t, "trackMet", trackMet);
-            // calo met
-        setBranchAddress(t, "caloMet_Pt", caloMet_Pt);
-        setBranchAddress(t, "caloMet_Phi", caloMet_Phi);
-        setBranchAddress(t, "caloMet_SumEt", caloMet_SumEt);
+        BareFunctions::SetBranchAddress(t,"metNoMu", &metNoMu);
+        BareFunctions::SetBranchAddress(t,"pfMet_e3p0", &pfMet_e3p0);
+        BareFunctions::SetBranchAddress(t,"trackMet", &trackMet);
+        //calo met
+        BareFunctions::SetBranchAddress(t,"caloMet_Pt", &caloMet_Pt);
+        BareFunctions::SetBranchAddress(t,"caloMet_Phi", &caloMet_Phi);
+        BareFunctions::SetBranchAddress(t,"caloMet_SumEt", &caloMet_SumEt);
     }
 }
 

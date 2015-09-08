@@ -1,8 +1,8 @@
 #include "NeroProducer/Core/interface/BareAll.hpp"
+#include "NeroProducer/Core/interface/BareFunctions.hpp"
 
-BareAll::BareAll(): BareCollection(){
-};
-BareAll::~BareAll(){};
+BareAll::BareAll(): BareCollection(){}
+BareAll::~BareAll(){}
 
 void BareAll::clear()
 {
@@ -26,18 +26,12 @@ void BareAll::defineBranches(TTree *t){
 
 void BareAll::setBranchAddresses(TTree *t){
     //
-    if (t->GetBranchStatus("isRealData"))
-        t->SetBranchAddress("isRealData"  ,&isRealData   );
-    if (t->GetBranchStatus("runNum"))
-        t->SetBranchAddress("runNum"      ,&runNum       );
-    if (t->GetBranchStatus("lumiNum"))
-        t->SetBranchAddress("lumiNum"     ,&lumiNum      );
-    if (t->GetBranchStatus("eventNum"))
-        t->SetBranchAddress("eventNum"    ,&eventNum     );
-    if (t->GetBranchStatus("mcWeight"))
-        t->SetBranchAddress("mcWeight"    ,&mcWeight     );
-    if (t->GetBranchStatus("puTrueInt"))
-        t->SetBranchAddress("puTrueInt"     ,&puTrueInt  );
+    BareFunctions::SetBranchAddress(t,"isRealData"  ,&isRealData   );
+    BareFunctions::SetBranchAddress(t,"runNum"      ,&runNum       );
+    BareFunctions::SetBranchAddress(t,"lumiNum"     ,&lumiNum      );
+    BareFunctions::SetBranchAddress(t,"eventNum"    ,&eventNum     );
+    BareFunctions::SetBranchAddress(t,"mcWeight"    ,&mcWeight     );
+    BareFunctions::SetBranchAddress(t,"puTrueInt"     ,&puTrueInt  );
 }
 
 // Local Variables:

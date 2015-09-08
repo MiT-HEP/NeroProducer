@@ -11,6 +11,7 @@ from MitPhysics.Mods.ElectronIdMod import electronIdMod
 from MitPhysics.Mods.MuonIdMod import muonIdMod
 from MitPhysics.Mods.PhotonIdMod import photonIdMod
 from MitPhysics.Mods.SeparatePileUpMod import separatePileUpMod
+from MitPhysics.Mods.FatJetExtenderMod import fatJetExtenderMod
 
 def addTrigger(path):
     global mithep
