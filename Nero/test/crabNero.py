@@ -65,7 +65,18 @@ if __name__ == '__main__':
         except ClientException as cle:
             print "Failed submitting task: %s" % (cle)
 
-    def setdata(value="True"):
+    def setdata(value="True",is25ns=False):
+	    if value == "True":
+		    url = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions15/13TeV/"
+		    if is25ns:
+		    	config.Data.lumiMask= url + "Cert_246908-255031_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt"
+		    else:
+		    	config.Data.lumiMask= url + "Cert_246908-255031_13TeV_PromptReco_Collisions15_50ns_JSON.txt"
+		    config.Data.splitting = 'LumiBased'
+	    else:
+		    config.Data.lumiMask = None
+		    config.Data.splitting = 'FileBased'
+	    
 	    for idx,par in enumerate(config.JobType.pyCfgParams):
 		    if "isData" in par:
 			config.JobType.pyCfgParams[idx] = "isData=" + value
@@ -246,6 +257,32 @@ if __name__ == '__main__':
 
     config.General.requestName = 'WW-50ns'
     config.Data.inputDataset = '/WW_TuneCUETP8M1_13TeV-pythia8/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1/MINIAODSIM'
+    submit(config)
+
+    ###################################################
+    ########              25ns                 ########
+    ###################################################
+    setdata("True",is25ns=True)
+    ###################################################
+
+    config.General.requestName = 'MET-25ns-PromptReco'
+    config.Data.inputDataset = '/MET/Run2015C-PromptReco-v1/MINIAOD'
+    submit(config)
+
+    config.General.requestName = 'Tau-25ns-PromptReco'
+    config.Data.inputDataset = '/Tau/Run2015C-PromptReco-v1/MINIAOD'
+    submit(config)
+
+    config.General.requestName = 'SingleMuon-25ns-PromptReco'
+    config.Data.inputDataset = '/SingleMuon/Run2015C-PromptReco-v1/MINIAOD'
+    submit(config)
+
+    config.General.requestName = 'SingleElectron-25ns-PrompReco'
+    config.Data.inputDataset = '/SingleElectron/Run2015C-PromptReco-v1/MINIAOD'
+    submit(config)
+
+    config.General.requestName = 'SinglePhoton-25ns-PromptReco'
+    config.Data.inputDataset = '/SinglePhoton/Run2015C-PromptReco-v1/MINIAOD'
     submit(config)
 
 
