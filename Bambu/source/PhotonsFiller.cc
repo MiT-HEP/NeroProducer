@@ -31,7 +31,7 @@ mithep::nero::PhotonsFiller::fill()
     IsolationTools::PFPhotonIsoFootprintRemoved(&photon, pv, pfCands, 0.3, chIso, nhIso, phIso);
 
     double iso(chIso + nhIso + phIso);
-    if (iso > maxIso_)
+    if (maxIso_ > 0. && iso > maxIso_)
       continue;
 
     newP4(out_, photon);

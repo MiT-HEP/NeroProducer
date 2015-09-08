@@ -14,7 +14,6 @@ ClassImp(mithep::nero::LeptonsFiller)
 void
 mithep::nero::LeptonsFiller::fill()
 {
-
   auto* electrons = getSource<mithep::ElectronCol>(electronsName_);
   auto* muons = getSource<mithep::MuonCol>(muonsName_);
 

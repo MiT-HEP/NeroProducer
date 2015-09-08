@@ -3,3 +3,4 @@ Notification            = Error
 Rank                    = Mips
 transfer_output_files = {fileset}.root,nero.root
 transfer_output_remaps = "nero.root = nero_{fileset}.root"
+accounting_group = group_t3mit
