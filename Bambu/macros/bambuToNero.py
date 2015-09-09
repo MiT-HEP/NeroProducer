@@ -11,6 +11,7 @@ from MitPhysics.Mods.ElectronIdMod import electronIdMod
 from MitPhysics.Mods.MuonIdMod import muonIdMod
 from MitPhysics.Mods.PhotonIdMod import photonIdMod
 from MitPhysics.Mods.SeparatePileUpMod import separatePileUpMod
+from MitPhysics.Mods.FatJetExtenderMod import fatJetExtenderMod
 
 def addTrigger(path):
     global mithep
@@ -31,7 +32,8 @@ def addTrigger(path):
 generator = mithep.GeneratorMod(
     IsData = False,
     CopyArrays = False,
-    MCMETName = "GenMet"
+    MCMETName = "GenMet",
+    FillHist = True
 )
 
 jecSources = [
@@ -185,26 +187,64 @@ muonTightIdMask = mithep.MaskCollectionMod('TightMuons',
     OutputName = 'TightMuons'
 )
 
-fatJetCorrection = mithep.JetCorrectionMod('FatJetCorrection',
+ak8JetCorrection = mithep.JetCorrectionMod('AK8JetCorrection',
     InputName = 'AKt8FatJetsCHS',
-    CorrectedJetsName = 'CorrectedFatJets',
+    CorrectedJetsName = 'CorrectedAK8Jets',
     RhoAlgo = mithep.PileupEnergyDensity.kFixedGridFastjetAll
 )
 if analysis.isRealData:
-    fatJetCorrection.AddCorrectionFromFile(mitdata + "/JEC/74X_dataRun2_Prompt_v1_L1FastJet_AK8PFchs.txt")
-    fatJetCorrection.AddCorrectionFromFile(mitdata + "/JEC/74X_dataRun2_Prompt_v1_L2Relative_AK8PFchs.txt")
-    fatJetCorrection.AddCorrectionFromFile(mitdata + "/JEC/74X_dataRun2_Prompt_v1_L3Absolute_AK8PFchs.txt")
-    fatJetCorrection.AddCorrectionFromFile(mitdata + "/JEC/74X_dataRun2_Prompt_v1_L2L3Residual_AK8PFchs.txt")
+    ak8JetCorrection.AddCorrectionFromFile(mitdata + "/JEC/74X_dataRun2_Prompt_v1_L1FastJet_AK8PFchs.txt")
+    ak8JetCorrection.AddCorrectionFromFile(mitdata + "/JEC/74X_dataRun2_Prompt_v1_L2Relative_AK8PFchs.txt")
+    ak8JetCorrection.AddCorrectionFromFile(mitdata + "/JEC/74X_dataRun2_Prompt_v1_L3Absolute_AK8PFchs.txt")
+    ak8JetCorrection.AddCorrectionFromFile(mitdata + "/JEC/74X_dataRun2_Prompt_v1_L2L3Residual_AK8PFchs.txt")
 else:
-    fatJetCorrection.AddCorrectionFromFile(mitdata + "/JEC/MCRUN2_74_V9_L1FastJet_AK8PFchs.txt")
-    fatJetCorrection.AddCorrectionFromFile(mitdata + "/JEC/MCRUN2_74_V9_L2Relative_AK8PFchs.txt")
-    fatJetCorrection.AddCorrectionFromFile(mitdata + "/JEC/MCRUN2_74_V9_L3Absolute_AK8PFchs.txt")
+    ak8JetCorrection.AddCorrectionFromFile(mitdata + "/JEC/MCRUN2_74_V9_L1FastJet_AK8PFchs.txt")
+    ak8JetCorrection.AddCorrectionFromFile(mitdata + "/JEC/MCRUN2_74_V9_L2Relative_AK8PFchs.txt")
+    ak8JetCorrection.AddCorrectionFromFile(mitdata + "/JEC/MCRUN2_74_V9_L3Absolute_AK8PFchs.txt")
 
-fatJetId = jetIdMod.clone('FatJetId',
-    InputName = fatJetCorrection.GetOutputName(),
-    OutputName = 'GoodFatJets',
+ak8JetId = jetIdMod.clone('AK8JetId',
+    InputName = ak8JetCorrection.GetOutputName(),
+    OutputName = 'GoodAK8Jets',
     MVATrainingSet = mithep.JetIDMVA.nMVATypes
 )
+
+ak8JetExtender = fatJetExtenderMod.clone('AK8JetExtender',
+    InputName = ak8JetId.GetOutputName(),
+    OutputName = 'XlAK8Jets',
+    ConeSize = 0.8,
+    PFCandsName = mithep.Names.gkPFCandidatesBrn,
+    VertexesName = goodPVFilterMod.GetOutputName(),
+    SoftDropR0 = 0.8,
+    SoftDropZCut = 0.1,
+    QGTaggingOn = False,
+    DoShowerDeconstruction = False,
+    DoECF = False,
+    DoQjets = False,
+    BeVerbose = False
+)
+ak8JetExtender.SetSubJetTypeOn(mithep.XlSubJet.kSoftDrop)
+
+ca15JetId = jetIdMod.clone('CA15JetId',
+    InputName = 'CA15FatJetsCHS',
+    OutputName = 'GoodCA15Jets',
+    MVATrainingSet = mithep.JetIDMVA.nMVATypes
+)
+
+ca15JetExtender = fatJetExtenderMod.clone('CA15JetExtender',
+    InputName = ca15JetId.GetOutputName(),
+    OutputName = 'XlCA15Jets',
+    ConeSize = 1.5,
+    PFCandsName = mithep.Names.gkPFCandidatesBrn,
+    VertexesName = goodPVFilterMod.GetOutputName(),
+    SoftDropR0 = 1.5,
+    SoftDropZCut = 0.2,
+    QGTaggingOn = False,
+    DoShowerDeconstruction = False,
+    DoECF = False,
+    DoQjets = False,
+    BeVerbose = False
+)
+ca15JetExtender.SetSubJetTypeOn(mithep.XlSubJet.kSoftDrop)
 
 photonLooseId = photonIdMod.clone('PhotonLooseId')
 
@@ -265,8 +305,12 @@ fillers.append(mithep.nero.LeptonsFiller(
     PUPFCandsName = separatePileUpMod.GetPFPileUpName()
 ))
 
-fillers.append(mithep.nero.FatJetsFiller(
-    FatJetsName = fatJetId.GetOutputName()
+fillers.append(mithep.nero.FatJetsFiller(mithep.nero.BaseFiller.kAK8Jets,
+    FatJetsName = ak8JetExtender.GetOutputName()
+))
+
+fillers.append(mithep.nero.FatJetsFiller(mithep.nero.BaseFiller.kCA15Jets,
+    FatJetsName = ca15JetExtender.GetOutputName()
 ))
 
 fillers.append(mithep.nero.MetFiller(
@@ -329,8 +373,11 @@ sequence *= separatePileUpMod * \
     photonLooseId * \
     photonMediumId * \
     photonTightId * \
-    fatJetCorrection * \
-    fatJetId
+    ak8JetCorrection * \
+    ak8JetId * \
+    ak8JetExtender * \
+    ca15JetId * \
+    ca15JetExtender
 
 addTrigger('HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v*')
 addTrigger('HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight_v*')

@@ -20,11 +20,13 @@ class BareLeptons : virtual public BareP4
 
         BareLeptons();
         ~BareLeptons();
-        void init();
-        void clear();
-        void defineBranches(TTree *t);
-        void setBranchAddresses(TTree*);
-        virtual inline string name() { return "BareLeptons"; }
+        void init() override;
+        void clear() override;
+        void defineBranches(TTree*) override;
+        void defineBranches(TTree* t, std::string) override { defineBranches(t); }
+        void setBranchAddresses(TTree*) override;
+        void setBranchAddresses(TTree* t, std::string) override { setBranchAddresses(t); }
+        inline string name() override { return "BareLeptons"; }
 
         bool inline passSelection(const unsigned &idx, const Selection &sel) const  { return (selBits->at(idx) & sel) != 0; }
 

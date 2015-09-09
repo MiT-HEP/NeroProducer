@@ -6,22 +6,6 @@
 namespace mithep {
   namespace nero {
 
-    enum Collection {
-      kEvent,
-      kJets,
-      kFatJets,
-      kLeptons,
-      kMet,
-      kMonteCarlo,
-      kPhotons,
-      kTaus,
-      kTrigger,
-      kVertex,
-      nEventObjects,
-      kAll = nEventObjects,
-      nCollections,
-      nLumiObjects = nCollections - nEventObjects
-    };
 
   }
 }

@@ -10,6 +10,7 @@
 #include "TObject.h"
 #include "TClonesArray.h"
 #include "TLorentzVector.h"
+#include "TTree.h"
 
 #include <functional>
 #include <stdexcept>
@@ -19,11 +20,29 @@ namespace mithep {
 
     class BaseFiller : public TObject {
     public:
+      enum Collection {
+        kEvent,
+        kJets,
+        kAK8Jets,
+        kCA15Jets,
+        kLeptons,
+        kMet,
+        kMonteCarlo,
+        kPhotons,
+        kTaus,
+        kTrigger,
+        kVertex,
+        nEventObjects,
+        kAll = nEventObjects,
+        nCollections,
+        nLumiObjects = nCollections - nEventObjects
+      };
+
       BaseFiller() {}
       virtual ~BaseFiller() {}
 
       virtual BareCollection* getObject() { return 0; }
-      virtual mithep::nero::Collection collection() const = 0;
+      virtual Collection collection() const = 0;
 
       virtual void setCrossRef(BaseFiller*[]) {}
 
@@ -32,6 +51,8 @@ namespace mithep {
       virtual void notify() {}
       void callBegin();
       void callFill();
+
+      virtual void defineBranches(TTree* tree) { getObject()->defineBranches(tree); };
 
       typedef std::function<TObject*(char const*)> ProductGetter;
       void setProductGetter(ProductGetter _getter) { getter_ = _getter; }

@@ -15,7 +15,7 @@ namespace mithep {
       ~AllFiller() {}
 
       BareCollection* getObject() override { return &out_; }
-      mithep::nero::Collection collection() const override { return kAll; }
+      BaseFiller::Collection collection() const override { return BaseFiller::kAll; }
 
       void fill() override;
 

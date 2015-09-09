@@ -10,12 +10,12 @@ class BareTrigger: virtual public BareCollection
     public:
         BareTrigger();
         ~BareTrigger();
-        void init();
-        void clear();
-        void defineBranches(TTree*);
-        virtual void setBranchAddresses(TTree*);
-        virtual inline string name() { return "BareTrigger"; }
-        virtual inline unsigned size() const { return triggerNames->size(); }
+        void init() override;
+        void clear() override;
+        void defineBranches(TTree*) override;
+        void setBranchAddresses(TTree*) override;
+        inline string name() override { return "BareTrigger"; }
+        inline unsigned size() const override { return triggerNames->size(); }
 
         //variables
         vector<int>  *triggerFired{0}; // bool vector are not supported in TTree

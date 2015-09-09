@@ -64,59 +64,63 @@ void BareJets::clear(){
     QnoPU->clear();
 }
 
-void BareJets::defineBranches(TTree *t){
+void BareJets::defineBranches(TTree *t, std::string prefix){
+    TString jetName("jet" + prefix);
+
     //
-    //t->Branch("jetP4","TClonesArray", &p4, 128000, 0);
-    BareP4::defineBranches(t, "jet" );
+    //t->Branch(jetName + "P4","TClonesArray", &p4, 128000, 0);
+    BareP4::defineBranches(t, jetName.Data());
     //
-    t->Branch("jetRawPt","vector<float>",&rawPt);
+    t->Branch(jetName + "RawPt","vector<float>",&rawPt);
     //
-    t->Branch("jetBdiscr","vector<float>",&bDiscr);
+    t->Branch(jetName + "Bdiscr","vector<float>",&bDiscr);
     //
-    t->Branch("jetBdiscrLegacy","vector<float>",&bDiscrLegacy);
+    t->Branch(jetName + "BdiscrLegacy","vector<float>",&bDiscrLegacy);
     //	
-    t->Branch("jetPuId","vector<float>",&puId);
+    t->Branch(jetName + "PuId","vector<float>",&puId);
     // -- JES uncertainty
-    t->Branch("jetUnc","vector<float>",&unc);
+    t->Branch(jetName + "Unc","vector<float>",&unc);
     // --QGL
-    t->Branch("jetQGL","vector<float>",&qgl);
+    t->Branch(jetName + "QGL","vector<float>",&qgl);
     // -- Jet Flavour by PAT
-    t->Branch("jetFlavour","vector<int>",&flavour);
+    t->Branch(jetName + "Flavour","vector<int>",&flavour);
 
-    t->Branch("jetMatchedPartonPdgId","vector<int>",&matchedPartonPdgId);
+    t->Branch(jetName + "MatchedPartonPdgId","vector<int>",&matchedPartonPdgId);
     
-    t->Branch("jetMotherPdgId","vector<int>",&motherPdgId);
+    t->Branch(jetName + "MotherPdgId","vector<int>",&motherPdgId);
     
-    t->Branch("jetGrMotherPdgId","vector<int>",&grMotherPdgId);
+    t->Branch(jetName + "GrMotherPdgId","vector<int>",&grMotherPdgId);
     
-    t->Branch("jetMonojetId","vector<bool>",&mjId);
+    t->Branch(jetName + "MonojetId","vector<bool>",&mjId);
 
-    t->Branch("jetMonojetIdLoose","vector<bool>",&mjId_loose);
+    t->Branch(jetName + "MonojetIdLoose","vector<bool>",&mjId_loose);
 
-    t->Branch("jetQ","vector<float>",&Q);
+    t->Branch(jetName + "Q","vector<float>",&Q);
 
-    t->Branch("jetQnoPU","vector<float>",&QnoPU);
+    t->Branch(jetName + "QnoPU","vector<float>",&QnoPU);
 }
 
-void BareJets::setBranchAddresses(TTree* t)
+void BareJets::setBranchAddresses(TTree* t, std::string prefix)
 {
-    BareP4::setBranchAddresses(t,"jet");
-    BareFunctions::SetBranchAddress(t,"jetRawPt"	,&rawPt);
-    BareFunctions::SetBranchAddress(t,"jetBdiscr"	,&bDiscr);
-    BareFunctions::SetBranchAddress(t,"jetBdiscrLegacy"	,&bDiscrLegacy);
-    BareFunctions::SetBranchAddress(t,"jetPuId"	,&puId);
-    BareFunctions::SetBranchAddress(t,"jetUnc"	,&unc);
-    BareFunctions::SetBranchAddress(t,"jetQGL"	,&qgl);
-    BareFunctions::SetBranchAddress(t,"jetFlavour"	,&flavour);
-    BareFunctions::SetBranchAddress(t,"jetMatchedPartonPdgId", &matchedPartonPdgId);
-    BareFunctions::SetBranchAddress(t,"jetMotherPdgId", &motherPdgId);
-    BareFunctions::SetBranchAddress(t,"jetGrMotherPdgId", &grMotherPdgId);
-    BareFunctions::SetBranchAddress(t,"jetMonojetId", &mjId);
-    BareFunctions::SetBranchAddress(t,"jetMonojetIdLoose", &mjId_loose);
+    TString jetName("jet" + prefix);
+
+    BareP4::setBranchAddresses(t,jetName.Data());
+    BareFunctions::SetBranchAddress(t,jetName + "RawPt"	,&rawPt);
+    BareFunctions::SetBranchAddress(t,jetName + "Bdiscr"	,&bDiscr);
+    BareFunctions::SetBranchAddress(t,jetName + "BdiscrLegacy"	,&bDiscrLegacy);
+    BareFunctions::SetBranchAddress(t,jetName + "PuId"	,&puId);
+    BareFunctions::SetBranchAddress(t,jetName + "Unc"	,&unc);
+    BareFunctions::SetBranchAddress(t,jetName + "QGL"	,&qgl);
+    BareFunctions::SetBranchAddress(t,jetName + "Flavour"	,&flavour);
+    BareFunctions::SetBranchAddress(t,jetName + "MatchedPartonPdgId", &matchedPartonPdgId);
+    BareFunctions::SetBranchAddress(t,jetName + "MotherPdgId", &motherPdgId);
+    BareFunctions::SetBranchAddress(t,jetName + "GrMotherPdgId", &grMotherPdgId);
+    BareFunctions::SetBranchAddress(t,jetName + "MonojetId", &mjId);
+    BareFunctions::SetBranchAddress(t,jetName + "MonojetIdLoose", &mjId_loose);
 
     // ---
-    BareFunctions::SetBranchAddress(t,"jetQ",&Q);
-    BareFunctions::SetBranchAddress(t,"jetQnoPU",&QnoPU);
+    BareFunctions::SetBranchAddress(t,jetName + "Q",&Q);
+    BareFunctions::SetBranchAddress(t,jetName + "QnoPU",&QnoPU);
 
 }
 // Local Variables:

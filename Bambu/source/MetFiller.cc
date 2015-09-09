@@ -40,9 +40,7 @@ mithep::nero::MetFiller::fill()
   }
 
   *out_.pfMet_e3p0 *= 0.;
-  *out_.metChargedHadron *= 0.;
-  *out_.metNeutralHadron *= 0.;
-  *out_.metNeutralEM *= 0.;
+  *out_.trackMet *= 0.;
   auto* pfCandidates = getSource<mithep::PFCandidateCol>(pfCandidatesName_);
   for (unsigned iP(0); iP != pfCandidates->GetEntries(); ++iP) {
     auto& cand(*pfCandidates->At(iP));
@@ -52,15 +50,9 @@ mithep::nero::MetFiller::fill()
 
     switch (cand.PFType()) {
     case mithep::PFCandidate::eHadron:
-      *out_.metChargedHadron -= TLorentzVector(cand.Px(), cand.Py(), cand.Pz(), cand.E());
-      break;
-    case mithep::PFCandidate::eNeutralHadron:
-    case mithep::PFCandidate::eHadronHF:
-      *out_.metNeutralHadron -= TLorentzVector(cand.Px(), cand.Py(), cand.Pz(), cand.E());
-      break;
-    case mithep::PFCandidate::eGamma:
-    case mithep::PFCandidate::eEGammaHF:
-      *out_.metNeutralEM -= TLorentzVector(cand.Px(), cand.Py(), cand.Pz(), cand.E());
+    case mithep::PFCandidate::eElectron:
+    case mithep::PFCandidate::eMuon:
+      *out_.trackMet -= TLorentzVector(cand.Px(), cand.Py(), cand.Pz(), cand.E());
       break;
     default:
       break;

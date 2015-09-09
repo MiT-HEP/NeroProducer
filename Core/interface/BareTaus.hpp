@@ -9,11 +9,13 @@ class BareTaus : virtual public BareP4
     public:
         BareTaus();
         ~BareTaus();
-        void init();
-        void clear();
-        void defineBranches(TTree *t);
-        void setBranchAddresses(TTree*) ;
-        virtual inline string name() { return "BareTaus"; }
+        void init() override;
+        void clear() override;
+        void defineBranches(TTree*) override;
+        void defineBranches(TTree* t, std::string) override { defineBranches(t); }
+        void setBranchAddresses(TTree*) override;
+        void setBranchAddresses(TTree* t, std::string) override { setBranchAddresses(t); }
+        inline string name() override { return "BareTaus"; }
 
         // --  members
         //TClonesArray    *p4{0};

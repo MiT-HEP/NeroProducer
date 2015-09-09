@@ -10,12 +10,14 @@ class BareMet : virtual public BareP4
     public:
         BareMet();
         ~BareMet();
-        void init();
-        void clear();
-        void defineBranches(TTree *t);
-        virtual void setBranchAddresses(TTree*) ;
-        virtual inline string name() { return "BareMet"; }
-        virtual void compress();
+        void init() override;
+        void clear() override;
+        void defineBranches(TTree*) override;
+        void defineBranches(TTree* t, std::string) override { defineBranches(t); }
+        void setBranchAddresses(TTree*) override;
+        void setBranchAddresses(TTree* t, std::string) override { setBranchAddresses(t); }
+        inline string name() override { return "BareMet"; }
+        void compress() override;
 
         // -- variables
         //TClonesArray *p4;
@@ -27,9 +29,7 @@ class BareMet : virtual public BareP4
 
         TLorentzVector *metNoMu{0};
         TLorentzVector *pfMet_e3p0{0};
-        TLorentzVector *metChargedHadron{0};
-        TLorentzVector *metNeutralHadron{0};
-        TLorentzVector *metNeutralEM{0};
+        TLorentzVector *trackMet{0};
   
         float caloMet_Pt;
         float caloMet_Phi;

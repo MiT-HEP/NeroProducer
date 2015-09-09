@@ -10,12 +10,14 @@ class BareMonteCarlo : virtual public BareP4
     public:
         BareMonteCarlo();
         ~BareMonteCarlo();
-        void init();
-        void clear();
-        void defineBranches(TTree *t);
-        void setBranchAddresses(TTree*) ;
-        virtual inline string name() { return "BareMonteCarlo"; }
-        virtual void compress();
+        void init() override;
+        void clear() override;
+        void defineBranches(TTree*) override;
+        void defineBranches(TTree* t, std::string) override { defineBranches(t); }
+        void setBranchAddresses(TTree*) override;
+        void setBranchAddresses(TTree* t, std::string) override { setBranchAddresses(t); }
+        inline string name() { return "BareMonteCarlo"; }
+        void compress() override;
 
         // -- variables
         //TClonesArray *p4{0}; // gen particles

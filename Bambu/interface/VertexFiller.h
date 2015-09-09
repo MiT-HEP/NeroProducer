@@ -15,7 +15,7 @@ namespace mithep {
       ~VertexFiller() {}
 
       BareCollection* getObject() override { return &out_; }
-      mithep::nero::Collection collection() const override { return kVertex; }
+      BaseFiller::Collection collection() const override { return BaseFiller::kVertex; }
 
       void fill() override;
 

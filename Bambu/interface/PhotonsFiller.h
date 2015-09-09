@@ -13,7 +13,7 @@ namespace mithep {
       ~PhotonsFiller() {}
 
       BareCollection* getObject() override { return &out_; }
-      mithep::nero::Collection collection() const override { return kPhotons; }
+      BaseFiller::Collection collection() const override { return BaseFiller::kPhotons; }
 
       void fill() override;
 

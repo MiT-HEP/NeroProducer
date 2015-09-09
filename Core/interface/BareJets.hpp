@@ -9,11 +9,13 @@ class BareJets : virtual public BareP4
     public:
         BareJets();
         ~BareJets();
-        void init();
-        void clear();
-        void defineBranches(TTree*);
-        virtual void setBranchAddresses(TTree*);
-        virtual inline string name() { return "BareJets"; }
+        void init() override;
+        void clear() override;
+        void defineBranches(TTree* t) override { defineBranches(t, ""); }
+        void defineBranches(TTree*, std::string prefix) override;
+        void setBranchAddresses(TTree* t) override { setBranchAddresses(t, ""); }
+        void setBranchAddresses(TTree*, std::string prefix) override;
+        inline string name() override { return "BareJets"; }
 
         // -- variables
         //TClonesArray  *p4{0};
