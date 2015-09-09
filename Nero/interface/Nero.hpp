@@ -57,6 +57,7 @@ class Nero : public edm::EDAnalyzer {
         string tag_; // last tag
         string head_; // head
         string info_; // bare config, ch Higgs, monojet
+        string cmssw_; //
 };
 
 

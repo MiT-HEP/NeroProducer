@@ -51,6 +51,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     tag_  = iConfig.getParameter<string>("tag");
     head_ = iConfig.getParameter<string>("head");
     info_ = iConfig.getParameter<string>("info");
+    cmssw_ = iConfig.getParameter<string>("cmssw");
 
     bool onlyMc = iConfig.getParameter<bool>("onlyMc");
 
@@ -335,6 +336,7 @@ Nero::beginJob()
     fileService_ ->make<TNamed>("tag",tag_.c_str() );
     fileService_ ->make<TNamed>("head",head_.c_str() );
     fileService_ ->make<TNamed>("info",info_.c_str() );
+    fileService_ ->make<TNamed>("cmssw",cmssw_.c_str() );
 
     // FILL TRIGGER NAMES INFO
     string myString = "";
