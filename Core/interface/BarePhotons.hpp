@@ -10,11 +10,13 @@ class BarePhotons : virtual public BareP4
     public:
         BarePhotons();
         ~BarePhotons();
-        void init();
-        void clear();
-        void defineBranches(TTree *t);
-        void setBranchAddresses(TTree*) ;
-        virtual inline string name() { return "BarePhotons"; }
+        void init() override;
+        void clear() override;
+        using BareP4::defineBranches;
+        void defineBranches(TTree*) override;
+        using BareP4::setBranchAddresses;
+        void setBranchAddresses(TTree*) override;
+        inline string name() override { return "BarePhotons"; }
 
         // -- variables
         //TClonesArray *p4{0};

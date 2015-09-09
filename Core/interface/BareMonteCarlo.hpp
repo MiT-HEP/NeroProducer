@@ -10,12 +10,14 @@ class BareMonteCarlo : virtual public BareP4
     public:
         BareMonteCarlo();
         ~BareMonteCarlo();
-        void init();
-        void clear();
-        void defineBranches(TTree *t);
-        void setBranchAddresses(TTree*) ;
-        virtual inline string name() { return "BareMonteCarlo"; }
-        virtual void compress();
+        void init() override;
+        void clear() override;
+        using BareP4::defineBranches;
+        void defineBranches(TTree*) override;
+        using BareP4::setBranchAddresses;
+        void setBranchAddresses(TTree*) override;
+        inline string name() { return "BareMonteCarlo"; }
+        void compress() override;
 
         // -- variables
         //TClonesArray *p4{0}; // gen particles

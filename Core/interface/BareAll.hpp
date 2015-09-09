@@ -9,11 +9,11 @@ class BareAll : virtual public BareCollection
     public:
         BareAll();
         ~BareAll();
-        void clear();
-        void defineBranches(TTree*);
-        virtual void setBranchAddresses(TTree*);
-        virtual inline string name() { return "BareAll"; }
-        virtual inline unsigned size() const { return 1; }
+        void clear() override;
+        void defineBranches(TTree*) override;
+        void setBranchAddresses(TTree*) override;
+        inline string name() override { return "BareAll"; }
+        inline unsigned size() const override { return 1; }
 
         // -- variables
         int isRealData;
