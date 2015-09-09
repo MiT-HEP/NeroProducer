@@ -60,7 +60,7 @@ void BareMet::defineBranches(TTree *t){
     //
     t->Branch("metPtJESDOWN","vector<float>",&ptJESDOWN);
     //	
-    t->Branch("metP4_GEN","TClonesArray", &p4, 128000, 0);
+    t->Branch("metP4_GEN","TClonesArray", &genP4, 128000, 0);
     //
 
     if ( IsExtend() )
