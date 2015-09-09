@@ -6,6 +6,7 @@ import os
 #------------------------------------------------------
 nero = cms.EDAnalyzer("Nero",
     info = cms.string("Nero"),
+    cmssw = cms.string( os.environ['CMSSW_VERSION'] ) , # no need to ship it with the grid option
     head = cms.string( check_output("cd "+os.environ['CMSSW_BASE']+"/src/NeroProducer/ && git rev-parse HEAD && cd - 2>&1 >/dev/null",shell=True) ) ,
     tag  = cms.string( check_output("cd " +os.environ["CMSSW_BASE"] +"/src/NeroProducer && { git describe --tags || true ; } && cd - 2>&1 >/dev/null",shell=True) ) ,
 
