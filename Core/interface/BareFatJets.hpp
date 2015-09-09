@@ -10,12 +10,15 @@ class BareFatJets : virtual public BareP4
     public:
         BareFatJets();
         ~BareFatJets();
-        void clear();
-        void init();
-        void defineBranches(TTree *t);
-        virtual void setBranchAddresses(TTree*);
-        virtual inline string name() { return "BareFatJets"; }
-        virtual void compress();
+        void clear() override;
+        void init() override;
+        // non-prefix versions are defined in BareP4 and will call the following functions with prefix = ""
+        using BareP4::defineBranches;
+        void defineBranches(TTree*, std::string) override;
+        using BareP4::setBranchAddresses;
+        void setBranchAddresses(TTree*, std::string) override;
+        inline string name() override { return "BareFatJets"; }
+        void compress() override;
 
         // -- variables
         //TClonesArray  *p4;

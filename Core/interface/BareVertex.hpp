@@ -9,11 +9,11 @@ class BareVertex : virtual public BareCollection
     public:
         BareVertex();
         ~BareVertex();
-        void clear();
-        void defineBranches(TTree *t);
-        virtual void setBranchAddresses(TTree*);
-        virtual inline string name() { return "BareVertex"; }
-        virtual inline unsigned size() const { return npv; }
+        void clear() override;
+        void defineBranches(TTree *t) override;
+        void setBranchAddresses(TTree*) override;
+        inline string name() override { return "BareVertex"; }
+        inline unsigned size() const override { return npv; }
 
         int npv;
 

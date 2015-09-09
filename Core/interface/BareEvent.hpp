@@ -8,11 +8,11 @@ class BareEvent : virtual public BareCollection
     public:
         BareEvent();
         ~BareEvent();
-        void clear();
-        void defineBranches(TTree*);
-        void setBranchAddresses(TTree*);
-        virtual inline string name() { return "BareEvent"; }
-        virtual inline unsigned size() const { return 1; }
+        void clear() override;
+        void defineBranches(TTree*) override;
+        void setBranchAddresses(TTree*) override;
+        inline string name() override { return "BareEvent"; }
+        inline unsigned size() const override { return 1; }
     
 
         // -- variables

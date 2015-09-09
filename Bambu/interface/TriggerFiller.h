@@ -14,7 +14,7 @@ namespace mithep {
       ~TriggerFiller() {}
 
       BareCollection* getObject() override { return &out_; }
-      mithep::nero::Collection collection() const override { return kTrigger; }
+      BaseFiller::Collection collection() const override { return BaseFiller::kTrigger; }
 
       void initialize() override;
       void setCrossRef(BaseFiller* fillers[]) override;

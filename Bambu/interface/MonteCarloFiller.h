@@ -15,7 +15,7 @@ namespace mithep {
       ~MonteCarloFiller() {}
 
       BareCollection* getObject() override { return &out_; }
-      mithep::nero::Collection collection() const override { return kMonteCarlo; }
+      BaseFiller::Collection collection() const override { return BaseFiller::kMonteCarlo; }
 
       void fill() override;
 

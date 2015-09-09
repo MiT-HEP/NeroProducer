@@ -11,8 +11,8 @@ class BareP4 : virtual public BareCollection
         BareP4();
         ~BareP4();
 
-        virtual inline string name() { return "BareP4"; }
-        virtual inline unsigned size() const { if (p4) return p4->GetEntries(); else return 0; }
+        inline string name() override { return "BareP4"; }
+        inline unsigned size() const override { if (p4) return p4->GetEntries(); else return 0; }
 
         virtual inline TLorentzVector const& momentum(unsigned idx) const { return *static_cast<TLorentzVector*>((*p4)[idx]); }
         virtual inline double px(unsigned idx) const { return static_cast<TLorentzVector*>((*p4)[idx])->Px(); }
@@ -27,17 +27,19 @@ class BareP4 : virtual public BareCollection
         TClonesArray  *p4{0};
         vector<int>   *match{0};
 
-        virtual bool isInit(){ return p4 != NULL;}
+        virtual bool isInit() { return p4 != NULL;}
 
-        inline void SetMatch(bool match=true){doMatch_=match;}
+        inline void SetMatch(bool match=true) { doMatch_=match; }
         inline bool doMatch() { return doMatch_;}
 
-        virtual void init();
-        virtual void clear();
-        void defineBranches(TTree *t,string prefix="");
-        void setBranchAddresses(TTree*t,string prefix ="");
+        void init() override;
+        void clear() override;
+        virtual void defineBranches(TTree* t, std::string prefix);
+        virtual void setBranchAddresses(TTree* t, std::string prefix);
+        void defineBranches(TTree* t) override { defineBranches(t, ""); }
+        void setBranchAddresses(TTree* t) override { setBranchAddresses(t, ""); }
 
-        virtual void compress();
+        void compress() override;
 };
 
 #endif

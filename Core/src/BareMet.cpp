@@ -11,9 +11,7 @@ BareMet::~BareMet(){
     BareFunctions::Delete(genP4);
     BareFunctions::Delete(metNoMu);
     BareFunctions::Delete(pfMet_e3p0);
-    BareFunctions::Delete(metChargedHadron);
-    BareFunctions::Delete(metNeutralHadron);
-    BareFunctions::Delete(metNeutralEM);
+    BareFunctions::Delete(trackMet);
 }
 
 void BareMet::init(){
@@ -28,9 +26,7 @@ void BareMet::init(){
     {
         BareFunctions::New(metNoMu);
         BareFunctions::New(pfMet_e3p0);
-        BareFunctions::New(metChargedHadron);
-        BareFunctions::New(metNeutralHadron);
-        BareFunctions::New(metNeutralEM);
+        BareFunctions::New(trackMet);
     }
 }
 
@@ -46,9 +42,7 @@ void BareMet::clear(){
     {
         *metNoMu *= 0.;
         *pfMet_e3p0 *= 0.;
-        *metChargedHadron *= 0.;
-        *metNeutralHadron *= 0.;
-        *metNeutralEM *= 0.;
+        *trackMet *= 0.;
     }
 }
 
@@ -69,11 +63,7 @@ void BareMet::defineBranches(TTree *t){
         //
         t->Branch("pfMet_e3p0","TLorentzVector",&pfMet_e3p0);
         //
-        t->Branch("metChargedHadron","TLorentzVector",&metChargedHadron);
-        //
-        t->Branch("metNeutralHadron","TLorentzVector",&metNeutralHadron);
-        //
-        t->Branch("metNeutralEM","TLorentzVector",&metNeutralEM);
+        t->Branch("trackMet","TLorentzVector",&trackMet);
         // calo Met
         t->Branch("caloMet_Pt",&caloMet_Pt,"caloMet_Pt/F");
         t->Branch("caloMet_Phi",&caloMet_Phi,"caloMet_Phi/F");
@@ -94,9 +84,7 @@ void BareMet::setBranchAddresses(TTree *t){
     {
         BareFunctions::SetBranchAddress(t,"metNoMu", &metNoMu);
         BareFunctions::SetBranchAddress(t,"pfMet_e3p0", &pfMet_e3p0);
-        BareFunctions::SetBranchAddress(t,"metChargedHadron", &metChargedHadron);
-        BareFunctions::SetBranchAddress(t,"metNeutralHadron", &metNeutralHadron);
-        BareFunctions::SetBranchAddress(t,"metNeutralEM", &metNeutralEM);
+        BareFunctions::SetBranchAddress(t,"trackMet", &trackMet);
         //calo met
         BareFunctions::SetBranchAddress(t,"caloMet_Pt", &caloMet_Pt);
         BareFunctions::SetBranchAddress(t,"caloMet_Phi", &caloMet_Phi);
@@ -113,11 +101,9 @@ void BareMet::compress(){
 
     if ( IsExtend() ) 
     {
-        BareFunctions::Compress(*metNoMu );
-        BareFunctions::Compress(*pfMet_e3p0 );
-        BareFunctions::Compress(*metChargedHadron );
-        BareFunctions::Compress(*metNeutralHadron );
-        BareFunctions::Compress(*metNeutralEM );
+        BareFunctions::Compress(*metNoMu);
+        BareFunctions::Compress(*pfMet_e3p0);
+        BareFunctions::Compress(*trackMet);
     }
 
 }

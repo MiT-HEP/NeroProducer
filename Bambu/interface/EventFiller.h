@@ -15,7 +15,7 @@ namespace mithep {
       ~EventFiller() {}
 
       BareCollection* getObject() override { return &out_; }
-      mithep::nero::Collection collection() const override { return kEvent; }
+      BaseFiller::Collection collection() const override { return BaseFiller::kEvent; }
 
       void fill() override;
 
