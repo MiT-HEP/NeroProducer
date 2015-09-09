@@ -14,6 +14,8 @@ config.General.transferLogs = False
 config.JobType.pluginName = 'Analysis'
 config.JobType.psetName = 'testNero.py'
 config.JobType.pyCfgParams=['isGrid=True','isData=False','nerohead='+check_output("git rev-parse HEAD",shell=True), 'nerotag='+check_output('git describe --tags',shell=True)]
+# request shipping of the JEC V4 -- local
+config.JobType.inputFiles=['Summer15_50nsV4_DATA.db','Summer15_50nsV4_MC.db']
 
 ### DATA configuration
 config.Data.inputDataset = '/HplusToTauNu-M500/amarini-amarini_PrivateMC_HPlusToTauNu_June2015-16aa19d591b8b49c55c4508e7a7c9233/USER'
