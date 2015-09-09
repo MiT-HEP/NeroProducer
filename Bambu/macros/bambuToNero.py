@@ -32,7 +32,8 @@ def addTrigger(path):
 generator = mithep.GeneratorMod(
     IsData = False,
     CopyArrays = False,
-    MCMETName = "GenMet"
+    MCMETName = "GenMet",
+    FillHist = True
 )
 
 jecSources = [
@@ -211,15 +212,14 @@ ak8JetExtender = fatJetExtenderMod.clone('AK8JetExtender',
     InputName = ak8JetId.GetOutputName(),
     OutputName = 'XlAK8Jets',
     ConeSize = 0.8,
-    QGTaggingActive = False,
     PFCandsName = mithep.Names.gkPFCandidatesBrn,
     VertexesName = goodPVFilterMod.GetOutputName(),
     SoftDropR0 = 0.8,
+    SoftDropZCut = 0.1,
+    QGTaggingOn = False,
     DoShowerDeconstruction = False,
-    NMaxMicrojets = 7,
     DoECF = False,
     DoQjets = False,
-    SoftDropZCut = 0.1,
     BeVerbose = False
 )
 ak8JetExtender.SetSubJetTypeOn(mithep.XlSubJet.kSoftDrop)
@@ -234,15 +234,14 @@ ca15JetExtender = fatJetExtenderMod.clone('CA15JetExtender',
     InputName = ca15JetId.GetOutputName(),
     OutputName = 'XlCA15Jets',
     ConeSize = 1.5,
-    QGTaggingActive = False,
     PFCandsName = mithep.Names.gkPFCandidatesBrn,
     VertexesName = goodPVFilterMod.GetOutputName(),
     SoftDropR0 = 1.5,
+    SoftDropZCut = 0.2,
+    QGTaggingOn = False,
     DoShowerDeconstruction = False,
-    NMaxMicrojets = 7,
     DoECF = False,
     DoQjets = False,
-    SoftDropZCut = 0.2,
     BeVerbose = False
 )
 ca15JetExtender.SetSubJetTypeOn(mithep.XlSubJet.kSoftDrop)

@@ -12,10 +12,10 @@ class BareMet : virtual public BareP4
         ~BareMet();
         void init() override;
         void clear() override;
-        using BareP4::defineBranches;
         void defineBranches(TTree*) override;
-        using BareP4::setBranchAddresses;
+        void defineBranches(TTree* t, std::string) override { defineBranches(t); }
         void setBranchAddresses(TTree*) override;
+        void setBranchAddresses(TTree* t, std::string) override { setBranchAddresses(t); }
         inline string name() override { return "BareMet"; }
         void compress() override;
 

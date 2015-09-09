@@ -11,10 +11,9 @@ class BareJets : virtual public BareP4
         ~BareJets();
         void init() override;
         void clear() override;
-        // non-prefix versions are defined in BareP4 and will call the following functions with prefix = ""
-        using BareP4::defineBranches;
+        void defineBranches(TTree* t) override { defineBranches(t, ""); }
         void defineBranches(TTree*, std::string prefix) override;
-        using BareP4::setBranchAddresses;
+        void setBranchAddresses(TTree* t) override { setBranchAddresses(t, ""); }
         void setBranchAddresses(TTree*, std::string prefix) override;
         inline string name() override { return "BareJets"; }
 
