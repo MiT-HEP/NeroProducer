@@ -62,15 +62,17 @@ process.load('Configuration.StandardSequences.Services_cff')
 if (isData):
     process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
     process.GlobalTag.globaltag = '74X_dataRun2_Prompt_v0'
-    
+else:
+    process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
+    process.GlobalTag.globaltag = 'MCRUN2_74_V9::All'
+
+######## LUMI MASK
+if isData and not options.isGrid : ## don't load the lumiMaks, will be called by crab
     import FWCore.PythonUtilities.LumiList as LumiList
     # GoldenJsn
     process.source.lumisToProcess = LumiList.LumiList(filename='/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt').getVLuminosityBlockRange()
     # DCS only
     #process.source.lumisToProcess = LumiList.LumiList(filename='/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/DCSOnly/json_DCSONLY_Run2015B.txt').getVLuminosityBlockRange()
-else:
-    process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
-    process.GlobalTag.globaltag = 'MCRUN2_74_V9::All'
 
 #-----------------------ELECTRON ID-------------------------------
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
