@@ -183,7 +183,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     mc -> info_token   = consumes<GenEventInfoProduct>(iConfig.getParameter<edm::InputTag>("generator"));
     mc -> pu_token     = consumes<std::vector<PileupSummaryInfo> >(iConfig.getParameter<edm::InputTag>("pileup"));
     mc -> jet_token    = consumes<reco::GenJetCollection>(iConfig.getParameter<edm::InputTag>("genjets"));
-    mc -> runinfo_token = consumes<GenRunInfoProduct>(iConfig.getParameter<edm::InputTag>("genruninfo") );
+    mc -> runinfo_token = consumes<GenRunInfoProduct,edm::InRun>(iConfig.getParameter<edm::InputTag>("genruninfo") );
     mc -> mMinGenParticlePt = iConfig.getParameter<double>("minGenParticlePt");
     mc -> mMinGenJetPt = iConfig.getParameter<double>("minGenJetPt");
     mc -> mParticleGun = iConfig.getUntrackedParameter<bool>("particleGun",false);
@@ -221,6 +221,11 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     NeroAll *info = new NeroAll();
     info -> mOnlyMc = onlyMc;
     info -> isSkim_ = 1;
+    //info -> pu_token = consumes<std::vector<PileupSummaryInfo> >(edm::InputTag("addPileupInfo"));
+    //info -> info_token = consumes<GenEventInfoProduct>(edm::InputTag("generator"));
+    info -> events_token = consumes<std::vector<long>,edm::InLumi>( edm::InputTag("InfoProducer","vecEvents") ) ;
+    info -> weights_token = consumes<std::vector<float>,edm::InLumi>( edm::InputTag("InfoProducer","vecMcWeights") ) ;
+    info -> putrue_token = consumes<std::vector<int>,edm::InLumi>( edm::InputTag("InfoProducer","vecPuTrueInt") ) ;
     lumiObj.push_back(info);
 
 

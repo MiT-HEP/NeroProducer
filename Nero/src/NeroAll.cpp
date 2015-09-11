@@ -35,8 +35,12 @@ int NeroAll::analyze(const edm::Event&iEvent)
         eventNum = iEvent.id().event();  
 
         if( not isRealData ) {
-            iEvent.getByLabel(edm::InputTag("generator"), info_handle); // USE TOKEN AND INPUT TAG ?
-            iEvent.getByLabel(edm::InputTag("addPileupInfo"), pu_handle);
+            //iEvent.getByLabel(edm::InputTag("generator"), info_handle); // USE TOKEN AND INPUT TAG ?
+            //iEvent.getByLabel(edm::InputTag("addPileupInfo"), pu_handle);
+            //TODO! don't use this path for the moment. Check that double fetching the token still work
+            iEvent.getByToken(info_token,info_handle);
+            iEvent.getByToken(pu_token,pu_handle );
+
             if (not info_handle.isValid() ) cout<<"[NeroAll]::[analyze]::[ERROR] Info handle is not valid"<<endl;
             if (not pu_handle.isValid() ) cout <<"[NeroAll]::[analyze]::[ERROR] PU handle is not valide"<<endl;
             mcWeight = info_handle->weight();
@@ -60,10 +64,14 @@ int NeroAll::analyzeLumi(const edm::LuminosityBlock &iLumi, TTree *t)
 
     if(VERBOSE>1) cout<<"[NeroAll]::[analyzeLumi]::[DEBUG] isMc_"<<isMc_<<endl;
 
-    iLumi.getByLabel(edm::InputTag("InfoProducer","vecEvents"), events_handle);
+    //iLumi.getByLabel(edm::InputTag("InfoProducer","vecEvents"), events_handle);
 
-    iLumi.getByLabel(edm::InputTag("InfoProducer","vecMcWeights"), weights_handle);
-    iLumi.getByLabel(edm::InputTag("InfoProducer","vecPuTrueInt"), putrue_handle);
+    //iLumi.getByLabel(edm::InputTag("InfoProducer","vecMcWeights"), weights_handle);
+    //iLumi.getByLabel(edm::InputTag("InfoProducer","vecPuTrueInt"), putrue_handle);
+
+    iLumi.getByToken( events_token, events_handle);
+    iLumi.getByToken( weights_token, weights_handle);
+    iLumi.getByToken( putrue_token, putrue_handle);
 
     if ( not events_handle.isValid() ) cout<<"[NeroAll]::[analyzeLumi]::[ERROR] events_handle is not valid"<<endl;
     if ( not weights_handle.isValid() ) cout<<"[NeroAll]::[analyzeLumi]::[ERROR] weights_handle is not valid"<<endl;
