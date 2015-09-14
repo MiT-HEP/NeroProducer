@@ -162,8 +162,8 @@ int NeroMonteCarlo::crossSection(edm::Run const & iRun, TH1F* h)
     // will be run at the end of run
     if ( isRealData ) return 0; // if the first run has no events ?  TODO
 
-    //iRun.getByToken( runinfo_token, runinfo_handle);
-    iRun.getByLabel( "generator", runinfo_handle);
+    iRun.getByToken( runinfo_token, runinfo_handle);
+    //iRun.getByLabel( "generator", runinfo_handle);
 
     if ( not runinfo_handle.isValid() ) cout<<"[NeroMonteCarlo]::[crossSection]::[ERROR] runinfo_handle is not valid"<<endl;
     if (not runinfo_handle . isValid() ) return 0;

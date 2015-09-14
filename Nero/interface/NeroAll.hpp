@@ -29,12 +29,19 @@ class NeroAll : virtual public NeroCollection,
         edm::Handle<std::vector<long> > events_handle;
         edm::Handle<std::vector<float> > weights_handle;
         edm::Handle<std::vector<int> > putrue_handle;
+
+        edm::EDGetTokenT<std::vector<long> > events_token;
+        edm::EDGetTokenT<std::vector<float> > weights_token;
+        edm::EDGetTokenT<std::vector<int> > putrue_token;
+
         // from PAT-MINIAOD
+        // needs to be checked. Not using it at the moment
         edm::EDGetTokenT<GenEventInfoProduct> info_token;
         edm::Handle<GenEventInfoProduct> info_handle;
 
         edm::EDGetTokenT<std::vector<PileupSummaryInfo> > pu_token;
         edm::Handle< std::vector<PileupSummaryInfo> > pu_handle;
+
 
         // --- Token
         // this are constructed by tFileservice at beginJob
