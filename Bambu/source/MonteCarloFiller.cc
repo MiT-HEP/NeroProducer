@@ -69,7 +69,7 @@ mithep::nero::MonteCarloFiller::fill()
       if (jet.Pt() < minPt)
         continue;
 
-      newP4(out_, jet);
+      newP4(*out_.jetP4, jet);
     }
   }
 }

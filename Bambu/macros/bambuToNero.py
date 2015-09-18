@@ -214,6 +214,7 @@ ak8JetExtender = fatJetExtenderMod.clone('AK8JetExtender',
     ConeSize = 0.8,
     PFCandsName = mithep.Names.gkPFCandidatesBrn,
     VertexesName = goodPVFilterMod.GetOutputName(),
+    UseSoftDropLib = False,
     SoftDropR0 = 0.8,
     SoftDropZCut = 0.1,
     QGTaggingOn = False,
@@ -236,6 +237,7 @@ ca15JetExtender = fatJetExtenderMod.clone('CA15JetExtender',
     ConeSize = 1.5,
     PFCandsName = mithep.Names.gkPFCandidatesBrn,
     VertexesName = goodPVFilterMod.GetOutputName(),
+    UseSoftDropLib = False,
     SoftDropR0 = 1.5,
     SoftDropZCut = 0.2,
     QGTaggingOn = False,
@@ -253,13 +255,13 @@ photonMediumId = photonIdMod.clone('PhotonMediumId',
     InputName = photonLooseId.GetOutputName(),
     OutputName = 'PhotonMediumId',
     IdType = mithep.PhotonTools.kSummer15Medium,
-    IsoType = mithep.PhotonTools.kSummer15Medium
+    IsoType = mithep.PhotonTools.kSummer15MediumIso
 )
 
 photonTightId = photonMediumId.clone('PhotonTightId',
     OutputName = 'PhotonTightId',
     IdType = mithep.PhotonTools.kSummer15Tight,
-    IsoType = mithep.PhotonTools.kSummer15Tight
+    IsoType = mithep.PhotonTools.kSummer15TightIso
 )
 
 head = 'HEAD'
