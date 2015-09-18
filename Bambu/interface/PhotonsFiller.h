@@ -15,6 +15,7 @@ namespace mithep {
       BareCollection* getObject() override { return &out_; }
       BaseFiller::Collection collection() const override { return BaseFiller::kPhotons; }
 
+      void setCrossRef(BaseFiller* fillers[]) override;
       void fill() override;
 
       void SetMaxIso(Double_t _max) { maxIso_ = _max; }
@@ -33,6 +34,8 @@ namespace mithep {
       TString tightIdName_ = "PhotonsTightId";
       TString pfCandsName_ = "PFCandidates";
       TString verticesName_ = "PrimaryVertexes";
+
+      Float_t const* rho_ = 0;
 
       ClassDef(PhotonsFiller, 0)
     };
