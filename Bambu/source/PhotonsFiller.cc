@@ -38,7 +38,12 @@ mithep::nero::PhotonsFiller::fill()
 
     out_.iso->push_back(iso);
     out_.sieie->push_back(photon.CoviEtaiEta5x5());
+    out_.looseid->push_back(1);
     out_.tightid->push_back(tightId->At(iP));
     out_.mediumid->push_back(mediumId->At(iP));
+
+    out_.chIso->push_back(chIso);
+    out_.nhIso->push_back(nhIso);
+    out_.phoIso->push_back(phIso);
   }
 }

@@ -1,6 +1,7 @@
 #include "NeroProducer/Bambu/interface/MetFiller.h"
 
 #include "MitAna/DataTree/interface/PFMetCol.h"
+#include "MitAna/DataTree/interface/CaloMetCol.h"
 #include "MitAna/DataTree/interface/MetCol.h"
 #include "MitAna/DataTree/interface/ParticleCol.h"
 #include "MitAna/DataTree/interface/PFCandidateCol.h"
@@ -15,7 +16,7 @@ ClassImp(mithep::nero::MetFiller)
 void
 mithep::nero::MetFiller::fill()
 {
-  auto* metCol = getSource<mithep::PFMetCol>(metName_, false);
+  auto* metCol = getSource<mithep::PFMetCol>(metName_);
   mithep::PFMetCol* jesUpMetCol(0);
   mithep::PFMetCol* jesDownMetCol(0);
   if (jesUpMetName_.Length() != 0) 
@@ -58,6 +59,12 @@ mithep::nero::MetFiller::fill()
       break;
     }
   }
+
+  auto* caloMet = getSource<mithep::CaloMetCol>(caloMetName_)->At(0);
+
+  out_.caloMet_Pt = caloMet->Pt();
+  out_.caloMet_Phi = caloMet->Phi();
+  out_.caloMet_SumEt = caloMet->SumEt();
 
   if (genMetName_ != "" && getSource<mithep::EventHeader>(Names::gkEvtHeaderBrn)->IsMC()) {
     auto* genMetCol = getSource<mithep::MetCol>(genMetName_);

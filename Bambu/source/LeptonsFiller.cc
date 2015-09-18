@@ -95,7 +95,8 @@ mithep::nero::LeptonsFiller::fill()
       if (muAId->At(iM) || muBId->At(iM) || muCId->At(iM) || muDId->At(iM)){
         newP4(out_, *mu);
 
-        double iso(IsolationTools::BetaMwithPUCorrection(nopuPFCands, puPFCands, mu, 0.4));
+        double isoArr[4];
+        double iso(IsolationTools::BetaMwithPUCorrection(nopuPFCands, puPFCands, mu, 0.4, isoArr));
       
         mithep::PFCandidate* pf = 0;
         for (unsigned iPF(0); iPF != pfCands->GetEntries(); ++iPF) {
@@ -124,10 +125,10 @@ mithep::nero::LeptonsFiller::fill()
           out_.lepPfPt->push_back(0.);
 
         // TODO
-        out_.chIso->push_back(0.);
-        out_.nhIso->push_back(0.);
-        out_.phoIso->push_back(0.);
-        out_.puIso->push_back(0.);
+        out_.chIso->push_back(isoArr[0]);
+        out_.nhIso->push_back(isoArr[1]);
+        out_.phoIso->push_back(isoArr[2]);
+        out_.puIso->push_back(isoArr[3]);
       }
       ++iM;
     }

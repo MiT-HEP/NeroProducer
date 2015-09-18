@@ -1,6 +1,7 @@
 #include "NeroProducer/Bambu/interface/JetsFiller.h"
 
 #include "MitAna/DataTree/interface/JetCol.h"
+#include "MitAna/DataTree/interface/Vertex.h"
 #include "MitAna/DataTree/interface/PFJet.h"
 
 #include "TDirectory.h"
@@ -78,11 +79,37 @@ mithep::nero::JetsFiller::fill()
         out_.puId->push_back(jetId_->MVAValue(&pfJet, vertices->At(0), vertices));
       else
         out_.puId->push_back(-999.);
+
+      double sumQW(0.);
+      double sumW(0.);
+      double sumQWPV(0.);
+      double sumWPV(0.);
+      auto&& jetP3(pfJet.Mom().Vect());
+      for (unsigned iP(0); iP != pfJet.NPFCands(); ++iP) {
+        auto& cand(*pfJet.PFCand(iP));
+
+        if (cand.Charge() != 0.) {
+          double w(jetP3.Dot(cand.Mom().Vect()));
+          sumQW += cand.Charge() * w;
+          sumW += w;
+          
+          if (cand.Trk() && vertices->At(0)->HasTrack(cand.Trk())) {
+            sumQWPV += cand.Charge() * w;
+            sumWPV += w;
+          }
+        }
+      }
+
+      out_.Q->push_back(sumQW / sumW);
+      out_.QnoPU->push_back(sumQWPV / sumWPV);
     }
     else {
       out_.mjId->push_back(false);
       out_.mjId_loose->push_back(false);
       out_.puId->push_back(-999.);
+
+      out_.Q->push_back(0.);
+      out_.QnoPU->push_back(0.);
     }
   }
 }
