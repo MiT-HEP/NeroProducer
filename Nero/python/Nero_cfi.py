@@ -23,7 +23,7 @@ nero = cms.EDAnalyzer("Nero",
 
 
     # gen
-    pileup = cms.InputTag("addPileupInfo"),
+    pileup = cms.InputTag("slimmedAddPileupInfo"),
     generator = cms.InputTag("generator"),
     genruninfo = cms.InputTag("generator"),
     genjets = cms.InputTag("slimmedGenJets"),
