@@ -78,18 +78,27 @@ def TryPullReq(sha, origin):
 	print "Calling",dep ##DEBUG
 	call (dep,shell=True)
 	setup =open("%s/setup.sh"%tmpdir)
-	dangerous = ['$','`',';','!']
+	dangerous = re.compile('[$`;!]')
 	for line in setup:
-		if '[CMSSW]' in l and dangerous not in l: 
-			CMSSW=l.split()[2]
+		if '[CMSSW]' in line and not dangerous.search(line): 
+			# line is of the form # [CMSSW] CMSSW_release
+			parts = line.split()
+			for i in range(0, len(parts) -1 ) :
+				if parts[i] == "[CMSSW]":
+					CMSSW=parts[i+1]
+					print "-> Setting CMSSW to ", CMSSW
 		l = line.split('#')[0]
 		l = re.sub('\n','',l)
 		l = re.sub('^\ *','',l)
 		l = re.sub('\ *$','',l)
+		l = re.sub('^\t*','',l)
+		l = re.sub('\t*$','',l)
 		if l== "": continue
-		if l.startswith('git cms-merge-topic') and dangerous not in l : continue
-		if l.startswith('function') and dangerous not in l : continue
-		if l == '$1' :continue
+		if l.startswith('git cms-merge-topic') and not dangerous.search(l)  : continue
+		if l.startswith('function') and not dangerous.search(l) : continue
+		if l == '$1' : continue # execute argument, checked that CMSSW release is not dangerous
+		if l == 'true' : continue # execute argument, checked that CMSSW release is not dangerous
+		if l == '}' : continue # end function
 		print "potential dangerous line:"
 		print "\t'"+ l + "'"
 		if opts.yes<3:  raw_input("is_ok?")
@@ -218,8 +227,8 @@ def  SetStatus(sha,state="success",description="build",ext='txt'):
 	authstring='?access_token=%s'%(mystatustoken)
 	mystring = "/statuses/%s"%sha
 	r = requests.post(url+mystring+authstring,data=json.dumps(payload))
-	print r.headers
-	print r.json()
+	## print r.headers ## DEBUG
+	## print r.json()
 
 
 if __name__ == "__main__":
