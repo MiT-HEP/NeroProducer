@@ -17,15 +17,15 @@ mithep::nero::LeptonsFiller::fill()
   auto* electrons = getSource<mithep::ElectronCol>(electronsName_);
   auto* muons = getSource<mithep::MuonCol>(muonsName_);
 
-  auto* muAId = getSource<mithep::NFArrBool>(muonIdsAName_);
-  auto* muBId = getSource<mithep::NFArrBool>(muonIdsBName_);
-  auto* muCId = getSource<mithep::NFArrBool>(muonIdsCName_);
-  auto* muDId = getSource<mithep::NFArrBool>(muonIdsDName_);
+  auto* vetoMuId = getSource<mithep::NFArrBool>(vetoMuonIdName_);
+  auto* fakeMuId = getSource<mithep::NFArrBool>(fakeMuonIdName_);
+  auto* softMuId = getSource<mithep::NFArrBool>(softMuonIdName_);
+  auto* tightMuId = getSource<mithep::NFArrBool>(tightMuonIdName_);
 
-  auto* eleAId = getSource<mithep::NFArrBool>(electronIdsAName_);
-  auto* eleBId = getSource<mithep::NFArrBool>(electronIdsBName_);
-  auto* eleCId = getSource<mithep::NFArrBool>(electronIdsCName_);
-  auto* eleDId = getSource<mithep::NFArrBool>(electronIdsDName_);
+  auto* vetoEleId = getSource<mithep::NFArrBool>(vetoElectronIdName_);
+  auto* fakeEleId = getSource<mithep::NFArrBool>(fakeElectronIdName_);
+  auto* mediumEleId = getSource<mithep::NFArrBool>(mediumElectronIdName_);
+  auto* tightEleId = getSource<mithep::NFArrBool>(tightElectronIdName_);
 
   auto* pfCands = getSource<mithep::PFCandidateCol>(pfCandsName_);
   auto* nopuPFCands = getSource<mithep::PFCandidateCol>(nopuPFCandsName_);
@@ -59,7 +59,7 @@ mithep::nero::LeptonsFiller::fill()
 
     if (ele) {
       // at least one lepton Id should be true
-      if (eleAId->At(iE) || eleBId->At(iE) || eleCId->At(iE) || eleDId->At(iE)){
+      if (vetoEleId->At(iE) || fakeEleId->At(iE) || mediumEleId->At(iE) || tightEleId->At(iE)){
         newP4(out_, *ele);
 
         double chIso(ele->PFChargedHadronIso());
@@ -72,13 +72,13 @@ mithep::nero::LeptonsFiller::fill()
         out_.iso->push_back(chIso + nhIso + phoIso);
 
         unsigned selBits = BareLeptons::LepLoose;
-        if (eleAId->At(iE))
+        if (vetoEleId->At(iE))
           selBits |= BareLeptons::LepVeto;
-        if (eleBId->At(iE))
+        if (fakeEleId->At(iE))
           selBits |= BareLeptons::LepFake;
-        if (eleCId->At(iE))
+        if (mediumEleId->At(iE))
           selBits |= BareLeptons::LepMedium;
-        if (eleDId->At(iE))
+        if (tightEleId->At(iE))
           selBits |= BareLeptons::LepTight;
         out_.selBits->push_back(selBits);
 
@@ -92,7 +92,7 @@ mithep::nero::LeptonsFiller::fill()
     }
     else {
       // at least one lepton Id should be true
-      if (muAId->At(iM) || muBId->At(iM) || muCId->At(iM) || muDId->At(iM)){
+      if (vetoMuId->At(iM) || fakeMuId->At(iM) || softMuId->At(iM) || tightMuId->At(iM)){
         newP4(out_, *mu);
 
         double isoArr[4];
@@ -109,13 +109,13 @@ mithep::nero::LeptonsFiller::fill()
 
         // careful, different treatment for muons and electrons
         unsigned selBits = BareLeptons::LepLoose;
-        if (muAId->At(iM))
+        if (vetoMuId->At(iM))
           selBits |= BareLeptons::LepVeto;
-        if (muBId->At(iM))
+        if (fakeMuId->At(iM))
           selBits |= BareLeptons::LepFake;
-        if (muCId->At(iM))
+        if (softMuId->At(iM))
           selBits |= BareLeptons::LepSoft;
-        if (muDId->At(iM))
+        if (tightMuId->At(iM))
           selBits |= BareLeptons::LepTight;
         out_.selBits->push_back(selBits);
 

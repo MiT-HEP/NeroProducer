@@ -1,6 +1,7 @@
 #include "NeroProducer/Bambu/interface/FatJetsFiller.h"
 
-#include "MitAna/DataTree/interface/XlFatJetCol.h"
+#include "MitAna/DataTree/interface/JetCol.h"
+#include "MitAna/DataTree/interface/XlFatJet.h"
 
 ClassImp(mithep::nero::FatJetsFiller)
 
@@ -22,12 +23,13 @@ mithep::nero::FatJetsFiller::defineBranches(TTree* _tree)
 void
 mithep::nero::FatJetsFiller::fill()
 {
-  auto* jets = getSource<mithep::XlFatJetCol>(fatJetsName_);
-  if (!jets)
-    return;
+  auto* jets = getSource<mithep::JetCol>(fatJetsName_);
 
   for (unsigned iJ(0); iJ != jets->GetEntries(); ++iJ) {
-    auto& jet(*jets->At(iJ));
+    if (jets->At(iJ)->ObjType() != kXlFatJet)
+      throw std::runtime_error("non-fat jet passed to FatJetsFiller");
+    
+    auto& jet(*static_cast<mithep::XlFatJet*>(jets->At(iJ)));
 
     if (jet.Pt() < 100.)
       continue;
