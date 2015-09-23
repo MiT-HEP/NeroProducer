@@ -91,7 +91,8 @@ else :
 switchOnVIDElectronIdProducer(process, dataFormat)
 
 # define which IDs we want to produce
-my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_PHYS14_PU20bx25_V2_cff']
+my_id_modules = [ #'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_25ns_V1_cff' ]
+                 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_PHYS14_PU20bx25_V2_cff']
 #                 'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV51_cff']
 
 #add them to the VID producer
@@ -100,7 +101,9 @@ for idmod in my_id_modules:
 
 ### PHOTONS
 switchOnVIDPhotonIdProducer(process, dataFormat) ### PHOTON
-pho_id_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_PHYS14_PU20bx25_V2_cff']
+#There is no 25ns one confusing..
+pho_id_modules = [ #'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring15_50ns_V1_cff']
+        'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_PHYS14_PU20bx25_V2_cff']
 
 for idmod in pho_id_modules:
         setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
