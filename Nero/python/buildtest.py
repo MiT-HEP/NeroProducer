@@ -31,7 +31,6 @@ if mystatustoken == '' :
 repo= 'MiT-HEP/NeroProducer'
 url = 'https://api.github.com/repos/' + repo
 tmpdir="/tmp/" + os.environ['USER']
-CMSSW="CMSSW_7_4_5"
 
 ## bash color string
 red="\033[01;31m"
@@ -63,6 +62,7 @@ def GetPullReqList():
 
 def TryPullReq(sha, origin):
 	## create the place where store the output
+	CMSSW="CMSSW_7_4_5" ## some default
 	cmd = "mkdir -p %s" % os.environ["HOME"]+"/www/%s/"%(repo.split('/')[1]) + sha + "/"
 	call(cmd,shell=True)
 
@@ -72,28 +72,47 @@ def TryPullReq(sha, origin):
 	cmd += " || true" #ignore failure
 	status = call(cmd,shell=True)
 
-	cmsenv="eval `scramv1 runtime -sh`"
-	cmd = "cd "+ tmpdir +"; "
-	## cmsrel
-	cmd +="/cvmfs/cms.cern.ch/common/scramv1 project CMSSW  %s && "%CMSSW #cmsrel
-	cmd +="cd %s/src &&" % CMSSW
+	## download setup.sh
 	#https://raw.githubusercontent.com/amarini/NeroProducer/17006845ca21076e6f6966b4576dd228f9d4555c/Nero/script/setup.sh
 	dep ="rm %s/setup.sh ; wget --no-check-certificate 'https://raw.githubusercontent.com/%s/%s/Nero/script/setup.sh' -O %s/setup.sh"% (tmpdir,origin,sha,tmpdir)
 	print "Calling",dep ##DEBUG
 	call (dep,shell=True)
 	setup =open("%s/setup.sh"%tmpdir)
+	dangerous = re.compile('[$`;!]')
 	for line in setup:
+		if '[CMSSW]' in line and not dangerous.search(line): 
+			# line is of the form # [CMSSW] CMSSW_release
+			parts = line.split()
+			for i in range(0, len(parts) -1 ) :
+				if parts[i] == "[CMSSW]":
+					CMSSW=parts[i+1]
+					print "-> Setting CMSSW to ", CMSSW
 		l = line.split('#')[0]
 		l = re.sub('\n','',l)
 		l = re.sub('^\ *','',l)
+		l = re.sub('\ *$','',l)
+		l = re.sub('^\t*','',l)
+		l = re.sub('\t*$','',l)
 		if l== "": continue
-		if l.startswith('git cms-merge-topic') and '$' not in l and '`' not in l : continue
+		if l.startswith('git cms-merge-topic') and not dangerous.search(l)  : continue
+		if l.startswith('function') and not dangerous.search(l) : continue
+		if l == '$1' : continue # execute argument, checked that CMSSW release is not dangerous
+		if l == 'true' : continue # execute argument, checked that CMSSW release is not dangerous
+		if l == '}' : continue # end function
 		print "potential dangerous line:"
 		print "\t'"+ l + "'"
 		if opts.yes<3:  raw_input("is_ok?")
 	setup.close()
+
+	## cd in cmssw and cmsenv
+	cmsenv="eval `scramv1 runtime -sh`"
+	cmd = "cd "+ tmpdir +"; "
+	## cmsrel
+	cmd +="/cvmfs/cms.cern.ch/common/scramv1 project CMSSW  %s && "%CMSSW #cmsrel
+	cmd +="cd %s/src &&" % CMSSW
+
 	cmd += cmsenv+' && '
-	cmd += 'source %s/setup.sh '%tmpdir
+	cmd += 'source %s/setup.sh %s '%(tmpdir,CMSSW)
 
 	print cyan+"-> Setting up scram area"+ white
 	status = call(cmd,shell=True)
@@ -208,8 +227,8 @@ def  SetStatus(sha,state="success",description="build",ext='txt'):
 	authstring='?access_token=%s'%(mystatustoken)
 	mystring = "/statuses/%s"%sha
 	r = requests.post(url+mystring+authstring,data=json.dumps(payload))
-	print r.headers
-	print r.json()
+	## print r.headers ## DEBUG
+	## print r.json()
 
 
 if __name__ == "__main__":
