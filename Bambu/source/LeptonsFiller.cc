@@ -17,23 +17,33 @@ mithep::nero::LeptonsFiller::fill()
   auto* electrons = getSource<mithep::ElectronCol>(electronsName_);
   auto* muons = getSource<mithep::MuonCol>(muonsName_);
 
+  if (!electrons || !muons)
+    return;
+
   auto* vetoMuId = getSource<mithep::NFArrBool>(vetoMuonIdName_);
   auto* fakeMuId = getSource<mithep::NFArrBool>(fakeMuonIdName_);
   auto* softMuId = getSource<mithep::NFArrBool>(softMuonIdName_);
   auto* tightMuId = getSource<mithep::NFArrBool>(tightMuonIdName_);
+  mithep::NFArrBool* customMuId[24]{};
+  for (unsigned iB(0); iB != 24; ++iB) {
+    if (customMuonIdName_[iB].Length() != 0)
+      customMuId[iB] = getSource<mithep::NFArrBool>(customMuonIdName_[iB]);
+  }
 
   auto* vetoEleId = getSource<mithep::NFArrBool>(vetoElectronIdName_);
   auto* fakeEleId = getSource<mithep::NFArrBool>(fakeElectronIdName_);
   auto* mediumEleId = getSource<mithep::NFArrBool>(mediumElectronIdName_);
   auto* tightEleId = getSource<mithep::NFArrBool>(tightElectronIdName_);
+  mithep::NFArrBool* customEleId[24]{};
+  for (unsigned iB(0); iB != 24; ++iB) {
+    if (customElectronIdName_[iB].Length() != 0)
+      customEleId[iB] = getSource<mithep::NFArrBool>(customElectronIdName_[iB]);
+  }
 
   auto* pfCands = getSource<mithep::PFCandidateCol>(pfCandsName_);
   auto* nopuPFCands = getSource<mithep::PFCandidateCol>(nopuPFCandsName_);
   auto* puPFCands = getSource<mithep::PFCandidateCol>(puPFCandsName_);
   auto* vertices = getSource<mithep::VertexCol>(verticesName_);
-
-  if (!electrons || !muons)
-    return;
 
   unsigned iE(0);
   unsigned iM(0);
@@ -71,7 +81,7 @@ mithep::nero::LeptonsFiller::fill()
         out_.pdgId->push_back(-11 * ele->Charge());
         out_.iso->push_back(chIso + nhIso + phoIso);
 
-        unsigned selBits = BareLeptons::LepLoose;
+        unsigned selBits(BareLeptons::LepLoose);
         if (vetoEleId->At(iE))
           selBits |= BareLeptons::LepVeto;
         if (fakeEleId->At(iE))
@@ -80,6 +90,11 @@ mithep::nero::LeptonsFiller::fill()
           selBits |= BareLeptons::LepMedium;
         if (tightEleId->At(iE))
           selBits |= BareLeptons::LepTight;
+        for (unsigned iB(8); iB != 32; ++iB) {
+          if (customEleId[iB - 8] && customEleId[iB - 8]->At(iE))
+            selBits |= (1 << iB);
+        }
+
         out_.selBits->push_back(selBits);
 
         out_.lepPfPt->push_back(0.);
@@ -108,7 +123,7 @@ mithep::nero::LeptonsFiller::fill()
         out_.iso->push_back(iso);
 
         // careful, different treatment for muons and electrons
-        unsigned selBits = BareLeptons::LepLoose;
+        unsigned selBits(BareLeptons::LepLoose);
         if (vetoMuId->At(iM))
           selBits |= BareLeptons::LepVeto;
         if (fakeMuId->At(iM))
@@ -117,6 +132,11 @@ mithep::nero::LeptonsFiller::fill()
           selBits |= BareLeptons::LepSoft;
         if (tightMuId->At(iM))
           selBits |= BareLeptons::LepTight;
+        for (unsigned iB(8); iB != 32; ++iB) {
+          if (customMuId[iB - 8] && customMuId[iB - 8]->At(iM))
+            selBits |= (1 << iB);
+        }
+
         out_.selBits->push_back(selBits);
 
         if (pf)

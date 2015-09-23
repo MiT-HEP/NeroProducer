@@ -23,10 +23,12 @@ namespace mithep {
       void SetFakeMuonIdName(char const* _name) { fakeMuonIdName_ = _name; }
       void SetSoftMuonIdName(char const* _name) { softMuonIdName_ = _name; }
       void SetTightMuonIdName(char const* _name) { tightMuonIdName_ = _name; }
+      void SetCustomMuonIdName(UInt_t _bit, char const* _name) { customMuonIdName_[_bit - 8] = _name; }
       void SetVetoElectronIdName(char const* _name) { vetoElectronIdName_ = _name; }
       void SetFakeElectronIdName(char const* _name) { fakeElectronIdName_ = _name; }
       void SetMediumElectronIdName(char const* _name) { mediumElectronIdName_ = _name; }
       void SetTightElectronIdName(char const* _name) { tightElectronIdName_ = _name; }
+      void SetCustomElectronIdName(UInt_t _bit, char const* _name) { customElectronIdName_[_bit - 8] = _name; }
       void SetVerticesName(char const* _name) { verticesName_ = _name; }
       void SetPFCandsName(char const* _name) { pfCandsName_ = _name; }
       void SetNoPUPFCandsName(char const* _name) { nopuPFCandsName_ = _name; }
@@ -41,10 +43,12 @@ namespace mithep {
       TString fakeMuonIdName_ = "MuonIdsB";
       TString softMuonIdName_ = "MuonIdsC";
       TString tightMuonIdName_ = "MuonIdsD";
+      TString customMuonIdName_[24]{};
       TString vetoElectronIdName_ = "ElectronIdsA";
       TString fakeElectronIdName_ = "ElectronIdsB";
       TString mediumElectronIdName_ = "ElectronIdsC";
       TString tightElectronIdName_ = "ElectronIdsD";
+      TString customElectronIdName_[24]{};
       TString verticesName_ = "PrimaryVertexes";
       TString pfCandsName_ = "PFCandidates";
       TString nopuPFCandsName_ = "PFNoPileup";
