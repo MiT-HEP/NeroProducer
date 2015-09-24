@@ -23,8 +23,8 @@ namespace mithep {
 
       std::vector<TString> const& triggerNames() const { return triggerNames_; }
 
-      void AddTriggerName(char const* name);
-      void SetTriggerObjectsName(char const* _path, char const* _name) { triggerObjectsNames_[_path] = _name; }
+      void AddTriggerName(char const* path);
+      void AddFilterName(char const* path, char const* filter);
 
     private:
       BareTrigger out_{};
@@ -32,7 +32,7 @@ namespace mithep {
       std::vector<TString> triggerNames_{};
       std::vector<unsigned> triggerIds_{};
 
-      std::map<TString, TString> triggerObjectsNames_;
+      std::vector<std::vector<TString>> triggerObjectsNames_{};
 
       BareP4* leptons_ = 0;
       BareP4* taus_ = 0;

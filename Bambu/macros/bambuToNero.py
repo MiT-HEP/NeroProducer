@@ -107,9 +107,13 @@ looseElectrons = mithep.ElectronIdMod('FiducialElectrons',
     ConversionsName = 'Conversions'    
 )
 
-electronVetoId = looseElectrons.clone('ElectronVetoId',
+electronLooseId = looseElectrons.clone('ElectronLooseId',
     IsFilterMode = False,
     InputName = looseElectrons.GetOutputName(),
+    OutputName = 'FiducialElectronId'
+)
+
+electronVetoId = electronLooseId.clone('ElectronVetoId',
     OutputName = 'VetoElectronId',
     ApplyD0Cut = True,
     ApplyDZCut = True,
@@ -135,7 +139,7 @@ electronTightId = electronVetoId.clone('ElectronTightId',
     IsoType = mithep.ElectronTools.kSummer15TightIso
 )
 
-looseMuons = mithep.MuonIdMod('FiducialMuons',
+veryLooseMuons = mithep.MuonIdMod('FiducialMuons',
     InputName = mithep.Names.gkMuonBrn,
     OutputName = 'FiducialMuons',
     MuonClassType = mithep.MuonTools.kAll,
@@ -149,9 +153,9 @@ looseMuons = mithep.MuonIdMod('FiducialMuons',
     EtaMax = 2.4
 )
 
-muonVetoId = looseMuons.clone('MuonVetoId',
+muonVetoId = veryLooseMuons.clone('MuonVetoId',
     IsFilterMode = False,
-    InputName = looseMuons.GetOutputName(),
+    InputName = veryLooseMuons.GetOutputName(),
     OutputName = 'VetoMuonId',
     MuonClassType = mithep.MuonTools.kGlobal,
     ApplyD0Cut = True,
@@ -159,10 +163,10 @@ muonVetoId = looseMuons.clone('MuonVetoId',
     PtMin = 10.
 )
 
-muonSoftId = looseMuons.clone('MuonSoftId',
+muonPrivSoftId = veryLooseMuons.clone('MuonPrivSoftId',
     IsFilterMode = False,
-    InputName = looseMuons.GetOutputName(),
-    OutputName = 'VetoSoftId',
+    InputName = veryLooseMuons.GetOutputName(),
+    OutputName = 'SoftMuonId',
     MuonClassType = mithep.MuonTools.kSoftMuon
 )
 
@@ -172,14 +176,36 @@ muonFakeId = muonVetoId.clone('MuonFakeId',
     IsoType = mithep.MuonTools.kPFIsoBetaPUCorrected
 )
 
-muonTightId = muonVetoId.clone('MuonTightId',
-    OutputName = 'TightMuonId',
+muon2012TightId = muonVetoId.clone('Muon2012TightId',
+    OutputName = '2012TightMuonId',
     IdType = mithep.MuonTools.kMuonPOG2012CutBasedIdTight,
     IsoType = mithep.MuonTools.kPFIsoBetaPUCorrectedTight
 )
 
+muonLooseId = muonVetoId.clone('MuonLooseId',
+    OutputName = 'LooseMuonId',
+    MuonClassType = mithep.MuonTools.kPFGlobalorTracker,
+    ApplyD0Cut = False,
+    ApplyDZCut = False,
+    IsoType = mithep.MuonTools.kPFIsoBetaPUCorrectedLoose,
+)
+
+muonMediumId = muonVetoId.clone('MuonMediumId',
+    OutputName = 'MediumMuonId',
+    MuonClassType = mithep.MuonTools.kPFGlobalorTracker,
+    IdType = mithep.MuonTools.kMedium,
+    IsoType = mithep.MuonTools.kPFIsoBetaPUCorrectedLoose
+)
+
+muonTightId = muonVetoId.clone('MuonTightId',
+    OutputName = 'TightMuonId',
+    MuonClassType = mithep.MuonTools.kPFGlobal,
+    IdType = mithep.MuonTools.kTight,
+    IsoType = mithep.MuonTools.kPFIsoBetaPUCorrectedTight
+)
+
 tightMuons = mithep.MaskCollectionMod('TightMuons',
-    InputName = looseMuons.GetOutputName(),
+    InputName = veryLooseMuons.GetOutputName(),
     MaskName = muonTightId.GetOutputName(),
     OutputName = 'TightMuons'
 )
@@ -287,14 +313,16 @@ fillers.append(mithep.nero.TausFiller(
 ))
 
 fillers.append(mithep.nero.LeptonsFiller(
-    MuonsName = looseMuons.GetOutputName(),
+    MuonsName = veryLooseMuons.GetOutputName(),
     VetoMuonIdName = muonVetoId.GetOutputName(),
     FakeMuonIdName = muonFakeId.GetOutputName(),
-    SoftMuonIdName = muonSoftId.GetOutputName(),
+    LooseMuonIdName = muonLooseId.GetOutputName(),
+    MediumMuonIdName = muonMediumId.GetOutputName(),
     TightMuonIdName = muonTightId.GetOutputName(),
     ElectronsName = looseElectrons.GetOutputName(),
     VetoElectronIdName = electronVetoId.GetOutputName(),
     FakeElectronIdName = electronFakeId.GetOutputName(),
+    LooseElectronIdName = electronLooseId.GetOutputName(),
     MediumElectronIdName = electronMediumId.GetOutputName(),
     TightElectronIdName = electronTightId.GetOutputName(),
     VerticesName = goodPVFilterMod.GetOutputName(),
@@ -302,6 +330,8 @@ fillers.append(mithep.nero.LeptonsFiller(
     NoPUPFCandsName = separatePileUpMod.GetPFNoPileUpName(),
     PUPFCandsName = separatePileUpMod.GetPFPileUpName()
 ))
+fillers[-1].SetMuonIdName(9, muonPrivSoftId.GetOutputName())
+fillers[-1].SetMuonIdName(10, muon2012TightId.GetOutputName())
 
 #fillers.append(mithep.nero.FatJetsFiller(mithep.nero.BaseFiller.kAK8Jets,
 #    FatJetsName = ak8JetExtender.GetOutputName()
@@ -346,74 +376,51 @@ for filler in fillers:
 neroMod.SetCondition(photonTightId)
 
 ## SET UP THE SEQUENCE
-
-def addTrigger(path):
-    global mithep
-    global triggerFiller
-
-    hltMod = mithep.HLTMod(path.replace('_v*', 'Mod'),
-        AbortIfNotAccepted = False,
-        AbortIfNoData = False
-    )
-    hltMod.AddTrigger(path)
-
-    triggerFiller.AddTriggerName(path)
-    triggerFiller.SetTriggerObjectsName(path, hltMod.GetTrigObjsName())
-
-    return hltMod
-
-triggerModules = [
-    addTrigger('HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v*' if analysis.isRealData and analysis.custom['bx'] == '25ns' else 'HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v*'),
-    addTrigger('HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v*' if analysis.isRealData and analysis.custom['bx'] == '25ns' else 'HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight_v*'),
-    addTrigger('HLT_PFMET170_NoiseCleaned_v*'),
-    addTrigger('HLT_Ele27_eta2p1_WPLoose_Gsf_v*' if analysis.isRealData else 'HLT_Ele27_eta2p1_WP75_Gsf_v*'),
-    addTrigger('HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*'),
-    addTrigger('HLT_IsoMu24_eta2p1_v*'),
-    addTrigger('HLT_IsoMu27_v*'),
-    addTrigger('HLT_Photon120_v*'),
-    addTrigger('HLT_Photon165_HE10_v*'),
-    addTrigger('HLT_Photon175_v*'),
-    addTrigger('HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*'),
-    addTrigger('HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*'),
-    addTrigger('HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v*'),
-    addTrigger('HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v*'),
-    addTrigger('HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*'),
-    addTrigger('HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*'),
-    addTrigger('HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v*'),
-    addTrigger('HLT_Ele18_CaloIdL_TrackIdL_IsoVL_PFJet30_v*'),
-    addTrigger('HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v*'),
-    addTrigger('HLT_Ele33_CaloIdL_TrackIdL_IsoVL_PFJet30_v*'),
-    addTrigger('HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v*'),
-    addTrigger('HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v*'),
-    addTrigger('HLT_Mu8_TrkIsoVVL_v*'),
-    addTrigger('HLT_Mu17_TrkIsoVVL_v*'),
-    addTrigger('HLT_Mu24_TrkIsoVVL_v*'),
-    addTrigger('HLT_Mu34_TrkIsoVVL_v*')
-]
-
 modules = []
 
+triggers = [
+    ('HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v*' if analysis.isRealData and analysis.custom['bx'] == '25ns' else 'HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v*', []),
+    ('HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v*' if analysis.isRealData and analysis.custom['bx'] == '25ns' else 'HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight_v*', []),
+    ('HLT_PFMET170_NoiseCleaned_v*', []),
+    ('HLT_Ele27_eta2p1_WPLoose_Gsf_v*' if analysis.isRealData else 'HLT_Ele27_eta2p1_WP75_Gsf_v*', ['hltEle27WPLooseGsfTrackIsoFilter']), # filter only matches data
+    ('HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*', []),
+    ('HLT_IsoMu24_eta2p1_v*', ['hltL3crIsoL1sMu20Eta2p1L1f0L2f10QL3f24QL3trkIsoFiltered0p09']),
+    ('HLT_IsoMu27_v*', ['hltL3crIsoL1sMu25L1f0L2f10QL3f27QL3trkIsoFiltered0p09']),
+    ('HLT_Photon120_v*', ['hltEG120HEFilter']),
+    ('HLT_Photon165_HE10_v*', ['hltEG165HE10Filter']),
+    ('HLT_Photon175_v*', ['hltEG175HEFilter']),
+    ('HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*', []),
+    ('HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*', []),
+    ('HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v*', []),
+    ('HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v*', []),
+    ('HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*', []),
+    ('HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*', []),
+    ('HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v*', []),
+    ('HLT_Ele18_CaloIdL_TrackIdL_IsoVL_PFJet30_v*', []),
+    ('HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v*', []),
+    ('HLT_Ele33_CaloIdL_TrackIdL_IsoVL_PFJet30_v*', []),
+    ('HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v*', ['hltEle12CaloIdLTrackIdLIsoVLTrackIsoFilter']),
+    ('HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v*', ['hltEle17CaloIdLTrackIdLIsoVLTrackIsoFilter']),
+    ('HLT_Mu8_TrkIsoVVL_v*', ['hltL3fL1sMu5L1f0L2f5L3Filtered8TkIsoFiltered0p4']),
+    ('HLT_Mu17_TrkIsoVVL_v*', ['hltL3fL1sMu12L1f0L2f12L3Filtered17TkIsoFiltered0p4']),
+    ('HLT_Mu24_TrkIsoVVL_v*', ['hltL3fL1sMu16L1f0L2f16L3Filtered24TkIsoFiltered0p4']),
+    ('HLT_Mu34_TrkIsoVVL_v*', ['hltL3fL1sMu20L1f0L2f20L3Filtered34TkIsoFiltered0p4'])
+]
+
 if analysis.isRealData:
-    # apply trigger OR filter for data
+    hltMod = mithep.HLTMod(
+        ExportTrigObjects = False
+    )
 
-    for mod in triggerModules:
-        mod.SetAbortIfNotAccepted(True)
+    for trig in triggers:
+        hltMod.AddTrigger(trig[0])
 
-    # each HLTMod is made into a chain of its own and bundled
-    triggerBundle = Bundle([Chain(mod) for mod in triggerModules])
+    modules.append(hltMod)
 
-    expressions = []
-
-    expressions.append(mithep.BooleanMod.Expression(triggerModules[0], triggerModules[1], mithep.BooleanMod.Expression.kOR))
-    for iT in range(2, len(triggerModules)):
-        expressions.append(mithep.BooleanMod.Expression(expressions[-1], triggerModules[iT], mithep.BooleanMod.Expression.kOR))
-
-    modules.append(mithep.BooleanMod('HLT', Expression = expressions[-1], FillHist = True))
-
-else:
-    # for MC, just run the HLTMods in sequence without filtering events
-
-    modules += triggerModules
+for trig in triggers:
+    triggerFiller.AddTriggerName(trig[0])
+    for filt in trig[1]:
+        triggerFiller.AddFilterName(trig[0], filt)
 
 modules += [
     badEventsFilterMod,
@@ -425,13 +432,17 @@ modules += [
     metCorrectionJESUp,
     metCorrectionJESDown,
     looseTaus,
-    looseMuons,
+    veryLooseMuons,
     muonVetoId,
-    muonSoftId,
+    muonPrivSoftId,
     muonFakeId,
+    muon2012TightId,
+    muonLooseId,
+    muonMediumId,
     muonTightId,
     tightMuons,
     looseElectrons,
+    electronLooseId,
     electronVetoId,
     electronFakeId,
     electronMediumId,
@@ -454,7 +465,4 @@ if not analysis.isRealData:
 # to ensure that the all events tree is filled properly
 sequence = Chain(modules)
 
-if analysis.isRealData:
-    analysis.setSequence(triggerBundle + sequence + neroMod)
-else:
-    analysis.setSequence(sequence + neroMod)
+analysis.setSequence(sequence + neroMod)
