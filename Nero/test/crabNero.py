@@ -13,9 +13,10 @@ config.General.transferLogs = False
 ## JobType
 config.JobType.pluginName = 'Analysis'
 config.JobType.psetName = 'testNero.py'
-config.JobType.pyCfgParams=['isGrid=True','isData=False','nerohead='+check_output("git rev-parse HEAD",shell=True), 'nerotag='+check_output('git describe --tags',shell=True)]
+config.JobType.pyCfgParams=['isGrid=True','isData=False','is25ns=True','is50ns=False','nerohead='+check_output("git rev-parse HEAD",shell=True), 'nerotag='+check_output('git describe --tags',shell=True)]
+
 # request shipping of the JEC V4 -- local
-config.JobType.inputFiles=['Summer15_50nsV4_DATA.db','Summer15_50nsV4_MC.db']
+#config.JobType.inputFiles=['jec/Summer15_50nsV4_DATA.db','jec/Summer15_50nsV4_MC.db']
 
 ### DATA configuration
 config.Data.inputDataset = '/HplusToTauNu-M500/amarini-amarini_PrivateMC_HPlusToTauNu_June2015-16aa19d591b8b49c55c4508e7a7c9233/USER'
@@ -82,6 +83,13 @@ if __name__ == '__main__':
 	    for idx,par in enumerate(config.JobType.pyCfgParams):
 		    if "isData" in par:
 			config.JobType.pyCfgParams[idx] = "isData=" + value
+		    if "is25ns" in par:
+			    if is25ns : config.JobType.pyCfgParams[idx] = "is25ns=True"
+			    else : config.JobType.pyCfgParams[idx] = "is25ns=False"
+		    if "is50ns" in par:
+			    if is25ns : config.JobType.pyCfgParams[idx] = "is50ns=False"
+			    else : config.JobType.pyCfgParams[idx] = "is50ns=True"
+			
 
     #############################################################################################
     ## From now on that's what users should modify: this is the a-la-CRAB2 configuration part. ##
