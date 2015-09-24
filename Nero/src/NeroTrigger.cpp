@@ -77,19 +77,20 @@ int NeroTrigger::analyze(const edm::Event& iEvent){
     for (pat::TriggerObjectStandAlone obj : *object_handle) { 
         obj.unpackPathNames(names);
 
-        bool isPhoton  =false;
-        bool isElectron=false;
+        //bool isPhoton  =false;
+        //bool isElectron=false;
         bool isMuon    =false;
         bool isTau     =false;
         //bool isMet     =false;
         bool isJet     =false;
         bool isBJet    =false;
+        bool isEGamma  =false;
 
         for (unsigned h = 0; h < obj.filterIds().size(); ++h)  // can be more than one
         {
             // HLT: DataFormats/HLTReco/interface/TriggerTypeDefs.h
-            if      ( obj.filterIds()[h] == trigger::TriggerPhoton ) isPhoton=true;
-            else if ( obj.filterIds()[h] == trigger::TriggerElectron) isElectron=true;
+            if      ( obj.filterIds()[h] == trigger::TriggerPhoton ) isEGamma=true;//isPhoton=true;
+            else if ( obj.filterIds()[h] == trigger::TriggerElectron) isEGamma=true;//isElectron=true;
             else if ( obj.filterIds()[h] == trigger::TriggerMuon ) isMuon=true;
             else if ( obj.filterIds()[h] == trigger::TriggerTau ) isTau=true;
             else if ( obj.filterIds()[h] == trigger::TriggerJet ) isJet=true;
@@ -104,13 +105,13 @@ int NeroTrigger::analyze(const edm::Event& iEvent){
 
         int muonIndex = -1 ; if( isMuon ) muonIndex = match(leps_,obj,13);
 
-        int eleIndex=-1 ; if (isElectron) eleIndex = match(leps_,obj,11);
+        int eleIndex=-1 ; if (isEGamma) eleIndex = match(leps_,obj,11); 
 
         int jetIndex=-1; if (isJet or isBJet) jetIndex = match(jets_,obj);
 
         int tauIndex=-1; if(isTau) tauIndex = match(taus_,obj);
 
-        int photonIndex=-1; if (isPhoton) photonIndex = match(photons_,obj);
+        int photonIndex=-1; if (isEGamma) photonIndex = match(photons_,obj);
         //
         // Print all trigger paths, for each one record also if the object is associated to a 'l3' filter (always true for the
         // definition used in the PAT trigger producer) and if it's associated to the last filter of a successfull path (which
