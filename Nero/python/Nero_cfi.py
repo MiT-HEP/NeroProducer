@@ -29,14 +29,14 @@ nero = cms.EDAnalyzer("Nero",
     genjets = cms.InputTag("slimmedGenJets"),
     prunedgen = cms.InputTag("prunedGenParticles"),
     packedgen = cms.InputTag("packedGenParticles"),
-    ### ID MAP
-    eleVetoIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-veto"),
-    eleLooseIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-loose"),
-    eleMediumIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-medium"),
-    eleTightIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-tight"),
-    phoLooseIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-loose"),
-    phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-medium"),
-    phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-tight"),
+    ### ID MAP, these will become input tag when replacing the %(bx)s field, see testNero.py
+    eleVetoIdMap   = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-%(bx)s-V1-standalone-veto"),
+    eleLooseIdMap  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-%(bx)s-V1-standalone-loose"),
+    eleMediumIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-%(bx)s-V1-standalone-medium"),
+    eleTightIdMap  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-%(bx)s-V1-standalone-tight"),
+    phoLooseIdMap  = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-%(bx)s-V1-standalone-loose"),
+    phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-%(bx)s-V1-standalone-medium"),
+    phoTightIdMap  = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-%(bx)s-V1-standalone-tight"),
     ### ISO MAP
     phoChargedIsolation = cms.InputTag("photonIDValueMapProducer:phoChargedIsolation"),
     phoNeutralHadronIsolation = cms.InputTag("photonIDValueMapProducer:phoNeutralHadronIsolation"),
@@ -116,3 +116,5 @@ nero = cms.EDAnalyzer("Nero",
     matchPhoDr = cms.double (0.3),
 )
 #------------------------------------------------------
+
+

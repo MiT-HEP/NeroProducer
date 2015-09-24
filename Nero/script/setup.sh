@@ -10,7 +10,7 @@ function CMSSW_7_4_5 {
 
 #CMSSW_7_4_12
 function CMSSW_7_4_12_patch4 { 
-	git cms-merge-topic -u cms-btv-pog:BoostedDoubleSVTagger-WithWeightFiles-v2_from-CMSSW_7_4_1
+	git cms-merge-topic lgray:for_PietroV
 }
 
 # expected default

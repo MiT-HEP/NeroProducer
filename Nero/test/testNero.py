@@ -1,5 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 import FWCore.ParameterSet.VarParsing as VarParsing
+import re
 
 process = cms.Process("nero")
 
@@ -14,9 +15,16 @@ options.register('isGrid', False, VarParsing.VarParsing.multiplicity.singleton,V
 options.register('nerohead', "XXX", VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.string,"Set to the head of the repository. use check_output 'git rev-parse HEAD' in the crab py file. active only if isGrid.")
 options.register("nerotag", "YYY", VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.string,"Set to the tag of the repository. use check_output 'git rev-parse HEAD' in the crab py file. active only if isGrid.")
 options.register('isParticleGun', False, VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Set it to true if MonteCarlo is ParticleGun")
+options.register('is25ns', True, VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Set it to true to run on 25ns data/MC")
+options.register('is50ns', False, VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Set it to true to run on 50ns data/MC")
 
 options.parseArguments()
 isData = options.isData
+
+if options.is25ns and options.is50ns : 
+	raise('cannot run both on 25 and 50ns. Pick up one')
+if not options.is25ns and not options.is50ns:
+	raise('cannot run nor 25ns nor 50ns configuration. Pick up one.')
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 # If you run over many samples and you save the log, remember to reduce
@@ -31,8 +39,8 @@ fileList = [
     #'/store/user/arapyan/mc/SUSYGluGluToTBHPTohbbW/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2/MINIAODSIM2/MINIAOD_99.root'
     #'/store/mc/RunIISpring15DR74/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v3/70000/FE90C5FF-6914-E511-B0F9-0025905A497A.root',
     #'/store/data/Run2015C/JetHT/MINIAOD/PromptReco-v1/000/253/808/00000/3E6025B5-7340-E511-A8B7-02163E01440E.root',
-    '/store/cmst3/user/gpetrucc/miniAOD/Spring15MiniAODv2/CMSSW_7_4_12/miniAOD-DYJetsM50_madgraphMLM_50ns_PAT.root'
-    #'/store/data/Run2015D/SinglePhoton/MINIAOD/PromptReco-v3/000/256/630/00000/BE4748B0-295F-E511-A271-02163E014402.root',
+    #'/store/cmst3/user/gpetrucc/miniAOD/Spring15MiniAODv2/CMSSW_7_4_12/miniAOD-DYJetsM50_madgraphMLM_50ns_PAT.root'
+    '/store/data/Run2015D/SinglePhoton/MINIAOD/PromptReco-v3/000/256/630/00000/BE4748B0-295F-E511-A271-02163E014402.root',
     #'/store/relval/CMSSW_7_4_1/RelValProdTTbar_13/MINIAODSIM/MCRUN2_74_V9_gensim71X-v1/00000/0A9E2CED-C9EC-E411-A8E4-003048FFCBA8.root']
     #'/store/data/Run2015B/DoubleMuon/MINIAOD/PromptReco-v1/000/251/164/00000/402F0995-A326-E511-86BB-02163E013948.root',
     #'/store/data/Run2015B/DoubleMuon/MINIAOD/PromptReco-v1/000/251/167/00000/70C4A781-A826-E511-95B4-02163E013414.root',
@@ -71,45 +79,13 @@ else:
 
 ######## LUMI MASK
 if isData and not options.isGrid : ## don't load the lumiMaks, will be called by crab
-    import FWCore.PythonUtilities.LumiList as LumiList
-    # GoldenJsn
-    process.source.lumisToProcess = LumiList.LumiList(filename='/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt').getVLuminosityBlockRange()
+    pass
+    #import FWCore.PythonUtilities.LumiList as LumiList
+    ## GoldenJsn
+    #process.source.lumisToProcess = LumiList.LumiList(filename='/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt').getVLuminosityBlockRange()
     # DCS only
     #process.source.lumisToProcess = LumiList.LumiList(filename='/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/DCSOnly/json_DCSONLY_Run2015B.txt').getVLuminosityBlockRange()
 
-#-----------------------ELECTRON ID-------------------------------
-from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
-# turn on VID producer, indicate data format  to be
-# DataFormat.AOD or DataFormat.MiniAOD, as appropriate 
-useAOD=False
-
-if useAOD == True :
-    dataFormat = DataFormat.AOD
-else :
-    dataFormat = DataFormat.MiniAOD
-
-switchOnVIDElectronIdProducer(process, dataFormat)
-
-# define which IDs we want to produce
-my_id_modules = [ #'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_25ns_V1_cff' ]
-                 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_PHYS14_PU20bx25_V2_cff']
-#                 'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV51_cff']
-
-#add them to the VID producer
-for idmod in my_id_modules:
-    setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
-
-### PHOTONS
-switchOnVIDPhotonIdProducer(process, dataFormat) ### PHOTON
-#There is no 25ns one confusing..
-pho_id_modules = [ #'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring15_50ns_V1_cff']
-        'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_PHYS14_PU20bx25_V2_cff']
-
-for idmod in pho_id_modules:
-        setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
-##ISO
-process.load("RecoEgamma/PhotonIdentification/PhotonIDValueMapProducer_cfi")
-process.load("RecoEgamma/ElectronIdentification/ElectronIDValueMapProducer_cfi")
 
 ### HBB 74X ####
 process.load("Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cff")
@@ -156,7 +132,62 @@ process.load('NeroProducer.Nero.Nero_cfi')
 #process.load('NeroProducer.Nero.NeroMonojet_cfi')
 #process.load('NeroProducer.Nero.NeroChargedHiggs_cfi')
 
-############################### JEC
+if options.is25ns:
+	replace = {'bx' : '25ns'}
+if options.is50ns:
+	replace = {'bx' : '50ns'}
+
+toProduce={}
+for obj in ['ele','pho']:
+  toProduce[obj]={}
+  if obj=='ele': directory = 'RecoEgamma.ElectronIdentification'
+  if obj=='pho': directory = 'RecoEgamma.PhotonIdentification'
+  for ID in ['veto','medium','loose','tight']:
+	if obj == 'pho' and ID == 'veto' : continue
+	if obj == 'pho' : replace['bx'] = '50ns' ##FIXME, we have only this
+
+	replace['id'] = ID
+	cmd = 'string = process.nero.' + obj + ID.title() + 'IdMap.value()'
+	exec(cmd)
+	cmd = 'process.nero.'+obj + ID.title() + 'IdMap = cms.InputTag("' + string % replace+ '")'
+	print 'executing replacement:',cmd
+	exec(cmd)
+
+	myid = (string%replace ).replace('-','_').split(':')[1]
+	myid = re.sub('_standalone.*','',myid)
+	toProduce[obj][ directory + '.Identification.' + myid + "_cff"] = 1 #remove duplicates
+
+#-----------------------ELECTRON ID-------------------------------
+from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
+# turn on VID producer, indicate data format  to be
+# DataFormat.AOD or DataFormat.MiniAOD, as appropriate 
+
+dataFormat = DataFormat.MiniAOD
+
+switchOnVIDElectronIdProducer(process, dataFormat)
+
+### # define which IDs we want to produce. it is silly to redifine them here hard coded
+### my_id_modules = [ #'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_25ns_V1_cff' ]
+### 
+### #add them to the VID producer
+### for idmod in my_id_modules:
+for idmod in toProduce['ele']:
+   print "will produce", idmod
+   setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
+### 
+### ### PHOTONS
+switchOnVIDPhotonIdProducer(process, dataFormat) ### PHOTON
+### pho_id_modules = [ #'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring15_50ns_V1_cff']
+###         'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_PHYS14_PU20bx25_V2_cff']
+### for idmod in pho_id_modules:
+for idmod in toProduce['pho']:
+      setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
+
+### ##ISO
+process.load("RecoEgamma/PhotonIdentification/PhotonIDValueMapProducer_cfi")
+process.load("RecoEgamma/ElectronIdentification/ElectronIDValueMapProducer_cfi")
+
+############################### JEC #####################
 ### Load from a sqlite db, if not read from the global tag
 process.load("CondCore.DBCommon.CondDBCommon_cfi")
 from CondCore.DBCommon.CondDBSetup_cfi import *
