@@ -78,11 +78,13 @@ if (isData):
     	process.GlobalTag.globaltag = '74X_dataRun2_Prompt_v1'
 else:
     process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
-    #process.GlobalTag.globaltag = 'MCRUN2_74_V9::All'
     if options.is25ns:
-    	process.GlobalTag.globaltag = '74X_mcRun2_asymptotic_realisticBS_v1'
+	    #process.GlobalTag.globaltag = '74X_mcRun2_asymptotic_realisticBS_v1'
+	    #process.GlobalTag.globaltag = '74X_mcRun2_asymptotic_realisticBS_v1'
+	    process.GlobalTag.globaltag = 'MCRUN2_74_V9::All'
     if options.is50ns:
-    	process.GlobalTag.globaltag = '741_p1_mcRun2_Realistic_50ns_v0'
+	    #process.GlobalTag.globaltag = '741_p1_mcRun2_Realistic_50ns_v0::All'
+	    process.GlobalTag.globaltag = 'MCRUN2_74_V9A::All'
 
 
 ######## LUMI MASK
