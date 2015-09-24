@@ -1,8 +1,8 @@
-float **topANN_W0 = new float*[5];
+double **topANN_W0 = new double*[5];
 for (int i=0; i!=5; ++i) {
-	topANN_W0[i] = new float[25];
+	topANN_W0[i] = new double[25];
 }
-float *topANN_b0 = new float[25];
+double *topANN_b0 = new double[25];
 topANN_b0[0]=-0.017987;
 topANN_b0[1]=0.025397;
 topANN_b0[2]=-0.005933;
@@ -155,11 +155,11 @@ topANN_W0[4][23]=-0.347526;
 topANN_W0[4][24]=-0.283229;
 topANN->AddLayer(5,25,topANN_W0,topANN_b0);
 
-float **topANN_W1 = new float*[25];
+double **topANN_W1 = new double*[25];
 for (int i=0; i!=25; ++i) {
-	topANN_W1[i] = new float[25];
+	topANN_W1[i] = new double[25];
 }
-float *topANN_b1 = new float[25];
+double *topANN_b1 = new double[25];
 topANN_b1[0]=-0.061561;
 topANN_b1[1]=0.028190;
 topANN_b1[2]=0.066691;
@@ -812,11 +812,11 @@ topANN_W1[24][23]=-0.206685;
 topANN_W1[24][24]=0.231292;
 topANN->AddLayer(25,25,topANN_W1,topANN_b1);
 
-float **topANN_W2 = new float*[25];
+double **topANN_W2 = new double*[25];
 for (int i=0; i!=25; ++i) {
-	topANN_W2[i] = new float[25];
+	topANN_W2[i] = new double[25];
 }
-float *topANN_b2 = new float[25];
+double *topANN_b2 = new double[25];
 topANN_b2[0]=-0.002135;
 topANN_b2[1]=0.062482;
 topANN_b2[2]=-0.054567;
@@ -1469,11 +1469,11 @@ topANN_W2[24][23]=-0.236490;
 topANN_W2[24][24]=-0.281820;
 topANN->AddLayer(25,25,topANN_W2,topANN_b2);
 
-float **topANN_W3 = new float*[25];
+double **topANN_W3 = new double*[25];
 for (int i=0; i!=25; ++i) {
-	topANN_W3[i] = new float[2];
+	topANN_W3[i] = new double[2];
 }
-float *topANN_b3 = new float[2];
+double *topANN_b3 = new double[2];
 topANN_b3[0]=0.312277;
 topANN_b3[1]=-0.312277;
 topANN_W3[0][0]=-0.072279;
