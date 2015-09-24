@@ -8,9 +8,7 @@ BarePhotons::BarePhotons():BareP4(){
 BarePhotons::~BarePhotons(){
     BareFunctions::Delete(iso);
     BareFunctions::Delete(sieie);
-    BareFunctions::Delete(tightid);
-    BareFunctions::Delete(mediumid);
-    BareFunctions::Delete(looseid);
+    BareFunctions::Delete(selBits);
     BareFunctions::Delete(chIso);
     BareFunctions::Delete(chIsoRC);
     BareFunctions::Delete(nhIso);
@@ -26,9 +24,7 @@ void BarePhotons::init(){
 
     BareFunctions::New(iso);
     BareFunctions::New(sieie);
-    BareFunctions::New(tightid);
-    BareFunctions::New(mediumid);
-    BareFunctions::New(looseid);
+    BareFunctions::New(selBits);
     BareFunctions::New(chIso);
     BareFunctions::New(chIsoRC);
     BareFunctions::New(nhIso);
@@ -45,9 +41,7 @@ void BarePhotons::clear(){
     BareP4::clear();
     iso -> clear();
     sieie -> clear();
-    tightid -> clear();
-    mediumid -> clear();
-    looseid -> clear();
+    selBits -> clear();
 
     chIso -> clear();
     chIsoRC -> clear();
@@ -67,11 +61,8 @@ void BarePhotons::defineBranches(TTree *t){
     //
     t->Branch("photonSieie","vector<float>",&sieie);
     //
-    t->Branch("photonTightId","vector<int>",&tightid);
+    t->Branch("photonSelBits","vector<unsigned>",&selBits);
     //
-    t->Branch("photonMediumId","vector<int>",&mediumid);
-
-    t->Branch("photonLooseId","vector<int>",&looseid);
 
     t->Branch("photonChIso","vector<float>",&chIso);
     t->Branch("photonChIsoRC","vector<float>",&chIsoRC);
@@ -89,9 +80,7 @@ void BarePhotons::setBranchAddresses(TTree *t){
 
     BareFunctions::SetBranchAddress(t,"photonIso"	,&iso);
     BareFunctions::SetBranchAddress(t,"photonSieie"	,&sieie);
-    BareFunctions::SetBranchAddress(t,"photonTightId"	,&tightid);
-    BareFunctions::SetBranchAddress(t,"photonMediumId"	,&mediumid);
-    BareFunctions::SetBranchAddress(t,"photonLooseId"	,&looseid);
+    BareFunctions::SetBranchAddress(t,"photonSelBits"	,&selBits);
 
     BareFunctions::SetBranchAddress(t,"photonChIso",&chIso);
     BareFunctions::SetBranchAddress(t,"photonChIsoRC",&chIsoRC);

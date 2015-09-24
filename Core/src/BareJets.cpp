@@ -16,8 +16,7 @@ BareJets::~BareJets(){
     BareFunctions::Delete(matchedPartonPdgId);
     BareFunctions::Delete(motherPdgId);
     BareFunctions::Delete(grMotherPdgId);
-    BareFunctions::Delete(mjId);
-    BareFunctions::Delete(mjId_loose);
+    BareFunctions::Delete(selBits);
     BareFunctions::Delete(Q);
     BareFunctions::Delete(QnoPU);
 }
@@ -35,8 +34,7 @@ void BareJets::init(){
     BareFunctions::New(matchedPartonPdgId);
     BareFunctions::New(motherPdgId);
     BareFunctions::New(grMotherPdgId);
-    BareFunctions::New(mjId);
-    BareFunctions::New(mjId_loose);
+    BareFunctions::New(selBits);
     BareFunctions::New(Q);
     BareFunctions::New(QnoPU);
 
@@ -57,8 +55,7 @@ void BareJets::clear(){
     motherPdgId -> clear();
     grMotherPdgId -> clear();
 
-    mjId -> clear();
-    mjId_loose -> clear();
+    selBits -> clear();
 
     Q->clear();
     QnoPU->clear();
@@ -91,9 +88,7 @@ void BareJets::defineBranches(TTree *t, std::string prefix){
     
     t->Branch(jetName + "GrMotherPdgId","vector<int>",&grMotherPdgId);
     
-    t->Branch(jetName + "MonojetId","vector<bool>",&mjId);
-
-    t->Branch(jetName + "MonojetIdLoose","vector<bool>",&mjId_loose);
+    t->Branch(jetName + "SelBits","vector<unsigned>",&selBits);
 
     t->Branch(jetName + "Q","vector<float>",&Q);
 
@@ -115,8 +110,7 @@ void BareJets::setBranchAddresses(TTree* t, std::string prefix)
     BareFunctions::SetBranchAddress(t,jetName + "MatchedPartonPdgId", &matchedPartonPdgId);
     BareFunctions::SetBranchAddress(t,jetName + "MotherPdgId", &motherPdgId);
     BareFunctions::SetBranchAddress(t,jetName + "GrMotherPdgId", &grMotherPdgId);
-    BareFunctions::SetBranchAddress(t,jetName + "MonojetId", &mjId);
-    BareFunctions::SetBranchAddress(t,jetName + "MonojetIdLoose", &mjId_loose);
+    BareFunctions::SetBranchAddress(t,jetName + "SelBits", &selBits);
 
     // ---
     BareFunctions::SetBranchAddress(t,jetName + "Q",&Q);

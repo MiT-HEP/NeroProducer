@@ -65,9 +65,10 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         bool isPassLoose  = (*loose_id)[ref];	
         bool isPassMedium = (*medium_id)[ref];	
         bool isPassTight  = (*tight_id)[ref];	
-        bool isPassVLoose = cutBasedPhotonId( pho, "loose_50ns", false, false); // no pho iso , no sieie
+        bool isPassVLoose50 = cutBasedPhotonId( pho, "loose_50ns", false, false); // no pho iso , no sieie
+        bool isPassVLoose25 = cutBasedPhotonId( pho, "loose_25ns", false, false); // no pho iso , no sieie
 
-        if (not isPassVLoose) continue;
+        //if (not isPassVLoose) continue;
         if (mMaxIso >=0 and totIso > mMaxIso) continue;
 
         // RC -- with FPR
@@ -161,10 +162,18 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         iso->push_back(totIso);	
         sieie -> push_back( pho. full5x5_sigmaIetaIeta() );
 
+    
+        unsigned bits=0;
 
-        tightid->push_back(isPassTight);
-        mediumid->push_back(isPassMedium);
-        looseid->push_back(isPassLoose);
+        bits |= isPassTight * PhoTight;
+        bits |= isPassMedium * PhoMedium;
+        bits |= isPassLoose * PhoLoose;
+        bits |= isPassVLoose50 * PhoVLoose50;
+        bits |= isPassVLoose25 * PhoVLoose25;
+
+        if (not bits) continue; // even if there is some misalignment ntuples will not be corrupted
+
+        selBits -> push_back( bits);
 
         chIso -> push_back( _chIso_);
         phoIso -> push_back( _phIso_ ) ;

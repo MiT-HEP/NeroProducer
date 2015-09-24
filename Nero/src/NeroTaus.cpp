@@ -42,7 +42,15 @@ int NeroTaus::analyze(const edm::Event & iEvent)
         
         //FILL
         new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(tau.px(), tau.py(), tau.pz(), tau.energy());
-        id -> push_back( tau.tauID("decayModeFinding"));
+
+        unsigned bits = 0;
+        bits |= bool(tau.tauID("decayModeFindingNewDMs") ) * TauDecayModeFindingNewDMs;
+        bits |= bool(tau.tauID("decayModeFinding") ) * TauDecayModeFinding;
+        bits |= bool(tau.tauID("againstElectronLooseMVA5") )* AgainstEleLoose  ;
+        bits |= bool(tau.tauID("againstElectronMediumMVA5"))* AgainstEleMedium ;
+        bits |= bool(tau.tauID("againstMuonLoose3"))        * AgainstMuLoose   ;
+        bits |= bool(tau.tauID("againstMuonTight3"))        * AgainstMuTight   ;
+        selBits -> push_back(bits);
         Q -> push_back( tau.charge() );
         M -> push_back( tau.mass() );
         iso -> push_back( totIso ) ; 
@@ -52,16 +60,11 @@ int NeroTaus::analyze(const edm::Event & iEvent)
             neutralIsoPtSum  -> push_back( tau.tauID("neutralIsoPtSum") );
             isoDeltaBetaCorr -> push_back( tau.tauID("byCombinedIsolationDeltaBetaCorrRaw3Hits"));
 
-            againstEleLoose  -> push_back( tau.tauID("againstElectronLooseMVA5") );
-            againstEleMedium -> push_back( tau.tauID("againstElectronMediumMVA5") );
-            
-            againstMuLoose   -> push_back( tau.tauID("againstMuonLoose3"));
-            againstMuTight   -> push_back( tau.tauID("againstMuonTight3"));
         }
 
 
     }
-    if( int(id->size()) < mMinNtaus) return 1;
+    if( int(selBits->size()) < mMinNtaus) return 1;
     return 0;
 }
 
