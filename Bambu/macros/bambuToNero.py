@@ -380,32 +380,34 @@ neroMod.SetCondition(photonTightId)
 modules = []
 
 triggers = [
-    ('HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v*' if analysis.isRealData and analysis.custom['bx'] == '25ns' else 'HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v*', []),
-    ('HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v*' if analysis.isRealData and analysis.custom['bx'] == '25ns' else 'HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight_v*', []),
-    ('HLT_PFMET170_NoiseCleaned_v*', []),
-    ('HLT_Ele27_eta2p1_WPLoose_Gsf_v*' if analysis.isRealData else 'HLT_Ele27_eta2p1_WP75_Gsf_v*', ['hltEle27WPLooseGsfTrackIsoFilter']), # filter only matches data
-    ('HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*', []),
-    ('HLT_IsoMu24_eta2p1_v*', ['hltL3crIsoL1sMu20Eta2p1L1f0L2f10QL3f24QL3trkIsoFiltered0p09']),
-    ('HLT_IsoMu27_v*', ['hltL3crIsoL1sMu25L1f0L2f10QL3f27QL3trkIsoFiltered0p09']),
-    ('HLT_Photon120_v*', ['hltEG120HEFilter']),
-    ('HLT_Photon165_HE10_v*', ['hltEG165HE10Filter']),
-    ('HLT_Photon175_v*', ['hltEG175HEFilter']),
-    ('HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*', []),
-    ('HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*', []),
-    ('HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v*', []),
-    ('HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v*', []),
-    ('HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*', []),
-    ('HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*', []),
-    ('HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v*', []),
-    ('HLT_Ele18_CaloIdL_TrackIdL_IsoVL_PFJet30_v*', []),
-    ('HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v*', []),
-    ('HLT_Ele33_CaloIdL_TrackIdL_IsoVL_PFJet30_v*', []),
-    ('HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v*', ['hltEle12CaloIdLTrackIdLIsoVLTrackIsoFilter']),
-    ('HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v*', ['hltEle17CaloIdLTrackIdLIsoVLTrackIsoFilter']),
-    ('HLT_Mu8_TrkIsoVVL_v*', ['hltL3fL1sMu5L1f0L2f5L3Filtered8TkIsoFiltered0p4']),
-    ('HLT_Mu17_TrkIsoVVL_v*', ['hltL3fL1sMu12L1f0L2f12L3Filtered17TkIsoFiltered0p4']),
-    ('HLT_Mu24_TrkIsoVVL_v*', ['hltL3fL1sMu16L1f0L2f16L3Filtered24TkIsoFiltered0p4']),
-    ('HLT_Mu34_TrkIsoVVL_v*', ['hltL3fL1sMu20L1f0L2f20L3Filtered34TkIsoFiltered0p4'])
+    ('PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight' if analysis.isRealData and analysis.custom['bx'] == '25ns' else 'PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight', []),
+    ('PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight' if analysis.isRealData and analysis.custom['bx'] == '25ns' else 'PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight', []),
+    ('PFMET170_NoiseCleaned', []),
+#    ('Ele23_WPLoose_Gsf' if analysis.isRealData else 'Ele23_CaloIdL_TrackIdL_IsoVL', ['']),
+    ('Ele27_eta2p1_WPLoose_Gsf' if analysis.isRealData else 'Ele27_eta2p1_WP75_Gsf', ['hltEle27WPLooseGsfTrackIsoFilter']), # filter only matches data
+    ('Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ', []),
+    ('IsoMu24_eta2p1', ['hltL3crIsoL1sMu20Eta2p1L1f0L2f10QL3f24QL3trkIsoFiltered0p09']),
+    ('IsoMu27', ['hltL3crIsoL1sMu25L1f0L2f10QL3f27QL3trkIsoFiltered0p09']),
+    ('Photon120', ['hltEG120HEFilter']),
+#    ('Photon135_PFMET100_JetIdCleaned', ['hltEG135HEFilter']),
+    ('Photon165_HE10', ['hltEG165HE10Filter']),
+    ('Photon175', ['hltEG175HEFilter']),
+    ('Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ', []),
+    ('Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ', []),
+    ('Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL', []),
+    ('Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL', []),
+    ('Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL', []),
+    ('Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL', []),
+    ('Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30', []),
+    ('Ele18_CaloIdL_TrackIdL_IsoVL_PFJet30', []),
+    ('Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30', []),
+    ('Ele33_CaloIdL_TrackIdL_IsoVL_PFJet30', []),
+    ('Ele12_CaloIdL_TrackIdL_IsoVL', ['hltEle12CaloIdLTrackIdLIsoVLTrackIsoFilter']),
+    ('Ele17_CaloIdL_TrackIdL_IsoVL', ['hltEle17CaloIdLTrackIdLIsoVLTrackIsoFilter']),
+    ('Mu8_TrkIsoVVL', ['hltL3fL1sMu5L1f0L2f5L3Filtered8TkIsoFiltered0p4']),
+    ('Mu17_TrkIsoVVL', ['hltL3fL1sMu12L1f0L2f12L3Filtered17TkIsoFiltered0p4']),
+    ('Mu24_TrkIsoVVL', ['hltL3fL1sMu16L1f0L2f16L3Filtered24TkIsoFiltered0p4']),
+    ('Mu34_TrkIsoVVL', ['hltL3fL1sMu20L1f0L2f20L3Filtered34TkIsoFiltered0p4'])
 ]
 
 if analysis.isRealData:
@@ -414,14 +416,14 @@ if analysis.isRealData:
     )
 
     for trig in triggers:
-        hltMod.AddTrigger(trig[0])
+        hltMod.AddTrigger('HLT_' + trig[0] + '_v*')
 
     modules.append(hltMod)
 
 for trig in triggers:
-    triggerFiller.AddTriggerName(trig[0])
+    triggerFiller.AddTriggerName('HLT_' + trig[0] + '_v*')
     for filt in trig[1]:
-        triggerFiller.AddFilterName(trig[0], filt)
+        triggerFiller.AddFilterName('HLT_' + trig[0] + '_v*', filt)
 
 modules += [
     badEventsFilterMod,
