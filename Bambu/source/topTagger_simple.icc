@@ -1,5 +1,3 @@
-NeuralNet *topANN = new NeuralNet(5,2);
-
 float **topANN_W0 = new float*[5];
 for (int i=0; i!=5; ++i) {
 	topANN_W0[i] = new float[25];

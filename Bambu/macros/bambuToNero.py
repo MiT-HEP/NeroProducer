@@ -237,7 +237,7 @@ ak8JetExtender = fatJetExtenderMod.clone('AK8JetExtender',
     DoShowerDeconstruction = False,
     DoECF = False,
     DoQjets = False,
-    BeVerbose = False,
+    BeVerbose = False
 )
 ak8JetExtender.SetSubJetTypeOn(mithep.XlSubJet.kSoftDrop)
 
@@ -336,10 +336,10 @@ fillers[-1].SetMuonIdName(10, muon2012TightId.GetOutputName())
 fillers.append(mithep.nero.FatJetsFiller(mithep.nero.BaseFiller.kAK8Jets,
     FatJetsName = ak8JetExtender.GetOutputName()
 ))
-
-fillers.append(mithep.nero.FatJetsFiller(mithep.nero.BaseFiller.kCA15Jets,
-    FatJetsName = ca15JetExtender.GetOutputName()
-))
+#
+#fillers.append(mithep.nero.FatJetsFiller(mithep.nero.BaseFiller.kCA15Jets,
+#    FatJetsName = ca15JetExtender.GetOutputName()
+#))
 
 fillers.append(mithep.nero.MetFiller(
     MetName = metCorrection.GetOutputName(),
@@ -452,9 +452,9 @@ modules += [
     photonTightId,
     ak8JetCorrection,
     goodAK8Jets,
-    goodCA15Jets,
+#    goodCA15Jets,
     ak8JetExtender,
-    ca15JetExtender
+#    ca15JetExtender
 ]
 
 if not analysis.isRealData:

@@ -1,31 +1,9 @@
 #include "NeroProducer/Bambu/interface/FatJetsFiller.h"
 
-#include "MitAna/DataTree/interface/JetCol.h"
+#include "MitAna/DataTree/interface/XlFatJetCol.h"
 #include "MitAna/DataTree/interface/XlFatJet.h"
 
-#include "TLorentzVector.h"
-#include "TMath.h"
-
 ClassImp(mithep::nero::FatJetsFiller)
-
-void 
-mithep::nero::FatJetsFiller::initialize()
-{
-	topANN = new NeuralNet(5,2);
-	#include "topTagger_simple.icc" // these are just weights - move to MIT_DATA?
-	topANN->AllocateMemory();
-	topANN->AddBranchAddress(&nn_mSD,69.14170513,70.41396876);
-	topANN->AddBranchAddress(&nn_QGTag,0.24245312,0.31660758);
-	topANN->AddBranchAddress(&nn_groomedIso,0.18981184,0.25050463);
-	topANN->AddBranchAddress(&nn_tau32,0.79239905,0.10837058);
-	topANN->AddBranchAddress(&nn_tau21,0.64983544,0.17112768);
-}
-
-void
-mithep::nero::FatJetsFiller::finalize()
-{
-	delete topANN;
-}
 
 void
 mithep::nero::FatJetsFiller::defineBranches(TTree* _tree)
@@ -43,9 +21,28 @@ mithep::nero::FatJetsFiller::defineBranches(TTree* _tree)
 }
 
 void
+mithep::nero::FatJetsFiller::initialize()
+{
+	topANN = new NeuralNet(5,2);
+	#include "topTagger_simple.icc" // these are just weights - move to MIT_DATA?
+	topANN->AllocateMemory();
+	topANN->AddBranchAddress(&nn_mSD,69.14170513,70.41396876);
+	topANN->AddBranchAddress(&nn_QGTag,0.24245312,0.31660758);
+	topANN->AddBranchAddress(&nn_groomedIso,0.18981184,0.25050463);
+	topANN->AddBranchAddress(&nn_tau32,0.79239905,0.10837058);
+	topANN->AddBranchAddress(&nn_tau21,0.64983544,0.17112768);
+}
+
+void
+mithep::nero::FatJetsFiller::finalize()
+{
+  delete topANN;
+}
+
+void
 mithep::nero::FatJetsFiller::fill()
 {
-  auto* jets = getSource<mithep::JetCol>(fatJetsName_);
+  auto* jets = getSource<mithep::XlFatJetCol>(fatJetsName_);
 
   for (unsigned iJ(0); iJ != jets->GetEntries(); ++iJ) {
     if (jets->At(iJ)->ObjType() != kXlFatJet)
@@ -75,7 +72,6 @@ mithep::nero::FatJetsFiller::fill()
       newP4(*out_.ak8_subjet, subjet);
       out_.ak8subjet_btag->push_back(subjet.BTag());
     }
-
     nn_mSD = out_.softdropMass->back();
     nn_QGTag = cleanInput(jet.QGTag());
     nn_groomedIso = computePull(jet.Mom(),jet.SoftDropP());
@@ -84,7 +80,6 @@ mithep::nero::FatJetsFiller::fill()
     out_.topMVA->push_back(topANN->Evaluate()[1]);
   }
 }
-
 
 float
 mithep::nero::FatJetsFiller::cleanInput(float x) {
