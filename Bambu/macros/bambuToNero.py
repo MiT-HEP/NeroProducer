@@ -268,6 +268,7 @@ loosePhotons = mithep.PhotonIdMod('LoosePhotons',
     OutputName = 'LoosePhotons',
     IdType = mithep.PhotonTools.kSummer15Loose,
     IsoType = mithep.PhotonTools.kSummer15LooseIso,
+    ApplyCSafeElectronVeto = True,
     PtMin = 15.,
     EtaMax = 2.5
 )
