@@ -19,6 +19,14 @@ int NeroMet::analyze(const edm::Event& iEvent){
     // maybe handle should be taken before
     iEvent.getByToken(token, handle);
     if ( not handle.isValid() ) cout<<"[NeroMet]::[analyze]::[ERROR] handle is not valid"<<endl;
+
+    iEvent.getByToken(token_noHF,handle_noHF);
+    if ( not handle_noHF.isValid() ) cout<<"[NeroMet]::[analyze]::[ERROR] handle_noHF is not valid"<<endl;
+
+    iEvent.getByToken(token_puppi,handle_puppi);
+    if ( not handle_puppi.isValid() ) cout<<"[NeroMet]::[analyze]::[ERROR] handle_puppi is not valid"<<endl;
+    //--
+
     const pat::MET &met = handle->front();
 
     caloMet_Pt = met.caloMETPt();
@@ -37,7 +45,6 @@ int NeroMet::analyze(const edm::Event& iEvent){
     {
         //MetNoMu
         TLorentzVector metnomu(met.px(),met.py(),met.pz(),met.energy());
-        TLorentzVector pfmet_e3p0(0,0,0,0);
         TLorentzVector tkMet(0,0,0,0); 
        
         if ( pf == NULL ) cout<<"[NeroMet]::[analyze]::[ERROR] PF pointer is null. Run NeroPF. "<<endl; 
@@ -46,9 +53,6 @@ int NeroMet::analyze(const edm::Event& iEvent){
             const pat::PackedCandidate &cand = (*pf->handle)[i];
             
             // only up to eta 3
-            if (std::abs(cand.eta()) < 3.0)
-                pfmet_e3p0 += TLorentzVector(cand.px(),cand.py(),cand.pz(),cand.energy());
-            
             if (std::abs(cand.pdgId()) == 13)
                 metnomu += TLorentzVector(cand.px(),cand.py(),cand.pz(),cand.energy());  
             
@@ -59,7 +63,12 @@ int NeroMet::analyze(const edm::Event& iEvent){
         
         *metNoMu = TLorentzVector(metnomu);    
         *trackMet = TLorentzVector(tkMet);
-        *pfMet_e3p0 = TLorentzVector(pfmet_e3p0);
+
+        const pat::MET &metNoHF = handle_noHF->front(); 
+        *pfMet_e3p0 = TLorentzVector( metNoHF.px(),metNoHF.py(),metNoHF.pz(),metNoHF.energy());
+
+        const pat::MET &puppi = handle_puppi->front(); 
+        *metPuppi =  TLorentzVector( puppi.px(), puppi.py(),puppi.pz(),puppi.energy() );
     
     }    
     // GEN INFO

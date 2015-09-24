@@ -30,6 +30,7 @@ class BareMet : virtual public BareP4
         TLorentzVector *metNoMu{0};
         TLorentzVector *pfMet_e3p0{0};
         TLorentzVector *trackMet{0};
+        TLorentzVector *metPuppi{0};
   
         float caloMet_Pt;
         float caloMet_Phi;
