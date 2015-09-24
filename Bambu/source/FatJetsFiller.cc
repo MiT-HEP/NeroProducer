@@ -3,7 +3,29 @@
 #include "MitAna/DataTree/interface/JetCol.h"
 #include "MitAna/DataTree/interface/XlFatJet.h"
 
+#include "TLorentzVector.h"
+#include "TMath.h"
+
 ClassImp(mithep::nero::FatJetsFiller)
+
+void 
+mithep::nero::FatJetsFiller::initialize()
+{
+	topANN = new NeuralNet(5,2);
+	#include "topTagger_simple.icc" // these are just weights - move to MIT_DATA?
+	topANN->AllocateMemory();
+	topANN->AddBranchAddress(&nn_mSD,69.14170513,70.41396876);
+	topANN->AddBranchAddress(&nn_QGTag,0.24245312,0.31660758);
+	topANN->AddBranchAddress(&nn_groomedIso,0.18981184,0.25050463);
+	topANN->AddBranchAddress(&nn_tau32,0.79239905,0.10837058);
+	topANN->AddBranchAddress(&nn_tau21,0.64983544,0.17112768);
+}
+
+void
+mithep::nero::FatJetsFiller::finalize()
+{
+	delete topANN;
+}
 
 void
 mithep::nero::FatJetsFiller::defineBranches(TTree* _tree)
@@ -53,5 +75,42 @@ mithep::nero::FatJetsFiller::fill()
       newP4(*out_.ak8_subjet, subjet);
       out_.ak8subjet_btag->push_back(subjet.BTag());
     }
+
+    nn_mSD = out_.softdropMass->back();
+    nn_QGTag = cleanInput(jet.QGTag());
+    nn_groomedIso = computePull(jet.Mom(),jet.SoftDropP());
+    nn_tau32 = cleanInput(jet.Tau3()/jet.Tau2());
+    nn_tau21 = cleanInput(jet.Tau2()/jet.Tau1());
+    out_.topMVA->push_back(topANN->Evaluate()[1]);
   }
 }
+
+
+float
+mithep::nero::FatJetsFiller::cleanInput(float x) {
+	if (x>=0) // false for nan
+		return x;
+	else
+		return -1;
+}
+
+float 
+mithep::nero::FatJetsFiller::computePull(const FourVectorM &jetMom, const Vect4M &groomedMom ) {
+
+  TLorentzVector v1;
+  TLorentzVector v2;
+
+  v1.SetPtEtaPhiM(jetMom.Pt(),jetMom.Eta(),jetMom.Phi(),jetMom.M());
+  v2.SetPtEtaPhiM(groomedMom.Pt(),groomedMom.Eta(),groomedMom.Phi(),groomedMom.M());
+
+  float pull = TMath::Sqrt( TMath::Power(v1.Px()-v2.Px(),2)+
+				               TMath::Power(v1.Py()-v2.Py(),2)+
+				               TMath::Power(v1.Pz()-v2.Pz(),2)  )/v1.Pt();
+
+  if (pull>=0)
+    return pull;
+  else {
+    return -1;
+  }
+}
+

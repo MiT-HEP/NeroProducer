@@ -37,6 +37,7 @@ class BareFatJets : virtual public BareP4
         vector<float> *ak8subjet_btag{0};
     
         vector<float> *hbb{0};
+        vector<float> *topMVA{0};
 
 };
 

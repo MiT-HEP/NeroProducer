@@ -19,6 +19,7 @@ BareFatJets::~BareFatJets(){
     BareFunctions::Delete(ak8_subjet     );
     BareFunctions::Delete(ak8jet_hasSubjet);
     BareFunctions::Delete(ak8subjet_btag );
+    BareFunctions::Delete(topMVA         );
 }
 
 void BareFatJets::init(){
@@ -37,7 +38,7 @@ void BareFatJets::init(){
     BareFunctions::New(ak8_subjet     );
     BareFunctions::New(ak8jet_hasSubjet);
     BareFunctions::New(ak8subjet_btag );
-
+    BareFunctions::New(topMVA         );
 }
 
 void BareFatJets::clear(){
@@ -57,6 +58,7 @@ void BareFatJets::clear(){
     ak8subjet_btag ->clear();
     ak8jet_hasSubjet->clear();
     hbb -> clear();
+    topMVA->clear();
 }
 
 void BareFatJets::defineBranches(TTree *t, std::string prefix){
@@ -87,6 +89,8 @@ void BareFatJets::defineBranches(TTree *t, std::string prefix){
     t->Branch(algo + "subjet_btag","vector<float>",&ak8subjet_btag);
 
     t->Branch(jetName + "Hbb","vector<float>",&hbb);
+
+    t->Branch(jetName + "topMVA","vector<float>",&topMVA);
 }
 
 void BareFatJets::setBranchAddresses(TTree *t, std::string prefix){
@@ -115,6 +119,7 @@ void BareFatJets::setBranchAddresses(TTree *t, std::string prefix){
     BareFunctions::SetBranchAddress(t,algo + "subjet_btag",&ak8subjet_btag);
 
     BareFunctions::SetBranchAddress(t,jetName + "Hbb",&hbb);
+    BareFunctions::SetBranchAddress(t,jetName + "topMVA",&topMVA);
 }
 void BareFatJets::compress(){
     BareP4::compress();
