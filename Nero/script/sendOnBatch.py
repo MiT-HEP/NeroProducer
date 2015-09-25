@@ -7,10 +7,10 @@ from subprocess import call, check_output
 parser = OptionParser(usage = "usage");
 parser.add_option("-n","--nJobs",dest="nJobs",type="int",help="number of jobs. (will be adapted to have more or less the same number of files)",default=1);
 parser.add_option("-i","--input",dest="input",type="string",help="input pset",default="test/NeroProducer.py");
-parser.add_option("","--data",dest="data",action="store_true",help="run on data",default=False);
+parser.add_option("","--data",dest="data",action="store_true",help="run on data [Default=%default]",default=False);
 parser.add_option("","--mc",dest="data",action="store_false",help="run on mc");
-parser.add_option("","--25ns",dest="25ns",action="store_true",help="25ns ", default=True);
-parser.add_option("","--50ns",dest="25ns",action="store_false",help="50ns ");
+parser.add_option("","--25ns",dest="is25ns",action="store_true",help="25ns [Default=%default]", default=True);
+parser.add_option("","--50ns",dest="is25ns",action="store_false",help="50ns ");
 parser.add_option("-d","--dir",dest="dir",type="string",help="working directory",default="test/mydir");
 parser.add_option("-e","--eos",dest="eos",type="string",help="eos directory to scout, will not read the files in the pSet",default="");
 parser.add_option("","--put-in",dest="put",type="string",help="eos directory to cp the results ",default="");
@@ -221,7 +221,7 @@ for idx,fl in enumerate(fileChunks):
 	print >> sh, 'touch sub_%d.run'%idx
 	print >> sh, 'cd $WORKDIR'
 	print >> sh, "cmsRun " + os.environ['PWD'] + "/" + opts.dir + "/" + psetFileName, #+ " 2>&1 > log_%d.log"%idx
-	if opts.25ns: print >>sh," is25ns=True is50ns=False",
+	if opts.is25ns: print >>sh," is25ns=True is50ns=False",
 	else : print >>sh," is25ns=False is50ns=True",
 	if opts.data: print >> sh, " isData=True"
 	else: print >>sh, " isData=False" ## ENDL
