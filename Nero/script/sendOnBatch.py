@@ -224,6 +224,9 @@ if opts.follow:
 	maxn,fileList = ReadFromDatabase(opts.dir + "/database.txt",fileList )
 
 if len(fileList) == 0:
+	if opts.follow:
+		print "Nothing to be done"
+		exit(0)
 	print "ERROR no file is given"
 	if opts.eos != "":
 		print "eos cmd was:",cmd
