@@ -26,6 +26,15 @@ if options.is25ns and options.is50ns :
 if not options.is25ns and not options.is50ns:
 	raise('cannot run nor 25ns nor 50ns configuration. Pick up one.')
 
+if options.is25ns:
+	print "-> Loading 25ns configuration"
+if options.is50ns:
+	print "-> Loading 50ns configuration"
+if options.isData:
+	print "-> Loading DATA configuration"
+else:
+	print "-> Loading MC configuration"
+
 process.load("FWCore.MessageService.MessageLogger_cfi")
 # If you run over many samples and you save the log, remember to reduce
 # the size of the output by prescaling the report of the event number
@@ -40,7 +49,9 @@ fileList = [
     #'/store/mc/RunIISpring15DR74/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v3/70000/FE90C5FF-6914-E511-B0F9-0025905A497A.root',
     #'/store/data/Run2015C/JetHT/MINIAOD/PromptReco-v1/000/253/808/00000/3E6025B5-7340-E511-A8B7-02163E01440E.root',
     #'/store/cmst3/user/gpetrucc/miniAOD/Spring15MiniAODv2/CMSSW_7_4_12/miniAOD-DYJetsM50_madgraphMLM_50ns_PAT.root'
+    #'file:/tmp/amarini/step3_0.root'
     '/store/data/Run2015D/SinglePhoton/MINIAOD/PromptReco-v3/000/256/630/00000/BE4748B0-295F-E511-A271-02163E014402.root',
+    #'/store/user/amarini/mc/HplusToTauNu-M200/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9/MINIAODSIMv2/step4_30.root',
     #'/store/relval/CMSSW_7_4_1/RelValProdTTbar_13/MINIAODSIM/MCRUN2_74_V9_gensim71X-v1/00000/0A9E2CED-C9EC-E411-A8E4-003048FFCBA8.root']
     #'/store/data/Run2015B/DoubleMuon/MINIAOD/PromptReco-v1/000/251/164/00000/402F0995-A326-E511-86BB-02163E013948.root',
     #'/store/data/Run2015B/DoubleMuon/MINIAOD/PromptReco-v1/000/251/167/00000/70C4A781-A826-E511-95B4-02163E013414.root',
@@ -82,9 +93,11 @@ else:
 	    #process.GlobalTag.globaltag = '74X_mcRun2_asymptotic_realisticBS_v1'
 	    #process.GlobalTag.globaltag = '74X_mcRun2_asymptotic_realisticBS_v1'
 	    process.GlobalTag.globaltag = 'MCRUN2_74_V9::All'
+	    #process.GlobalTag.globaltag = '74X_mcRun2_asymptotic_v2'
     if options.is50ns:
 	    #process.GlobalTag.globaltag = '741_p1_mcRun2_Realistic_50ns_v0::All'
 	    process.GlobalTag.globaltag = 'MCRUN2_74_V9A::All'
+	    #process.GlobalTag.globaltag = '74X_mcRun2_startup_v2::All'
 
 
 ######## LUMI MASK

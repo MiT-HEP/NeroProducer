@@ -71,6 +71,16 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         //if (not isPassVLoose) continue;
         if (mMaxIso >=0 and totIso > mMaxIso) continue;
 
+        unsigned bits=0;
+
+        bits |= isPassTight * PhoTight;
+        bits |= isPassMedium * PhoMedium;
+        bits |= isPassLoose * PhoLoose;
+        bits |= isPassVLoose50 * PhoVLoose50;
+        bits |= isPassVLoose25 * PhoVLoose25;
+
+        if (not bits) continue; // even if there is some misalignment ntuples will not be corrupted
+
         // RC -- with FPR
         //
         float _chIsoRC_ = 0;
@@ -163,15 +173,6 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         sieie -> push_back( pho. full5x5_sigmaIetaIeta() );
 
     
-        unsigned bits=0;
-
-        bits |= isPassTight * PhoTight;
-        bits |= isPassMedium * PhoMedium;
-        bits |= isPassLoose * PhoLoose;
-        bits |= isPassVLoose50 * PhoVLoose50;
-        bits |= isPassVLoose25 * PhoVLoose25;
-
-        if (not bits) continue; // even if there is some misalignment ntuples will not be corrupted
 
         selBits -> push_back( bits);
 
