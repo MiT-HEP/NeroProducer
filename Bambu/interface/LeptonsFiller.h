@@ -19,14 +19,20 @@ namespace mithep {
 
       void SetElectronsName(char const* _name) { electronsName_ = _name; }
       void SetMuonsName(char const* _name) { muonsName_ = _name; }
-      void SetMuonIdsAName(char const* _name) { muonIdsAName_ = _name; }
-      void SetMuonIdsBName(char const* _name) { muonIdsBName_ = _name; }
-      void SetMuonIdsCName(char const* _name) { muonIdsCName_ = _name; }
-      void SetMuonIdsDName(char const* _name) { muonIdsDName_ = _name; }
-      void SetElectronIdsAName(char const* _name) { electronIdsAName_ = _name; }
-      void SetElectronIdsBName(char const* _name) { electronIdsBName_ = _name; }
-      void SetElectronIdsCName(char const* _name) { electronIdsCName_ = _name; }
-      void SetElectronIdsDName(char const* _name) { electronIdsDName_ = _name; }
+      void SetVetoMuonIdName(char const* _name) { setDefinedId_(muonIdName_, BareLeptons::LepVeto, _name); }
+      void SetFakeMuonIdName(char const* _name) { setDefinedId_(muonIdName_, BareLeptons::LepFake, _name); }
+      void SetSoftMuonIdName(char const* _name) { setDefinedId_(muonIdName_, BareLeptons::LepSoft, _name); }
+      void SetLooseMuonIdName(char const* _name) { setDefinedId_(muonIdName_, BareLeptons::LepLoose, _name); }
+      void SetMediumMuonIdName(char const* _name) { setDefinedId_(muonIdName_, BareLeptons::LepMedium, _name); }
+      void SetTightMuonIdName(char const* _name) { setDefinedId_(muonIdName_, BareLeptons::LepTight, _name); }
+      void SetMuonIdName(UInt_t _bit, char const* _name) { muonIdName_[_bit] = _name; }
+      void SetVetoElectronIdName(char const* _name) { setDefinedId_(electronIdName_, BareLeptons::LepVeto, _name); }
+      void SetFakeElectronIdName(char const* _name) { setDefinedId_(electronIdName_, BareLeptons::LepFake, _name); }
+      void SetSoftElectronIdName(char const* _name) { setDefinedId_(electronIdName_, BareLeptons::LepSoft, _name); }
+      void SetLooseElectronIdName(char const* _name) { setDefinedId_(electronIdName_, BareLeptons::LepLoose, _name); }
+      void SetMediumElectronIdName(char const* _name) { setDefinedId_(electronIdName_, BareLeptons::LepMedium, _name); }
+      void SetTightElectronIdName(char const* _name) { setDefinedId_(electronIdName_, BareLeptons::LepTight, _name); }
+      void SetElectronIdName(UInt_t _bit, char const* _name) { electronIdName_[_bit] = _name; }
       void SetVerticesName(char const* _name) { verticesName_ = _name; }
       void SetPFCandsName(char const* _name) { pfCandsName_ = _name; }
       void SetNoPUPFCandsName(char const* _name) { nopuPFCandsName_ = _name; }
@@ -34,17 +40,12 @@ namespace mithep {
 
     private:
       BareLeptons out_{};
+      void setDefinedId_(TString [], BareLeptons::Selection, char const* _name);
 
       TString electronsName_ = "Electrons";
       TString muonsName_ = "Muons";
-      TString muonIdsAName_ = "MuonIdsA";
-      TString muonIdsBName_ = "MuonIdsB";
-      TString muonIdsCName_ = "MuonIdsC";
-      TString muonIdsDName_ = "MuonIdsD";
-      TString electronIdsAName_ = "ElectronIdsA";
-      TString electronIdsBName_ = "ElectronIdsB";
-      TString electronIdsCName_ = "ElectronIdsC";
-      TString electronIdsDName_ = "ElectronIdsD";
+      TString muonIdName_[32]{};
+      TString electronIdName_[32]{};
       TString verticesName_ = "PrimaryVertexes";
       TString pfCandsName_ = "PFCandidates";
       TString nopuPFCandsName_ = "PFNoPileup";

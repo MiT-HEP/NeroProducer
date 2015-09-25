@@ -7,6 +7,17 @@
 class BareTaus : virtual public BareP4
 {
     public:
+        enum Selection{
+            TauDecayModeFindingNewDMs = 1UL <<0,
+            TauDecayModeFinding = 1UL <<1,
+
+            // 0--7 POG
+            AgainstEleLoose = 1UL <<8,
+            AgainstEleMedium = 1UL<<9,
+            AgainstMuLoose = 1UL<<10,
+            AgainstMuTight = 1UL<<11
+
+        };
         BareTaus();
         ~BareTaus();
         void init() override;
@@ -19,7 +30,6 @@ class BareTaus : virtual public BareP4
 
         // --  members
         //TClonesArray    *p4{0};
-        vector<float>   *id{0}; 
         vector<int>     *Q{0}; // charge
         vector<float>   *M{0}; // mass
         vector<float>   *iso{0};
@@ -28,10 +38,7 @@ class BareTaus : virtual public BareP4
         vector<float>   *chargedIsoPtSum{0};
         vector<float>   *neutralIsoPtSum{0};
         vector<float>   *isoDeltaBetaCorr{0};
-        vector<int>   *againstEleLoose{0};
-        vector<int>   *againstEleMedium{0};
-        vector<int>   *againstMuLoose{0};
-        vector<int>   *againstMuTight{0};
+        vector<unsigned> *selBits{0};
 };
 
 #endif

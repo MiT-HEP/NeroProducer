@@ -3,8 +3,11 @@
 
 #include "MitAna/DataTree/interface/TriggerTable.h"
 #include "MitAna/DataTree/interface/TriggerMask.h"
-#include "MitAna/DataTree/interface/TriggerObjectCol.h"
+#include "MitAna/DataTree/interface/TriggerObjectsTable.h"
+#include "MitAna/DataTree/interface/TriggerObject.h"
 #include "MitAna/DataTree/interface/Names.h"
+
+#include <algorithm>
 
 ClassImp(mithep::nero::TriggerFiller)
 
@@ -66,8 +69,22 @@ mithep::nero::TriggerFiller::fill()
   out_.triggerPhotons->assign(photons_->p4->GetEntries(), 0);
 
   auto* triggerMask = getSource<mithep::TriggerMask>(Names::gkHltBitBrn);
-  if (!triggerMask)
+  auto* triggerObjs = getSource<mithep::TriggerObjectsTable>(TString(Names::gkHltObjBrn) + "Fwk");
+  if (!triggerMask || !triggerObjs)
     return;
+
+  std::vector<int>* bitmaskArrs[4] = {
+    out_.triggerPhotons,
+    out_.triggerLeps,
+    out_.triggerTaus,
+    out_.triggerJets
+  };
+  BareP4* matchTargets[4] = {
+    photons_,
+    leptons_,
+    taus_,
+    jets_
+  };
 
   for (unsigned iT(0); iT != triggerNames_.size(); ++iT) {
     if (!triggerMask->At(triggerIds_[iT]))
@@ -75,69 +92,55 @@ mithep::nero::TriggerFiller::fill()
 
     out_.triggerFired->at(iT) = 1;
 
-    auto& objsName(triggerObjectsNames_[triggerNames_[iT]]);
-    auto* triggerObjects = getSource<mithep::TriggerObjectCol>(objsName);
+    auto& objsNames(triggerObjectsNames_[iT]);
 
-    for (unsigned iO(0); iO != triggerObjects->GetEntries(); ++iO) {
-      auto& trigObj(*triggerObjects->At(iO));
+    if (objsNames.size() != 0) {
+      TList const* filterList(triggerObjs->GetList(triggerIds_[iT]));
+      for (TObject* obj : *filterList) {
+        auto& trigObj(*static_cast<mithep::TriggerObject*>(obj));
 
-      std::vector<int>* bitmasks = 0;
-      BareP4* matchTarget = 0;
-      unsigned pdgId(0);
-      switch (trigObj.TriggerType()) {
-      case mithep::TriggerObject::TriggerPhoton:
-        bitmasks = out_.triggerPhotons;
-        matchTarget = photons_;
-        break;
-      case mithep::TriggerObject::TriggerElectron:
-        bitmasks = out_.triggerLeps;
-        matchTarget = leptons_;
-        pdgId = 11;
-        break;
-      case mithep::TriggerObject::TriggerMuon:
-        bitmasks = out_.triggerLeps;
-        matchTarget = leptons_;
-        pdgId = 13;
-        break;
-      case mithep::TriggerObject::TriggerTau:
-        bitmasks = out_.triggerTaus;
-        matchTarget = taus_;
-        break;
-      case mithep::TriggerObject::TriggerJet:
-      case mithep::TriggerObject::TriggerBJet:
-        bitmasks = out_.triggerJets;
-        matchTarget = jets_;
-        break;
-      default:
-        continue;
-      }
+        // not very efficient but not worth putting too much time improving this..
+        if (std::find(objsNames.begin(), objsNames.end(), trigObj.ModuleName()) == objsNames.end())
+          continue;
 
-      TLorentzVector objP4(trigObj.Px(), trigObj.Py(), trigObj.Pz(), trigObj.E());
+        TLorentzVector objP4(trigObj.Px(), trigObj.Py(), trigObj.Pz(), trigObj.E());
 
-      if (bitmasks && matchTarget) {
-        double minDR(std::numeric_limits<double>::max());
-        int minIndex(-1);
-
-        for (int iP(0); iP < matchTarget->p4->GetEntries(); ++iP) {
-          if (pdgId != 0 && std::abs(dynamic_cast<BareLeptons*>(matchTarget)->pdgId->at(iP)) != pdgId)
-            continue;
-
-          double dR(static_cast<TLorentzVector*>(matchTarget->p4->At(iP))->DeltaR(objP4));
-          if (dR < 0.2 && dR < minDR) {
-            minIndex = iP;
-            minDR = dR;
-          }
-        }
+        for (unsigned iTarg(0); iTarg != 4; ++iTarg) {
+          auto* bitmaskArr(bitmaskArrs[iTarg]);
+          auto* matchTarget(matchTargets[iTarg]);
         
-        if (minIndex >= 0)
-          bitmasks->at(minIndex) |= (1 << iT);
+          double minDR(std::numeric_limits<double>::max());
+          int minIndex(-1);
+
+          for (int iP(0); iP < matchTarget->p4->GetEntries(); ++iP) {
+            double dR(static_cast<TLorentzVector*>(matchTarget->p4->At(iP))->DeltaR(objP4));
+            if (dR < 0.2 && dR < minDR) {
+              minIndex = iP;
+              minDR = dR;
+            }
+          }
+        
+          if (minIndex >= 0)
+            bitmaskArr->at(minIndex) |= (1 << iT);
+        }
       }
     }
   }
 }
 
 void
-mithep::nero::TriggerFiller::AddTriggerName(char const* _name)
+mithep::nero::TriggerFiller::AddTriggerName(char const* _path)
 {
-  triggerNames_.emplace_back(_name);
+  triggerNames_.emplace_back(_path);
+  triggerObjectsNames_.resize(triggerNames_.size());
+}
+
+void
+mithep::nero::TriggerFiller::AddFilterName(char const* _path, char const* _filter)
+{
+  auto pItr(std::find(triggerNames_.begin(), triggerNames_.end(), _path));
+  if (pItr == triggerNames_.end())
+    throw std::runtime_error((TString("AddFilterName could not find a trigger path named ") + _path).Data());
+
+  triggerObjectsNames_[pItr - triggerNames_.begin()].emplace_back(_filter);
 }
