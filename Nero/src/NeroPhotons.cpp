@@ -1,7 +1,7 @@
 #include "NeroProducer/Nero/interface/NeroPhotons.hpp"
 #include "NeroProducer/Nero/interface/Nero.hpp"
 
-//#define VERBOSE 1
+//#define VERBOSE 2
 
 NeroPhotons::NeroPhotons() : 
         NeroCollection(),
@@ -51,9 +51,19 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         if (VERBOSE>0) cout<<"[NeroPhotons]::[analyze]::[DEBUG] analyzing photon"<<iPho<<" pt="<<pho.pt() <<" pz"<<pho.pz() <<endl;
         #endif
 
-        if (pho.pt() <15 or pho.chargedHadronIso()/pho.pt() > 0.3) continue;		
+        // r9()>0.8 , chargedHadronIso()<20, chargedHadronIso()<0.3*pt()
+        if (pho.pt() <15 or pho.chargedHadronIso()/pho.pt() > 0.3) continue; // 10 -- 14  GeV photons are saved if chargedHadronIso()<10
         if (fabs(pho.eta()) > mMinEta ) continue;
         if (pho.pt() < mMinPt) continue;
+
+        #ifdef VERBOSE
+        if (VERBOSE>1) cout<<"[NeroPhotons]::[analize]::[DEBUG2] photonInfo:" <<endl
+            <<" \t pho.chargedHadronIso()/pho.pt() (0.3) "<<pho.chargedHadronIso()/pho.pt() <<endl
+            <<" \t chargedHadronIso() (20) "<<pho.chargedHadronIso()<<endl
+            <<" \t r9 (0.8) "<<pho.r9()<<endl
+            <<" \t SC is non null? "<< pho.superCluster().isNonnull()<<endl
+            <<endl;
+        #endif
 
         edm::RefToBase<pat::Photon> ref ( edm::Ref< pat::PhotonCollection >(handle, iPho) ) ;
         float _chIso_ =  (*iso_ch) [ref];
@@ -87,7 +97,10 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         float _nhIsoRC_ = 0;
         float _phIsoRC_ = 0;
         float _puIsoRC_ = 0;// not fill for the moment in the FPR TODO
-
+        
+        if (  pho.chargedHadronIso()< 20 )
+        {
+                                        //<<" \t r9 (0.8) "<<pho.r9()<<endl
         #ifdef VERBOSE
             if (VERBOSE >0 ) cout <<"[NeroPhotons]::[analyze]::[DEBUG] FPR START"<<endl;
         #endif
@@ -109,6 +122,12 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         #ifdef VERBOSE
             if (VERBOSE >0 ) cout <<"[NeroPhotons]::[analyze]::[DEBUG] FPR END"<<endl;
         #endif
+        } else {
+             _chIsoRC_ = -999.;
+             _nhIsoRC_ = -999.;
+             _phIsoRC_ = -999.;
+             _puIsoRC_ = -999.;// not fill for the moment in the FPR TODO
+        }
 
         // RC -- without FPR
         // allowed dphi
