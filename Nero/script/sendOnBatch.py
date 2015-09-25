@@ -5,10 +5,10 @@ from optparse import OptionParser, OptionGroup
 from subprocess import call, check_output
 
 ### why not a db class ?
-def ReadFromDataBase(dbName,fileList):
+def ReadFromDatabase(dbName,fileList):
 	''' Read from Database, and update file list, removing already submitted jobs. Gives the offset with respect to the existing jobs'''
 	## jobN file
-	database = open(dbName,"a")
+	database = open(dbName,'r')
 	db = {}
 	maxn = -1
 	fileSubmitted = []
@@ -28,7 +28,7 @@ def ReadFromDataBase(dbName,fileList):
 	return (maxn, fileList)
 	
 def WriteIntoDatabase(dbName, idx, f):
-	db =open(dbName,"a");
+	db =open(dbName,'a');
 	db.write("%d %s\n"%(idx, f))
 	db.close();
 
@@ -234,8 +234,6 @@ mylen=0
 for idx,fl in enumerate(fileChunks):
 	## if follow options is on, write the submission into the database
 	if opts.follow:
-		if idx== maxn:
-			print "WARNING WARNING WARNING, production probably corrupted"
 		idx += maxn
 		for f in fl:
 			WriteIntoDatabase( opts.dir + "/database.txt" ,idx,f)
