@@ -58,6 +58,10 @@ sub_group.add_option("" ,"--follow", dest="follow", action="store_true",help= "f
 
 (opts,args) = parser.parse_args()
 
+if opts.onlysubmit and opts.queue == "":
+	print "-> Empty Queue. Refusing to continue"
+	exit(0)
+
 def PrintLine(list):
         ''' convert list in list of int number, sort and compress consecutive numbers. Then print the result:
         4,5,8,3 -> 3-5,8
