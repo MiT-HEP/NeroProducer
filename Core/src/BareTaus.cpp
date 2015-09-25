@@ -5,23 +5,19 @@ BareTaus::BareTaus(): BareP4() {
 }
 
 BareTaus::~BareTaus(){
-    BareFunctions::Delete(id);
+    BareFunctions::Delete(selBits);
     BareFunctions::Delete(Q);
     BareFunctions::Delete(M);
     BareFunctions::Delete(iso);
     BareFunctions::Delete(chargedIsoPtSum);
     BareFunctions::Delete(neutralIsoPtSum);
     BareFunctions::Delete(isoDeltaBetaCorr);
-    BareFunctions::Delete(againstEleLoose);
-    BareFunctions::Delete(againstEleMedium);
-    BareFunctions::Delete(againstMuLoose);
-    BareFunctions::Delete(againstMuTight);
 }
 
 void BareTaus::init(){
     BareP4::init();
 
-    BareFunctions::New(id);
+    BareFunctions::New(selBits);
     BareFunctions::New(Q);
     BareFunctions::New(M);
     BareFunctions::New(iso);
@@ -32,16 +28,12 @@ void BareTaus::init(){
         BareFunctions::New(chargedIsoPtSum);
         BareFunctions::New(neutralIsoPtSum);
         BareFunctions::New(isoDeltaBetaCorr);
-        BareFunctions::New(againstEleLoose);
-        BareFunctions::New(againstEleMedium);
-        BareFunctions::New(againstMuLoose);
-        BareFunctions::New(againstMuTight);
     }
 }
 
 void BareTaus::clear(){
     BareP4::clear();
-    id->clear();
+    selBits->clear();
     Q->clear();
     M->clear();
     iso -> clear();
@@ -50,17 +42,13 @@ void BareTaus::clear(){
         chargedIsoPtSum->clear();
         neutralIsoPtSum->clear() ;
         isoDeltaBetaCorr->clear();
-        againstEleLoose->clear();
-        againstEleMedium->clear();
-        againstMuLoose->clear();
-        againstMuTight->clear()  ;
     }
 }
 
 void BareTaus::defineBranches(TTree *t){
     BareP4::defineBranches(t, "tau" );
     //
-    t->Branch("tauId","vector<float>",&id);
+    t->Branch("tauId","vector<unsigned>",&selBits);
     //
     t->Branch("tauQ","vector<int>",&Q);
     //
@@ -73,10 +61,6 @@ void BareTaus::defineBranches(TTree *t){
         t->Branch("tauChargedIsoPtSum","vector<float>",&chargedIsoPtSum);
         t->Branch("tauNeutralIsoPtSum","vector<float>",&neutralIsoPtSum);
         t->Branch("tauIsoDeltaBetaCorr","vector<float>",&isoDeltaBetaCorr);
-        t->Branch("tauAgainstEleLoose","vector<int>",&againstEleLoose);
-        t->Branch("tauAgainstEleMedium","vector<int>",&againstEleMedium);
-        t->Branch("tauAgainstMuLoose","vector<int>",&againstMuLoose);
-        t->Branch("tauAgainstMuTight","vector<int>",&againstMuTight);
     }
 
 }
@@ -84,7 +68,7 @@ void BareTaus::defineBranches(TTree *t){
 void BareTaus::setBranchAddresses(TTree *t){
     BareP4::setBranchAddresses(t,"tau");
 
-    BareFunctions::SetBranchAddress(t,"tauId"	,&id);
+    BareFunctions::SetBranchAddress(t,"tauSelBits"	,&selBits);
     BareFunctions::SetBranchAddress(t,"tauQ"	,&Q);
     BareFunctions::SetBranchAddress(t,"tauM"	,&M);
     BareFunctions::SetBranchAddress(t,"tauIso"	,&iso);
@@ -95,10 +79,6 @@ void BareTaus::setBranchAddresses(TTree *t){
         BareFunctions::SetBranchAddress(t,"tauChargedIsoPtSum",&chargedIsoPtSum);
         BareFunctions::SetBranchAddress(t,"tauNeutralIsoPtSum",&neutralIsoPtSum);
         BareFunctions::SetBranchAddress(t,"tauIsoDeltaBetaCorr",&isoDeltaBetaCorr);
-        BareFunctions::SetBranchAddress(t,"tauAgainstEleLoose",&againstEleLoose);
-        BareFunctions::SetBranchAddress(t,"tauAgainstEleMedium",&againstEleMedium);
-        BareFunctions::SetBranchAddress(t,"tauAgainstMuLoose",&againstMuLoose);
-        BareFunctions::SetBranchAddress(t,"tauAgainstMuTight",&againstMuTight);
     }
 }
 // Local Variables:

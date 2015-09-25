@@ -8,6 +8,15 @@
 class BarePhotons : virtual public BareP4
 {
     public:
+        enum Selection{
+            PhoLoose  = 1UL << 3, 
+            PhoMedium = 1UL << 4,
+            PhoTight  = 1UL << 5,
+            // NONPOG
+            PhoVLoose50 = 1UL<<8, // loose, no-sieie, looser ph-iso
+            PhoVLoose25 = 1UL <<9 // loose + no-sieie, looser ph-iso
+        };
+
         BarePhotons();
         ~BarePhotons();
         void init() override;
@@ -18,13 +27,12 @@ class BarePhotons : virtual public BareP4
         void setBranchAddresses(TTree* t, std::string) override { setBranchAddresses(t); }
         inline string name() override { return "BarePhotons"; }
 
+        bool inline passSelection(const unsigned &idx, const Selection &sel) const  { return (selBits->at(idx) & sel) != 0; }
         // -- variables
         //TClonesArray *p4{0};
         vector<float> *sieie{0};
         vector<float> *iso{0};
-        vector<int> *looseid{0};
-        vector<int> *tightid{0};
-        vector<int> *mediumid{0};
+        vector<unsigned> *selBits{0};
 
         vector<float> *chIso{0};
         vector<float> *chIsoRC{0};

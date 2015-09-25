@@ -7,6 +7,18 @@
 class BareJets : virtual public BareP4
 {
     public:
+
+        enum Selection{
+            JetLoose  = 1UL << 3, 
+            JetMedium = 1UL << 4,
+            JetTight  = 1UL << 5,
+            // 0--7 POG
+            mjId = 1UL<<8,
+            mjIdLoose = 1UL <<9
+            //TODO add Pileup Id and remove corresponding variable
+
+        };
+
         BareJets();
         ~BareJets();
         void init() override;
@@ -29,8 +41,7 @@ class BareJets : virtual public BareP4
         vector<int>   *matchedPartonPdgId{0};
         vector<int>   *motherPdgId{0};
         vector<int>   *grMotherPdgId{0};
-        vector<bool>  *mjId{0};
-        vector<bool>  *mjId_loose{0};
+        vector<unsigned> *selBits{0};
 
         vector<float> *Q{0};
         vector<float> *QnoPU{0};
