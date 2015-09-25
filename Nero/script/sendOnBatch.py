@@ -8,7 +8,11 @@ from subprocess import call, check_output
 def ReadFromDatabase(dbName,fileList):
 	''' Read from Database, and update file list, removing already submitted jobs. Gives the offset with respect to the existing jobs'''
 	## jobN file
-	database = open(dbName,'r')
+	try:
+		database = open(dbName,'r')
+	except IOError: 
+		print "-> No database available. First submission."
+		return (0,fileList)
 	db = {}
 	maxn = -1
 	fileSubmitted = []
