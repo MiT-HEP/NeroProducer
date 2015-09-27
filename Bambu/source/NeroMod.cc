@@ -1,5 +1,6 @@
 #include "NeroProducer/Bambu/interface/NeroMod.h"
 #include "NeroProducer/Bambu/interface/TriggerFiller.h"
+#include "NeroProducer/Bambu/interface/LeptonsFiller.h"
 #include "NeroProducer/Bambu/interface/AllFiller.h"
 
 #include "MitAna/TreeMod/interface/HLTFwkMod.h"
@@ -50,6 +51,22 @@ mithep::NeroMod::SlaveBegin()
       triggerNames += n + ",";
   }
   TNamed("triggerNames", triggerNames.Data()).Write();
+
+  auto* selBitsTree(new TTree("selBits", "selBits"));
+  TString* eleBitsName(new TString);
+  TString* muBitsName(new TString);
+  selBitsTree->Branch("electron", "TString", &eleBitsName);
+  selBitsTree->Branch("muon", "TString", &muBitsName);
+  auto* leptonsFiller(static_cast<nero::LeptonsFiller*>(filler_[nero::BaseFiller::kLeptons]));
+  for (unsigned iB(0); iB != 32; ++iB) {
+    *eleBitsName = leptonsFiller->GetElectronIdName(iB);
+    *muBitsName = leptonsFiller->GetMuonIdName(iB);
+    selBitsTree->Fill();
+  }
+  selBitsTree->Write();
+  delete selBitsTree;
+  delete eleBitsName;
+  delete muBitsName;
 
   if (filler_[nero::BaseFiller::kAll]) {
     auto* skippedEvents = GetPublicObj<mithep::EventHeaderCol>(mithep::Names::gkSkimmedHeaders, false);

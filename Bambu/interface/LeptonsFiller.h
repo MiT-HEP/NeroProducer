@@ -38,6 +38,9 @@ namespace mithep {
       void SetNoPUPFCandsName(char const* _name) { nopuPFCandsName_ = _name; }
       void SetPUPFCandsName(char const* _name) { puPFCandsName_ = _name; }
 
+      char const* GetMuonIdName(UInt_t _bit) { return muonIdName_[_bit]; }
+      char const* GetElectronIdName(UInt_t _bit) { return electronIdName_[_bit]; }
+
     private:
       BareLeptons out_{};
       void setDefinedId_(TString [], BareLeptons::Selection, char const* _name);
