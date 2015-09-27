@@ -4,10 +4,11 @@ import os
 
 mitdata = os.environ['MIT_DATA']
 
-if analysis.custom['bx'] == '25ns':
-    jecVersion = '25nsV2'
-elif analysis.custom['bx'] == '50ns':
-    jecVersion = '50nsV5'
+def switchBX(case25, case50):
+    global analysis
+    return case25 if analysis.custom['bx'] == '25ns' else case50
+
+jecVersion = switchBX('25nsV2', '50nsV5')
 
 if analysis.isRealData:
     jecPattern = 'Summer15_' + jecVersion + '_DATA_{level}_{jettype}.txt'
@@ -117,26 +118,26 @@ electronVetoId = electronLooseId.clone('ElectronVetoId',
     OutputName = 'VetoElectronId',
     ApplyD0Cut = True,
     ApplyDZCut = True,
-    IdType = mithep.ElectronTools.kSummer15Veto,
-    IsoType = mithep.ElectronTools.kSummer15VetoIso
+    IdType = switchBX(mithep.ElectronTools.kSummer15Veto, mithep.ElectronTools.kSummer15Veto50ns),
+    IsoType = switchBX(mithep.ElectronTools.kSummer15VetoIso, mithep.ElectronTools.kSummer15Veto50nsIso),
 )
 
 electronFakeId = electronVetoId.clone('ElectronFakeId',
     OutputName = 'FakeElectronId',
-    IdType = mithep.ElectronTools.kSummer15Fake,
-    IsoType = mithep.ElectronTools.kSummer15FakeIso
+    IdType = switchBX(mithep.ElectronTools.kSummer15Fake, mithep.ElectronTools.kSummer15Fake50ns),
+    IsoType = switchBX(mithep.ElectronTools.kSummer15FakeIso, mithep.ElectronTools.kSummer15Fake50nsIso),
 )
 
 electronMediumId = electronVetoId.clone('ElectronMediumId',
     OutputName = 'MediumElectronId',
-    IdType = mithep.ElectronTools.kSummer15Medium,
-    IsoType = mithep.ElectronTools.kSummer15MediumIso
+    IdType = switchBX(mithep.ElectronTools.kSummer15Medium, mithep.ElectronTools.kSummer15Medium50ns),
+    IsoType = switchBX(mithep.ElectronTools.kSummer15MediumIso, mithep.ElectronTools.kSummer15Medium50nsIso),
 )
 
 electronTightId = electronVetoId.clone('ElectronTightId',
     OutputName = 'TightElectronId',
-    IdType = mithep.ElectronTools.kSummer15Tight,
-    IsoType = mithep.ElectronTools.kSummer15TightIso
+    IdType = switchBX(mithep.ElectronTools.kSummer15Tight, mithep.ElectronTools.kSummer15Tight50ns),
+    IsoType = switchBX(mithep.ElectronTools.kSummer15TightIso, mithep.ElectronTools.kSummer15Tight50nsIso),
 )
 
 veryLooseMuons = mithep.MuonIdMod('FiducialMuons',
