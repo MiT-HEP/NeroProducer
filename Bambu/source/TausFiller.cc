@@ -16,7 +16,21 @@ mithep::nero::TausFiller::fill()
 
     newP4(out_, tau);
 
-    out_.id->push_back(tau.PFTauDiscriminator(mithep::PFTau::kDiscriminationByDecayModeFinding));
+    unsigned selBits(0);
+    if (tau.PFTauDiscriminator(mithep::PFTau::kDiscriminationByDecayModeFindingNewDMs))
+      selBits |= BareTaus::TauDecayModeFindingNewDMs;
+    if (tau.PFTauDiscriminator(mithep::PFTau::kDiscriminationByDecayModeFinding))
+      selBits |= BareTaus::TauDecayModeFinding;
+    if (tau.PFTauDiscriminator(mithep::PFTau::kDiscriminationByLooseElectronRejection))
+      selBits |= BareTaus::AgainstEleLoose;
+    if (tau.PFTauDiscriminator(mithep::PFTau::kDiscriminationByMediumElectronRejection))
+      selBits |= BareTaus::AgainstEleMedium;
+    if (tau.PFTauDiscriminator(mithep::PFTau::kDiscriminationByLooseMuonRejection))
+      selBits |= BareTaus::AgainstMuLoose;
+    if (tau.PFTauDiscriminator(mithep::PFTau::kDiscriminationByTightMuonRejection))
+      selBits |= BareTaus::AgainstMuTight;
+    out_.selBits->push_back(selBits);
+
     out_.Q->push_back(tau.Charge());
     out_.M->push_back(tau.Mass());
     // TODO
@@ -26,10 +40,6 @@ mithep::nero::TausFiller::fill()
       out_.chargedIsoPtSum->push_back(tau.PFTauDiscriminator(mithep::PFTau::kMVA3IsolationChargedIsoPtSum));
       out_.neutralIsoPtSum->push_back(tau.PFTauDiscriminator(mithep::PFTau::kMVA3IsolationNeutralIsoPtSum));
       out_.isoDeltaBetaCorr->push_back(tau.PFTauDiscriminator(mithep::PFTau::kDiscriminationByRawCombinedIsolationDBSumPtCorr3Hits));
-      out_.againstEleLoose->push_back(tau.PFTauDiscriminator(mithep::PFTau::kDiscriminationByMVA5LooseElectronRejection));
-      out_.againstEleMedium->push_back(tau.PFTauDiscriminator(mithep::PFTau::kDiscriminationByMVA5MediumElectronRejection));
-      out_.againstMuLoose->push_back(tau.PFTauDiscriminator(mithep::PFTau::kDiscriminationByLooseMuonRejection3));
-      out_.againstMuTight->push_back(tau.PFTauDiscriminator(mithep::PFTau::kDiscriminationByTightMuonRejection3));
     }
   }
 }

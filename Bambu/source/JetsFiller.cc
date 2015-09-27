@@ -72,8 +72,12 @@ mithep::nero::JetsFiller::fill()
       double nhFrac(pfJet.NeutralHadronEnergy() / rawE);
       double neFrac(pfJet.NeutralEmEnergy() / rawE);
 
-      out_.mjId->push_back(chFrac > 0.2 && nhFrac < 0.7 && neFrac < 0.7);
-      out_.mjId_loose->push_back(nhFrac < 0.7 && neFrac < 0.9);
+      unsigned selBits(BareJets::JetLoose);
+      if (chFrac > 0.2 && nhFrac < 0.7 && neFrac < 0.7)
+        selBits |= BareJets::mjId;
+      if (nhFrac < 0.7 && neFrac < 0.9)
+        selBits |= BareJets::mjIdLoose;
+      out_.selBits->push_back(selBits);
 
       if (jetId_ && vertices)
         out_.puId->push_back(jetId_->MVAValue(&pfJet, vertices->At(0), vertices));
@@ -104,8 +108,7 @@ mithep::nero::JetsFiller::fill()
       out_.QnoPU->push_back(sumQWPV / sumWPV);
     }
     else {
-      out_.mjId->push_back(false);
-      out_.mjId_loose->push_back(false);
+      out_.selBits->push_back(0);
       out_.puId->push_back(-999.);
 
       out_.Q->push_back(0.);
