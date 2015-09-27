@@ -23,7 +23,8 @@ def ReadFromDatabase(dbName,fileList):
 		f = l.split()[1]
 		if n not in db: db[n] = []
 		db[n].append(f)
-		if n<maxn: maxn = n;
+		if n > maxn: maxn = n;
+		#print "DEBUG: find file:",n,f
 		fileSubmitted.append(f)
 	fileList_tmp = [ f for f in fileList if f not in fileSubmitted ]
 	fileList = fileList_tmp[:]
@@ -233,7 +234,10 @@ if opts.follow:
 
 if len(fileList) == 0:
 	if opts.follow:
-		print "Nothing to be done"
+		print "Nothing to be done."
+		#print "Database Contains:"
+		maxn,fileList2 = ReadFromDatabase(opts.dir+"/database.txt",[] ) 
+		print " ",maxn,"entries:"
 		exit(0)
 	print "ERROR no file is given"
 	if opts.eos != "":
@@ -242,8 +246,9 @@ if len(fileList) == 0:
 fileChunks = chunksNum(fileList, opts.nJobs)
 
 mylen=0
-for idx,fl in enumerate(fileChunks):
+for idx0,fl in enumerate(fileChunks):
 	## if follow options is on, write the submission into the database
+	idx = idx0
 	if opts.follow:
 		idx += maxn
 		for f in fl:
