@@ -4,11 +4,46 @@ from glob import glob
 from optparse import OptionParser, OptionGroup
 from subprocess import call, check_output
 
+### why not a db class ?
+def ReadFromDatabase(dbName,fileList):
+	''' Read from Database, and update file list, removing already submitted jobs. Gives the offset with respect to the existing jobs'''
+	## jobN file
+	try:
+		database = open(dbName,'r')
+	except IOError: 
+		print "-> No database available. First submission."
+		return (0,fileList)
+	db = {}
+	maxn = -1
+	fileSubmitted = []
+	for line in database:	
+		l = line.split('#')[0]
+		if len(l) <2 : continue
+		n = int(l.split()[0])
+		f = l.split()[1]
+		if n not in db: db[n] = []
+		db[n].append(f)
+		if n > maxn: maxn = n;
+		#print "DEBUG: find file:",n,f
+		fileSubmitted.append(f)
+	fileList_tmp = [ f for f in fileList if f not in fileSubmitted ]
+	fileList = fileList_tmp[:]
+	maxn += 1
+	database.close()
+	return (maxn, fileList)
+	
+def WriteIntoDatabase(dbName, idx, f):
+	db =open(dbName,'a');
+	db.write("%d %s\n"%(idx, f))
+	db.close();
+
 parser = OptionParser(usage = "usage");
 parser.add_option("-n","--nJobs",dest="nJobs",type="int",help="number of jobs. (will be adapted to have more or less the same number of files)",default=1);
 parser.add_option("-i","--input",dest="input",type="string",help="input pset",default="test/NeroProducer.py");
-parser.add_option("","--data",dest="data",action="store_true",help="run on data",default=False);
+parser.add_option("","--data",dest="data",action="store_true",help="run on data [Default=%default]",default=False);
 parser.add_option("","--mc",dest="data",action="store_false",help="run on mc");
+parser.add_option("","--25ns",dest="is25ns",action="store_true",help="25ns [Default=%default]", default=True);
+parser.add_option("","--50ns",dest="is25ns",action="store_false",help="50ns ");
 parser.add_option("-d","--dir",dest="dir",type="string",help="working directory",default="test/mydir");
 parser.add_option("-e","--eos",dest="eos",type="string",help="eos directory to scout, will not read the files in the pSet",default="");
 parser.add_option("","--put-in",dest="put",type="string",help="eos directory to cp the results ",default="");
@@ -20,8 +55,13 @@ sub_group.add_option("","--only-submit",dest="onlysubmit",action='store_true',he
 sub_group.add_option("-j","--jobId",dest="jobId",type='string',help="Jobs to be submitted. \"all\" 1,2,7 or \"fail\" ",default="all");
 parser.add_option_group(sub_group)
 sub_group.add_option("-s","--status",dest="status",action='store_true',help="Display status of dir", default=False)
+sub_group.add_option("" ,"--follow", dest="follow", action="store_true",help= "follow eos directory, and if new files are created look into submission [default=%default]" , default=False)
 
 (opts,args) = parser.parse_args()
+
+if opts.onlysubmit and opts.queue == "":
+	print "-> Empty Queue. Refusing to continue"
+	exit(0)
 
 def PrintLine(list):
         ''' convert list in list of int number, sort and compress consecutive numbers. Then print the result:
@@ -108,7 +148,7 @@ EOS = "/afs/cern.ch/project/eos/installation/0.3.84-aquamarine/bin/eos.select"
 cmd = "[ -d "+ opts.dir+" ]"
 status = call( cmd , shell=True)
 
-if status == 0:
+if status == 0 and not opts.follow:
 	print "Directory",opts.dir,"already exists"
 	cmd =  "rmdir " + opts.dir
 	status = call(cmd, shell = True)
@@ -189,8 +229,16 @@ else:
 	fileList0 = outputList.split() ## change lines into list
 	fileList = [ '"' + re.sub("/eos/cms","",f) +'"' for f in fileList0 ]
 
+if opts.follow:
+	maxn,fileList = ReadFromDatabase(opts.dir + "/database.txt",fileList )
 
 if len(fileList) == 0:
+	if opts.follow:
+		print "Nothing to be done."
+		#print "Database Contains:"
+		maxn,fileList2 = ReadFromDatabase(opts.dir+"/database.txt",[] ) 
+		print " ",maxn,"entries:"
+		exit(0)
 	print "ERROR no file is given"
 	if opts.eos != "":
 		print "eos cmd was:",cmd
@@ -198,7 +246,14 @@ if len(fileList) == 0:
 fileChunks = chunksNum(fileList, opts.nJobs)
 
 mylen=0
-for idx,fl in enumerate(fileChunks):
+for idx0,fl in enumerate(fileChunks):
+	## if follow options is on, write the submission into the database
+	idx = idx0
+	if opts.follow:
+		idx += maxn
+		for f in fl:
+			WriteIntoDatabase( opts.dir + "/database.txt" ,idx,f)
+
 	mylen += len(fl)
 	psetFileName = "NeroProducer_%d.py"%(idx)
 	pset = opts.dir + "/" + psetFileName 
@@ -219,6 +274,8 @@ for idx,fl in enumerate(fileChunks):
 	print >> sh, 'touch sub_%d.run'%idx
 	print >> sh, 'cd $WORKDIR'
 	print >> sh, "cmsRun " + os.environ['PWD'] + "/" + opts.dir + "/" + psetFileName, #+ " 2>&1 > log_%d.log"%idx
+	if opts.is25ns: print >>sh," is25ns=True is50ns=False",
+	else : print >>sh," is25ns=False is50ns=True",
 	if opts.data: print >> sh, " isData=True"
 	else: print >>sh, " isData=False" ## ENDL
 	print >> sh, "EXIT=$?"

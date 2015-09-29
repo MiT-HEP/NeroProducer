@@ -1,20 +1,16 @@
 #!/bin/bash
 
 # Instruct builder to use a particular CMSSW release
-# [CMSSW] CMSSW_7_4_5
-
-#CMSSW_7_4_2:
-function CMSSW_7_4_2 {
-	git cms-merge-topic ikrav:egm_id_74X_v0
-}
+# [CMSSW] CMSSW_7_4_12_patch4
 
 #CMSSW_7_4_5: 
 function CMSSW_7_4_5 {
 	git cms-merge-topic -u cms-btv-pog:BoostedDoubleSVTagger-WithWeightFiles-v2_from-CMSSW_7_4_1
 } 
 
+#CMSSW_7_4_12
 function CMSSW_7_4_12_patch4 { 
-	true  
+	true
 }
 
 # expected default

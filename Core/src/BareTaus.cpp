@@ -48,7 +48,7 @@ void BareTaus::clear(){
 void BareTaus::defineBranches(TTree *t){
     BareP4::defineBranches(t, "tau" );
     //
-    t->Branch("tauId","vector<unsigned>",&selBits);
+    t->Branch("tauSelBits","vector<unsigned>",&selBits);
     //
     t->Branch("tauQ","vector<int>",&Q);
     //

@@ -5,7 +5,9 @@ process= cms.Process("SKIM")
 process.load('FWCore.MessageService.MessageLogger_cfi')
 
 process.source = cms.Source("PoolSource",
-		   fileNames = cms.untracked.vstring('/store/relval/CMSSW_7_4_0/RelValTTbarLepton_13/MINIAODSIM/MCRUN2_74_V7_gensim_740pre7-v1/00000/603E7935-4EDD-E411-B16E-0025905A612E.root')
+		   #fileNames = cms.untracked.vstring('/store/relval/CMSSW_7_4_0/RelValTTbarLepton_13/MINIAODSIM/MCRUN2_74_V7_gensim_740pre7-v1/00000/603E7935-4EDD-E411-B16E-0025905A612E.root')
+		   #fileNames= cms.untracked.vstring('/store/mc/RunIISpring15MiniAODv2/TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/00000/FA1FCFC0-D55C-E511-B06D-7845C4FC3AFD.root')
+		   fileNames=cms.untracked.vstring('/store/data/Run2015C/JetHT/MINIAOD/PromptReco-v1/000/253/808/00000/3E6025B5-7340-E511-A8B7-02163E01440E.root')
 		   )
 
 process.maxEvents = cms.untracked.PSet(
@@ -107,7 +109,10 @@ process.HBB = cms.Sequence(
 process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
 jecLevels= ['L1FastJet',  'L2Relative', 'L3Absolute']
 
-if options.isData: ## TODO options
+isData=False
+print "FIXME isData is Set To:", isData, "Implement options. (for jec)"
+#if options.isData: ## TODO options
+if isData: ## TODO options
 	jecLevels.append( 'L2L3Residuals')
 process.patJetCorrFactorsReapplyJEC = process.patJetCorrFactorsUpdated.clone(
 		  src = cms.InputTag("slimmedJets"),

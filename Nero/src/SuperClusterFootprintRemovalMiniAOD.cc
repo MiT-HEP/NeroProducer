@@ -168,7 +168,11 @@ sc_xtal_information SuperClusterFootprintRemovalMiniAOD::GetSCXtalInfo(reco::Sup
 
   
   std::vector<DetId> cristal;   
-      
+ 
+  #ifdef VERBOSE
+    if (VERBOSE>1) cout<<"[SuperClusterFootprintRemovalMiniAOD]::[GetSCXtalInfo] sc is non null:"<< sc.isNonnull() <<endl;
+  #endif  
+
   for (reco::CaloCluster_iterator bc=sc->clustersBegin(); bc!=sc->clustersEnd(); ++bc){
     const std::vector< std::pair<DetId, float> > & seedrechits = (*bc)->hitsAndFractions();
     for (unsigned int i=0; i<seedrechits.size(); i++) cristal.push_back(seedrechits[i].first);
@@ -221,6 +225,10 @@ sc_xtal_information SuperClusterFootprintRemovalMiniAOD::GetSCXtalInfo(reco::Sup
   out.nxtals=i;
 
   assert (out.nxtals==(int)out.xtalposition.size());
+
+  #ifdef VERBOSE
+   	if(VERBOSE >1) cout<<"[SuperClusterFootprintRemovalMiniAOD]::[GetSCXtalInfo] grace exit"<<endl;
+  #endif
 
   return out;
 
