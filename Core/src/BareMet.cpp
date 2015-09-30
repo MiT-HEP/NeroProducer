@@ -11,6 +11,7 @@ BareMet::~BareMet(){
     BareFunctions::Delete(genP4);
     BareFunctions::Delete(metNoMu);
     BareFunctions::Delete(metPuppi);
+    BareFunctions::Delete(metNoHF);
     BareFunctions::Delete(pfMet_e3p0);
     BareFunctions::Delete(trackMet);
 }
@@ -27,6 +28,7 @@ void BareMet::init(){
     if ( IsExtend() )
     {
         BareFunctions::New(metNoMu);
+        BareFunctions::New(metNoHF);
         BareFunctions::New(pfMet_e3p0);
         BareFunctions::New(trackMet);
     }
@@ -44,6 +46,7 @@ void BareMet::clear(){
     if (extend_)
     {
         *metNoMu *= 0.;
+        *metNoHF *= 0.;
         *pfMet_e3p0 *= 0.;
         *trackMet *= 0.;
     }
@@ -64,6 +67,7 @@ void BareMet::defineBranches(TTree *t){
     if ( IsExtend() )
     {
         t->Branch("metNoMu","TLorentzVector",&metNoMu);
+        t->Branch("metNoHF","TLorentzVector",&metNoHF);
         //
         t->Branch("pfMet_e3p0","TLorentzVector",&pfMet_e3p0);
         //
@@ -88,6 +92,7 @@ void BareMet::setBranchAddresses(TTree *t){
     if ( IsExtend() ) 
     {
         BareFunctions::SetBranchAddress(t,"metNoMu", &metNoMu);
+        BareFunctions::SetBranchAddress(t,"metNoHF", &metNoHF);
         BareFunctions::SetBranchAddress(t,"pfMet_e3p0", &pfMet_e3p0);
         BareFunctions::SetBranchAddress(t,"trackMet", &trackMet);
         //calo met
@@ -109,6 +114,7 @@ void BareMet::compress(){
     if ( IsExtend() ) 
     {
         BareFunctions::Compress(*metNoMu);
+        BareFunctions::Compress(*metNoHF);
         BareFunctions::Compress(*pfMet_e3p0);
         BareFunctions::Compress(*trackMet);
     }
