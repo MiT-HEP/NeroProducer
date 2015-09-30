@@ -61,13 +61,13 @@ int NeroMet::analyze(const edm::Event& iEvent){
             if ( cand.charge() != 0 )
                 tkMet += TLorentzVector(cand.px(),cand.py(),cand.pz(),cand.energy());
 
-            if (cand.eta() <3.0) 
+            if (std::abs(cand.eta()) < 3.0 ) 
                 pfmet_3p0 += TLorentzVector(cand.px(),cand.py(),cand.pz(),cand.energy());
         }
        
-        *pfMet_e3p0 = TLorentzVector( pfmet_3p0 );
-        *metNoMu = TLorentzVector(metnomu);    
-        *trackMet = TLorentzVector(tkMet);
+        *pfMet_e3p0 = TLorentzVector( -pfmet_3p0 );
+        *metNoMu = TLorentzVector(metnomu);  // no minus
+        *trackMet = TLorentzVector( -tkMet );
 
         const pat::MET &metnohf = handle_noHF->front(); 
         *metNoHF = TLorentzVector( metnohf.px(),metnohf.py(),metnohf.pz(),metnohf.energy());
