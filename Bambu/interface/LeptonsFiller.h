@@ -2,6 +2,7 @@
 #define NeroProducer_Bambu_LeptonsFiller_h
 
 #include "NeroProducer/Bambu/interface/BaseFiller.h"
+#include "NeroProducer/Core/interface/BareEvent.hpp"
 #include "NeroProducer/Core/interface/BareLeptons.hpp"
 
 namespace mithep {
@@ -14,18 +15,24 @@ namespace mithep {
 
       BareCollection* getObject() override { return &out_; }
       BaseFiller::Collection collection() const override { return BaseFiller::kLeptons; }
+      void setCrossRef(BaseFiller* _fillers[]);
 
       void fill() override;
 
       void SetElectronsName(char const* _name) { electronsName_ = _name; }
       void SetMuonsName(char const* _name) { muonsName_ = _name; }
+      void SetBaselineMuonIdName(char const* _name) { setDefinedId_(muonIdName_, BareLeptons::LepBaseline, _name); }
       void SetVetoMuonIdName(char const* _name) { setDefinedId_(muonIdName_, BareLeptons::LepVeto, _name); }
       void SetFakeMuonIdName(char const* _name) { setDefinedId_(muonIdName_, BareLeptons::LepFake, _name); }
       void SetSoftMuonIdName(char const* _name) { setDefinedId_(muonIdName_, BareLeptons::LepSoft, _name); }
       void SetLooseMuonIdName(char const* _name) { setDefinedId_(muonIdName_, BareLeptons::LepLoose, _name); }
       void SetMediumMuonIdName(char const* _name) { setDefinedId_(muonIdName_, BareLeptons::LepMedium, _name); }
       void SetTightMuonIdName(char const* _name) { setDefinedId_(muonIdName_, BareLeptons::LepTight, _name); }
+      void SetMediumIPMuonIdName(char const* _name) { setDefinedId_(muonIdName_, BareLeptons::LepMediumIP, _name); }
+      void SetTightIPMuonIdName(char const* _name) { setDefinedId_(muonIdName_, BareLeptons::LepTightIP, _name); }
+      void SetSoftIPMuonIdName(char const* _name) { setDefinedId_(muonIdName_, BareLeptons::LepSoftIP, _name); }
       void SetMuonIdName(UInt_t _bit, char const* _name) { muonIdName_[_bit] = _name; }
+      void SetBaselineElectronIdName(char const* _name) { setDefinedId_(electronIdName_, BareLeptons::LepBaseline, _name); }
       void SetVetoElectronIdName(char const* _name) { setDefinedId_(electronIdName_, BareLeptons::LepVeto, _name); }
       void SetFakeElectronIdName(char const* _name) { setDefinedId_(electronIdName_, BareLeptons::LepFake, _name); }
       void SetSoftElectronIdName(char const* _name) { setDefinedId_(electronIdName_, BareLeptons::LepSoft, _name); }
@@ -37,6 +44,9 @@ namespace mithep {
       void SetPFCandsName(char const* _name) { pfCandsName_ = _name; }
       void SetNoPUPFCandsName(char const* _name) { nopuPFCandsName_ = _name; }
       void SetPUPFCandsName(char const* _name) { puPFCandsName_ = _name; }
+
+      char const* GetMuonIdName(UInt_t _bit) { return muonIdName_[_bit]; }
+      char const* GetElectronIdName(UInt_t _bit) { return electronIdName_[_bit]; }
 
     private:
       BareLeptons out_{};
@@ -50,6 +60,8 @@ namespace mithep {
       TString pfCandsName_ = "PFCandidates";
       TString nopuPFCandsName_ = "PFNoPileup";
       TString puPFCandsName_ = "PFPileup";
+
+      BareEvent* event_;
 
       ClassDef(LeptonsFiller, 0)
     };

@@ -1,5 +1,12 @@
 book dataset skim bx json
 
+## DATA Run2015D
+
+t2mit/filefi/042 MET+Run2015D-PromptReco-v3+AOD - 25ns -
+t2mit/filefi/042 SingleMuon+Run2015D-PromptReco-v3+AOD - 25ns -
+t2mit/filefi/042 SingleElectron+Run2015D-PromptReco-v3+AOD - 25ns -
+t2mit/filefi/042 SinglePhoton+Run2015D-PromptReco-v3+AOD - 25ns -
+
 ## DATA Run2015C
 t2mit/filefi/042 MET+Run2015C-PromptReco-v1+AOD - 25ns -
 t2mit/filefi/042 SingleMuon+Run2015C-PromptReco-v1+AOD - 25ns -
