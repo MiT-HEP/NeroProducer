@@ -28,7 +28,8 @@ class BareMet : virtual public BareP4
         TClonesArray *genP4{0};
 
         TLorentzVector *metNoMu{0};
-        TLorentzVector *pfMet_e3p0{0};
+        TLorentzVector *pfMet_e3p0{0}; // raw
+        TLorentzVector *metNoHF{0};
         TLorentzVector *trackMet{0};
         TLorentzVector *metPuppi{0};
   

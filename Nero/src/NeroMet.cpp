@@ -46,6 +46,7 @@ int NeroMet::analyze(const edm::Event& iEvent){
         //MetNoMu
         TLorentzVector metnomu(met.px(),met.py(),met.pz(),met.energy());
         TLorentzVector tkMet(0,0,0,0); 
+        TLorentzVector pfmet_3p0(0,0,0,0); 
        
         if ( pf == NULL ) cout<<"[NeroMet]::[analyze]::[ERROR] PF pointer is null. Run NeroPF. "<<endl; 
         
@@ -59,13 +60,17 @@ int NeroMet::analyze(const edm::Event& iEvent){
             // only charge hadrons
             if ( cand.charge() != 0 )
                 tkMet += TLorentzVector(cand.px(),cand.py(),cand.pz(),cand.energy());
-        }
-        
-        *metNoMu = TLorentzVector(metnomu);    
-        *trackMet = TLorentzVector(tkMet);
 
-        const pat::MET &metNoHF = handle_noHF->front(); 
-        *pfMet_e3p0 = TLorentzVector( metNoHF.px(),metNoHF.py(),metNoHF.pz(),metNoHF.energy());
+            if (std::abs(cand.eta()) < 3.0 ) 
+                pfmet_3p0 += TLorentzVector(cand.px(),cand.py(),cand.pz(),cand.energy());
+        }
+       
+        *pfMet_e3p0 = TLorentzVector( -pfmet_3p0 );
+        *metNoMu = TLorentzVector(metnomu);  // no minus
+        *trackMet = TLorentzVector( -tkMet );
+
+        const pat::MET &metnohf = handle_noHF->front(); 
+        *metNoHF = TLorentzVector( metnohf.px(),metnohf.py(),metnohf.pz(),metnohf.energy());
 
         const pat::MET &puppi = handle_puppi->front(); 
         *metPuppi =  TLorentzVector( puppi.px(), puppi.py(),puppi.pz(),puppi.energy() );
