@@ -273,6 +273,10 @@ for idx0,fl in enumerate(fileChunks):
 	print >> sh, 'rm sub_%d.txt || true'%idx
 	print >> sh, 'touch sub_%d.run'%idx
 	print >> sh, 'cd $WORKDIR'
+	print >> sh, 'echo "entering $WORKDIR"'
+	testDir = re.sub('/[^/]*.py', '', opts.input)
+	if testDir[0] != "/" : testDir = os.environ['PWD'] +"/"+ testDir
+	print >> sh, 'cp -va %s/jec ./'%testDir
 	print >> sh, "cmsRun " + os.environ['PWD'] + "/" + opts.dir + "/" + psetFileName, #+ " 2>&1 > log_%d.log"%idx
 	if opts.is25ns: print >>sh," is25ns=True is50ns=False",
 	else : print >>sh," is25ns=False is50ns=True",
