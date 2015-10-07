@@ -2,6 +2,7 @@
 
 # Instruct builder to use a particular CMSSW release
 # [CMSSW] CMSSW_7_4_12_patch4
+# [Options] isData=True is25ns=True is50ns=False
 
 #CMSSW_7_4_5: 
 function CMSSW_7_4_5 {

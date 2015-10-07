@@ -66,19 +66,14 @@ def TryPullReq(sha, origin):
 	cmd = "mkdir -p %s" % os.environ["HOME"]+"/www/%s/"%(repo.split('/')[1]) + sha + "/"
 	call(cmd,shell=True)
 
-	print cyan+"-> Removing CMSSW"+white
-	cmd = "cd %s &&"% tmpdir	
-	cmd += "rm -rf %s/%s 2>/dev/null"%(tmpdir,CMSSW)
-	cmd += " || true" #ignore failure
-	status = call(cmd,shell=True)
-
-	## download setup.sh
+	## download setup.sh, parse it
 	#https://raw.githubusercontent.com/amarini/NeroProducer/17006845ca21076e6f6966b4576dd228f9d4555c/Nero/script/setup.sh
 	dep ="rm %s/setup.sh ; wget --no-check-certificate 'https://raw.githubusercontent.com/%s/%s/Nero/script/setup.sh' -O %s/setup.sh"% (tmpdir,origin,sha,tmpdir)
 	print "Calling",dep ##DEBUG
 	call (dep,shell=True)
 	setup =open("%s/setup.sh"%tmpdir)
 	dangerous = re.compile('[$`;!]')
+	options=""
 	for line in setup:
 		if '[CMSSW]' in line and not dangerous.search(line): 
 			# line is of the form # [CMSSW] CMSSW_release
@@ -87,6 +82,12 @@ def TryPullReq(sha, origin):
 				if parts[i] == "[CMSSW]":
 					CMSSW=parts[i+1]
 					print "-> Setting CMSSW to ", CMSSW
+		if '[Options]' in line and not dangerous.search(line):
+			parts= line.split()
+			for i in range(0,len(parts)-1):
+				if parts[i] == '[Options]':
+					options = " ".join(parts[i+1:])
+
 		l = line.split('#')[0]
 		l = re.sub('\n','',l)
 		l = re.sub('^\ *','',l)
@@ -103,6 +104,12 @@ def TryPullReq(sha, origin):
 		print "\t'"+ l + "'"
 		if opts.yes<3:  raw_input("is_ok?")
 	setup.close()
+
+	print cyan+"-> Removing CMSSW"+white
+	cmd = "cd %s &&"% tmpdir	
+	cmd += "rm -rf %s/%s 2>/dev/null"%(tmpdir,CMSSW)
+	cmd += " || true" #ignore failure
+	status = call(cmd,shell=True)
 
 	## cd in cmssw and cmsenv
 	cmsenv="eval `scramv1 runtime -sh`"
@@ -155,7 +162,7 @@ def TryPullReq(sha, origin):
 	print cyan+"-> Test"+white
 	cmd = "cd %s/%s/src && %s &&" %(tmpdir,CMSSW,cmsenv)
 	cmd += "cd NeroProducer/Nero/test && "
-	cmd += "cmsRun testNero.py 2>&1 | tee %s "%(  os.environ["HOME"]+"/www/%s/"%(repo.split('/')[1]) + sha + "/run.txt")
+	cmd += "cmsRun testNero.py %s 2>&1 | tee %s "%( options, os.environ["HOME"]+"/www/%s/"%(repo.split('/')[1]) + sha + "/run.txt")
 	cmd += "; EXIT=${PIPESTATUS[0]};  echo \"<-> EXIT STATUS is ${EXIT}\" ; exit $EXIT ; "
 	status = call( cmd , shell=True ) 
 	if status >0 : 
