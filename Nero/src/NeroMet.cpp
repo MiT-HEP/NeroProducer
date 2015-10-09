@@ -96,6 +96,10 @@ int NeroMet::analyze(const edm::Event& iEvent){
                 case  TauDown : {miniAODUnc = pat::MET::TauEnDown; break;}
                 case  PhotonUp : {miniAODUnc = pat::MET::PhotonEnDown; break;}
                 case  PhotonDown : {miniAODUnc = pat::MET::PhotonEnDown; break;}
+                case  ElectronUp : {miniAODUnc = pat::MET::ElectronEnUp; break;}
+                case  ElectronDown : {miniAODUnc = pat::MET::ElectronEnDown; break;}
+                case  MuonUp : {miniAODUnc = pat::MET::MuonEnUp; break;}
+                case  MuonDown : {miniAODUnc = pat::MET::MuonEnDown; break;}
                 default : break;
             }
 

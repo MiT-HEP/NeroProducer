@@ -34,7 +34,7 @@ class BareMet : virtual public BareP4
 
         TLorentzVector *metPuppi{0};
         // --- SYSTEMATICS -- //
-        enum Syst{ JesUp= 0 , JesDown, JerUp,JerDown,UnclusterUp, UnclusterDown, TauUp, TauDown, PhotonUp, PhotonDown ,  MaxSyst};
+        enum Syst{ JesUp= 0 , JesDown, JerUp,JerDown,UnclusterUp, UnclusterDown, TauUp, TauDown, PhotonUp, PhotonDown , ElectronUp, ElectronDown, MuonUp, MuonDown,  MaxSyst};
 
         TClonesArray *metPuppiSyst{0};
         // 
