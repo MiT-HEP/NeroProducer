@@ -3,13 +3,23 @@
 #include "MitAna/DataTree/interface/ElectronCol.h"
 #include "MitAna/DataTree/interface/MuonCol.h"
 #include "MitAna/DataTree/interface/PFCandidateCol.h"
+#include "MitAna/DataTree/interface/PileupEnergyDensity.h"
 #include "MitAna/DataCont/interface/Types.h"
 
 #include "MitPhysics/Utils/interface/IsolationTools.h"
+#include "MitPhysics/Utils/interface/ElectronTools.h"
+#include "MitPhysics/Mods/interface/IdMod.h"
 
 #include <map>
 
 ClassImp(mithep::nero::LeptonsFiller)
+
+void
+mithep::nero::LeptonsFiller::setCrossRef(BaseFiller* _fillers[])
+{
+  // need dynamic cast here because BareP4 inherits virtually from BareCollection
+  event_ = dynamic_cast<BareEvent*>(_fillers[kEvent]->getObject());
+}
 
 void
 mithep::nero::LeptonsFiller::setDefinedId_(TString _idNames[], BareLeptons::Selection _selection, char const* _name)
@@ -86,7 +96,7 @@ mithep::nero::LeptonsFiller::fill()
         double puIso(IsolationTools::PFElectronIsolation(ele, puPFCands, vertices->At(0), 10000., 0., 0.3, 0., mithep::PFCandidate::eHadron));
 
         out_.pdgId->push_back(-11 * ele->Charge());
-        out_.iso->push_back(chIso + nhIso + phoIso);
+        out_.iso->push_back(IsolationTools::PFEleCombinedIsolationRhoCorr(ele, event_->rho, ElectronTools::kEleEASummer15));
 
         unsigned selBits(0);
         for (iSel = 0; iSel != 32; ++iSel) {

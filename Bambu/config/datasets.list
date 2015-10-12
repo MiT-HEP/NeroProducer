@@ -1,5 +1,12 @@
 book dataset skim bx json
 
+## DATA Run2015D
+
+t2mit/filefi/042 MET+Run2015D-PromptReco-v3+AOD - 25ns -
+t2mit/filefi/042 SingleMuon+Run2015D-PromptReco-v3+AOD - 25ns -
+t2mit/filefi/042 SingleElectron+Run2015D-PromptReco-v3+AOD - 25ns -
+t2mit/filefi/042 SinglePhoton+Run2015D-PromptReco-v3+AOD - 25ns -
+
 ## DATA Run2015C
 t2mit/filefi/042 MET+Run2015C-PromptReco-v1+AOD - 25ns -
 t2mit/filefi/042 SingleMuon+Run2015C-PromptReco-v1+AOD - 25ns -
@@ -54,3 +61,5 @@ t2mit/filefi/042 POWHEG_DMS_NNPDF30_13TeV_Scalar_10_1+dmytro-RunIISpring15DR74-1
 t2mit/filefi/042 POWHEG_DMS_NNPDF30_13TeV_Scalar_300_1+dmytro-RunIISpring15DR74-1437434955-108ae665ec5ce369aaa85823c807edf1+USER - 25ns ~
 t2mit/filefi/042 POWHEG_DMS_NNPDF30_13TeV_Scalar_5000_1+dmytro-RunIISpring15DR74-1437693047-108ae665ec5ce369aaa85823c807edf1+USER - 25ns ~
 t2mit/filefi/042 POWHEG_DMS_NNPDF30_13TeV_Scalar_50_1+dmytro-RunIISpring15DR74-1437434921-108ae665ec5ce369aaa85823c807edf1+USER - 25ns ~
+t2mit/filefi/042 POWHEG_DMS_NNPDF30_13TeV_Pseudoscalar_500_1+dmytro-RunIISpring15DR74-1443311031-108ae665ec5ce369aaa85823c807edf1+USER - 25ns ~
+t2mit/filefi/042 POWHEG_DMV_NNPDF30_13TeV_Axial_2000_1+dmytro-RunIISpring15DR74-1443420076-108ae665ec5ce369aaa85823c807edf1+USER - 25ns ~

@@ -8,14 +8,18 @@ class BareLeptons : virtual public BareP4
 {
     public:
         enum Selection {
-          LepVeto   = 1UL<<0,
-          LepFake   = 1UL<<1,
-          LepSoft   = 1UL<<2,
-          LepLoose  = 1UL<<3,
-          LepMedium = 1UL<<4,
-          LepTight  = 1UL<<5,
-          // 0 -- 7 POG
-          LepEBEE = 1UL <<8 // lepton (electron) is not in the EB-EE crack
+          LepBaseline = 1UL<<0,
+          LepVeto     = 1UL<<1,
+          LepFake     = 1UL<<2,
+          LepSoft     = 1UL<<3,
+          LepLoose    = 1UL<<4,
+          LepMedium   = 1UL<<5,
+          LepTight    = 1UL<<6,
+          // 1 -- 6 POG
+          LepEBEE = 1UL <<7, // lepton (electron) is not in the EB-EE crack
+          LepMediumIP = 1UL<<8,
+          LepTightIP  = 1UL<<9,
+          LepSoftIP   = 1UL<<10
         };
 
         BareLeptons();
