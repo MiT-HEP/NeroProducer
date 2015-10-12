@@ -4,17 +4,21 @@ import os
 
 mitdata = os.environ['MIT_DATA']
 
+analysis.custom = {'bx': '25ns'}
+
 def switchBX(case25, case50):
     global analysis
     return case25 if analysis.custom['bx'] == '25ns' else case50
 
-jecVersion = switchBX('25nsV5', '50nsV5')
+jecVersion = switchBX('25nsV2', '50nsV5')
 
 if analysis.isRealData:
+#    jecPattern = 'Summer15_' + jecVersion + '/Summer15_' + jecVersion + '_DATA_{level}_{jettype}.txt'
     jecPattern = 'Summer15_' + jecVersion + '_DATA_{level}_{jettype}.txt'
     jecLevels = ['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual']
 
 else:
+#    jecPattern = 'Summer15_' + jecVersion + '/Summer15_' + jecVersion + '_MC_{level}_{jettype}.txt'
     jecPattern = 'Summer15_' + jecVersion + '_MC_{level}_{jettype}.txt'
     jecLevels = ['L1FastJet', 'L2Relative', 'L3Absolute']
 
@@ -144,7 +148,7 @@ electronLooseId = electronVetoId.clone('ElectronLooseId',
     IdType = switchBX(mithep.ElectronTools.kSummer15Loose, mithep.ElectronTools.kSummer15Loose50ns)
 )
 
-electronLooseVeto = electronBaselineId.clone('ElectronLooseIso',
+electronLooseIso = electronBaselineId.clone('ElectronLooseIso',
     OutputName = 'LooseElectronIso',
     IsoType = switchBX(mithep.ElectronTools.kSummer15LooseIso, mithep.ElectronTools.kSummer15Loose50nsIso)
 )
@@ -203,10 +207,10 @@ muonPrivSoftId = veryLooseMuons.clone('MuonPrivSoftId',
 muonFakeId = muonBaselineId.clone('MuonFakeId',
     OutputName = 'FakeMuonId',
     MuonClassType = mithep.MuonTools.kPFGlobalorTracker,
-    IdType = mithep.MuonTools.kTight,
+    IdType = mithep.MuonTools.kTightIP,
     ApplyD0Cut = True,
     ApplyDZCut = True,
-    IsoType = mithep.MuonTools.kPFIsoBetaPUCorrected
+    IsoType = mithep.MuonTools.kPFIsoBetaPUCorrectedFake
 )
 
 muonLooseId = muonBaselineId.clone('MuonLooseId',
@@ -219,7 +223,7 @@ muonLooseId = muonBaselineId.clone('MuonLooseId',
 
 muonLooseIso = muonBaselineId.clone('MuonLooseIso',
     OutputName = 'LooseMuonIso',
-    IsoType = mithep.MuonTools.kLooseIso
+    IsoType = mithep.MuonTools.kPFIsoBetaPUCorrectedLoose
 )
 
 muonMediumId = muonBaselineId.clone('MuonMediumId',
@@ -232,7 +236,7 @@ muonMediumId = muonBaselineId.clone('MuonMediumId',
 
 muonMediumIso = muonBaselineId.clone('MuonMediumIso',
     OutputName = 'MediumMuonIso',
-    IsoType = mithep.MuonTools.kMediumIso
+    IsoType = mithep.MuonTools.kPFIsoBetaPUCorrectedTight
 )
 
 muonTightId = muonBaselineId.clone('MuonTightId',
@@ -245,7 +249,7 @@ muonTightId = muonBaselineId.clone('MuonTightId',
 
 muonTightIso = muonBaselineId.clone('MuonTightIso',
     OutputName = 'TightMuonIso',
-    IsoType = mithep.MuonTools.kTightIso
+    IsoType = mithep.MuonTools.kPFIsoBetaPUCorrectedTight
 )
 
 muonMediumIPId = muonBaselineId.clone('MuonMediumIPId',
@@ -452,10 +456,11 @@ triggers = [
     ('PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight' if analysis.isRealData and analysis.custom['bx'] == '25ns' else 'PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight', []),
     ('PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight' if analysis.isRealData and analysis.custom['bx'] == '25ns' else 'PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight', []),
     ('PFMET170_NoiseCleaned', []),
-#    ('Ele23_WPLoose_Gsf' if analysis.isRealData else 'Ele23_CaloIdL_TrackIdL_IsoVL', ['']),
+#    ('Ele23_WPLoose_Gsf' if analysis.isRealData else 'Ele23_CaloIdL_TrackIdL_IsoVL', []),
     ('Ele27_eta2p1_WPLoose_Gsf' if analysis.isRealData else 'Ele27_eta2p1_WP75_Gsf', ['hltEle27WPLooseGsfTrackIsoFilter']), # filter only matches data
     ('Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ', []),
-    ('IsoMu24_eta2p1', ['hltL3crIsoL1sMu20Eta2p1L1f0L2f10QL3f24QL3trkIsoFiltered0p09']),
+    ('IsoMu20', ['hltL3crIsoL1sMu16L1f0L2f10QL3f20QL3trkIsoFiltered0p09']),
+    ('IsoTkMu20', ['hltL3fL1sMu16L1f0Tkf20QL3trkIsoFiltered0p09']),
     ('IsoMu27', ['hltL3crIsoL1sMu25L1f0L2f10QL3f27QL3trkIsoFiltered0p09']),
     ('Photon120', ['hltEG120HEFilter']),
 #    ('Photon135_PFMET100_JetIdCleaned', ['hltEG135HEFilter']),
@@ -463,9 +468,11 @@ triggers = [
     ('Photon175', ['hltEG175HEFilter']),
     ('Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ', []),
     ('Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ', []),
-    ('Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL', []),
+    ('Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL', ['hltMu8TrkIsoVVLEle17CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8']),
+    ('Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL', ['hltMu8TrkIsoVVLEle17CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter']),
     ('Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL', []),
-    ('Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL', []),
+    ('Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL', ['hltMu17TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered17']),
+    ('Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL', ['hltMu17TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter']),
     ('Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL', []),
     ('Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30', []),
     ('Ele18_CaloIdL_TrackIdL_IsoVL_PFJet30', []),
@@ -478,6 +485,8 @@ triggers = [
     ('Mu24_TrkIsoVVL', ['hltL3fL1sMu16L1f0L2f16L3Filtered24TkIsoFiltered0p4']),
     ('Mu34_TrkIsoVVL', ['hltL3fL1sMu20L1f0L2f20L3Filtered34TkIsoFiltered0p4'])
 ]
+
+print len(triggers)
 
 if analysis.isRealData:
     hltMod = mithep.HLTMod(
