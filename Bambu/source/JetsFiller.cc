@@ -72,7 +72,7 @@ mithep::nero::JetsFiller::fill()
       double nhFrac(pfJet.NeutralHadronEnergy() / rawE);
       double neFrac(pfJet.NeutralEmEnergy() / rawE);
 
-      unsigned selBits(BareJets::JetLoose);
+      unsigned selBits(BareJets::JetBaseline | BareJets::JetLoose);
       if (chFrac > 0.2 && nhFrac < 0.7 && neFrac < 0.7)
         selBits |= BareJets::mjId;
       if (nhFrac < 0.7 && neFrac < 0.9)

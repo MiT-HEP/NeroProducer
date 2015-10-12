@@ -9,6 +9,7 @@ class BareJets : virtual public BareP4
     public:
 
         enum Selection{
+            JetBaseline = 1UL << 0,
             JetLoose  = 1UL << 3, 
             JetMedium = 1UL << 4,
             JetTight  = 1UL << 5,

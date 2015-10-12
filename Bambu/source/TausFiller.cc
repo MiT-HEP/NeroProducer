@@ -16,7 +16,7 @@ mithep::nero::TausFiller::fill()
 
     newP4(out_, tau);
 
-    unsigned selBits(0);
+    unsigned selBits(BareTaus::TauBaseline);
     if (tau.PFTauDiscriminator(mithep::PFTau::kDiscriminationByDecayModeFindingNewDMs))
       selBits |= BareTaus::TauDecayModeFindingNewDMs;
     if (tau.PFTauDiscriminator(mithep::PFTau::kDiscriminationByDecayModeFinding))

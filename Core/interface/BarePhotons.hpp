@@ -9,6 +9,7 @@ class BarePhotons : virtual public BareP4
 {
     public:
         enum Selection{
+            PhoBaseline = 1UL << 0,
             PhoLoose  = 1UL << 3, 
             PhoMedium = 1UL << 4,
             PhoTight  = 1UL << 5,

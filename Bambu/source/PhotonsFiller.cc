@@ -53,7 +53,7 @@ mithep::nero::PhotonsFiller::fill()
     out_.iso->push_back(iso);
     out_.sieie->push_back(photon.CoviEtaiEta5x5());
 
-    unsigned selBits(BarePhotons::PhoLoose);
+    unsigned selBits(BarePhotons::PhoBaseline | BarePhotons::PhoLoose);
     if (mediumId->At(iP))
       selBits |= BarePhotons::PhoMedium;
     if (tightId->At(iP))
