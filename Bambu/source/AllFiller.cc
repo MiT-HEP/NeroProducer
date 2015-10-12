@@ -49,7 +49,7 @@ mithep::nero::AllFiller::fill()
     for (unsigned iP = 0; iP != puInfo->GetEntries(); ++iP) {
       auto& pu(*puInfo->At(iP));
       if (pu.GetBunchCrossing() == 0)
-        out_.puTrueInt += pu.GetPU_NumInteractions();
+        out_.puTrueInt += pu.GetPU_NumMean();
     }
 
     out_.mcWeight = mcInfo->Weight();
