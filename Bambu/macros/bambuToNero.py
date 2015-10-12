@@ -46,7 +46,8 @@ metCorrection = mithep.MetCorrectionMod('MetCorrection',
     JetsName = 'AKt4PFJetsCHS',
     RhoAlgo = mithep.PileupEnergyDensity.kFixedGridFastjetAll,
     MaxEMFraction = 0.9,
-    SkipMuons = True
+    SkipMuons = True,
+    MinJetPt = 15.
 )
 metCorrection.ApplyType0(False)
 metCorrection.ApplyType1(True)
