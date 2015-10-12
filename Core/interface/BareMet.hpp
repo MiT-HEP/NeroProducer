@@ -31,8 +31,13 @@ class BareMet : virtual public BareP4
         TLorentzVector *pfMet_e3p0{0}; // raw
         TLorentzVector *metNoHF{0};
         TLorentzVector *trackMet{0};
+
         TLorentzVector *metPuppi{0};
-  
+        // --- SYSTEMATICS -- //
+        enum Syst{ JesUp= 0 , JesDown, JerUp,JerDown,UnclusterUp, UnclusterDown, TauUp, TauDown, PhotonUp, PhotonDown , ElectronUp, ElectronDown, MuonUp, MuonDown,  MaxSyst};
+
+        TClonesArray *metPuppiSyst{0};
+        // 
         float caloMet_Pt;
         float caloMet_Phi;
         float caloMet_SumEt;
