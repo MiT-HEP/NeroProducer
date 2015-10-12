@@ -19,7 +19,10 @@ class BareLeptons : virtual public BareP4
           LepEBEE = 1UL <<7, // lepton (electron) is not in the EB-EE crack
           LepMediumIP = 1UL<<8,
           LepTightIP  = 1UL<<9,
-          LepSoftIP   = 1UL<<10
+          LepSoftIP   = 1UL<<10,
+          LepLooseIso = 1UL<<11,
+          LepMediumIso = 1UL<<12,
+          LepTightIso = 1UL<<13
         };
 
         BareLeptons();

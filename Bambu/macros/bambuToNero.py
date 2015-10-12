@@ -144,7 +144,7 @@ electronLooseId = electronVetoId.clone('ElectronLooseId',
     IdType = switchBX(mithep.ElectronTools.kSummer15Loose, mithep.ElectronTools.kSummer15Loose50ns)
 )
 
-electronLooseVeto = electronLooseId.clone('ElectronLooseIso',
+electronLooseVeto = electronBaselineId.clone('ElectronLooseIso',
     OutputName = 'LooseElectronIso',
     IsoType = switchBX(mithep.ElectronTools.kSummer15LooseIso, mithep.ElectronTools.kSummer15Loose50nsIso)
 )
@@ -154,7 +154,7 @@ electronMediumId = electronVetoId.clone('ElectronMediumId',
     IdType = switchBX(mithep.ElectronTools.kSummer15Medium, mithep.ElectronTools.kSummer15Medium50ns)
 )
 
-electronMediumIso = electronVetoId.clone('ElectronMediumIso',
+electronMediumIso = electronBaselineId.clone('ElectronMediumIso',
     OutputName = 'MediumElectronIso',
     IsoType = switchBX(mithep.ElectronTools.kSummer15MediumIso, mithep.ElectronTools.kSummer15Medium50nsIso)
 )
@@ -164,7 +164,7 @@ electronTightId = electronVetoId.clone('ElectronTightId',
     IdType = switchBX(mithep.ElectronTools.kSummer15Tight, mithep.ElectronTools.kSummer15Tight50ns),
 )
 
-electronTightIso = electronVetoId.clone('ElectronTightIso',
+electronTightIso = electronBaselineId.clone('ElectronTightIso',
     OutputName = 'TightElectronIso',
     IsoType = switchBX(mithep.ElectronTools.kSummer15TightIso, mithep.ElectronTools.kSummer15Tight50nsIso),
 )
@@ -217,7 +217,7 @@ muonLooseId = muonBaselineId.clone('MuonLooseId',
     ApplyDZCut = False
 )
 
-muonLooseIso = muonLooseId.clone('MuonLooseIso',
+muonLooseIso = muonBaselineId.clone('MuonLooseIso',
     OutputName = 'LooseMuonIso',
     IsoType = mithep.MuonTools.kLooseIso
 )
@@ -230,7 +230,7 @@ muonMediumId = muonBaselineId.clone('MuonMediumId',
     ApplyDZCut = True
 )
 
-muonMediumIso = muonMediumId.clone('MuonMediumIso',
+muonMediumIso = muonBaselineId.clone('MuonMediumIso',
     OutputName = 'MediumMuonIso',
     IsoType = mithep.MuonTools.kMediumIso
 )
@@ -243,7 +243,7 @@ muonTightId = muonBaselineId.clone('MuonTightId',
     ApplyDZCut = True
 )
 
-muonTightIso = muonTightId.clone('MuonTightIso',
+muonTightIso = muonBaselineId.clone('MuonTightIso',
     OutputName = 'TightMuonIso',
     IsoType = mithep.MuonTools.kTightIso
 )
@@ -381,6 +381,9 @@ fillers.append(mithep.nero.LeptonsFiller(
     LooseMuonIdName = muonLooseId.GetOutputName(),
     MediumMuonIdName = muonMediumId.GetOutputName(),
     TightMuonIdName = muonTightId.GetOutputName(),
+    LooseMuonIsoName = muonLooseIso.GetOutputName(),
+    MediumMuonIsoName = muonMediumIso.GetOutputName(),
+    TightMuonIsoName = muonTightIso.GetOutputName(),
     MediumIPMuonIdName = muonMediumIPId.GetOutputName(),
     TightIPMuonIdName = muonTightIPId.GetOutputName(),
     SoftIPMuonIdName = muonPrivSoftId.GetOutputName(),
@@ -391,6 +394,9 @@ fillers.append(mithep.nero.LeptonsFiller(
     LooseElectronIdName = electronLooseId.GetOutputName(),
     MediumElectronIdName = electronMediumId.GetOutputName(),
     TightElectronIdName = electronTightId.GetOutputName(),
+    LooseElectronIsoName = electronLooseIso.GetOutputName(),
+    MediumElectronIsoName = electronMediumIso.GetOutputName(),
+    TightElectronIsoName = electronTightIso.GetOutputName(),
     VerticesName = goodPVFilterMod.GetOutputName(),
     PFCandsName = mithep.Names.gkPFCandidatesBrn,
     NoPUPFCandsName = separatePileUpMod.GetPFNoPileUpName(),
@@ -503,8 +509,11 @@ modules += [
     muonPrivSoftId,
     muonFakeId,
     muonLooseId,
+    muonLooseIso,
     muonMediumId,
+    muonMediumIso,
     muonTightId,
+    muonTightIso,
     muonMediumIPId,
     muonTightIPId,
     tightMuons,
@@ -513,8 +522,11 @@ modules += [
     electronVetoId,
     electronFakeId,
     electronLooseId,
+    electronLooseIso,
     electronMediumId,
+    electronMediumIso,
     electronTightId,
+    electronTightIso,
     loosePhotons,
     photonMediumId,
     photonTightId,

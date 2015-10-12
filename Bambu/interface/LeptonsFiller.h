@@ -28,6 +28,9 @@ namespace mithep {
       void SetLooseMuonIdName(char const* _name) { setDefinedId_(muonIdName_, BareLeptons::LepLoose, _name); }
       void SetMediumMuonIdName(char const* _name) { setDefinedId_(muonIdName_, BareLeptons::LepMedium, _name); }
       void SetTightMuonIdName(char const* _name) { setDefinedId_(muonIdName_, BareLeptons::LepTight, _name); }
+      void SetLooseMuonIsoName(char const* _name) { setDefinedId_(muonIdName_, BareLeptons::LepLooseIso, _name); }
+      void SetMediumMuonIsoName(char const* _name) { setDefinedId_(muonIdName_, BareLeptons::LepMediumIso, _name); }
+      void SetTightMuonIsoName(char const* _name) { setDefinedId_(muonIdName_, BareLeptons::LepTightIso, _name); }
       void SetMediumIPMuonIdName(char const* _name) { setDefinedId_(muonIdName_, BareLeptons::LepMediumIP, _name); }
       void SetTightIPMuonIdName(char const* _name) { setDefinedId_(muonIdName_, BareLeptons::LepTightIP, _name); }
       void SetSoftIPMuonIdName(char const* _name) { setDefinedId_(muonIdName_, BareLeptons::LepSoftIP, _name); }
@@ -39,6 +42,9 @@ namespace mithep {
       void SetLooseElectronIdName(char const* _name) { setDefinedId_(electronIdName_, BareLeptons::LepLoose, _name); }
       void SetMediumElectronIdName(char const* _name) { setDefinedId_(electronIdName_, BareLeptons::LepMedium, _name); }
       void SetTightElectronIdName(char const* _name) { setDefinedId_(electronIdName_, BareLeptons::LepTight, _name); }
+      void SetLooseElectronIsoName(char const* _name) { setDefinedId_(electronIdName_, BareLeptons::LepLooseIso, _name); }
+      void SetMediumElectronIsoName(char const* _name) { setDefinedId_(electronIdName_, BareLeptons::LepMediumIso, _name); }
+      void SetTightElectronIsoName(char const* _name) { setDefinedId_(electronIdName_, BareLeptons::LepTightIso, _name); }
       void SetElectronIdName(UInt_t _bit, char const* _name) { electronIdName_[_bit] = _name; }
       void SetVerticesName(char const* _name) { verticesName_ = _name; }
       void SetPFCandsName(char const* _name) { pfCandsName_ = _name; }

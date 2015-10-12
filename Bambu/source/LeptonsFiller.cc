@@ -79,14 +79,14 @@ mithep::nero::LeptonsFiller::fill()
     }
 
     if (ele) {
-      // at least one lepton Id should be true
+      // at least one standard lepton Id should be true
       unsigned iSel(0);
-      for (; iSel != 32; ++iSel) {
+      for (; iSel != 7; ++iSel) {
         if (eleIds[iSel] && eleIds[iSel]->At(iE))
           break;
       }
 
-      if (iSel != 32) {
+      if (iSel != 7) {
         newP4(out_, *ele);
 
         double chIso(ele->PFChargedHadronIso());
@@ -116,12 +116,12 @@ mithep::nero::LeptonsFiller::fill()
     else {
       // at least one lepton Id should be true
       unsigned iSel(0);
-      for (; iSel != 32; ++iSel) {
+      for (; iSel != 7; ++iSel) {
         if (muIds[iSel] && muIds[iSel]->At(iM))
           break;
       }
 
-      if (iSel != 32) {
+      if (iSel != 7) {
         newP4(out_, *mu);
 
         double isoArr[4];
