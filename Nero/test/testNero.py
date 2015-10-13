@@ -43,18 +43,9 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 fileList = [
-    #'/store/data/Run2015B/MET/MINIAOD/PromptReco-v1/000/251/643/00000/CC77B94F-902C-E511-9A26-02163E01369B.root'
-    #'/store/relval/CMSSW_7_4_1/RelValADDMonoJet_d3MD3_13/MINIAODSIM/MCRUN2_74_V9_gensim71X-v1/00000/80CF5456-B9EC-E411-93DA-002618FDA248.root'
-    #'/store/user/arapyan/mc/SUSYGluGluToTBHPTohbbW/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2/MINIAODSIM2/MINIAOD_99.root'
-    #'/store/mc/RunIISpring15DR74/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v3/70000/FE90C5FF-6914-E511-B0F9-0025905A497A.root',
-    #'/store/data/Run2015C/JetHT/MINIAOD/PromptReco-v1/000/253/808/00000/3E6025B5-7340-E511-A8B7-02163E01440E.root',
-    #'/store/cmst3/user/gpetrucc/miniAOD/Spring15MiniAODv2/CMSSW_7_4_12/miniAOD-DYJetsM50_madgraphMLM_50ns_PAT.root'
     #'file:/tmp/amarini/step3_0.root'
-    '/store/data/Run2015D/SinglePhoton/MINIAOD/PromptReco-v3/000/256/630/00000/BE4748B0-295F-E511-A271-02163E014402.root',
-    #'/store/user/amarini/mc/HplusToTauNu-M200/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9/MINIAODSIMv2/step4_30.root',
-    #'/store/relval/CMSSW_7_4_1/RelValProdTTbar_13/MINIAODSIM/MCRUN2_74_V9_gensim71X-v1/00000/0A9E2CED-C9EC-E411-A8E4-003048FFCBA8.root']
-    #'/store/data/Run2015B/DoubleMuon/MINIAOD/PromptReco-v1/000/251/164/00000/402F0995-A326-E511-86BB-02163E013948.root',
-    #'/store/data/Run2015B/DoubleMuon/MINIAOD/PromptReco-v1/000/251/167/00000/70C4A781-A826-E511-95B4-02163E013414.root',
+    '/store/user/amarini/mc/HplusToTauNu-M200/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9/MINIAODSIMv2/step3_46.root',
+    #'/store/data/Run2015D/SinglePhoton/MINIAOD/PromptReco-v3/000/256/630/00000/BE4748B0-295F-E511-A271-02163E014402.root',
 ]
 
 
@@ -108,7 +99,7 @@ if isData and not options.isGrid : ## don't load the lumiMaks, will be called by
     #process.source.lumisToProcess = LumiList.LumiList(filename='/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt').getVLuminosityBlockRange()
     # DCS only
     #process.source.lumisToProcess = LumiList.LumiList(filename='/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/DCSOnly/json_DCSONLY_Run2015B.txt').getVLuminosityBlockRange()
-    process.source.lumisToProcess = LumiList.LumiList(filename='/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/DCSOnly/json_DCSONLY.txt').getVLuminosityBlockRange()
+    process.source.lumisToProcess = LumiList.LumiList(filename='/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Cert_246908-258159_13TeV_PromptReco_Collisions15_25ns_JSON_v3.txt').getVLuminosityBlockRange()
 
 
 ### HBB 74X ####
@@ -213,71 +204,92 @@ process.load("RecoEgamma/ElectronIdentification/ElectronIDValueMapProducer_cfi")
 
 ############################### JEC #####################
 #### Load from a sqlite db, if not read from the global tag
-process.load("CondCore.DBCommon.CondDBCommon_cfi")
-from CondCore.DBCommon.CondDBSetup_cfi import *
-
-if options.isData:
-	if options.is25ns:
-		connectString = cms.string('sqlite:jec/Summer15_25nsV2_DATA.db')
-		tagName = 'Summer15_25nsV2_DATA_AK4PFchs'
-	if options.is50ns:
-		connectString = cms.string('sqlite:jec/Summer15_50nsV5_DATA.db')
-		tagName = 'Summer15_50nsV5_DATA_AK5PFchs'
-else:
-	if options.is25ns:
-		connectString = cms.string('sqlite:jec/Summer15_25nsV2_MC.db')
-		tagName = 'Summer15_25nsV2_MC_AK5PFchs'
-	if options.is50ns:
-		connectString = cms.string('sqlite:jec/Summer15_50nsV5_MC.db')
-		tagName = 'Summer15_50nsV5_MC_AK5PFchs'
-
-process.jec = cms.ESSource("PoolDBESSource",
-      DBParameters = cms.PSet(
-        messageLevel = cms.untracked.int32(0)
-        ),
-      timetype = cms.string('runnumber'),
-      toGet = cms.VPSet(
-      cms.PSet(
-            record = cms.string('JetCorrectionsRecord'),
-            tag    = cms.string('JetCorrectorParametersCollection_%s'%tagName),
-            label  = cms.untracked.string('AK4PFchs')
-            ),
-      ## here you add as many jet types as you need
-      ## note that the tag name is specific for the particular sqlite file 
-      ), 
-      connect = connectString
-     # uncomment above tag lines and this comment to use MC JEC
-)
-## add an es_prefer statement to resolve a possible conflict from simultaneous connection to a global tag
-process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
+## process.load("CondCore.DBCommon.CondDBCommon_cfi")
+## from CondCore.DBCommon.CondDBSetup_cfi import *
+## 
+## if options.isData:
+## 	if options.is25ns:
+## 		connectString = cms.string('sqlite:jec/Summer15_25nsV2_DATA.db')
+## 		tagName = 'Summer15_25nsV2_DATA_AK4PFchs'
+## 	if options.is50ns:
+## 		connectString = cms.string('sqlite:jec/Summer15_50nsV5_DATA.db')
+## 		tagName = 'Summer15_50nsV5_DATA_AK5PFchs'
+## else:
+## 	if options.is25ns:
+## 		connectString = cms.string('sqlite:jec/Summer15_25nsV2_MC.db')
+## 		tagName = 'Summer15_25nsV2_MC_AK5PFchs'
+## 	if options.is50ns:
+## 		connectString = cms.string('sqlite:jec/Summer15_50nsV5_MC.db')
+## 		tagName = 'Summer15_50nsV5_MC_AK5PFchs'
+## 
+## process.jec = cms.ESSource("PoolDBESSource",
+##       DBParameters = cms.PSet(
+##         messageLevel = cms.untracked.int32(0)
+##         ),
+##       timetype = cms.string('runnumber'),
+##       toGet = cms.VPSet(
+##       cms.PSet(
+##             record = cms.string('JetCorrectionsRecord'),
+##             tag    = cms.string('JetCorrectorParametersCollection_%s'%tagName),
+##             label  = cms.untracked.string('AK4PFchs')
+##             ),
+##       ## here you add as many jet types as you need
+##       ## note that the tag name is specific for the particular sqlite file 
+##       ), 
+##       connect = connectString
+##      # uncomment above tag lines and this comment to use MC JEC
+## )
+## ## add an es_prefer statement to resolve a possible conflict from simultaneous connection to a global tag
+## process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 
 ################ end sqlite connection
 #### BEGIN RECOMPUTE JEC ###
 #from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetCorrFactorsUpdated
 #from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetsUpdated
-process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
+## process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
+## 
+## jecLevels= ['L1FastJet',  'L2Relative', 'L3Absolute']
+## 
+## if options.isData:
+## 	print "NO L2L3 Residual Applied so far. FIXME"
+## 	#jecLevels.append( 'L2L3Residuals')
+## 
+## process.patJetCorrFactorsReapplyJEC = process.patJetCorrFactorsUpdated.clone(
+## 		  src = cms.InputTag("slimmedJets"),
+## 		  levels = jecLevels,
+## 		  payload = 'AK4PFchs' ) # 
+## 
+## process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
+## process.patJetsReapplyJEC = process.patJetsUpdated.clone(
+## 		  jetSource = cms.InputTag("slimmedJets"),
+## 		  jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
+## 		  )
+## 
+## process.jecSequence = cms.Sequence( 
+## 		process.patJetCorrFactorsReapplyJEC + 
+## 		process. patJetsReapplyJEC 
+## 		)
+##___________________________HCAL_Noise_Filter________________________________||
+process.load('CommonTools.RecoAlgos.HBHENoiseFilterResultProducer_cfi')
+process.HBHENoiseFilterResultProducer.minZeros = cms.int32(99999)
+process.HBHENoiseFilterResultProducer.IgnoreTS4TS5ifJetInLowBVRegion=cms.bool(False) 
+process.HBHENoiseFilterResultProducer.defaultDecision = cms.string("HBHENoiseFilterResultRun2Loose")
 
-jecLevels= ['L1FastJet',  'L2Relative', 'L3Absolute']
+process.ApplyBaselineHBHENoiseFilter = cms.EDFilter('BooleanFlagFilter',
+		   inputLabel = cms.InputTag('HBHENoiseFilterResultProducer','HBHENoiseFilterResult'),
+		      reverseDecision = cms.bool(False)
+		      )
 
-if options.isData:
-	print "NO L2L3 Residual Applied so far. FIXME"
-	#jecLevels.append( 'L2L3Residuals')
+process.ApplyBaselineHBHEIsoNoiseFilter = cms.EDFilter('BooleanFlagFilter',
+		   inputLabel = cms.InputTag('HBHENoiseFilterResultProducer','HBHEIsoNoiseFilterResult'),
+		      reverseDecision = cms.bool(False)
+		      )
 
-process.patJetCorrFactorsReapplyJEC = process.patJetCorrFactorsUpdated.clone(
-		  src = cms.InputTag("slimmedJets"),
-		  levels = jecLevels,
-		  payload = 'AK4PFchs' ) # 
-
-process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
-process.patJetsReapplyJEC = process.patJetsUpdated.clone(
-		  jetSource = cms.InputTag("slimmedJets"),
-		  jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
-		  )
-
-process.jecSequence = cms.Sequence( 
-		process.patJetCorrFactorsReapplyJEC + 
-		process. patJetsReapplyJEC 
-		)
+process.hcalNoiseFilter = cms.Sequence(
+		    process.HBHENoiseFilterResultProducer* #produces HBHE baseline bools
+		    process.ApplyBaselineHBHENoiseFilter  #reject events based 
+		    #process.ApplyBaselineHBHEIsoNoiseFilter*   #reject events based  < 10e-3 mistake rate 
+		    )
 ###############################
 
 if options.isGrid:
@@ -291,13 +303,14 @@ if options.isParticleGun:
 #------------------------------------------------------
 process.p = cms.Path(
 		process.infoProducerSequence *
+		process.hcalNoiseFilter * 
                 process.QGTagger *
                 process.egmGsfElectronIDSequence *
                 process.egmPhotonIDSequence *
                 process.photonIDValueMapProducer * ## ISO MAP FOR PHOTONS
                 process.electronIDValueMapProducer * ## ISO MAP FOR PHOTONS
 		process.HBB * ## HBB 74X
-		process.jecSequence *
+		#process.jecSequence *
                 process.nero
                 )
 
