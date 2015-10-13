@@ -61,6 +61,7 @@ if __name__ == '__main__':
 		if sys.argv[1] !=  config.General.requestName: return
 	###
 	print "--- Submitting " + "\033[01;32m" + config.Data.inputDataset.split('/')[1] + "\033[00m"  + " ---"
+	config.Data.publishDataName = config.General.requestName
         try:
             crabCommand('submit', config = config)
         except HTTPException as hte:
