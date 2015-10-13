@@ -25,7 +25,7 @@ config.Data.inputDBS = 'global'
 config.Data.ignoreLocality = True
 
 config.Data.splitting = 'FileBased'
-config.Data.unitsPerJob = 1
+config.Data.unitsPerJob = 10
 config.Data.totalUnits = -1
 
 tag = check_output("git describe --tags | cut -d'-' -f 1 | tr -d '\n' ",shell=True)
@@ -61,7 +61,6 @@ if __name__ == '__main__':
 		if sys.argv[1] !=  config.General.requestName: return
 	###
 	print "--- Submitting " + "\033[01;32m" + config.Data.inputDataset.split('/')[1] + "\033[00m"  + " ---"
-	config.Data.publishDataName ='NeroNtuples_' + config.General.requestName + "_"+ check_output('date +%Y_%m_%d',shell=True)
         try:
             crabCommand('submit', config = config)
         except HTTPException as hte:
@@ -97,8 +96,8 @@ if __name__ == '__main__':
     #############################################################################################
 
     ###################################################
-    setdata("False")
-    config.Data.unitsPerJob = 10
+    setdata("False",is25ns=True)
+    config.Data.unitsPerJob = 30
     ###################################################
 
     config.General.requestName = 'WZ-25ns'
@@ -200,7 +199,7 @@ if __name__ == '__main__':
     ###################################################
     ########              50ns                 ########
     ###################################################
-    setdata("True")
+    setdata("True",is25ns=False)
     ###################################################
 
     #config.General.requestName = 'MET-50ns'
@@ -244,7 +243,7 @@ if __name__ == '__main__':
     #submit(config)
 
     ###################################################
-    setdata("False")
+    setdata("False",is25ns=False)
     ###################################################
     #config.General.requestName = 'DY-50ns'
     #config.Data.inputDataset = '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v2/MINIAODSIM'
@@ -275,6 +274,7 @@ if __name__ == '__main__':
     ###################################################
     setdata("True",is25ns=True)
     ###################################################
+    config.Data.unitsPerJob = 30
 
     config.General.requestName = 'MET-Run2015D-05Oct2015'
     config.Data.inputDataset = '/MET/Run2015D-05Oct2015-v1/MINIAOD'
