@@ -109,22 +109,33 @@ def DeactivateBranches(t):
 	t.SetBranchStatus("tauId",1)
 	t.SetBranchStatus("pfMet_e3p0",1)
 	t.SetBranchStatus("lep*",1)
+	t.SetBranchStatus("puTrue*",1)
 
 ### if a json is given parse it
 if opts.json != "":
 	jstring = open(opts.json).read() 
 	goodLumis = json.loads( jstring )
 
+
+# get PU Target
+puFile = ROOT.TFile.Open("MyDataPileupHistogramCHECK_true.root")
+#puTarget=ROOT.TH1D("pu","pu",100,0,50) # rho
+puTarget=puFile.Get("pileup")
+
+print "->Getting pu for data" ## TODO, for puTrueInt, this is meaningless
+pu['data'] = puTarget.Clone("puData")
+
+puTarget.Reset("ACE")
+
 ## compute nevents
-print "-> compute nevents"
-puTarget=ROOT.TH1D("pu","pu",100,0,50) # rho
+print "-> compute nevents and pileup histo for mc"
 
 for mc in book:
 	stdout = " * for mc " +  mc
 	print stdout,
 	sys.stdout.flush()
 	t=ROOT.TChain("nero/all")	
-	te=ROOT.TChain("nero/events")	
+	#te=ROOT.TChain("nero/events")	
 	n=0
 	ntries = 0 
 	for f in ReadFromEos( disks[mc] ):
@@ -133,7 +144,7 @@ for mc in book:
 			print "File Limit reached for mc", mc, "at",n,"files"
 			break
 		t.Add(f)
-		te.Add(f)
+		#te.Add(f)
 		if opts.limit>=0:
 			ntries = t.GetEntries()
 			if ntries > opts.limit: fileLimit = n
@@ -143,57 +154,59 @@ for mc in book:
 	SW=0.
 	t.SetBranchStatus("*",0)
 	t.SetBranchStatus("mcWeight",1)
+	t.SetBranchStatus("puTrue*",1)
 	sumW_histo = ROOT.TH1D("sumWH","histo",1,0,2)
-	for i in range(0,t.GetEntries()):
-		if i&1023 == 1:
-			print "\r"+ stdout ,i,"/",t.GetEntriesFast(),
-			sys.stdout.flush()
-		t.GetEntry(i)
-		SW += t.mcWeight
+	## for i in range(0,t.GetEntries()):
+	## 	if i&1023 == 1:
+	## 		print "\r"+ stdout ,i,"/",t.GetEntriesFast(),
+	## 		sys.stdout.flush()
+	## 	t.GetEntry(i)
+	## 	SW += t.mcWeight
 	t.Draw("1>>sumWH","mcWeight" )
 	nevents[mc]= sumW_histo.GetBinContent(1)
 	stdout += "SumW=" + str(SW) + " == " + str(nevents[mc])
 	print "\r" + stdout, " pu ",
 	pu[mc] = puTarget.Clone("pu_"+mc)
-	te.Draw("rho>>pu_"+mc,"lepP4[1].Pt()>20","goff")
+	pu[mc + '_reweight'] = puTarget.Clone("pu_"+mc + "_reweight") ## try to get the true reweight distribution
+	#te.Draw("rho>>pu_"+mc,"lepP4[1].Pt()>20","goff")
+	t.Draw("puTrueInt>>pu_"+mc,"","goff")
 	print "DONE"
 
-print "->Getting pu for data"
 
-for data in datasets:
-	stdout=" * for data "+ data
-	print stdout,
-	sys.stdout.flush()
-	t=ROOT.TChain("nero/events")
-	n=0
-	for f in ReadFromEos( disks[data] ):
-	      t.Add(f)
-	      n +=1
-	stdout += " "+ str(n) + " files"
-	print '\r' + stdout,
-	pu[data]= puTarget.Clone("pu_"+data)
-	# I need to apply the json
-	#t.Draw("rho>>pu_"+data,"lepP4[1].Pt()>20","goff")
-	t.SetBranchStatus("*",0)
-	t.SetBranchStatus("runNum",1)
-	t.SetBranchStatus("lumiNum",1)
-	t.SetBranchStatus("rho",1)
-	t.SetBranchStatus("lepP4",1)
-	for i in range(0,t.GetEntries() ):
-		t.GetEntry(i)
-		if opts.json != "":
-			# filter accordingly to a json file
-			run= str(t.runNum)
-			if run not in goodLumis.keys(): continue
-			isGood=False
-			for lumis in goodLumis[run] :
-				if t.lumiNum >= lumis[0] and t.lumiNum <= lumis[1] : isGood = True
-			if not isGood: continue
-		if t.lepP4.GetEntries() <2 : continue
-		if t.lepP4[1].Pt() <20 :continue
-		pu[data].Fill( t.rho )
-	stdout += " pu DONE "
-	print '\r' + stdout
+### for data in datasets:
+### 	stdout=" * for data "+ data
+### 	print stdout,
+### 	sys.stdout.flush()
+### 	t=ROOT.TChain("nero/events")
+### 	n=0
+### 	for f in ReadFromEos( disks[data] ):
+### 	      t.Add(f)
+### 	      n +=1
+### 	stdout += " "+ str(n) + " files"
+### 	print '\r' + stdout,
+### 	pu[data]= puTarget.Clone("pu_"+data)
+### 	# I need to apply the json
+### 	#t.Draw("rho>>pu_"+data,"lepP4[1].Pt()>20","goff")
+### 	t.SetBranchStatus("*",0)
+### 	t.SetBranchStatus("runNum",1)
+### 	t.SetBranchStatus("lumiNum",1)
+### 	t.SetBranchStatus("rho",1)
+### 	t.SetBranchStatus("lepP4",1)
+### 	for i in range(0,t.GetEntries() ):
+### 		t.GetEntry(i)
+### 		if opts.json != "":
+### 			# filter accordingly to a json file
+### 			run= str(t.runNum)
+### 			if run not in goodLumis.keys(): continue
+### 			isGood=False
+### 			for lumis in goodLumis[run] :
+### 				if t.lumiNum >= lumis[0] and t.lumiNum <= lumis[1] : isGood = True
+### 			if not isGood: continue
+### 		if t.lepP4.GetEntries() <2 : continue
+### 		if t.lepP4[1].Pt() <20 :continue
+### 		pu[data].Fill( t.rho )
+### 	stdout += " pu DONE "
+### 	print '\r' + stdout
 
 
 
@@ -321,6 +334,7 @@ mmPt={}
 mmMet={}
 mmMetNoHf={}
 mmRho={}
+mmNpv={}
 
 mmIso={}
 mmChIso={}
@@ -340,6 +354,7 @@ eePt={}
 eeMet={}
 eeMetNoHf={}
 eeRho={}
+eeNpv={}
 
 eeIso={}
 eeChIso={}
@@ -363,6 +378,7 @@ mmPt["data"]=ROOT.TH1D("mmPt","mmPt;p_{T}^{#mu#mu};Events",150,0,300)
 mmMet["data"]=ROOT.TH1D("mmMet","mmMet;E_{T}^{miss}(DY#rightarrow#mu#mu); Events",150,0,300)
 mmMetNoHf["data"]=ROOT.TH1D("mmMetNoHf","mmMetNoHf;E_{T}^{miss}(DY#rightarrow#mu#mu); Events",150,0,300)
 mmRho["data"] =ROOT.TH1D("mmRho","mmRho;#rho [GeV]; Events",100,0,50)
+mmNpv["data"] =ROOT.TH1D("mmNpv","mmNpv;#npv; Events",50,0,50)
 
 mmIso["data"] =ROOT.TH1D("mmIso","mmIso;I_{l1} [GeV]; Events",100,0,10)
 mmChIso["data"] =ROOT.TH1D("mmChIso","mmChIso;I_{l1} [GeV]; Events",100,0,10)
@@ -381,6 +397,7 @@ eePt["data"]=ROOT.TH1D("eePt","eePt;p_{T}^{ee};Events",150,0,300)
 eeMet["data"]=ROOT.TH1D("eeMet","eeMet;E_{T}^{miss}(DY#rightarrow ee); Events",150,0,300)
 eeMetNoHf["data"]=ROOT.TH1D("eeMetNoHf","eeMetNoHf;E_{T}^{miss}(DY#rightarrow ee); Events",150,0,300)
 eeRho["data"] =ROOT.TH1D("eeRho","eeRho;#rho [GeV];Events",100,0,50)
+eeNpv["data"] =ROOT.TH1D("eeNpv","eeNpv;#rho [GeV];Events",50,0,50)
 
 eeIso["data"] =ROOT.TH1D("eeIso","eeIso;I_{l1} [GeV]; Events",100,0,10)
 eeChIso["data"] =ROOT.TH1D("eeChIso","eeChIso;I_{l1} [GeV]; Events",100,0,10)
@@ -400,7 +417,7 @@ ttLeadPt["data"] =ROOT.TH1D("ttLeadPt","ttLeadPt;p_{T}^{#tau 1} [GeV]; Events",1
 
 ## normalize pu
 print "-> normalizing pu: "
-for what in book + datasets:
+for what in book + ['data']:
 	print what,
 	if pu[what].Integral():
 		pu[what].Scale( 1./ pu[what].Integral() ) 
@@ -427,6 +444,7 @@ for mc in book:
 	mmMet[mc] = mmMet["data"].Clone("%s_%s"%(mmMet["data"].GetName(),mc))
 	mmMetNoHf[mc] = mmMetNoHf["data"].Clone("%s_%s"%(mmMetNoHf["data"].GetName(),mc))
 	mmRho[mc] = mmRho["data"].Clone("%s_%s"%(mmRho["data"].GetName(),mc))
+	mmNpv[mc] = mmNpv["data"].Clone("%s_%s"%(mmNpv["data"].GetName(),mc))
 
 	mmIso[mc] = mmIso["data"].Clone("%s_%s"%(mmIso["data"].GetName(),mc))
 	mmChIso[mc] = mmChIso["data"].Clone("%s_%s"%(mmChIso["data"].GetName(),mc))
@@ -442,6 +460,7 @@ for mc in book:
 	eeMet[mc] = eeMet["data"].Clone("%s_%s"%(eeMet["data"].GetName(),mc))
 	eeMetNoHf[mc] = eeMetNoHf["data"].Clone("%s_%s"%(eeMetNoHf["data"].GetName(),mc))
 	eeRho[mc] = eeRho["data"].Clone("%s_%s"%(eeRho["data"].GetName(),mc))
+	eeNpv[mc] = eeNpv["data"].Clone("%s_%s"%(eeNpv["data"].GetName(),mc))
 
 	eeIso[mc] = eeIso["data"].Clone("%s_%s"%(eeIso["data"].GetName(),mc))
 	eeChIso[mc] = eeChIso["data"].Clone("%s_%s"%(eeChIso["data"].GetName(),mc))
@@ -469,6 +488,7 @@ for mc in book:
 		## if t.lepP4.GetEntries()<2 : continue ## 2leptons
 		## if t.lepP4[1].Pt() < 20 : continue ## pt 20
 		rho = t.rho
+		puTrueInt = t.puTrueInt
 		w = t.mcWeight * xsections[mc] * lumi / nevents[mc]
 		if w == 0 : 
 			print "MC weight for mc",mc,"is 0"
@@ -490,19 +510,23 @@ for mc in book:
 				leadJetIdx = i
 				leadJetPt = t.jetP4[i].Pt()
 
+		den= pu[mc].GetBinContent(pu[mc].FindBin(puTrueInt)) 
+		num= pu[ 'data' ].GetBinContent(pu['data'].FindBin(puTrueInt))
+		if den==0: 
+			print "\n EVENT WITH NULL PU REWEIGHT", t.eventNum
+			num=0
+			den=1
+		puReweight = float(num)/float(den )
+		w*=puReweight
+		pu[ mc + "_reweight" ] . Fill( puTrueInt, w ) 
+		#print "PU REWEIGHT DEBUG for,",t.puTrueInt,"=",puReweight, "(num=",num,"den=",den,")"
+		
 		## MM
 		if t.lepP4.GetEntries()>=2 and t.lepP4[1].Pt() > 20 and t.lepPdgId[0]* t.lepPdgId[1] == -13*13 :  ## OS SF muon, leading two
 			#print '* DEBUG MM Event', t.lepP4[1].Pt(), t.lepPdgId[0]
-			den= pu[mc].GetBinContent(pu[mc].FindBin(rho)) 
-			num= pu[ 'SingleMuon' ].GetBinContent(pu['SingleMuon'].FindBin(rho))
-			if den==0: 
-				print "\n EVENT WITH NULL PU REWEIGHT", t.eventNum
-				num=0
-				den=1
-			puReweight = float(num)/float(den )
-			w *= puReweight
 			ll = t.lepP4[0] + t.lepP4[1]
 			mmRho[mc].Fill( t.rho ,w)
+			mmNpv[mc].Fill( t.npv ,w)
 			mmM[mc].Fill( ll.M(), w)
 			#print "mc pass", ll.M(), ll.Pt() ## DEBUG
 			if ll.M() <60 or ll.M() >120 : continue
@@ -521,15 +545,9 @@ for mc in book:
 		## EE
 		if t.lepP4.GetEntries()>=2 and t.lepP4[1].Pt() > 20 and t.lepPdgId[0]* t.lepPdgId[1] == -11*11 :  ## OS SF muon, leading two
 			#print '* DEBUG EE Event', t.lepP4[1].Pt(), t.lepPdgId[0]
-			den= pu[mc].GetBinContent(pu[mc].FindBin(rho)) 
-			num= pu[ 'SingleElectron' ].GetBinContent(pu['SingleElectron'].FindBin(rho))
-			if den==0: 
-				num=0
-				den=1
-			puReweight = float(num)/float(den) 
-			w *= puReweight
 			ll = t.lepP4[0] + t.lepP4[1]
 			eeRho[mc].Fill( t.rho,w )
+			eeNpv[mc].Fill( t.npv,w )
 			eeM[mc].Fill( ll.M(), w)
 			if ll.M() <60 or ll.M() >120 : continue
 			eeEta[mc].Fill( ll.Eta(), w)
@@ -565,13 +583,6 @@ for mc in book:
 				break
 
 		if subleadTau >0 :
-			den= pu[mc].GetBinContent(pu[mc].FindBin(rho)) 
-			num= pu[ 'Tau' ].GetBinContent(pu['Tau'].FindBin(rho))
-			if den==0: 
-				num=0
-				den=1
-			puReweight = float(num)/float(den) 
-			w *= puReweight
 			ll = t.tauP4[leadTau] + t.tauP4[subleadTau]
 			ttRho[mc].Fill( t.rho,w )
 			ttM[mc].Fill( ll.M(), w)
@@ -630,6 +641,7 @@ for data in datasets:
 			#print "data pass", ll.M(), ll.Pt() ## DEBUG
                 	mmM["data"].Fill( ll.M() )
                 	mmRho["data"].Fill( t.rho )
+                	mmNpv["data"].Fill( t.npv )
 			if ll.M() <60 or ll.M() >120 : continue
                 	mmEta["data"].Fill( ll.Eta() )
                 	mmPt["data"].Fill( ll.Pt() )
@@ -648,6 +660,7 @@ for data in datasets:
                 	ll = t.lepP4[0] + t.lepP4[1]
                 	eeM["data"].Fill( ll.M() )
                 	eeRho["data"].Fill( t.rho )
+                	eeNpv["data"].Fill( t.npv )
 			if ll.M() <60 or ll.M() >120 : continue
                 	eeEta["data"].Fill( ll.Eta() )
                 	e2Eta["data"].Fill( t.lepP4[1].Eta() )
@@ -705,6 +718,7 @@ for name in ['mmM','mmPt','mmRho','mmMet',
 		'eeNjets','eeLeadJetPt','mmNjets','mmLeadJetPt',
 		'eeMetNoHf','eeEta','e2Eta','e2dPhiJ',
 		'ttM','ttPt', 'ttMet','ttRho','ttIso', 'ttLeadPt',
+		'eeNpv','mmNpv',
 		]:
 
 	c=PrepareCanvas(name)
