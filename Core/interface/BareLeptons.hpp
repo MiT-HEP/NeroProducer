@@ -20,9 +20,10 @@ class BareLeptons : virtual public BareP4
           LepMediumIP = 1UL<<8,
           LepTightIP  = 1UL<<9,
           LepSoftIP   = 1UL<<10,
-          LepLooseIso = 1UL<<11,
-          LepMediumIso = 1UL<<12,
-          LepTightIso = 1UL<<13
+          LepVetoIso = 1UL<<11,
+          LepLooseIso = 1UL<<12,
+          LepMediumIso = 1UL<<13,
+          LepTightIso = 1UL<<14
         };
 
         BareLeptons();
