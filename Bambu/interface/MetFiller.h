@@ -33,7 +33,7 @@ namespace mithep {
       TString muonsName_ = "Muons";
       TString pfCandidatesName_ = "PFCandidates";
       TString caloMetName_ = "CaloMet";
-      TString genMetName_ = "GenMet";
+      TString genMetName_ = "";
 
       ClassDef(MetFiller, 0)
     };
