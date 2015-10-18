@@ -2,7 +2,6 @@
 #define NeroProducer_Bambu_NeroMod_h
 
 #include "MitAna/TreeMod/interface/BaseMod.h"
-#include "NeroProducer/Bambu/interface/Collections.h"
 #include "NeroProducer/Bambu/interface/BaseFiller.h"
 #include "NeroProducer/Core/interface/BareCollection.hpp"
 

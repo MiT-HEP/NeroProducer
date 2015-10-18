@@ -23,6 +23,7 @@ namespace mithep {
       enum Collection {
         kEvent,
         kJets,
+        kPuppiJets,
         kAK8Jets,
         kCA15Jets,
         kLeptons,

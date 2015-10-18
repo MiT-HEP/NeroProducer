@@ -3,11 +3,27 @@
 #include "MitAna/DataTree/interface/JetCol.h"
 #include "MitAna/DataTree/interface/Vertex.h"
 #include "MitAna/DataTree/interface/PFJet.h"
+#include "MitAna/DataCont/interface/Types.h"
 
 #include "TDirectory.h"
 #include "TROOT.h"
 
 ClassImp(mithep::nero::JetsFiller)
+
+void
+mithep::nero::FatJetsFiller::defineBranches(TTree* _tree)
+{
+  switch (collection_) {
+  case BaseFiller::kJets:
+    out_.defineBranches(_tree, "");
+    break;
+  case BaseFiller::kPuppiJets:
+    out_.defineBranches(_tree, "puppi");
+    break;
+  default:
+    break;
+  }
+}
 
 void
 mithep::nero::JetsFiller::initialize()
@@ -46,6 +62,10 @@ mithep::nero::JetsFiller::fill()
 
   auto* vertices = getSource<mithep::VertexCol>(verticesName_);
 
+  mithep::NFArrBool* tightId(0);
+  if (tightIdName_.Length() != 0)
+    tightId = getSource<mithep::NFArrBool>(tightIdName_);
+
   for (unsigned iJ(0); iJ != jets->GetEntries(); ++iJ) {
     auto& jet(*jets->At(iJ));
 
@@ -73,6 +93,8 @@ mithep::nero::JetsFiller::fill()
       double neFrac(pfJet.NeutralEmEnergy() / rawE);
 
       unsigned selBits(BareJets::JetBaseline | BareJets::JetLoose);
+      if (tightId && tightId->At(iJ))
+        selBits |= BareJets::JetTight;
       if (chFrac > 0.2 && nhFrac < 0.7 && neFrac < 0.7)
         selBits |= BareJets::mjId;
       if (nhFrac < 0.7 && neFrac < 0.9)

@@ -66,6 +66,13 @@ mithep::nero::MetFiller::fill()
   out_.caloMet_Phi = caloMet->Phi();
   out_.caloMet_SumEt = caloMet->SumEt();
 
+  if (puppiMetName_.Length() != 0) {
+    auto* puppiMetCol = getSource<mithep::MetCol>(puppiMetName_, false);
+    auto& inPuppi(*puppiMetCol->At(0));
+
+    out_.metPuppi->SetXYZT(inPuppi.Px(), inPuppi.Py(), inPuppi.Elongitudinal(), inPuppi.SumEt());
+  }
+
   if (genMetName_ != "" && getSource<mithep::EventHeader>(Names::gkEvtHeaderBrn)->IsMC()) {
     auto* genMetCol = getSource<mithep::MetCol>(genMetName_);
     auto& genMet(*genMetCol->At(0));

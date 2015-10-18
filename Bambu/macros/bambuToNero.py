@@ -31,6 +31,8 @@ else:
 from MitPhysics.SelMods.BadEventsFilterMod import badEventsFilterMod
 from MitPhysics.Mods.GoodPVFilterMod import goodPVFilterMod
 from MitPhysics.Mods.SeparatePileUpMod import separatePileUpMod
+from MitPhysics.Mods.PuppiMod import puppiMod
+from MitPhysics.Mods.PuppiPFJetMod import puppiPFJetMod
 
 ################################
 ### JET/MET ID & CORRECTIONS ###
@@ -39,6 +41,12 @@ from MitPhysics.Mods.SeparatePileUpMod import separatePileUpMod
 jetCorrection = mithep.JetCorrectionMod(
     InputName = 'AKt4PFJetsCHS',
     CorrectedJetsName = 'CorrectedJets',
+    RhoAlgo = mithep.PileupEnergyDensity.kFixedGridFastjetAll
+)
+
+puppiJetCorrection = mithep.JetCorrectionMod(
+    InputName = puppiPFJetMod.GetOutputName(),
+    CorrectedJetsName = 'CorrectedPuppiJets',
     RhoAlgo = mithep.PileupEnergyDensity.kFixedGridFastjetAll
 )
 
@@ -76,20 +84,37 @@ repl = {'level': 'Uncertainty', 'jettype': 'AK4PFchs'}
 metCorrectionJESUp.AddJetCorrectionFromFile(mitdata + '/JEC/' + jecPattern.format(**repl))
 metCorrectionJESDown.AddJetCorrectionFromFile(mitdata + '/JEC/' + jecPattern.format(**repl))
 
+puppiMet = mithep.MetMod('PuppiMet',
+    InputName = puppiMod.GetOutputName(),
+    OutputName = 'PuppiMet'
+)
+
+puppiMetCorrection = metCorrection.clone('PuppiMetCorrection',
+    InputName = puppiMet.GetOutputName(),
+    OutputName = 'PuppiType1CorrectedMet',
+    JetsName = puppiPFJetMod.GetOutputName()
+)
+
+for level in jecLevels:
+    repl = {'level': level, 'jettype': 'AK4PFPuppi'}
+    puppiJetCorrection.AddCorrectionFromFile(mitdata + '/JEC/' + jecPattern.format(**repl))
+    puppiMetCorrection.AddJetCorrectionFromFile(mitdata + '/JEC/' + jecPattern.format(**repl))
+
 # Will not use PU jet ID here (MVA values to be stored in Nero tree)
-goodAK4Jets = mithep.JetIdMod('AK4JetId',
+looseAK4Jets = mithep.JetIdMod('AK4JetId',
     InputName = jetCorrection.GetOutputName(),
     OutputName = 'GoodAK4Jets',
     PFId = mithep.JetTools.kPFLoose,
     MVATrainingSet = mithep.JetIDMVA.nMVATypes,
     PtMin = 15.,
-    EtaMax = 5.,
-    MaxChargedEMFraction = 0.99,
-    MaxNeutralEMFraction = 0.99,
-    MaxNeutralHadronFraction = 0.99,
-    MaxMuonFraction = 0.80,
-    MinNPFCandidates = 2,
-    MinNChargedPFCandidates = 1
+    EtaMax = 5.
+)
+
+tightAK4Jets = looseAK4Jets.clone('AK4JetIdTight',
+    InputName = looseAK4Jets.GetOutputName(),
+    OutputName = 'TightAK4Jets',
+    IsFilterMode = False,
+    PFId = mithep.JetTools.kPFTight
 )
 
 ###########################
@@ -341,7 +366,7 @@ ak8JetCorrection = mithep.JetCorrectionMod('AK8JetCorrection',
 for level in jecLevels:
     ak8JetCorrection.AddCorrectionFromFile(mitdata + '/JEC/' + jecPattern.format(level = level, jettype = 'AK8PFchs'))
 
-goodAK8Jets = goodAK4Jets.clone('GoodAK8Jets',
+goodAK8Jets = looseAK4Jets.clone('GoodAK8Jets',
     InputName = ak8JetCorrection.GetOutputName(),
     OutputName = 'GoodAK8Jets'
 )
@@ -364,7 +389,7 @@ ak8JetExtender = mithep.FatJetExtenderMod('AK8JetExtender',
 )
 ak8JetExtender.SetSubJetTypeOn(mithep.XlSubJet.kSoftDrop)
 
-goodCA15Jets = goodAK4Jets.clone('GoodCA15Jets',
+goodCA15Jets = looseAK4Jets.clone('GoodCA15Jets',
     InputName = 'CA15FatJetsCHS',
     OutputName = 'GoodCA15Jets'
 )
@@ -454,8 +479,17 @@ neroMod.AddFiller(mithep.nero.VertexFiller(
     VerticesName = goodPVFilterMod.GetOutputName()
 ))
 
-neroMod.AddFiller(mithep.nero.JetsFiller(
-    JetsName = goodAK4Jets.GetOutputName(),
+neroMod.AddFiller(mithep.nero.JetsFiller(mithep.nero.BaseFiller.kJets,
+    JetsName = looseAK4Jets.GetOutputName(),
+    VerticesName = goodPVFilterMod.GetOutputName(),
+    JetIdCutWP = mithep.JetIDMVA.kLoose,
+    JetIdMVATrainingSet = mithep.JetIDMVA.k53BDTCHSFullPlusRMS,
+    JetIdMVAWeightsFile = mitdata + '/TMVAClassification_5x_BDT_chsFullPlusRMS.weights.xml',
+    JetIdCutsFile = mitdata + '/jetIDCuts_121221.dat'
+))
+
+neroMod.AddFiller(mithep.nero.JetsFiller(mithep.nero.BaseFiller.kPuppiJets,
+    JetsName = puppiJetCorrection.GetOutputName(),
     VerticesName = goodPVFilterMod.GetOutputName(),
     JetIdCutWP = mithep.JetIDMVA.kLoose,
     JetIdMVATrainingSet = mithep.JetIDMVA.k53BDTCHSFullPlusRMS,
@@ -509,6 +543,7 @@ metFiller = mithep.nero.MetFiller(
     MetName = metCorrection.GetOutputName(),
     JESUpMetName = metCorrectionJESUp.GetOutputName(),
     JESDownMetName = metCorrectionJESDown.GetOutputName(),
+    PuppiMetName = puppiMetCorrection.GetOutputName(),
     MuonsName = tightMuons.GetOutputName()
 )
 neroMod.AddFiller(metFiller)
@@ -590,7 +625,8 @@ filterMods = metSkim + muonBaselineId + electronBaselineId
 postskimSequence = Chain([
     skim,
     jetCorrection,
-    goodAK4Jets,
+    looseAK4Jets,
+    tightAK4Jets,
     metCorrectionJESUp,
     metCorrectionJESDown,
     looseTaus,
