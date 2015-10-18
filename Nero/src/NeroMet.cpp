@@ -2,8 +2,8 @@
 #include "NeroProducer/Nero/interface/Nero.hpp"
 
 NeroMet::NeroMet() : 
-        NeroCollection(),
-        BareMet() 
+    NeroCollection(),
+    BareMet() 
 {
     pf = NULL;
 }
@@ -32,7 +32,7 @@ int NeroMet::analyze(const edm::Event& iEvent){
     caloMet_Pt = met.caloMETPt();
     caloMet_Phi = met.caloMETPhi();
     caloMet_SumEt = met.caloMETSumEt();
-    
+
 
     // FILL
     new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector( met.px(),met.py(),met.pz(),met.energy()  );
@@ -47,16 +47,16 @@ int NeroMet::analyze(const edm::Event& iEvent){
         TLorentzVector metnomu(met.px(),met.py(),met.pz(),met.energy());
         TLorentzVector tkMet(0,0,0,0); 
         TLorentzVector pfmet_3p0(0,0,0,0); 
-       
+
         if ( pf == NULL ) cout<<"[NeroMet]::[analyze]::[ERROR] PF pointer is null. Run NeroPF. "<<endl; 
-        
+
         for (unsigned int i = 0, n = pf->handle->size(); i < n; ++i) {
             const pat::PackedCandidate &cand = (*pf->handle)[i];
-            
+
             // only up to eta 3
             if (std::abs(cand.pdgId()) == 13)
                 metnomu += TLorentzVector(cand.px(),cand.py(),cand.pz(),cand.energy());  
-            
+
             // only charge hadrons
             if ( cand.charge() != 0 )
                 tkMet += TLorentzVector(cand.px(),cand.py(),cand.pz(),cand.energy());
@@ -64,7 +64,7 @@ int NeroMet::analyze(const edm::Event& iEvent){
             if (std::abs(cand.eta()) < 3.0 ) 
                 pfmet_3p0 += TLorentzVector(cand.px(),cand.py(),cand.pz(),cand.energy());
         }
-       
+
         *pfMet_e3p0 = TLorentzVector( -pfmet_3p0 );
         *metNoMu = TLorentzVector(metnomu);  // no minus
         *trackMet = TLorentzVector( -tkMet );
@@ -74,7 +74,46 @@ int NeroMet::analyze(const edm::Event& iEvent){
 
         const pat::MET &puppi = handle_puppi->front(); 
         *metPuppi =  TLorentzVector( puppi.px(), puppi.py(),puppi.pz(),puppi.energy() );
-    
+
+        for(Syst mysyst = (Syst)0; mysyst < MaxSyst ; mysyst = (Syst)((int)mysyst +1 ) )
+        {
+            pat::MET::METUncertainty miniAODUnc=pat::MET::METUncertaintySize;
+            // JetResUp=0, JetResDown=1, JetEnUp=2, JetEnDown=3,
+            // MuonEnUp=4, MuonEnDown=5, ElectronEnUp=6, ElectronEnDown=7,
+            // TauEnUp=8, TauEnDown=9, UnclusteredEnUp=10, UnclusteredEnDown=11,
+            // PhotonEnUp=12, PhotonEnDown=13, NoShift=14, METUncertaintySize=15,
+            // JetResUpSmear=16, JetResDownSmear=17, METFullUncertaintySize=18
+            // translate
+            switch (mysyst)
+            {
+                case  JesUp : {miniAODUnc = pat::MET::JetEnUp; break;}
+                case  JesDown : {miniAODUnc = pat::MET::JetEnDown; break;}
+                case  JerUp : {miniAODUnc = pat::MET::JetResUp; break;}
+                case  JerDown : {miniAODUnc = pat::MET::JetResDown; break;}
+                case  UnclusterUp : {miniAODUnc = pat::MET::UnclusteredEnUp; break;}
+                case  UnclusterDown : {miniAODUnc = pat::MET::UnclusteredEnDown; break;}
+                case  TauUp : {miniAODUnc = pat::MET::TauEnUp; break;}
+                case  TauDown : {miniAODUnc = pat::MET::TauEnDown; break;}
+                case  PhotonUp : {miniAODUnc = pat::MET::PhotonEnDown; break;}
+                case  PhotonDown : {miniAODUnc = pat::MET::PhotonEnDown; break;}
+                case  ElectronUp : {miniAODUnc = pat::MET::ElectronEnUp; break;}
+                case  ElectronDown : {miniAODUnc = pat::MET::ElectronEnDown; break;}
+                case  MuonUp : {miniAODUnc = pat::MET::MuonEnUp; break;}
+                case  MuonDown : {miniAODUnc = pat::MET::MuonEnDown; break;}
+                default : break;
+            }
+
+            if (miniAODUnc == pat::MET::METUncertaintySize)
+                cout <<"[NeroMet]::[analyze]::[WARNING] unable to translate met syst,"<< int(mysyst) <<endl;
+
+            new ( (*metPuppiSyst)[ mysyst ] ) TLorentzVector( 
+                    puppi . shiftedP4( miniAODUnc).px(), 
+                    puppi . shiftedP4(miniAODUnc).py(),  
+                    puppi . shiftedP4(miniAODUnc).pz(),  
+                    puppi . shiftedP4(miniAODUnc).energy()
+                    );
+        }// end syst loop
+
     }    
     // GEN INFO
     if ( not iEvent.isRealData () ){
