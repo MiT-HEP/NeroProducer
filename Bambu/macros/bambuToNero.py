@@ -8,8 +8,6 @@ import os
 
 mitdata = os.environ['MIT_DATA']
 
-analysis.custom = {'bx': '25ns'}
-
 def switchBX(case25, case50):
     global analysis
     return case25 if analysis.custom['bx'] == '25ns' else case50
