@@ -11,7 +11,7 @@
 ClassImp(mithep::nero::JetsFiller)
 
 void
-mithep::nero::FatJetsFiller::defineBranches(TTree* _tree)
+mithep::nero::JetsFiller::defineBranches(TTree* _tree)
 {
   switch (collection_) {
   case BaseFiller::kJets:
@@ -137,4 +137,13 @@ mithep::nero::JetsFiller::fill()
       out_.QnoPU->push_back(0.);
     }
   }
+}
+
+void
+mithep::nero::JetsFiller::SetJetIdMVAWeightsFile(char const* _path, unsigned _idx/* = 0*/)
+{
+  if (_idx >= jetIdMVAWeightsFile_.size())
+    jetIdMVAWeightsFile_.resize(_idx + 1, "");
+
+  jetIdMVAWeightsFile_[_idx] = _path;
 }

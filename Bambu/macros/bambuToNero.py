@@ -38,13 +38,13 @@ from MitPhysics.Mods.PuppiPFJetMod import puppiPFJetMod
 ### JET/MET ID & CORRECTIONS ###
 ################################
 
-jetCorrection = mithep.JetCorrectionMod(
+jetCorrection = mithep.JetCorrectionMod('JetCorrection',
     InputName = 'AKt4PFJetsCHS',
     CorrectedJetsName = 'CorrectedJets',
     RhoAlgo = mithep.PileupEnergyDensity.kFixedGridFastjetAll
 )
 
-puppiJetCorrection = mithep.JetCorrectionMod(
+puppiJetCorrection = mithep.JetCorrectionMod('PuppiJetCorrection',
     InputName = puppiPFJetMod.GetOutputName(),
     CorrectedJetsName = 'CorrectedPuppiJets',
     RhoAlgo = mithep.PileupEnergyDensity.kFixedGridFastjetAll
@@ -86,7 +86,8 @@ metCorrectionJESDown.AddJetCorrectionFromFile(mitdata + '/JEC/' + jecPattern.for
 
 puppiMet = mithep.MetMod('PuppiMet',
     InputName = puppiMod.GetOutputName(),
-    OutputName = 'PuppiMet'
+    OutputName = 'PuppiMet',
+    OutputType = mithep.kPFMet
 )
 
 puppiMetCorrection = metCorrection.clone('PuppiMetCorrection',
@@ -479,22 +480,22 @@ neroMod.AddFiller(mithep.nero.VertexFiller(
     VerticesName = goodPVFilterMod.GetOutputName()
 ))
 
-neroMod.AddFiller(mithep.nero.JetsFiller(mithep.nero.BaseFiller.kJets,
+jetsFiller = mithep.nero.JetsFiller(mithep.nero.BaseFiller.kJets,
     JetsName = looseAK4Jets.GetOutputName(),
     VerticesName = goodPVFilterMod.GetOutputName(),
     JetIdCutWP = mithep.JetIDMVA.kLoose,
     JetIdMVATrainingSet = mithep.JetIDMVA.k53BDTCHSFullPlusRMS,
-    JetIdMVAWeightsFile = mitdata + '/TMVAClassification_5x_BDT_chsFullPlusRMS.weights.xml',
-    JetIdCutsFile = mitdata + '/jetIDCuts_121221.dat'
-))
+    JetIdMVAWeightsFile = mitdata + '/JetId/TMVAClassification_5x_BDT_chsFullPlusRMS.weights.xml',
+    JetIdCutsFile = mitdata + '/JetId/jetIDCuts_121221.dat'
+)
+
+neroMod.AddFiller(jetsFiller)
 
 neroMod.AddFiller(mithep.nero.JetsFiller(mithep.nero.BaseFiller.kPuppiJets,
     JetsName = puppiJetCorrection.GetOutputName(),
     VerticesName = goodPVFilterMod.GetOutputName(),
-    JetIdCutWP = mithep.JetIDMVA.kLoose,
-    JetIdMVATrainingSet = mithep.JetIDMVA.k53BDTCHSFullPlusRMS,
-    JetIdMVAWeightsFile = mitdata + '/TMVAClassification_5x_BDT_chsFullPlusRMS.weights.xml',
-    JetIdCutsFile = mitdata + '/jetIDCuts_121221.dat'
+    JetIdCutWP = mithep.JetIDMVA.nCutTypes,
+    JetIdMVATrainingSet = mithep.JetIDMVA.nMVATypes
 ))
 
 neroMod.AddFiller(mithep.nero.TausFiller(
@@ -624,13 +625,18 @@ filterMods = metSkim + muonBaselineId + electronBaselineId
 
 postskimSequence = Chain([
     skim,
+    separatePileUpMod,
+    puppiMod,
+    puppiPFJetMod,
     jetCorrection,
-    looseAK4Jets,
-    tightAK4Jets,
+    puppiJetCorrection,
     metCorrectionJESUp,
     metCorrectionJESDown,
+    puppiMet,
+    puppiMetCorrection,
+    looseAK4Jets,
+    tightAK4Jets,    
     looseTaus,
-    separatePileUpMod,
     muonPrivSoftId,
     muonFakeId,
     muonLooseId,

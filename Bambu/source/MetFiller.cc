@@ -33,6 +33,8 @@ mithep::nero::MetFiller::fill()
   if (jesDownMetCol)
     out_.ptJESDOWN->push_back(jesDownMetCol->At(0)->Pt());
 
+  out_.sumEt->push_back(met.SumEt());
+
   out_.metNoMu->SetXYZT(met.Px(), met.Py(), met.Pz(), met.E());
   auto* muons = getSource<mithep::ParticleCol>(muonsName_);
   for (unsigned iM(0); iM != muons->GetEntries(); ++iM) {
@@ -67,7 +69,7 @@ mithep::nero::MetFiller::fill()
   out_.caloMet_SumEt = caloMet->SumEt();
 
   if (puppiMetName_.Length() != 0) {
-    auto* puppiMetCol = getSource<mithep::MetCol>(puppiMetName_, false);
+    auto* puppiMetCol = getSource<mithep::PFMetCol>(puppiMetName_, false);
     auto& inPuppi(*puppiMetCol->At(0));
 
     out_.metPuppi->SetXYZT(inPuppi.Px(), inPuppi.Py(), inPuppi.Elongitudinal(), inPuppi.SumEt());

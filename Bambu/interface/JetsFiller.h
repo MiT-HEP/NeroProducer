@@ -29,7 +29,7 @@ namespace mithep {
       void SetVerticesName(char const* _name) { verticesName_ = _name; }
       void SetJetIdCutWP(unsigned _p) { jetIdCutWP_ = _p; }
       void SetJetIdMVATrainingSet(unsigned _p) { jetIdMVATrainingSet_ = _p; }
-      void SetJetIdMVAWeightsFile(char const* _path) { jetIdMVAWeightsFile_ = _path; }
+      void SetJetIdMVAWeightsFile(char const* _path, unsigned _idx = 0);
       void SetJetIdCutsFile(char const* _path) { jetIdCutsFile_ = _path; }
       void SetJetIDMVA(mithep::JetIDMVA* _mva) { jetId_ = _mva; }
 
@@ -44,7 +44,7 @@ namespace mithep {
       JetIDMVA* jetId_ = 0;
       unsigned jetIdCutWP_ = JetIDMVA::kLoose;
       unsigned jetIdMVATrainingSet_ = JetIDMVA::nMVATypes;
-      TString jetIdMVAWeightsFile_ = "";
+      std::vector<TString> jetIdMVAWeightsFile_{""};
       TString jetIdCutsFile_ = "";
       bool ownJetId_ = false;
 

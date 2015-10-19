@@ -3,7 +3,6 @@
 
 #include "NeroProducer/Core/interface/BareCollection.hpp"
 #include "NeroProducer/Core/interface/BareP4.hpp"
-#include "NeroProducer/Bambu/interface/Collections.h"
 
 #include "MitAna/DataTree/interface/Particle.h"
 
