@@ -52,11 +52,15 @@ void BareMet::clear(){
         *pfMet_e3p0 *= 0.;
         *trackMet *= 0.;
     }
+    sumEtRaw = -99.;
+    sumEtRawPuppi = -99.;
+    sumEtRawNoHF = -99.;
 }
 
 void BareMet::defineBranches(TTree *t){
     //
     BareP4::defineBranches(t, "met" );
+    t->Branch("metSumEtRaw",&sumEtRaw,"metSumEtRaw/F");
     //
     t->Branch("metPtJESUP","vector<float>",&ptJESUP);
     //
@@ -66,11 +70,13 @@ void BareMet::defineBranches(TTree *t){
     //
     t->Branch("metPuppi","TLorentzVector",&metPuppi);
     t->Branch("metPuppiSyst","TClonesArray",&metPuppiSyst,128000,0);
+    t->Branch("metSumEtRawPuppi",&sumEtRawPuppi,"metSumEtRawPuppi/F");
 
     if ( IsExtend() )
     {
         t->Branch("metNoMu","TLorentzVector",&metNoMu);
         t->Branch("metNoHF","TLorentzVector",&metNoHF);
+        t->Branch("metSumEtRawNoHF",&sumEtRawNoHF,"metSumEtRawNoHF/F");
         //
         t->Branch("pfMet_e3p0","TLorentzVector",&pfMet_e3p0);
         //
@@ -86,17 +92,20 @@ void BareMet::defineBranches(TTree *t){
 void BareMet::setBranchAddresses(TTree *t){
 
     BareP4::setBranchAddresses(t,"met");
+    BareFunctions::SetBranchAddress(t,"metSumEtRaw",&sumEtRaw);
 
     BareFunctions::SetBranchAddress(t,"metPtJESUP"	,&ptJESUP);
     BareFunctions::SetBranchAddress(t,"metPtJESDOWN",&ptJESDOWN);
     BareFunctions::SetBranchAddress(t,"metP4_GEN"	, &genP4 );
     BareFunctions::SetBranchAddress(t,"metPuppi", &metPuppi);
     BareFunctions::SetBranchAddress(t,"metPuppiSyst", &metPuppiSyst);
+    BareFunctions::SetBranchAddress(t,"metSumEtRawPuppi",&sumEtRawPuppi);
 
     if ( IsExtend() ) 
     {
         BareFunctions::SetBranchAddress(t,"metNoMu", &metNoMu);
         BareFunctions::SetBranchAddress(t,"metNoHF", &metNoHF);
+        BareFunctions::SetBranchAddress(t,"metSumEtRawNoHF",&sumEtRawNoHF);
         BareFunctions::SetBranchAddress(t,"pfMet_e3p0", &pfMet_e3p0);
         BareFunctions::SetBranchAddress(t,"trackMet", &trackMet);
         //calo met
