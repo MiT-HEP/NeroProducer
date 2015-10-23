@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Instruct builder to use a particular CMSSW release
-# [CMSSW] CMSSW_7_4_12_patch4
+# [CMSSW] CMSSW_7_4_14
 # [Options] isData=True is25ns=True is50ns=False
 
 #CMSSW_7_4_5: 
@@ -14,11 +14,11 @@ function CMSSW_7_4_12_patch4 {
 	true
 }
 ##
-function CMSSW_7_4_14{
+function CMSSW_7_4_14 {
 	true
 }
 
-function CMSSW_7_4_15{
+function CMSSW_7_4_15 {
 	true
 }
 
