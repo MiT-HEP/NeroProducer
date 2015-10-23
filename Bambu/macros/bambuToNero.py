@@ -15,11 +15,11 @@ def switchBX(case25, case50):
 jecVersion = switchBX('25nsV5', '50nsV5')
 
 if analysis.isRealData:
-    jecPattern = 'Summer15_' + jecVersion + '/Summer15_' + jecVersion + '_DATA_{level}_{jettype}.txt'
+    jecPattern = mitdata + '/JEC/Summer15_' + jecVersion + '/Summer15_' + jecVersion + '_DATA_{level}_{jettype}.txt'
     jecLevels = ['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual']
 
 else:
-    jecPattern = 'Summer15_' + jecVersion + '/Summer15_' + jecVersion + '_MC_{level}_{jettype}.txt'
+    jecPattern = mitdata +'/JEC/Summer15_' + jecVersion + '/Summer15_' + jecVersion + '_MC_{level}_{jettype}.txt'
     jecLevels = ['L1FastJet', 'L2Relative', 'L3Absolute']
 
 #########################################
@@ -73,14 +73,14 @@ metCorrectionJESDown = metCorrection.clone('MetCorrectionJESDown',
 
 for level in jecLevels:
     repl = {'level': level, 'jettype': 'AK4PFchs'}
-    jetCorrection.AddCorrectionFromFile(mitdata + '/JEC/' + jecPattern.format(**repl))
-    metCorrection.AddJetCorrectionFromFile(mitdata + '/JEC/' + jecPattern.format(**repl))
-    metCorrectionJESUp.AddJetCorrectionFromFile(mitdata + '/JEC/' + jecPattern.format(**repl))
-    metCorrectionJESDown.AddJetCorrectionFromFile(mitdata + '/JEC/' + jecPattern.format(**repl))
+    jetCorrection.AddCorrectionFromFile(jecPattern.format(**repl))
+    metCorrection.AddJetCorrectionFromFile(jecPattern.format(**repl))
+    metCorrectionJESUp.AddJetCorrectionFromFile(jecPattern.format(**repl))
+    metCorrectionJESDown.AddJetCorrectionFromFile(jecPattern.format(**repl))
 
 repl = {'level': 'Uncertainty', 'jettype': 'AK4PFchs'}
-metCorrectionJESUp.AddJetCorrectionFromFile(mitdata + '/JEC/' + jecPattern.format(**repl))
-metCorrectionJESDown.AddJetCorrectionFromFile(mitdata + '/JEC/' + jecPattern.format(**repl))
+metCorrectionJESUp.AddJetCorrectionFromFile(jecPattern.format(**repl))
+metCorrectionJESDown.AddJetCorrectionFromFile(jecPattern.format(**repl))
 
 puppiMet = mithep.MetMod('PuppiMet',
     InputName = puppiMod.GetOutputName(),
@@ -96,8 +96,8 @@ puppiMetCorrection = metCorrection.clone('PuppiMetCorrection',
 
 for level in jecLevels:
     repl = {'level': level, 'jettype': 'AK4PFPuppi'}
-    puppiJetCorrection.AddCorrectionFromFile(mitdata + '/JEC/' + jecPattern.format(**repl))
-    puppiMetCorrection.AddJetCorrectionFromFile(mitdata + '/JEC/' + jecPattern.format(**repl))
+    puppiJetCorrection.AddCorrectionFromFile(jecPattern.format(**repl))
+    puppiMetCorrection.AddJetCorrectionFromFile(jecPattern.format(**repl))
 
 # Will not use PU jet ID here (MVA values to be stored in Nero tree)
 looseAK4Jets = mithep.JetIdMod('AK4JetId',
@@ -363,7 +363,7 @@ ak8JetCorrection = mithep.JetCorrectionMod('AK8JetCorrection',
 )
 
 for level in jecLevels:
-    ak8JetCorrection.AddCorrectionFromFile(mitdata + '/JEC/' + jecPattern.format(level = level, jettype = 'AK8PFchs'))
+    ak8JetCorrection.AddCorrectionFromFile(jecPattern.format(level = level, jettype = 'AK8PFchs'))
 
 goodAK8Jets = looseAK4Jets.clone('GoodAK8Jets',
     InputName = ak8JetCorrection.GetOutputName(),
@@ -567,16 +567,20 @@ triggers = [
     ('PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight' if analysis.isRealData and analysis.custom['bx'] == '25ns' else 'PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight', []),
     ('PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight' if analysis.isRealData and analysis.custom['bx'] == '25ns' else 'PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight', []),
     ('PFMET170_NoiseCleaned', []),
-#    ('Ele23_WPLoose_Gsf' if analysis.isRealData else 'Ele23_CaloIdL_TrackIdL_IsoVL', []),
-    ('Ele27_eta2p1_WPLoose_Gsf' if analysis.isRealData else 'Ele27_eta2p1_WP75_Gsf', ['hltEle27WPLooseGsfTrackIsoFilter']), # filter only matches data
-    ('Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ', []),
+    ('PFMET170_HBHECleaned', []),
+    ('PFMET170_JetIdCleaned', []),
+    ('PFMET170', []),
+    ('Ele23_WPLoose_Gsf' if analysis.isRealData else 'Ele22_eta2p1_WP75_Gsf', ['hltEle23WPLooseGsfTrackIsoFilter']),
+    ('Ele27_WPLoose_Gsf' if analysis.isRealData else 'Ele27_WP85_Gsf', ['hltEle27WPLooseGsfTrackIsoFilter']), # filter only matches data
+    ('Ele12_CaloIdL_TrackIdL_IsoVL', ['hltEle12CaloIdLTrackIdLIsoVLTrackIsoFilter']),
+    ('Ele17_CaloIdL_TrackIdL_IsoVL', ['hltEle17CaloIdLTrackIdLIsoVLTrackIsoFilter']),
     ('IsoMu20', ['hltL3crIsoL1sMu16L1f0L2f10QL3f20QL3trkIsoFiltered0p09']),
     ('IsoTkMu20', ['hltL3fL1sMu16L1f0Tkf20QL3trkIsoFiltered0p09']),
     ('IsoMu27', ['hltL3crIsoL1sMu25L1f0L2f10QL3f27QL3trkIsoFiltered0p09']),
     ('Photon120', ['hltEG120HEFilter']),
-#    ('Photon135_PFMET100_JetIdCleaned', ['hltEG135HEFilter']),
     ('Photon165_HE10', ['hltEG165HE10Filter']),
     ('Photon175', ['hltEG175HEFilter']),
+    ('Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ', []),
     ('Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ', []),
     ('Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ', []),
     ('Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL', ['hltMu8TrkIsoVVLEle17CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8']),
@@ -584,13 +588,10 @@ triggers = [
     ('Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL', []),
     ('Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL', ['hltMu17TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered17']),
     ('Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL', ['hltMu17TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter']),
-    ('Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL', []),
     ('Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30', []),
     ('Ele18_CaloIdL_TrackIdL_IsoVL_PFJet30', []),
     ('Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30', []),
     ('Ele33_CaloIdL_TrackIdL_IsoVL_PFJet30', []),
-    ('Ele12_CaloIdL_TrackIdL_IsoVL', ['hltEle12CaloIdLTrackIdLIsoVLTrackIsoFilter']),
-    ('Ele17_CaloIdL_TrackIdL_IsoVL', ['hltEle17CaloIdLTrackIdLIsoVLTrackIsoFilter']),
     ('Mu8_TrkIsoVVL', ['hltL3fL1sMu5L1f0L2f5L3Filtered8TkIsoFiltered0p4']),
     ('Mu17_TrkIsoVVL', ['hltL3fL1sMu12L1f0L2f12L3Filtered17TkIsoFiltered0p4']),
     ('Mu24_TrkIsoVVL', ['hltL3fL1sMu16L1f0L2f16L3Filtered24TkIsoFiltered0p4']),
@@ -686,11 +687,31 @@ else:
         FillHist = True
     )
 
-    postskimSequence *= generator
+    mcParticlesNoNu = mithep.MCParticleFilterMod('MCParticlesNoNu',
+        InputName = mithep.Names.gkMCPartBrn,
+        OutputName = 'MCParticlesNoNu',
+        VetoParticleId = True
+    )
+    for pid in [12, 14, 16, 1000022]:
+        mcParticlesNoNu.AddParticleId(pid)
+
+    genJets = mithep.FastJetMod('GenJetsNoNu',
+        InputName = mcParticlesNoNu.GetOutputName(),
+        OutputJetsName = 'GenJetsNoNu',
+        OutputType = mithep.kGenJet,
+        ConeSize = 0.4,
+        NoActiveArea = True,
+        ParticleMinPt = 0.,
+        JetMinPt = 3.
+    )
+
+    postskimSequence *= Chain([generator, mcParticlesNoNu, genJets])
 
     metFiller.SetGenMetName(generator.GetMCMETName())
 
-    neroMod.AddFiller(mithep.nero.MonteCarloFiller())
+    neroMod.AddFiller(mithep.nero.MonteCarloFiller(
+        GenJetsName = genJets.GetOutputJetsName()
+    ))
 
 
 # neroMod must be independent of the main chain

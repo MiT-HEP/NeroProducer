@@ -53,7 +53,7 @@ mithep::nero::MonteCarloFiller::fill()
     if (part.Pt() < minPt)
       continue;
 
-    if ((part.Status() == 1 && partIs(part, {MCParticle::kEl, MCParticle::kMu, MCParticle::kGamma, MCParticle::kElNu, MCParticle::kMuNu, MCParticle::kTauNu})) ||
+    if ((part.Status() == 1 && partIs(part, {MCParticle::kEl, MCParticle::kMu, MCParticle::kGamma, MCParticle::kElNu, MCParticle::kMuNu, MCParticle::kTauNu, 1000022})) ||
         (part.Status() != 1 && part.StatusFlag(12) && partIs(part, {MCParticle::kTau, MCParticle::kZ, MCParticle::kW, MCParticle::kH, MCParticle::kHp, MCParticle::kUp, MCParticle::kDown, MCParticle::kStrange, MCParticle::kCharm, MCParticle::kBottom, MCParticle::kTop}))) { // 12 = kIsFirstCopy
         newP4(out_, part);
         out_.pdgId->push_back(part.PdgId());

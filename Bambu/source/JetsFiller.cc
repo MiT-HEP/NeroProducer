@@ -99,6 +99,8 @@ mithep::nero::JetsFiller::fill()
         selBits |= BareJets::mjId;
       if (nhFrac < 0.7 && neFrac < 0.9)
         selBits |= BareJets::mjIdLoose;
+      if (nhFrac < 0.8 && chFrac > 0.1)
+        selBits |= BareJets::mjId2015;
       out_.selBits->push_back(selBits);
 
       if (jetId_ && vertices)
