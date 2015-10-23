@@ -13,6 +13,7 @@ parser= OptionParser(usage=usage)
 parser.add_option("-b","--batch",dest="batch",action="store_true",help="Run in Batch mode",default=False);
 parser.add_option("-l","--limit",dest="limit",type='int',help="max number of entries for mc.",default=-1); 
 parser.add_option("-L","--lumi",dest="lumi",type='float',help="Luminosity.",default=30); 
+parser.add_option("-p","--pileup",dest="pileup",type='string',help="Pileup File.",default="script/MyDataPileupHistogram.root"); 
 parser.add_option("","--plotdir",dest="plotdir",type='string',help="plot directory [Default=%default].",default="plot"); 
 
 parser.add_option("-j","--json",dest="json",type='string',help="json file",default=""); 
@@ -24,7 +25,7 @@ if opts.batch:
 	ROOT.gROOT.SetBatch()
 
 
-version="v1.0.3"
+version="v1.1.1"
 
 disks={}
 xsections={}
@@ -34,32 +35,14 @@ lumi=opts.lumi ## pb
 
 fileLimit=-1
 
-book=['DY','WZ','ZZ','WW','WJets','TTJets'] ## WJets is very big with low eff for double muon
+#book=['DY','WZ','ZZ','WW','WJets','TTJets'] ## WJets is very big with low eff for double muon
+book=['DY','TTJets'] ## WJets is very big with low eff for double muon
 #book=['DY','WZ','ZZ','WW','TTJets']
 datasets=['SingleMuon','SingleElectron','Tau']
 ##configure
-####  if True:
-####  	#### Asympt 50 ns v2
-####  	base='/store/user/amarini/Nero/v1.0/RunIISpring15DR74/Asympt50ns_MCRUN2_74_V9A-v2/'
-####  	disks['DY']=base+'DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8'
-####  	disks['WZ']=base+'WZ_TuneCUETP8M1_13TeV-pythia8'
-####  	disks['ZZ']=base+'ZZ_TuneCUETP8M1_13TeV-pythia8'
-####  	### 50ns v1
-####  	base='/store/user/amarini/Nero/v1.0/RunIISpring15DR74/Asympt50ns_MCRUN2_74_V9A-v1/'
-####  	disks['WW']=base+'WW_TuneCUETP8M1_13TeV-pythia8'
-####  	disks['WJets']=base+'WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8'
-####  	disks['TTJets']=base+'TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8'
-####  	### DATA
-####  	base='/store/user/amarini/Nero/v1.0/PromptReco-v1/'
-####  	disks['SingleMuon']=base+'SingleMuon'
-####  	disks['SingleElectron']=base+'SingleElectron'
-####  	disks['SinglePhoton']=base+'SinglePhoton'
-####  	disks['Tau'] = base+'Tau'
-####  	disks['MET']=base+'MET'
-##configure
 if True:
 	#### Asympt 50 ns v2
-	base='/store/user/amarini/Nero/v1.0.3/50ns/'
+	base='/store/user/amarini/Nero/' + version + "/"
 	disks['DY']=base+'DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/'
 	disks['WZ']=base+'WZ_TuneCUETP8M1_13TeV-pythia8/'
 	disks['ZZ']=base+'ZZ_TuneCUETP8M1_13TeV-pythia8/'
@@ -68,7 +51,7 @@ if True:
 	disks['WJets']=base+'WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/'
 	disks['TTJets']=base+'TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/'
 	### DATA -- promptReco
-	base='/store/user/amarini/Nero/v1.0.3/PromptReco-v1/'
+	base='/store/user/amarini/Nero/' + version + "/"
 	disks['SingleMuon']=base+'SingleMuon'
 	disks['SingleElectron']=base+'SingleElectron'
 	disks['SinglePhoton']=base+'SinglePhoton'
@@ -90,7 +73,7 @@ def ReadFromEos(eos):
 	cmd = EOS+ " find -f " + eos
 	outputList = check_output(cmd,shell=True)
 	fileList0 = outputList.split()
-	fileList = [ re.sub("/eos/cms","root://eoscms//",f) for f in fileList0 ]
+	fileList = [ re.sub("/eos/cms","root://eoscms//",f) for f in fileList0 if '/failed/' not in f ]
 	return fileList
 
 def DeactivateBranches(t):
@@ -103,13 +86,24 @@ def DeactivateBranches(t):
 	t.SetBranchStatus("gen*",0)
 	t.SetBranchStatus("photon*",0)
 	t.SetBranchStatus("ak8*",0)
+	t.SetBranchStatus("calo*",0)
+	t.SetBranchStatus("track*",0)
+	t.SetBranchStatus("*",0)
+	
 	t.SetBranchStatus("jetP4",1)
 	t.SetBranchStatus("tauP4",1)
 	t.SetBranchStatus("tauIso",1)
-	t.SetBranchStatus("tauId",1)
-	t.SetBranchStatus("pfMet_e3p0",1)
+	t.SetBranchStatus("metPuppi",1)
+	t.SetBranchStatus("metP4",1)
+	t.SetBranchStatus("metNoHF",1)
 	t.SetBranchStatus("lep*",1)
-	t.SetBranchStatus("puTrue*",1)
+	t.SetBranchStatus("puTrueInt",1)
+	t.SetBranchStatus("mcWeight",1)
+	t.SetBranchStatus("runNum",1)
+	t.SetBranchStatus("lumiNum",1)
+	t.SetBranchStatus("eventNum",1)
+	t.SetBranchStatus("npv",1)
+	t.SetBranchStatus("rho",1)
 
 ### if a json is given parse it
 if opts.json != "":
@@ -118,14 +112,30 @@ if opts.json != "":
 
 
 # get PU Target
-puFile = ROOT.TFile.Open("MyDataPileupHistogramCHECK_true.root")
+puFile = ROOT.TFile.Open(opts.pileup)
+if puFile == None:
+	print "-> ERROR: Pileup File does not exists"
 #puTarget=ROOT.TH1D("pu","pu",100,0,50) # rho
 puTarget=puFile.Get("pileup")
+if puTarget == None:
+	print "-> ERROR: pileup file does not contains a pileup histo"
 
 print "->Getting pu for data" ## TODO, for puTrueInt, this is meaningless
 pu['data'] = puTarget.Clone("puData")
 
 puTarget.Reset("ACE")
+
+### GET MetPhi Corrections
+metFile = ROOT.TFile.Open("MetPhi.root")
+metCorrect={}
+metCorrect['x_data'] =metFile.Get("fx_data")
+metCorrect['y_data'] =metFile.Get("fy_data")
+metCorrect['x_mc'] =metFile.Get("fx_mc")
+metCorrect['y_mc'] =metFile.Get("fy_mc")
+
+if metCorrect['x_data'] == None or metCorrect['y_data'] == None or metCorrect['x_mc'] == None or metCorrect['y_mc'] == None:
+	print "Error no MET PHI CORRECTIONS"
+	exit(0)
 
 ## compute nevents
 print "-> compute nevents and pileup histo for mc"
@@ -151,62 +161,18 @@ for mc in book:
 	stdout += " "+str(n) +" files added"
 	print "\r"+stdout,
 	sys.stdout.flush()
-	SW=0.
 	t.SetBranchStatus("*",0)
 	t.SetBranchStatus("mcWeight",1)
 	t.SetBranchStatus("puTrue*",1)
 	sumW_histo = ROOT.TH1D("sumWH","histo",1,0,2)
-	## for i in range(0,t.GetEntries()):
-	## 	if i&1023 == 1:
-	## 		print "\r"+ stdout ,i,"/",t.GetEntriesFast(),
-	## 		sys.stdout.flush()
-	## 	t.GetEntry(i)
-	## 	SW += t.mcWeight
 	t.Draw("1>>sumWH","mcWeight" )
 	nevents[mc]= sumW_histo.GetBinContent(1)
-	stdout += "SumW=" + str(SW) + " == " + str(nevents[mc])
 	print "\r" + stdout, " pu ",
 	pu[mc] = puTarget.Clone("pu_"+mc)
 	pu[mc + '_reweight'] = puTarget.Clone("pu_"+mc + "_reweight") ## try to get the true reweight distribution
 	#te.Draw("rho>>pu_"+mc,"lepP4[1].Pt()>20","goff")
 	t.Draw("puTrueInt>>pu_"+mc,"","goff")
 	print "DONE"
-
-
-### for data in datasets:
-### 	stdout=" * for data "+ data
-### 	print stdout,
-### 	sys.stdout.flush()
-### 	t=ROOT.TChain("nero/events")
-### 	n=0
-### 	for f in ReadFromEos( disks[data] ):
-### 	      t.Add(f)
-### 	      n +=1
-### 	stdout += " "+ str(n) + " files"
-### 	print '\r' + stdout,
-### 	pu[data]= puTarget.Clone("pu_"+data)
-### 	# I need to apply the json
-### 	#t.Draw("rho>>pu_"+data,"lepP4[1].Pt()>20","goff")
-### 	t.SetBranchStatus("*",0)
-### 	t.SetBranchStatus("runNum",1)
-### 	t.SetBranchStatus("lumiNum",1)
-### 	t.SetBranchStatus("rho",1)
-### 	t.SetBranchStatus("lepP4",1)
-### 	for i in range(0,t.GetEntries() ):
-### 		t.GetEntry(i)
-### 		if opts.json != "":
-### 			# filter accordingly to a json file
-### 			run= str(t.runNum)
-### 			if run not in goodLumis.keys(): continue
-### 			isGood=False
-### 			for lumis in goodLumis[run] :
-### 				if t.lumiNum >= lumis[0] and t.lumiNum <= lumis[1] : isGood = True
-### 			if not isGood: continue
-### 		if t.lepP4.GetEntries() <2 : continue
-### 		if t.lepP4[1].Pt() <20 :continue
-### 		pu[data].Fill( t.rho )
-### 	stdout += " pu DONE "
-### 	print '\r' + stdout
 
 
 
@@ -332,6 +298,8 @@ mmM={}
 mmEta={}
 mmPt={}
 mmMet={}
+mmMetPuppi={}
+mmMetPhi={}
 mmMetNoHf={}
 mmRho={}
 mmNpv={}
@@ -376,6 +344,8 @@ mmM["data"] =ROOT.TH1D("mmM","mmM;M_{#mu#mu};Events",200,50,150)
 mmEta["data"] =ROOT.TH1D("mmEta","mmEta;Eta_{#mu#mu};Events",150,-5,5)
 mmPt["data"]=ROOT.TH1D("mmPt","mmPt;p_{T}^{#mu#mu};Events",150,0,300)
 mmMet["data"]=ROOT.TH1D("mmMet","mmMet;E_{T}^{miss}(DY#rightarrow#mu#mu); Events",150,0,300)
+mmMetPuppi["data"]=ROOT.TH1D("mmMetPuppi","mmMetPuppi;Puppi E_{T}^{miss}(DY#rightarrow#mu#mu); Events",150,0,300)
+mmMetPhi["data"]=ROOT.TH1D("mmMetPhi","mmMetPhi;#phi Puppi E_{T}^{miss}(DY#rightarrow#mu#mu); Events",150,-3.1416,3.1416)
 mmMetNoHf["data"]=ROOT.TH1D("mmMetNoHf","mmMetNoHf;E_{T}^{miss}(DY#rightarrow#mu#mu); Events",150,0,300)
 mmRho["data"] =ROOT.TH1D("mmRho","mmRho;#rho [GeV]; Events",100,0,50)
 mmNpv["data"] =ROOT.TH1D("mmNpv","mmNpv;#npv; Events",50,0,50)
@@ -442,6 +412,8 @@ for mc in book:
 	mmEta[mc] = mmEta["data"].Clone("%s_%s"%(mmEta["data"].GetName(),mc))
 	mmPt[mc] = mmPt["data"].Clone("%s_%s"%(mmPt["data"].GetName(),mc))
 	mmMet[mc] = mmMet["data"].Clone("%s_%s"%(mmMet["data"].GetName(),mc))
+	mmMetPhi[mc] = mmMetPhi["data"].Clone("%s_%s"%(mmMetPhi["data"].GetName(),mc))
+	mmMetPuppi[mc] = mmMetPuppi["data"].Clone("%s_%s"%(mmMetPuppi["data"].GetName(),mc))
 	mmMetNoHf[mc] = mmMetNoHf["data"].Clone("%s_%s"%(mmMetNoHf["data"].GetName(),mc))
 	mmRho[mc] = mmRho["data"].Clone("%s_%s"%(mmRho["data"].GetName(),mc))
 	mmNpv[mc] = mmNpv["data"].Clone("%s_%s"%(mmNpv["data"].GetName(),mc))
@@ -520,6 +492,10 @@ for mc in book:
 		w*=puReweight
 		pu[ mc + "_reweight" ] . Fill( puTrueInt, w ) 
 		#print "PU REWEIGHT DEBUG for,",t.puTrueInt,"=",puReweight, "(num=",num,"den=",den,")"
+		px = t.metPuppi.Px() - metCorrect['x_mc'].Eval( t.npv)
+		py = t.metPuppi.Py() -metCorrect['y_mc'].Eval(t.npv)
+		metCorr = ROOT.TLorentzVector()
+		metCorr.SetPxPyPzE(px,py,0 ,ROOT.TMath.Sqrt(px*px+py*py))
 		
 		## MM
 		if t.lepP4.GetEntries()>=2 and t.lepP4[1].Pt() > 20 and t.lepPdgId[0]* t.lepPdgId[1] == -13*13 :  ## OS SF muon, leading two
@@ -533,7 +509,9 @@ for mc in book:
 			mmEta[mc].Fill( ll.Eta(), w)
 			mmPt[mc].Fill( ll.Pt() ,w)
 			mmMet[mc].Fill( t.metP4[0].Pt(),w )
-			mmMetNoHf[mc].Fill( t.pfMet_e3p0.Pt(),w )
+			mmMetPhi[mc].Fill( metCorr.Phi(),w )
+			mmMetPuppi[mc].Fill( metCorr.Pt(),w )
+			mmMetNoHf[mc].Fill( t.metNoHF.Pt(),w )
 			mmIso[mc].Fill( t.lepIso[0] ,w)
 			mmChIso[mc].Fill( t.lepChIso[0] ,w)
 			mmNhIso[mc].Fill( t.lepNhIso[0] ,w)
@@ -555,7 +533,7 @@ for mc in book:
 			if leadJetIdx >=0 : e2dPhiJ[mc].Fill( abs(t.lepP4[1].DeltaPhi( t.jetP4[leadJetIdx]) ), w)
 			eePt[mc].Fill( ll.Pt() ,w)
 			eeMet[mc].Fill( t.metP4[0].Pt() ,w)
-			eeMetNoHf[mc].Fill( t.pfMet_e3p0.Pt() ,w)
+			eeMetNoHf[mc].Fill( t.metNoHF.Pt() ,w)
 
 			eeIso[mc].Fill( t.lepIso[0] ,w)
 			eeChIso[mc].Fill( t.lepChIso[0] ,w)
@@ -573,7 +551,7 @@ for mc in book:
 			if t.tauP4[iT].Pt()  <30 : continue
 			if abs(t.tauP4[iT].Eta()) >2.1 : continue
 			if t.tauIso[iT] >1.5 : continue
-			if t.tauId[iT]<0.5: continue
+			#if t.tauSelBits[iT]<0.5: continue
 
 			if leadTau <0 : 
 				leadTau = iT
@@ -583,6 +561,7 @@ for mc in book:
 				break
 
 		if subleadTau >0 :
+			w *= 1./8. #prescale
 			ll = t.tauP4[leadTau] + t.tauP4[subleadTau]
 			ttRho[mc].Fill( t.rho,w )
 			ttM[mc].Fill( ll.M(), w)
@@ -595,7 +574,6 @@ for mc in book:
 	print '\r'+stdout+" DONE                            "
 
 for data in datasets:
-
 	stdout=" * for data "+ data
 	print stdout,
 	t=ROOT.TChain("nero/events")
@@ -635,6 +613,10 @@ for data in datasets:
 			if leadJetPt<5 : 
 				leadJetIdx=i
 				leadJetPt = t.jetP4[i].Pt()
+		px = t.metPuppi.Px() - metCorrect['x_data'].Eval( t.npv)
+		py = t.metPuppi.Py() - metCorrect['y_data'].Eval(t.npv)
+		metCorr = ROOT.TLorentzVector()
+		metCorr.SetPxPyPzE(px,py,0 ,ROOT.TMath.Sqrt(px*px+py*py))
 
                 if t.lepP4.GetEntries()>=2 and t.lepP4[1].Pt() > 20 and t.lepPdgId[0]* t.lepPdgId[1] == -13*13 and data=='SingleMuon' : ## OS SF muon, leading two
                 	ll = t.lepP4[0] + t.lepP4[1]
@@ -646,7 +628,9 @@ for data in datasets:
                 	mmEta["data"].Fill( ll.Eta() )
                 	mmPt["data"].Fill( ll.Pt() )
 			mmMet["data"].Fill( t.metP4[0].Pt() )
-			mmMetNoHf["data"].Fill( t.pfMet_e3p0.Pt() )
+			mmMetPhi["data"].Fill( metCorr.Phi() )
+			mmMetPuppi["data"].Fill( metCorr.Pt() )
+			mmMetNoHf["data"].Fill( t.metNoHF.Pt() )
 
 			mmIso["data"].Fill( t.lepIso[0] )
 			mmChIso["data"].Fill( t.lepChIso[0] )
@@ -667,7 +651,7 @@ for data in datasets:
 			if leadJetIdx >=0 : e2dPhiJ["data"].Fill( abs(t.lepP4[1].DeltaPhi( t.jetP4[leadJetIdx]) ))
                 	eePt["data"].Fill( ll.Pt() )
 			eeMet["data"].Fill( t.metP4[0].Pt() )
-			eeMetNoHf["data"].Fill( t.pfMet_e3p0.Pt() )
+			eeMetNoHf["data"].Fill( t.metNoHF.Pt() )
 
 			eeIso["data"].Fill( t.lepIso[0] )
 			eeChIso["data"].Fill( t.lepChIso[0] )
@@ -683,7 +667,7 @@ for data in datasets:
 		for iT in range(0,t.tauP4.GetEntries()) :
 			if t.tauP4[iT].Pt()  <30 : continue
 			if t.tauIso[iT] >1.5 : continue
-			if t.tauId[iT]<0.5: continue
+			#if t.tauId[iT]<0.5: continue
 			if abs(t.tauP4[iT].Eta()) >2.1 : continue
 
 			if leadTau <0 : 
@@ -719,6 +703,7 @@ for name in ['mmM','mmPt','mmRho','mmMet',
 		'eeMetNoHf','eeEta','e2Eta','e2dPhiJ',
 		'ttM','ttPt', 'ttMet','ttRho','ttIso', 'ttLeadPt',
 		'eeNpv','mmNpv',
+		'mmMetPuppi','mmMetPhi'
 		]:
 
 	c=PrepareCanvas(name)
