@@ -55,12 +55,14 @@ mithep::nero::MonteCarloFiller::fill()
   out_.pdf2Id = mcEventInfo->Pdf2();
   out_.scalePdf = mcEventInfo->ScalePdf();
 
-  out_.r1f2 = mcEventInfo->ReweightScaleFactor(1);
-  out_.r1f5 = mcEventInfo->ReweightScaleFactor(2);
-  out_.r2f1 = mcEventInfo->ReweightScaleFactor(3);
-  out_.r2f2 = mcEventInfo->ReweightScaleFactor(4);
-  out_.r5f1 = mcEventInfo->ReweightScaleFactor(6);
-  out_.r5f5 = mcEventInfo->ReweightScaleFactor(8);
+  if (mcEventInfo->NReweightScaleFactors() > 8) {
+    out_.r1f2 = mcEventInfo->ReweightScaleFactor(1);
+    out_.r1f5 = mcEventInfo->ReweightScaleFactor(2);
+    out_.r2f1 = mcEventInfo->ReweightScaleFactor(3);
+    out_.r2f2 = mcEventInfo->ReweightScaleFactor(4);
+    out_.r5f1 = mcEventInfo->ReweightScaleFactor(6);
+    out_.r5f5 = mcEventInfo->ReweightScaleFactor(8);
+  }
   for (unsigned id : pdfReweightId_)
     out_.pdfRwgt->push_back(mcEventInfo->ReweightScaleFactor(id));
 
