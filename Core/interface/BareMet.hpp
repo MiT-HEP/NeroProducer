@@ -24,8 +24,6 @@ class BareMet : virtual public BareP4
         vector<float> *ptJESUP{0};
         vector<float> *ptJESDOWN{0};
     
-        vector<float> *sumEt{0};
-
         // Should not stay here, but in MC -> we will esculed it if run on onlyMc
         TClonesArray *genP4{0};
 

@@ -8,7 +8,6 @@ BareMet::BareMet() : BareP4() {
 BareMet::~BareMet(){
     BareFunctions::Delete(ptJESUP);
     BareFunctions::Delete(ptJESDOWN);
-    BareFunctions::Delete(sumEt);
     BareFunctions::Delete(genP4);
     BareFunctions::Delete(metNoMu);
     BareFunctions::Delete(metPuppi);
@@ -23,7 +22,6 @@ void BareMet::init(){
 
     BareFunctions::New(ptJESUP);
     BareFunctions::New(ptJESDOWN);
-    BareFunctions::New(sumEt);
     BareFunctions::New(genP4);
     BareFunctions::New(metPuppi);
     BareFunctions::New(metPuppiSyst);
@@ -43,7 +41,6 @@ void BareMet::clear(){
 
     ptJESUP -> clear();
     ptJESDOWN -> clear();
-    sumEt->clear();
     genP4 -> Clear();
     *metPuppi *= 0;
     metPuppiSyst->Clear();
@@ -68,8 +65,6 @@ void BareMet::defineBranches(TTree *t){
     t->Branch("metPtJESUP","vector<float>",&ptJESUP);
     //
     t->Branch("metPtJESDOWN","vector<float>",&ptJESDOWN);
-    //
-    t->Branch("sumEt","vector<float>",&sumEt);
     //
     t->Branch("metP4_GEN","TClonesArray", &genP4, 128000, 0);
     //
@@ -101,7 +96,6 @@ void BareMet::setBranchAddresses(TTree *t){
 
     BareFunctions::SetBranchAddress(t,"metPtJESUP"	,&ptJESUP);
     BareFunctions::SetBranchAddress(t,"metPtJESDOWN",&ptJESDOWN);
-    BareFunctions::SetBranchAddress(t,"sumEt",&sumEt);
     BareFunctions::SetBranchAddress(t,"metP4_GEN"	, &genP4 );
     BareFunctions::SetBranchAddress(t,"metPuppi", &metPuppi);
     BareFunctions::SetBranchAddress(t,"metPuppiSyst", &metPuppiSyst);

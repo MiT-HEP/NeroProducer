@@ -33,7 +33,7 @@ mithep::nero::MetFiller::fill()
   if (jesDownMetCol)
     out_.ptJESDOWN->push_back(jesDownMetCol->At(0)->Pt());
 
-  out_.sumEt->push_back(met.SumEt());
+  out_.sumEtRaw = met.SumEt();
 
   out_.metNoMu->SetXYZT(met.Px(), met.Py(), met.Pz(), met.E());
   auto* muons = getSource<mithep::ParticleCol>(muonsName_);
