@@ -7,6 +7,7 @@ BareMonteCarlo::BareMonteCarlo() : BareP4(){
 BareMonteCarlo::~BareMonteCarlo(){
     BareFunctions::Delete(jetP4);
     BareFunctions::Delete(pdgId);
+    BareFunctions::Delete(pdfRwgt);
 }
 
 void BareMonteCarlo::init(){
@@ -14,6 +15,7 @@ void BareMonteCarlo::init(){
 
     BareFunctions::New(jetP4);
     BareFunctions::New(pdgId);
+    BareFunctions::New(pdfRwgt);
 }
 
 void BareMonteCarlo::clear(){
@@ -21,6 +23,7 @@ void BareMonteCarlo::clear(){
     BareP4::clear();
     pdgId -> clear();
     jetP4 -> Clear();
+    pdfRwgt->clear();
     puTrueInt = -999;
     mcWeight = 1.0;
     qScale = -999;
@@ -31,6 +34,12 @@ void BareMonteCarlo::clear(){
     pdf1Id = -999;
     pdf2Id = -999;
     scalePdf = -999;
+    r2f1 = -1.;
+    r5f1 = -1.;
+    r1f2 = -1.;
+    r2f2 = -1.;
+    r1f5 = -1.;
+    r5f5 = -1.;
 }
 
 void BareMonteCarlo::defineBranches(TTree *t){
@@ -51,6 +60,13 @@ void BareMonteCarlo::defineBranches(TTree *t){
     t->Branch("pdfId1",&pdf1Id,"pdfId1/I");
     t->Branch("pdfId2",&pdf2Id,"pdfId2/I");
     t->Branch("pdfScalePdf",&scalePdf,"pdfScalePdf/F");
+    t->Branch("r2f1", &r2f1, "r2f1/F");
+    t->Branch("r5f1", &r5f1, "r5f1/F");
+    t->Branch("r1f2", &r1f2, "r1f2/F");
+    t->Branch("r2f2", &r2f2, "r2f2/F");
+    t->Branch("r1f5", &r1f5, "r1f5/F");
+    t->Branch("r5f5", &r5f5, "r5f5/F");
+    t->Branch("pdfRwgt", "vector<float>", &pdfRwgt);
 }
 
 void BareMonteCarlo::setBranchAddresses(TTree *t){
@@ -69,6 +85,13 @@ void BareMonteCarlo::setBranchAddresses(TTree *t){
     BareFunctions::SetBranchAddress(t,"pdfId1"	,&pdf1Id	);
     BareFunctions::SetBranchAddress(t,"pdfId2"	,&pdf2Id	);
     BareFunctions::SetBranchAddress(t,"pdfScalePdf"	,&scalePdf	);
+    BareFunctions::SetBranchAddress(t, "r2f1", &r2f1);
+    BareFunctions::SetBranchAddress(t, "r5f1", &r5f1);
+    BareFunctions::SetBranchAddress(t, "r1f2", &r1f2);
+    BareFunctions::SetBranchAddress(t, "r2f2", &r2f2);
+    BareFunctions::SetBranchAddress(t, "r1f5", &r1f5);
+    BareFunctions::SetBranchAddress(t, "r5f5", &r5f5);
+    BareFunctions::SetBranchAddress(t,"pdfRwgt", &pdfRwgt);
 }
 
 void BareMonteCarlo::compress(){

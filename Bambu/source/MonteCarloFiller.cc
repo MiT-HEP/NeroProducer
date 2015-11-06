@@ -2,13 +2,41 @@
 
 #include "MitAna/DataTree/interface/EventHeader.h"
 #include "MitAna/DataTree/interface/MCEventInfo.h"
+#include "MitAna/DataTree/interface/MCRunInfo.h"
 #include "MitAna/DataTree/interface/PileupInfoCol.h"
 #include "MitAna/DataTree/interface/MCParticleCol.h"
 #include "MitAna/DataTree/interface/GenJetCol.h"
 
 #include <vector>
+#include <stdexcept>
 
 ClassImp(mithep::nero::MonteCarloFiller)
+
+void
+mithep::nero::MonteCarloFiller::begin()
+{
+  if (pdfReweightGroup_.Length() != 0) {
+    // this may fail
+    auto* mcRunInfo = getSource<mithep::MCRunInfo>(Names::gkMCRunInfoBrn);
+    unsigned iG = 0;
+    for (; iG != mcRunInfo->NWeightGroups(); ++iG) {
+      if (pdfReweightGroup_ == mcRunInfo->WeightGroupType(iG))
+        break;
+    }
+    if (iG == mcRunInfo->NWeightGroups()) {
+      //      std::cerr << " MonteCarloFiller::begin(): No reweight factor group " << pdfReweightGroup_ << " found!!" << std::endl;
+      throw std::runtime_error(pdfReweightGroup_.Data());
+    }
+    else {
+      for (unsigned iC = 0; iC != mcRunInfo->NWeights(); ++iC) {
+        if (mcRunInfo->WeightGroup(iC) != iG)
+          continue;
+
+        pdfReweightId_.push_back(mcRunInfo->WeightPositionInEvent(iC));
+      }
+    }
+  }
+}
 
 void
 mithep::nero::MonteCarloFiller::fill()
@@ -27,6 +55,15 @@ mithep::nero::MonteCarloFiller::fill()
   out_.pdf1Id = mcEventInfo->Pdf1();
   out_.pdf2Id = mcEventInfo->Pdf2();
   out_.scalePdf = mcEventInfo->ScalePdf();
+
+  out_.r1f2 = mcEventInfo->ReweightScaleFactor(1);
+  out_.r1f5 = mcEventInfo->ReweightScaleFactor(2);
+  out_.r2f1 = mcEventInfo->ReweightScaleFactor(3);
+  out_.r2f2 = mcEventInfo->ReweightScaleFactor(4);
+  out_.r5f1 = mcEventInfo->ReweightScaleFactor(6);
+  out_.r5f5 = mcEventInfo->ReweightScaleFactor(8);
+  for (unsigned id : pdfReweightId_)
+    out_.pdfRwgt->push_back(mcEventInfo->ReweightScaleFactor(id));
 
   auto* puInfo = getSource<mithep::PileupInfoCol>("PileupInfo");
   out_.puTrueInt = 0;

@@ -38,7 +38,17 @@ class BareMonteCarlo : virtual public BareP4
         int   pdf1Id   ;
         int   pdf2Id   ;
         float scalePdf ;
-        
+
+        // QCD scale reweights
+        float r2f1;
+        float r5f1;
+        float r1f2;
+        float r2f2;
+        float r1f5;
+        float r5f5;
+    
+        // PDF reweights
+        std::vector<float> *pdfRwgt{0};
 
 };
 #endif

@@ -17,17 +17,17 @@ mithep::nero::TausFiller::fill()
     newP4(out_, tau);
 
     unsigned selBits(BareTaus::TauBaseline);
-    if (tau.PFTauDiscriminator(mithep::PFTau::kDiscriminationByDecayModeFindingNewDMs))
+    if (tau.PFTauDiscriminator(mithep::PFTau::kDiscriminationByDecayModeFindingNewDMs) > 0.5)
       selBits |= BareTaus::TauDecayModeFindingNewDMs;
-    if (tau.PFTauDiscriminator(mithep::PFTau::kDiscriminationByDecayModeFinding))
+    if (tau.PFTauDiscriminator(mithep::PFTau::kDiscriminationByDecayModeFinding) > 0.5)
       selBits |= BareTaus::TauDecayModeFinding;
-    if (tau.PFTauDiscriminator(mithep::PFTau::kDiscriminationByLooseElectronRejection))
+    if (tau.PFTauDiscriminator(mithep::PFTau::kDiscriminationByLooseElectronRejection) > 0.5)
       selBits |= BareTaus::AgainstEleLoose;
-    if (tau.PFTauDiscriminator(mithep::PFTau::kDiscriminationByMediumElectronRejection))
+    if (tau.PFTauDiscriminator(mithep::PFTau::kDiscriminationByMediumElectronRejection) > 0.5)
       selBits |= BareTaus::AgainstEleMedium;
-    if (tau.PFTauDiscriminator(mithep::PFTau::kDiscriminationByLooseMuonRejection))
+    if (tau.PFTauDiscriminator(mithep::PFTau::kDiscriminationByLooseMuonRejection) > 0.5)
       selBits |= BareTaus::AgainstMuLoose;
-    if (tau.PFTauDiscriminator(mithep::PFTau::kDiscriminationByTightMuonRejection))
+    if (tau.PFTauDiscriminator(mithep::PFTau::kDiscriminationByTightMuonRejection) > 0.5)
       selBits |= BareTaus::AgainstMuTight;
     out_.selBits->push_back(selBits);
 

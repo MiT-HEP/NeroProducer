@@ -62,7 +62,7 @@ mithep::nero::JetsFiller::fill()
 
   auto* vertices = getSource<mithep::VertexCol>(verticesName_);
 
-  mithep::NFArrBool* tightId(0);
+  mithep::NFArrBool const* tightId(0);
   if (tightIdName_.Length() != 0)
     tightId = getSource<mithep::NFArrBool>(tightIdName_);
 
@@ -86,7 +86,7 @@ mithep::nero::JetsFiller::fill()
     out_.grMotherPdgId->push_back(0);
 
     if (jet.ObjType() == mithep::kPFJet) {
-      auto& pfJet(static_cast<mithep::PFJet&>(jet));
+      auto& pfJet(static_cast<mithep::PFJet const&>(jet));
       double rawE(rawMom.E());
       double chFrac(pfJet.ChargedHadronEnergy() / rawE);
       double nhFrac(pfJet.NeutralHadronEnergy() / rawE);

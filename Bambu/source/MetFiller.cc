@@ -17,8 +17,8 @@ void
 mithep::nero::MetFiller::fill()
 {
   auto* metCol = getSource<mithep::PFMetCol>(metName_);
-  mithep::PFMetCol* jesUpMetCol(0);
-  mithep::PFMetCol* jesDownMetCol(0);
+  mithep::PFMetCol const* jesUpMetCol(0);
+  mithep::PFMetCol const* jesDownMetCol(0);
   if (jesUpMetName_.Length() != 0) 
     jesUpMetCol = getSource<mithep::PFMetCol>(jesUpMetName_, false);
   if (jesDownMetName_.Length() != 0)

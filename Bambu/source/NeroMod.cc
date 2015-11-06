@@ -5,8 +5,10 @@
 
 #include "MitAna/TreeMod/interface/HLTFwkMod.h"
 #include "MitAna/DataTree/interface/EventHeaderCol.h"
+#include "MitAna/DataTree/interface/MCRunInfo.h"
 
 #include <exception>
+#include <cstring>
 
 ClassImp(mithep::NeroMod)
 
@@ -74,7 +76,10 @@ mithep::NeroMod::SlaveBegin()
       static_cast<nero::AllFiller*>(filler_[nero::BaseFiller::kAll])->setSkippedEvents(skippedEvents);
   }
 
-  nero::BaseFiller::ProductGetter getter([this](char const* _name)->TObject* {
+  nero::BaseFiller::ProductGetter getter([this](char const* _name)->TObject const* {
+      if (std::strcmp(_name, mithep::Names::gkMCRunInfoBrn) == 0)
+        return this->GetMCRunInfo();
+
       return this->GetObject<TObject>(_name);
     });
 

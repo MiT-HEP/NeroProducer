@@ -39,13 +39,13 @@ mithep::nero::LeptonsFiller::fill()
   if (!electrons || !muons)
     return;
 
-  mithep::NFArrBool* muIds[32]{};
+  mithep::NFArrBool const* muIds[32]{};
   for (unsigned iSel(0); iSel != 32; ++iSel) {
     if (muonIdName_[iSel].Length() != 0)
       muIds[iSel] = getSource<mithep::NFArrBool>(muonIdName_[iSel]);
   }
 
-  mithep::NFArrBool* eleIds[32]{};
+  mithep::NFArrBool const* eleIds[32]{};
   for (unsigned iSel(0); iSel != 32; ++iSel) {
     if (electronIdName_[iSel].Length() != 0)
       eleIds[iSel] = getSource<mithep::NFArrBool>(electronIdName_[iSel]);
@@ -60,11 +60,11 @@ mithep::nero::LeptonsFiller::fill()
   unsigned iM(0);
 
   while (true) {
-    mithep::Electron* ele = 0;
+    mithep::Electron const* ele = 0;
     if (iE != electrons->GetEntries())
       ele = electrons->At(iE);
 
-    mithep::Muon* mu = 0;
+    mithep::Muon const* mu = 0;
     if (iM != muons->GetEntries())
       mu = muons->At(iM);
 
@@ -127,7 +127,7 @@ mithep::nero::LeptonsFiller::fill()
         double isoArr[4];
         double iso(IsolationTools::BetaMwithPUCorrection(nopuPFCands, puPFCands, mu, 0.4, isoArr));
       
-        mithep::PFCandidate* pf = 0;
+        mithep::PFCandidate const* pf = 0;
         for (unsigned iPF(0); iPF != pfCands->GetEntries(); ++iPF) {
           if (pfCands->At(iPF)->Mu() == mu)
             pf = pfCands->At(iPF);

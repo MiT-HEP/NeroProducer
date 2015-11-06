@@ -328,28 +328,48 @@ tightMuons = mithep.MaskCollectionMod('TightMuons',
 
 # Photons
 
-loosePhotons = mithep.PhotonIdMod('LoosePhotons',
+baselinePhotons = mithep.PhotonIdMod('BaselinePhotons',
     InputName = mithep.Names.gkPhotonBrn,
-    OutputName = 'LoosePhotons',
-    IdType = mithep.PhotonTools.kSummer15Loose,
-    IsoType = mithep.PhotonTools.kSummer15LooseIso,
-    ApplyCSafeElectronVeto = True,
+    OutputName = 'BaselinePhotons',
+    IdType = mithep.PhotonTools.kNoId,
+    IsoType = mithep.PhotonTools.kNoIso,
     PtMin = 15.,
     EtaMax = 2.5
 )
 
-photonMediumId = loosePhotons.clone('PhotonMediumId',
+photonLooseId = mithep.PhotonIdMod('PhotonLooseId',
     IsFilterMode = False,
-    InputName = loosePhotons.GetOutputName(),
+    InputName = baselinePhotons.GetOutputName(),
+    OutputName = 'PhotonLooseId',
+    IdType = mithep.PhotonTools.kSummer15Loose,
+    IsoType = mithep.PhotonTools.kSummer15LooseIso,
+    ApplyCSafeElectronVeto = False # veto applied in the filler code
+)
+
+photonMediumId = photonLooseId.clone('PhotonMediumId',
     OutputName = 'PhotonMediumId',
     IdType = mithep.PhotonTools.kSummer15Medium,
     IsoType = mithep.PhotonTools.kSummer15MediumIso
 )
 
-photonTightId = photonMediumId.clone('PhotonTightId',
+photonTightId = photonLooseId.clone('PhotonTightId',
     OutputName = 'PhotonTightId',
     IdType = mithep.PhotonTools.kSummer15Tight,
     IsoType = mithep.PhotonTools.kSummer15TightIso
+)
+
+photonHighPtId = photonLooseId.clone('PhotonHighPtId',
+    OutputName = 'PhotonHighPtId',
+    IdType = mithep.PhotonTools.kHighPtV2,
+    IsoType = mithep.PhotonTools.kHighPtV2Iso,
+    ApplyCSafeElectronVeto = True,
+    PtMin = 100.
+)
+
+loosePhotons = photonLooseId.clone('LoosePhotons',
+    IsFilterMode = True,
+    OutputName = 'LoosePhotons',
+    ApplyCSafeElectronVeto = True
 )
 
 #############################################
@@ -548,9 +568,11 @@ metFiller = mithep.nero.MetFiller(
 neroMod.AddFiller(metFiller)
 
 neroMod.AddFiller(mithep.nero.PhotonsFiller(
-    PhotonsName = loosePhotons.GetOutputName(),
+    PhotonsName = baselinePhotons.GetOutputName(),
+    LooseIdName = photonLooseId.GetOutputName(),
     MediumIdName = photonMediumId.GetOutputName(),
     TightIdName = photonTightId.GetOutputName(),
+    HighPtIdName = photonHighPtId.GetOutputName(),
     VerticesName = goodPVFilterMod.GetOutputName()
 ))
 
@@ -616,6 +638,7 @@ initialFilterSequence = Chain([
 preskimSequence = Chain([
     veryLooseMuons,
     veryLooseElectrons,
+    baselinePhotons,
     loosePhotons,
     metCorrection
 ])
@@ -656,8 +679,10 @@ postskimSequence = Chain([
     electronMediumIso,
     electronTightId,
     electronTightIso,
+    photonLooseId,
     photonMediumId,
     photonTightId,
+    photonHighPtId,
     ak8JetCorrection,
     goodAK8Jets,
     goodCA15Jets,
@@ -709,9 +734,13 @@ else:
 
     metFiller.SetGenMetName(generator.GetMCMETName())
 
-    neroMod.AddFiller(mithep.nero.MonteCarloFiller(
+    mcFiller = mithep.nero.MonteCarloFiller(
         GenJetsName = genJets.GetOutputJetsName()
-    ))
+    )
+    if 'pdfrwgt' in analysis.custom and analysis.custom['pdfrwgt'] != '-':
+        mcFiller.SetPdfReweightName(analysis.custom['pdfrwgt'])
+        
+    neroMod.AddFiller(mcFiller)
 
 
 # neroMod must be independent of the main chain
