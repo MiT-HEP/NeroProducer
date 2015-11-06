@@ -15,8 +15,7 @@ ClassImp(mithep::nero::MonteCarloFiller)
 void
 mithep::nero::MonteCarloFiller::begin()
 {
-  if (pdfReweightGroup_.Length() != 0) {
-    // this may fail
+  if (pdfReweightGroup_.Length() != 0 && pdfReweightId_.size() == 0) {
     auto* mcRunInfo = getSource<mithep::MCRunInfo>(Names::gkMCRunInfoBrn);
     unsigned iG = 0;
     for (; iG != mcRunInfo->NWeightGroups(); ++iG) {
