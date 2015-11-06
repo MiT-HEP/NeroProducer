@@ -112,7 +112,10 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
 
         //FILL
         //    e mu photons
-        if ( apdg == 11 or apdg == 13 or apdg == 22)
+        if ( apdg == 11 or apdg == 13 or apdg == 22  // e - mu - gamma
+                or (apdg >=12 and apdg<=16) // neutrinos
+                or apdg > 1000000  // susy neutrinos and neutralinos
+            )
         {
             new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(gen->px(), gen->py(), gen->pz(), gen->energy());
             pdgId -> push_back( pdg );
@@ -133,10 +136,14 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
         int apdg = abs(pdg);
         if (gen->status() == 1) continue; //packed
 
-        // tau Z (23)  W (24) H (25) H+ (37)
-        if ( apdg == 15 or 
-                (apdg >= 23 and apdg <26 ) or 
-                apdg == 37)
+    
+        if ( apdg == 15 or  // tau (15)
+                (apdg >= 23 and apdg <26 ) or   // Z(23) W(24) H(25)
+                apdg == 37 or // chHiggs: H+(37)
+                apdg <= 6 or // quarks up (2) down (1)  charm (4) strange (3) top (6) bottom (5)
+                apdg == 21 or // gluons (21)
+                apdg > 1000000 // susy neutrinos,neutralinos, charginos ...  lightest neutralinos (1000022)
+                )
         {
             new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(gen->px(), gen->py(), gen->pz(), gen->energy());
             pdgId -> push_back( pdg );

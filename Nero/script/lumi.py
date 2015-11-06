@@ -161,8 +161,10 @@ if __name__ == "__main__" :
 	cmd = EOS+ " find -f " + options.eos
 	outputList = check_output(cmd,shell=True)
 	fileList0 = outputList.split() ## change lines into list
-	filelist = [ re.sub("/eos/cms","root://eoscms//",f) for f in fileList0 ]
-		
+	removed = [ f for f in fileList0 if '/failed/' in f ]
+	for f in removed:
+		print>>sys.stderr, "ignoring failed file:",f
+	filelist = [ re.sub("/eos/cms","root://eoscms//",f) for f in fileList0 if '/failed/' not in f ]
     else:
         filelist = sys.argv[1:]
     

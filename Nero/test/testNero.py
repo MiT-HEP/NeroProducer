@@ -44,8 +44,8 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 fileList = [
     #'file:/tmp/amarini/step3_0.root'
-    '/store/user/amarini/mc/HplusToTauNu-M200/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9/MINIAODSIMv2/step3_46.root',
-    #'/store/data/Run2015D/SinglePhoton/MINIAOD/PromptReco-v3/000/256/630/00000/BE4748B0-295F-E511-A271-02163E014402.root',
+    #'/store/user/amarini/mc/HplusToTauNu-M200/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9/MINIAODSIMv2/step3_46.root',
+    '/store/data/Run2015D/SinglePhoton/MINIAOD/PromptReco-v3/000/256/630/00000/BE4748B0-295F-E511-A271-02163E014402.root',
 ]
 
 
