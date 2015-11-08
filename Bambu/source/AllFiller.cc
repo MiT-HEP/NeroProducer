@@ -34,6 +34,12 @@ mithep::nero::AllFiller::finalize()
 void
 mithep::nero::AllFiller::begin()
 {
+  scaleReweightSums_ = new TH1D("scaleReweightSums", "", 6, 0., 6.);
+  scaleReweightSums_->Sumw2();
+  int iBin = 0;
+  for (TString label : {"r1f2", "r1f5", "r2f1", "r2f2", "r5f1", "r5f5"})
+    scaleReweightSums_->GetXaxis()->SetBinLabel(++iBin, label);
+  
   // AllFiller::begin is called after MonteCarloFiller::begin
   if (!pdfReweightSums_ && pdfReweightId_->size() != 0) {
     outputFile_->cd();
@@ -86,6 +92,12 @@ mithep::nero::AllFiller::fill()
     }
 
     out_.mcWeight = mcInfo->Weight();
+
+    if (mcInfo->NReweightScaleFactors() > 8) {
+      int iBin = 0;
+      for (int iF : {1, 2, 3, 4, 6, 8})
+        scaleReweightSums_->Fill((++iBin) - 0.5, mcInfo->ReweightScaleFactor(iF));
+    }
 
     if (pdfReweightSums_) {
       for (unsigned iP(0); iP != pdfReweightId_->size(); ++iP) {
