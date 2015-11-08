@@ -10,7 +10,10 @@
 #include "MitPhysics/Utils/interface/ElectronTools.h"
 #include "MitPhysics/Mods/interface/IdMod.h"
 
+#include "TTree.h"
+
 #include <map>
+#include <cstring>
 
 ClassImp(mithep::nero::LeptonsFiller)
 
@@ -28,6 +31,24 @@ mithep::nero::LeptonsFiller::setDefinedId_(TString _idNames[], BareLeptons::Sele
   while ((1 << idx) != _selection)
     ++idx;
   _idNames[idx] = _name;
+}
+
+void
+mithep::nero::LeptonsFiller::initialize()
+{
+  outputFile_->cd();
+  auto* selBitsTree(new TTree("leptonSelBits", "Lepton selBits"));
+  char eleBitsName[128];
+  char muBitsName[128];
+  selBitsTree->Branch("electron", eleBitsName, "electron/C");
+  selBitsTree->Branch("muon", muBitsName, "muon/C");
+  for (unsigned iB(0); iB != 32; ++iB) {
+    std::strcpy(eleBitsName, electronIdName_[iB].Data());
+    std::strcpy(muBitsName, muonIdName_[iB].Data());
+    selBitsTree->Fill();
+  }
+  selBitsTree->Write();
+  delete selBitsTree;
 }
 
 void

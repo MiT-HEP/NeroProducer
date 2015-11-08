@@ -7,33 +7,55 @@
 #include "MitAna/DataTree/interface/MCParticleCol.h"
 #include "MitAna/DataTree/interface/GenJetCol.h"
 
+#include "TTree.h"
+
 #include <vector>
 #include <stdexcept>
+#include <algorithm>
+#include <cstring>
 
 ClassImp(mithep::nero::MonteCarloFiller)
 
 void
 mithep::nero::MonteCarloFiller::begin()
 {
-  if (pdfReweightGroup_.Length() != 0 && pdfReweightId_.size() == 0) {
+  if ((pdfReweightGroupNames_.size() != 0 || pdfReweightGroupIds_.size() != 0) && pdfReweightId_.size() == 0) {
     auto* mcRunInfo = getSource<mithep::MCRunInfo>(Names::gkMCRunInfoBrn);
-    unsigned iG = 0;
-    for (; iG != mcRunInfo->NWeightGroups(); ++iG) {
-      if (pdfReweightGroup_ == mcRunInfo->WeightGroupType(iG))
-        break;
+
+    // first convert group names to ids
+    for (auto& name : pdfReweightGroupNames_) {
+      unsigned iG = 0;
+      for (; iG != mcRunInfo->NWeightGroups(); ++iG) {
+        if (name == mcRunInfo->WeightGroupType(iG))
+          break;
+      }
+      if (iG == mcRunInfo->NWeightGroups())
+        throw std::runtime_error((name + " not found").Data());
+
+      if (std::find(pdfReweightGroupIds_.begin(), pdfReweightGroupIds_.end(), iG) == pdfReweightGroupIds_.end())
+        pdfReweightGroupIds_.push_back(iG);
     }
-    if (iG == mcRunInfo->NWeightGroups()) {
-      //      std::cerr << " MonteCarloFiller::begin(): No reweight factor group " << pdfReweightGroup_ << " found!!" << std::endl;
-      throw std::runtime_error(pdfReweightGroup_.Data());
-    }
-    else {
+
+    outputFile_->cd();
+    auto* namesTree = new TTree("pdfReweight", "PDF set names");
+    char weightDef[256];
+    namesTree->Branch("weightDef", weightDef, "weightDef/C");
+
+    for (unsigned gid : pdfReweightGroupIds_) {
       for (unsigned iC = 0; iC != mcRunInfo->NWeights(); ++iC) {
-        if (mcRunInfo->WeightGroup(iC) != iG)
+        if (mcRunInfo->WeightGroup(iC) != gid)
           continue;
 
         pdfReweightId_.push_back(mcRunInfo->WeightPositionInEvent(iC));
+
+        strcpy(weightDef, mcRunInfo->WeightDefinition(iC));
+        namesTree->Fill();
       }
     }
+
+    outputFile_->cd();
+    namesTree->Write();
+    delete namesTree;
   }
 }
 

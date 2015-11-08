@@ -10,6 +10,12 @@
 ClassImp(mithep::nero::AllFiller)
 
 void
+mithep::nero::AllFiller::initialize()
+{
+  skippedEvents_ = getSource<mithep::EventHeaderCol>(mithep::Names::gkSkimmedHeaders, false);
+}
+
+void
 mithep::nero::AllFiller::fill()
 {
   if (skippedEvents_) {

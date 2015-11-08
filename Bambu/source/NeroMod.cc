@@ -46,36 +46,6 @@ mithep::NeroMod::SlaveBegin()
   head_.Write();
   info_.Write();
 
-  TString triggerNames;
-  if (filler_[nero::BaseFiller::kTrigger]) {
-    auto& filler(*static_cast<nero::TriggerFiller*>(filler_[nero::BaseFiller::kTrigger]));
-    for (auto& n : filler.triggerNames())
-      triggerNames += n + ",";
-  }
-  TNamed("triggerNames", triggerNames.Data()).Write();
-
-  auto* selBitsTree(new TTree("selBits", "selBits"));
-  TString* eleBitsName(new TString);
-  TString* muBitsName(new TString);
-  selBitsTree->Branch("electron", "TString", &eleBitsName);
-  selBitsTree->Branch("muon", "TString", &muBitsName);
-  auto* leptonsFiller(static_cast<nero::LeptonsFiller*>(filler_[nero::BaseFiller::kLeptons]));
-  for (unsigned iB(0); iB != 32; ++iB) {
-    *eleBitsName = leptonsFiller->GetElectronIdName(iB);
-    *muBitsName = leptonsFiller->GetMuonIdName(iB);
-    selBitsTree->Fill();
-  }
-  selBitsTree->Write();
-  delete selBitsTree;
-  delete eleBitsName;
-  delete muBitsName;
-
-  if (filler_[nero::BaseFiller::kAll]) {
-    auto* skippedEvents = GetPublicObj<mithep::EventHeaderCol>(mithep::Names::gkSkimmedHeaders, false);
-    if (skippedEvents)
-      static_cast<nero::AllFiller*>(filler_[nero::BaseFiller::kAll])->setSkippedEvents(skippedEvents);
-  }
-
   nero::BaseFiller::ProductGetter getter([this](char const* _name)->TObject const* {
       if (std::strcmp(_name, mithep::Names::gkMCRunInfoBrn) == 0)
         return this->GetMCRunInfo();
@@ -86,6 +56,8 @@ mithep::NeroMod::SlaveBegin()
   for (unsigned iC(0); iC != nero::BaseFiller::nCollections; ++iC) {
     if (!filler_[iC])
       continue;
+
+    filler_[iC]->setOutputFile(outputFile);
 
     filler_[iC]->setProductGetter(getter);
 

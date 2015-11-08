@@ -739,10 +739,14 @@ else:
     )
     if 'pdfrwgt' in analysis.custom:
         if analysis.custom['pdfrwgt'] == 'amc_74':
-            # shoud become "AddPdfReweightName" in the future to allow multiple PDF groups
-            mcFiller.SetPdfReweightName('PDF_variation')
+            mcFiller.AddPdfReweightName('PDF_variation')
         elif analysis.custom['pdfrwgt'] == 'mg5_74':
-            mcFiller.SetPdfReweightName('NNPDF30_lo_as_0130.LHgrid')
+            mcFiller.AddPdfReweightName('NNPDF30_lo_as_0130.LHgrid')
+        elif analysis.custom['pdfrwgt'] == 'pwhg_74':
+            mcFiller.AddPdfReweightId(1) # group id = 0 -> scale reweights, 1 -> pdf reweights
+        else:
+            print 'Unrecognized pdfrwgt option', analysis.custom['pdfrwgt']
+            sys.exit(1)
         
     neroMod.AddFiller(mcFiller)
 

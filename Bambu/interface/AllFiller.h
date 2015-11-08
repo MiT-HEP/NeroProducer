@@ -17,14 +17,13 @@ namespace mithep {
       BareCollection* getObject() override { return &out_; }
       BaseFiller::Collection collection() const override { return BaseFiller::kAll; }
 
+      void initialize() override;
       void fill() override;
-
-      void setSkippedEvents(EventHeaderCol* _col) { skippedEvents_ = _col; }
 
     private:
       BareAll out_{};
 
-      EventHeaderCol* skippedEvents_ = 0;
+      EventHeaderCol const* skippedEvents_ = 0;
 
       ClassDef(AllFiller, 0)
     };

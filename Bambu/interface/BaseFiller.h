@@ -57,6 +57,8 @@ namespace mithep {
       typedef std::function<TObject const*(char const*)> ProductGetter;
       void setProductGetter(ProductGetter _getter) { getter_ = _getter; }
 
+      void setOutputFile(TFile* _file) { outputFile_ = _file; }
+
       void activate() { active_ = true; }
       void disactivate() { active_ = false; }
 
@@ -69,6 +71,8 @@ namespace mithep {
 
       virtual void begin() {} // @BeginRun
       virtual void fill() = 0; // @Process
+
+      TFile* outputFile_ = 0;
 
       bool active_ = true;
 

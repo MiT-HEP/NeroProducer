@@ -17,6 +17,7 @@ namespace mithep {
       BaseFiller::Collection collection() const override { return BaseFiller::kLeptons; }
       void setCrossRef(BaseFiller* _fillers[]);
 
+      void initialize() override;
       void fill() override;
 
       void SetElectronsName(char const* _name) { electronsName_ = _name; }
