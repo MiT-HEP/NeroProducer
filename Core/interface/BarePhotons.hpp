@@ -50,6 +50,7 @@ class BarePhotons : virtual public BareP4
 
         // EXTENDED VARIABLES
         vector<float> *rawpt{0};
+        vector<float> *r9{0};
 };
 
 #endif

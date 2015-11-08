@@ -1,4 +1,5 @@
 #include "NeroProducer/Bambu/interface/AllFiller.h"
+#include "NeroProducer/Bambu/interface/MonteCarloFiller.h"
 
 #include "MitAna/DataTree/interface/Names.h"
 #include "MitAna/DataTree/interface/EventHeaderCol.h"
@@ -10,9 +11,35 @@
 ClassImp(mithep::nero::AllFiller)
 
 void
+mithep::nero::AllFiller::setCrossRef(BaseFiller* _fillers[])
+{
+  pdfReweightId_ = &static_cast<MonteCarloFiller*>(_fillers[kMonteCarlo])->getPdfReweightId();
+}
+
+void
 mithep::nero::AllFiller::initialize()
 {
   skippedEvents_ = getSource<mithep::EventHeaderCol>(mithep::Names::gkSkimmedHeaders, false);
+}
+
+void
+mithep::nero::AllFiller::finalize()
+{
+  if (pdfReweightSums_) {
+    outputFile_->cd();
+    pdfReweightSums_->Write();
+  }
+}
+
+void
+mithep::nero::AllFiller::begin()
+{
+  // AllFiller::begin is called after MonteCarloFiller::begin
+  if (!pdfReweightSums_ && pdfReweightId_->size() != 0) {
+    outputFile_->cd();
+    pdfReweightSums_ = new TH1D("pdfReweightSums", "", pdfReweightId_->size(), 0., pdfReweightId_->size());
+    pdfReweightSums_->Sumw2();
+  }
 }
 
 void
@@ -59,5 +86,12 @@ mithep::nero::AllFiller::fill()
     }
 
     out_.mcWeight = mcInfo->Weight();
+
+    if (pdfReweightSums_) {
+      for (unsigned iP(0); iP != pdfReweightId_->size(); ++iP) {
+        unsigned id(pdfReweightId_->at(iP));
+        pdfReweightSums_->Fill(iP + 0.5, mcInfo->ReweightScaleFactor(id));
+      }
+    }
   }
 }

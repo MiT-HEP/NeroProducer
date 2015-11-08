@@ -18,6 +18,7 @@ BarePhotons::~BarePhotons(){
     BareFunctions::Delete(puIso);
     BareFunctions::Delete(puIsoRC);
     BareFunctions::Delete(rawpt);
+    BareFunctions::Delete(r9);
 }
 
 void BarePhotons::init(){
@@ -37,6 +38,7 @@ void BarePhotons::init(){
 
     if (IsExtend()) {
         BareFunctions::New(rawpt);
+        BareFunctions::New(r9);
     }
 }
 
@@ -58,6 +60,7 @@ void BarePhotons::clear(){
 
     if (extend_) {
         rawpt->clear();
+        r9->clear();
     }
 }
 
@@ -83,6 +86,7 @@ void BarePhotons::defineBranches(TTree *t){
 
     if (IsExtend()) {
         t->Branch("photonRawPt", "vector<float>", &rawpt);
+        t->Branch("photonR9", "vector<float>", &r9);
     }
 }
 
@@ -105,6 +109,7 @@ void BarePhotons::setBranchAddresses(TTree *t){
 
     if (IsExtend()) {
         BareFunctions::SetBranchAddress(t, "photonRawPt", &rawpt);
+        BareFunctions::SetBranchAddress(t, "photonR9", &r9);
     }
 }
 // Local Variables:

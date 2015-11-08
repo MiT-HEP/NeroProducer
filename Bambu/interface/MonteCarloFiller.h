@@ -6,6 +6,8 @@
 
 #include "MitAna/DataTree/interface/Names.h"
 
+#include "TH1D.h"
+
 namespace mithep {
   namespace nero {
 
@@ -26,6 +28,9 @@ namespace mithep {
       void AddPdfReweightId(UInt_t _id) { pdfReweightGroupIds_.push_back(_id); }
       void SetMinParticlePt(Double_t _min) { minParticlePt_ = _min; }
       void SetMinGenJetPt(Double_t _min) { minGenJetPt_ = _min; }
+
+      // used by AllFiller
+      std::vector<unsigned> const& getPdfReweightId() { return pdfReweightId_; }
 
     private:
       BareMonteCarlo out_{};

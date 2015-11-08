@@ -68,6 +68,8 @@ mithep::nero::PhotonsFiller::fill()
     out_.sieie->push_back(photon.CoviEtaiEta5x5());
     out_.rawpt->push_back(photon.SCluster()->RawEnergy() / std::cosh(scEta));
 
+    out_.r9->push_back(photon.R9());
+
     bool csafeveto(PhotonTools::PassElectronVetoConvRecovery(&photon, electrons, conversions, beamspot));
 
     unsigned selBits(BarePhotons::PhoBaseline);
