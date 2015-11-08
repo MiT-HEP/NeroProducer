@@ -737,8 +737,12 @@ else:
     mcFiller = mithep.nero.MonteCarloFiller(
         GenJetsName = genJets.GetOutputJetsName()
     )
-    if 'pdfrwgt' in analysis.custom and analysis.custom['pdfrwgt'] != '-':
-        mcFiller.SetPdfReweightName(analysis.custom['pdfrwgt'])
+    if 'pdfrwgt' in analysis.custom:
+        if analysis.custom['pdfrwgt'] == 'amc_74':
+            # shoud become "AddPdfReweightName" in the future to allow multiple PDF groups
+            mcFiller.SetPdfReweightName('PDF_variation')
+        elif analysis.custom['pdfrwgt'] == 'mg5_74':
+            mcFiller.SetPdfReweightName('NNPDF30_lo_as_0130.LHgrid')
         
     neroMod.AddFiller(mcFiller)
 
