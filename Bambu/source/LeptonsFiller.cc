@@ -25,12 +25,14 @@ mithep::nero::LeptonsFiller::setCrossRef(BaseFiller* _fillers[])
 }
 
 void
-mithep::nero::LeptonsFiller::setDefinedId_(TString _idNames[], BareLeptons::Selection _selection, char const* _name)
+mithep::nero::LeptonsFiller::setDefinedId_(Lepton _lep, BareLeptons::Selection _selection, char const* _name, Bool_t _saveAllPass)
 {
   unsigned idx(0);
   while ((1 << idx) != _selection)
     ++idx;
-  _idNames[idx] = _name;
+  idName_[_lep][idx] = _name;
+
+  savePassing_[_lep][idx] = _saveAllPass;
 }
 
 void
@@ -43,8 +45,8 @@ mithep::nero::LeptonsFiller::initialize()
   selBitsTree->Branch("electron", eleBitsName, "electron/C");
   selBitsTree->Branch("muon", muBitsName, "muon/C");
   for (unsigned iB(0); iB != 32; ++iB) {
-    std::strcpy(eleBitsName, electronIdName_[iB].Data());
-    std::strcpy(muBitsName, muonIdName_[iB].Data());
+    std::strcpy(eleBitsName, idName_[kEl][iB].Data());
+    std::strcpy(muBitsName, idName_[kMu][iB].Data());
     selBitsTree->Fill();
   }
   selBitsTree->Write();
@@ -60,16 +62,12 @@ mithep::nero::LeptonsFiller::fill()
   if (!electrons || !muons)
     return;
 
-  mithep::NFArrBool const* muIds[32]{};
-  for (unsigned iSel(0); iSel != 32; ++iSel) {
-    if (muonIdName_[iSel].Length() != 0)
-      muIds[iSel] = getSource<mithep::NFArrBool>(muonIdName_[iSel]);
-  }
-
-  mithep::NFArrBool const* eleIds[32]{};
-  for (unsigned iSel(0); iSel != 32; ++iSel) {
-    if (electronIdName_[iSel].Length() != 0)
-      eleIds[iSel] = getSource<mithep::NFArrBool>(electronIdName_[iSel]);
+  mithep::NFArrBool const* ids[nLeptons][32]{};
+  for (unsigned iL(0); iL != nLeptons; ++iL) {
+    for (unsigned iSel(0); iSel != 32; ++iSel) {
+      if (idName_[iL][iSel].Length() != 0)
+        ids[iL][iSel] = getSource<mithep::NFArrBool>(idName_[iL][iSel]);
+    }
   }
 
   auto* pfCands = getSource<mithep::PFCandidateCol>(pfCandsName_);
@@ -102,12 +100,12 @@ mithep::nero::LeptonsFiller::fill()
     if (ele) {
       // at least one standard lepton Id should be true
       unsigned iSel(0);
-      for (; iSel != 7; ++iSel) {
-        if (eleIds[iSel] && eleIds[iSel]->At(iE))
+      for (; iSel != 32; ++iSel) {
+        if (ids[kEl][iSel] && savePassing_[kEl][iSel] && ids[kEl][iSel]->At(iE))
           break;
       }
 
-      if (iSel != 7) {
+      if (iSel != 32) {
         newP4(out_, *ele);
 
         double chIso(ele->PFChargedHadronIso());
@@ -121,7 +119,7 @@ mithep::nero::LeptonsFiller::fill()
 
         unsigned selBits(0);
         for (iSel = 0; iSel != 32; ++iSel) {
-          if (eleIds[iSel] && eleIds[iSel]->At(iE))
+          if (ids[kEl][iSel] && ids[kEl][iSel]->At(iE))
             selBits |= (1 << iSel);
         }
         out_.selBits->push_back(selBits);
@@ -137,12 +135,12 @@ mithep::nero::LeptonsFiller::fill()
     else {
       // at least one lepton Id should be true
       unsigned iSel(0);
-      for (; iSel != 7; ++iSel) {
-        if (muIds[iSel] && muIds[iSel]->At(iM))
+      for (; iSel != 32; ++iSel) {
+        if (ids[kMu][iSel] && savePassing_[kMu][iSel] && ids[kMu][iSel]->At(iM))
           break;
       }
 
-      if (iSel != 7) {
+      if (iSel != 32) {
         newP4(out_, *mu);
 
         double isoArr[4];
@@ -159,7 +157,7 @@ mithep::nero::LeptonsFiller::fill()
 
         unsigned selBits(0);
         for (iSel = 0; iSel != 32; ++iSel) {
-          if (muIds[iSel] && muIds[iSel]->At(iM))
+          if (ids[kMu][iSel] && ids[kMu][iSel]->At(iM))
             selBits |= (1 << iSel);
         }
         out_.selBits->push_back(selBits);
