@@ -56,6 +56,7 @@ sub_group.add_option("-j","--jobId",dest="jobId",type='string',help="Jobs to be 
 parser.add_option_group(sub_group)
 sub_group.add_option("-s","--status",dest="status",action='store_true',help="Display status of dir", default=False)
 sub_group.add_option("" ,"--follow", dest="follow", action="store_true",help= "follow eos directory, and if new files are created look into submission [default=%default]" , default=False)
+sub_group.add_option("" ,"--options", dest="options", type="string",help= "Add the following additional options to cmsRun" , default="")
 
 (opts,args) = parser.parse_args()
 
@@ -280,8 +281,11 @@ for idx0,fl in enumerate(fileChunks):
 	print >> sh, "cmsRun " + os.environ['PWD'] + "/" + opts.dir + "/" + psetFileName, #+ " 2>&1 > log_%d.log"%idx
 	if opts.is25ns: print >>sh," is25ns=True is50ns=False",
 	else : print >>sh," is25ns=False is50ns=True",
-	if opts.data: print >> sh, " isData=True"
-	else: print >>sh, " isData=False" ## ENDL
+	if opts.data: print >> sh, " isData=True",
+	else: print >>sh, " isData=False",
+	## print additional options and endl
+	print >>sh," %s"%opts.options
+
 	print >> sh, "EXIT=$?"
 	print >> sh, "cd " + os.environ['PWD'] # support both absolute and relative path
 	print >> sh, "cd " + opts.dir

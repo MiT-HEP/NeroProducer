@@ -44,8 +44,8 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 fileList = [
     #'file:/tmp/amarini/step3_0.root'
-    #'/store/user/amarini/mc/HplusToTauNu-M200/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9/MINIAODSIMv2/step3_46.root',
-    '/store/data/Run2015D/SinglePhoton/MINIAOD/PromptReco-v3/000/256/630/00000/BE4748B0-295F-E511-A271-02163E014402.root',
+    #'/store/data/Run2015D/SinglePhoton/MINIAOD/PromptReco-v3/000/256/630/00000/BE4748B0-295F-E511-A271-02163E014402.root',
+    '/store/mc/RunIISpring15MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/50000/E4F89698-DE6E-E511-8681-0025905A60F4.root'
 ]
 
 
@@ -298,7 +298,8 @@ if options.isGrid:
 
 if options.isParticleGun:
 	process.nero.particleGun = cms.untracked.bool(True)
-	process.nero.extendEvent = cms.untracked.bool(True)
+	## this option is for the embedding informations
+	process.nero.extendEvent = cms.untracked.bool(False)
 
 #------------------------------------------------------
 process.p = cms.Path(

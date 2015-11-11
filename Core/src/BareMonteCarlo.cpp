@@ -7,6 +7,7 @@ BareMonteCarlo::BareMonteCarlo() : BareP4(){
 BareMonteCarlo::~BareMonteCarlo(){
     BareFunctions::Delete(jetP4);
     BareFunctions::Delete(pdgId);
+    BareFunctions::Delete(flags);
 }
 
 void BareMonteCarlo::init(){
@@ -14,12 +15,14 @@ void BareMonteCarlo::init(){
 
     BareFunctions::New(jetP4);
     BareFunctions::New(pdgId);
+    BareFunctions::New(flags);
 }
 
 void BareMonteCarlo::clear(){
     // This function clear all the internal storage and init it to an arbitrary value
     BareP4::clear();
     pdgId -> clear();
+    flags -> clear();
     jetP4 -> Clear();
     puTrueInt = -999;
     mcWeight = 1.0;
@@ -40,6 +43,7 @@ void BareMonteCarlo::defineBranches(TTree *t){
     t->Branch("genjetP4","TClonesArray", &jetP4, 128000, 0);
     //
     t->Branch("genPdgId","vector<int>", &pdgId);
+    t->Branch("genFlags","vector<unsigned>", &flags);
     //
     t->Branch("puTrueInt",&puTrueInt,"puTrueInt/I");
     t->Branch("mcWeight",&mcWeight,"mcWeight/F");
@@ -58,6 +62,7 @@ void BareMonteCarlo::setBranchAddresses(TTree *t){
     //
     BareFunctions::SetBranchAddress(t,"genjetP4"	, &jetP4 );
     BareFunctions::SetBranchAddress(t,"genPdgId"	, &pdgId);
+    BareFunctions::SetBranchAddress(t,"genFlags"	, &flags);
 
     BareFunctions::SetBranchAddress(t,"puTrueInt"	,&puTrueInt	);
     BareFunctions::SetBranchAddress(t,"mcWeight"	,&mcWeight	);
