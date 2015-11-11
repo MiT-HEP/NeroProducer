@@ -23,6 +23,21 @@ class BareMonteCarlo : virtual public BareP4
         //TClonesArray *p4{0}; // gen particles
         vector<int>  *pdgId{0};
 
+        enum StatusFlags{
+            // https://github.com/cms-sw/cmssw/blob/CMSSW_7_4_X/DataFormats/HepMCCandidate/interface/GenParticle.h#L41-L104
+            // ROBUST
+            PromptFinalState = 1UL<<0, //isPromptFinalState()
+            PromptDecayed = 1UL<<1, //isPromptDecayed()
+            DirectPromptTauDecayProductFinalState = 1UL<<2,//isDirectPromptTauDecayProductFinalState()
+            // HISTORY DEPENDENT
+            HardProcess = 1UL<<3, // isHardProcess
+            HardProcessBeforeFSR   = 1UL<<4, // fromHardProcessBeforeFSR
+            HardProcessDecayed = 1UL<<5 , //fromHardProcessDecayed() -- like a tau from the hard process
+            LastCopy  = 1UL<<6, // isLastCopy()
+            LastCopyBeforeFSR = 1UL<<7, //isLastCopyBeforeFSR()
+        };
+        vector<unsigned> *flags{0}; // status flags of the gen particles
+
         // genjets
         TClonesArray *jetP4{0};
 

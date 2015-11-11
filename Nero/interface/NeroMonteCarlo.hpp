@@ -42,8 +42,32 @@ class NeroMonteCarlo : virtual public NeroCollection,
         float mMinGenJetPt;
         bool mParticleGun; 
         int isRealData;
+       
+        // ---  
+        template<class T> // T is supposed to be: reco::GenParticles or Packed Gen Particles
+        unsigned  ComputeFlags( T & p ) ;
 
 };
+
+// template specification declaration
+template<>
+unsigned NeroMonteCarlo::ComputeFlags<const pat::PackedGenParticle>(const pat::PackedGenParticle &p );
+
+// code implementation of templated functions
+template<class T>
+unsigned NeroMonteCarlo::ComputeFlags(T &p)
+{ // this is called in the two loops
+    unsigned flag=0;
+    if (p.isPromptFinalState() ) flag |= PromptFinalState;
+    if (p.isPromptDecayed() ) flag |= PromptDecayed;
+    if (p.isDirectPromptTauDecayProductFinalState() ) flag |= DirectPromptTauDecayProductFinalState;
+    if (p.isHardProcess() ) flag |= HardProcess;
+    if (p.fromHardProcessBeforeFSR() ) flag |= HardProcessBeforeFSR;
+    if (p.fromHardProcessDecayed() ) flag |= HardProcessDecayed;
+    if (p.isLastCopy() ) flag |= LastCopy;
+    if (p.isLastCopyBeforeFSR() ) flag |= LastCopyBeforeFSR;
+    return flag;
+}
 
 
 #endif
