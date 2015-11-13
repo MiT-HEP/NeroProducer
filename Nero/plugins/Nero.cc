@@ -223,7 +223,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     info -> mOnlyMc = onlyMc;
     info -> isSkim_ = 1;
     //info -> pu_token = consumes<std::vector<PileupSummaryInfo> >(edm::InputTag("addPileupInfo"));
-    //info -> info_token = consumes<GenEventInfoProduct>(edm::InputTag("generator"));
+    info -> info_token = consumes<GenEventInfoProduct>(edm::InputTag("generator"));
     info -> events_token = consumes<std::vector<long>,edm::InLumi>( edm::InputTag("InfoProducer","vecEvents") ) ;
     info -> weights_token = consumes<std::vector<float>,edm::InLumi>( edm::InputTag("InfoProducer","vecMcWeights") ) ;
     info -> putrue_token = consumes<std::vector<int>,edm::InLumi>( edm::InputTag("InfoProducer","vecPuTrueInt") ) ;
@@ -339,6 +339,15 @@ Nero::beginJob()
     hD_["TotalMcWeight"]   = fileService_ -> make<TH1D>("hDTotalMcWeight", "hDTotalMcWeight",1,0,1); hD_["TotalMcWeight"] ->Sumw2();
     hD_["Pileup"]   = fileService_ -> make<TH1D>("hDPileup", "hDPileup",100,0,100); hD_["Pileup"] ->Sumw2();
 
+    hD_["scaleReweightSums"]  = fileService_ -> make<TH1D>("scaleReweightSums", "", 6, 0., 6.);
+
+    hD_["scaleReweightSums"]->Sumw2();
+    int iBin = 0;
+    for (TString label : {"r1f2", "r1f5", "r2f1", "r2f2", "r5f1", "r5f5"})
+        hD_["scaleReweightSums"]->GetXaxis()->SetBinLabel(++iBin, label);
+
+    hD_["pdfReweightSums"] = fileService_ -> make<TH1D> ("pdfReweightSums","", 500,0.,500.);
+
     fileService_ ->make<TNamed>("tag",tag_.c_str() );
     fileService_ ->make<TNamed>("head",head_.c_str() );
     fileService_ ->make<TNamed>("info",info_.c_str() );
@@ -370,6 +379,8 @@ Nero::beginJob()
             na->hDEvents =  hD_["Events"];
             na->hDTotalMcWeight = hD_["TotalMcWeight"];
             na->hDPileup = hD_["Pileup"];
+            na->hDscaleReweightSums = hD_["scaleReweightSums"];
+            na->hDpdfReweightSums = hD_["pdfReweightSums"];
         } // end if
         } // end for o in lumiObj
 } //end beginJob

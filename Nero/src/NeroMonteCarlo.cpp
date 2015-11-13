@@ -50,6 +50,17 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
     mcWeight = info_handle -> weight();
     if(VERBOSE>1) cout<<"                                     mcWeight="<<mcWeight<<endl;
     //weights() 
+    //---  scale
+    if ( info_handle ->weights()  .size() >= 9){
+        r1f2 = info_handle -> weights() [1] ;   
+        r1f5 = info_handle -> weights() [2] ;   
+        r2f1 = info_handle -> weights() [3] ;   
+        r2f2 = info_handle -> weights() [4] ;   
+        r5f1 = info_handle -> weights() [6] ;    
+        r5f5 = info_handle -> weights() [8] ;     
+    }
+    // --- fill pdf Weights
+    //
     if(VERBOSE>1) cout<<"[NeroMonteCarlo]::[analyze]::[DEBUG] PDF="<<endl;
     if ( mParticleGun ) {
         qScale   = -999 ;
