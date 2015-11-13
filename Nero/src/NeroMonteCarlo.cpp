@@ -130,6 +130,7 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
         {
             new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(gen->px(), gen->py(), gen->pz(), gen->energy());
             pdgId -> push_back( pdg );
+            flags -> push_back( ComputeFlags( *gen ) );
         }
 
     } //end packed
@@ -147,6 +148,8 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
         int apdg = abs(pdg);
         if (gen->status() == 1) continue; //packed
 
+        unsigned flag = ComputeFlags(*gen);
+
     
         if ( apdg == 15 or  // tau (15)
                 (apdg >= 23 and apdg <26 ) or   // Z(23) W(24) H(25)
@@ -154,10 +157,13 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
                 apdg <= 6 or // quarks up (2) down (1)  charm (4) strange (3) top (6) bottom (5)
                 apdg == 21 or // gluons (21)
                 apdg > 1000000 // susy neutrinos,neutralinos, charginos ...  lightest neutralinos (1000022)
+                or ( apdg == 11 and  ( flag &  HardProcessBeforeFSR) )
+                or ( apdg == 13 and  ( flag &  HardProcessBeforeFSR) )
                 )
         {
             new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(gen->px(), gen->py(), gen->pz(), gen->energy());
             pdgId -> push_back( pdg );
+            flags -> push_back( flag );
         }
     }
 
@@ -219,6 +225,23 @@ int NeroMonteCarlo::crossSection(edm::Run const & iRun, TH1F* h)
     h->Fill(12 ,pow(runinfo_handle->externalXSecNLO().value(),2) );
 
     return 0;
+}
+
+// ----- TEMPLATE SPECIFICATION
+template<> 
+unsigned NeroMonteCarlo::ComputeFlags<const pat::PackedGenParticle>(const pat::PackedGenParticle &p)
+{
+    // some of the template calls make no sense for teh packed gen particles
+    unsigned flag=0;
+    if (p.isPromptFinalState() ) flag |= PromptFinalState; //OK
+    //if (p.isPromptDecayed() ) flag |= PromptDecayed;
+    if (p.isDirectPromptTauDecayProductFinalState() ) flag |= DirectPromptTauDecayProductFinalState; //OK
+    //if (p.isHardProcess() ) flag |= HardProcess;
+    //if (p.fromHardProcessBeforeFSR() ) flag |= HardProcessBeforeFSR;
+    //if (p.fromHardProcessDecayed() ) flag |= HardProcessDecayed;
+    //if (p.isLastCopy() ) flag |= LastCopy;
+    //if (p.isLastCopyBeforeFSR() ) flag |= LastCopyBeforeFSR;
+    return flag;
 }
 
 // Local Variables:
