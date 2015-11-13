@@ -9,12 +9,17 @@ class BarePhotons : virtual public BareP4
 {
     public:
         enum Selection{
+            PhoBaseline = 1UL << 0,
             PhoLoose  = 1UL << 3, 
             PhoMedium = 1UL << 4,
             PhoTight  = 1UL << 5,
             // NONPOG
             PhoVLoose50 = 1UL<<8, // loose, no-sieie, looser ph-iso
-            PhoVLoose25 = 1UL <<9 // loose + no-sieie, looser ph-iso
+            PhoVLoose25 = 1UL <<9, // loose + no-sieie, looser ph-iso
+            PhoHighPt = 1UL << 10,
+            PhoLooseNoEVeto = 1UL << 11,
+            PhoMediumNoEVeto = 1UL << 12,
+            PhoTightNoEVeto = 1UL << 13
         };
 
         BarePhotons();
@@ -42,6 +47,10 @@ class BarePhotons : virtual public BareP4
         vector<float> *phoIsoRC{0};
         vector<float> *puIso{0};
         vector<float> *puIsoRC{0};
+
+        // EXTENDED VARIABLES
+        vector<float> *rawpt{0};
+        vector<float> *r9{0};
 };
 
 #endif

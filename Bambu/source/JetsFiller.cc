@@ -3,11 +3,27 @@
 #include "MitAna/DataTree/interface/JetCol.h"
 #include "MitAna/DataTree/interface/Vertex.h"
 #include "MitAna/DataTree/interface/PFJet.h"
+#include "MitAna/DataCont/interface/Types.h"
 
 #include "TDirectory.h"
 #include "TROOT.h"
 
 ClassImp(mithep::nero::JetsFiller)
+
+void
+mithep::nero::JetsFiller::defineBranches(TTree* _tree)
+{
+  switch (collection_) {
+  case BaseFiller::kJets:
+    out_.defineBranches(_tree, "");
+    break;
+  case BaseFiller::kPuppiJets:
+    out_.defineBranches(_tree, "puppi");
+    break;
+  default:
+    break;
+  }
+}
 
 void
 mithep::nero::JetsFiller::initialize()
@@ -46,6 +62,10 @@ mithep::nero::JetsFiller::fill()
 
   auto* vertices = getSource<mithep::VertexCol>(verticesName_);
 
+  mithep::NFArrBool const* tightId(0);
+  if (tightIdName_.Length() != 0)
+    tightId = getSource<mithep::NFArrBool>(tightIdName_);
+
   for (unsigned iJ(0); iJ != jets->GetEntries(); ++iJ) {
     auto& jet(*jets->At(iJ));
 
@@ -66,17 +86,21 @@ mithep::nero::JetsFiller::fill()
     out_.grMotherPdgId->push_back(0);
 
     if (jet.ObjType() == mithep::kPFJet) {
-      auto& pfJet(static_cast<mithep::PFJet&>(jet));
+      auto& pfJet(static_cast<mithep::PFJet const&>(jet));
       double rawE(rawMom.E());
       double chFrac(pfJet.ChargedHadronEnergy() / rawE);
       double nhFrac(pfJet.NeutralHadronEnergy() / rawE);
       double neFrac(pfJet.NeutralEmEnergy() / rawE);
 
-      unsigned selBits(BareJets::JetLoose);
+      unsigned selBits(BareJets::JetBaseline | BareJets::JetLoose);
+      if (tightId && tightId->At(iJ))
+        selBits |= BareJets::JetTight;
       if (chFrac > 0.2 && nhFrac < 0.7 && neFrac < 0.7)
         selBits |= BareJets::mjId;
       if (nhFrac < 0.7 && neFrac < 0.9)
         selBits |= BareJets::mjIdLoose;
+      if (nhFrac < 0.8 && chFrac > 0.1)
+        selBits |= BareJets::mjId2015;
       out_.selBits->push_back(selBits);
 
       if (jetId_ && vertices)
@@ -115,4 +139,13 @@ mithep::nero::JetsFiller::fill()
       out_.QnoPU->push_back(0.);
     }
   }
+}
+
+void
+mithep::nero::JetsFiller::SetJetIdMVAWeightsFile(char const* _path, unsigned _idx/* = 0*/)
+{
+  if (_idx >= jetIdMVAWeightsFile_.size())
+    jetIdMVAWeightsFile_.resize(_idx + 1, "");
+
+  jetIdMVAWeightsFile_[_idx] = _path;
 }

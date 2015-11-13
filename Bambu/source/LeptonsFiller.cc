@@ -3,21 +3,54 @@
 #include "MitAna/DataTree/interface/ElectronCol.h"
 #include "MitAna/DataTree/interface/MuonCol.h"
 #include "MitAna/DataTree/interface/PFCandidateCol.h"
+#include "MitAna/DataTree/interface/PileupEnergyDensity.h"
 #include "MitAna/DataCont/interface/Types.h"
 
 #include "MitPhysics/Utils/interface/IsolationTools.h"
+#include "MitPhysics/Utils/interface/ElectronTools.h"
+#include "MitPhysics/Mods/interface/IdMod.h"
+
+#include "TTree.h"
 
 #include <map>
+#include <cstring>
 
 ClassImp(mithep::nero::LeptonsFiller)
 
 void
-mithep::nero::LeptonsFiller::setDefinedId_(TString _idNames[], BareLeptons::Selection _selection, char const* _name)
+mithep::nero::LeptonsFiller::setCrossRef(BaseFiller* _fillers[])
+{
+  // need dynamic cast here because BareP4 inherits virtually from BareCollection
+  event_ = dynamic_cast<BareEvent*>(_fillers[kEvent]->getObject());
+}
+
+void
+mithep::nero::LeptonsFiller::setDefinedId_(Lepton _lep, BareLeptons::Selection _selection, char const* _name, Bool_t _saveAllPass)
 {
   unsigned idx(0);
   while ((1 << idx) != _selection)
     ++idx;
-  _idNames[idx] = _name;
+  idName_[_lep][idx] = _name;
+
+  savePassing_[_lep][idx] = _saveAllPass;
+}
+
+void
+mithep::nero::LeptonsFiller::initialize()
+{
+  outputFile_->cd();
+  auto* selBitsTree(new TTree("leptonSelBits", "Lepton selBits"));
+  char eleBitsName[128];
+  char muBitsName[128];
+  selBitsTree->Branch("electron", eleBitsName, "electron/C");
+  selBitsTree->Branch("muon", muBitsName, "muon/C");
+  for (unsigned iB(0); iB != 32; ++iB) {
+    std::strcpy(eleBitsName, idName_[kEl][iB].Data());
+    std::strcpy(muBitsName, idName_[kMu][iB].Data());
+    selBitsTree->Fill();
+  }
+  selBitsTree->Write();
+  delete selBitsTree;
 }
 
 void
@@ -29,16 +62,12 @@ mithep::nero::LeptonsFiller::fill()
   if (!electrons || !muons)
     return;
 
-  mithep::NFArrBool* muIds[32]{};
-  for (unsigned iSel(0); iSel != 32; ++iSel) {
-    if (muonIdName_[iSel].Length() != 0)
-      muIds[iSel] = getSource<mithep::NFArrBool>(muonIdName_[iSel]);
-  }
-
-  mithep::NFArrBool* eleIds[32]{};
-  for (unsigned iSel(0); iSel != 32; ++iSel) {
-    if (electronIdName_[iSel].Length() != 0)
-      eleIds[iSel] = getSource<mithep::NFArrBool>(electronIdName_[iSel]);
+  mithep::NFArrBool const* ids[nLeptons][32]{};
+  for (unsigned iL(0); iL != nLeptons; ++iL) {
+    for (unsigned iSel(0); iSel != 32; ++iSel) {
+      if (idName_[iL][iSel].Length() != 0)
+        ids[iL][iSel] = getSource<mithep::NFArrBool>(idName_[iL][iSel]);
+    }
   }
 
   auto* pfCands = getSource<mithep::PFCandidateCol>(pfCandsName_);
@@ -50,11 +79,11 @@ mithep::nero::LeptonsFiller::fill()
   unsigned iM(0);
 
   while (true) {
-    mithep::Electron* ele = 0;
+    mithep::Electron const* ele = 0;
     if (iE != electrons->GetEntries())
       ele = electrons->At(iE);
 
-    mithep::Muon* mu = 0;
+    mithep::Muon const* mu = 0;
     if (iM != muons->GetEntries())
       mu = muons->At(iM);
 
@@ -69,10 +98,10 @@ mithep::nero::LeptonsFiller::fill()
     }
 
     if (ele) {
-      // at least one lepton Id should be true
+      // at least one standard lepton Id should be true
       unsigned iSel(0);
       for (; iSel != 32; ++iSel) {
-        if (eleIds[iSel] && eleIds[iSel]->At(iE))
+        if (ids[kEl][iSel] && savePassing_[kEl][iSel] && ids[kEl][iSel]->At(iE))
           break;
       }
 
@@ -86,11 +115,11 @@ mithep::nero::LeptonsFiller::fill()
         double puIso(IsolationTools::PFElectronIsolation(ele, puPFCands, vertices->At(0), 10000., 0., 0.3, 0., mithep::PFCandidate::eHadron));
 
         out_.pdgId->push_back(-11 * ele->Charge());
-        out_.iso->push_back(chIso + nhIso + phoIso);
+        out_.iso->push_back(IsolationTools::PFEleCombinedIsolationRhoCorr(ele, event_->rho, ElectronTools::kEleEASummer15));
 
         unsigned selBits(0);
         for (iSel = 0; iSel != 32; ++iSel) {
-          if (eleIds[iSel] && eleIds[iSel]->At(iE))
+          if (ids[kEl][iSel] && ids[kEl][iSel]->At(iE))
             selBits |= (1 << iSel);
         }
         out_.selBits->push_back(selBits);
@@ -107,7 +136,7 @@ mithep::nero::LeptonsFiller::fill()
       // at least one lepton Id should be true
       unsigned iSel(0);
       for (; iSel != 32; ++iSel) {
-        if (muIds[iSel] && muIds[iSel]->At(iM))
+        if (ids[kMu][iSel] && savePassing_[kMu][iSel] && ids[kMu][iSel]->At(iM))
           break;
       }
 
@@ -117,7 +146,7 @@ mithep::nero::LeptonsFiller::fill()
         double isoArr[4];
         double iso(IsolationTools::BetaMwithPUCorrection(nopuPFCands, puPFCands, mu, 0.4, isoArr));
       
-        mithep::PFCandidate* pf = 0;
+        mithep::PFCandidate const* pf = 0;
         for (unsigned iPF(0); iPF != pfCands->GetEntries(); ++iPF) {
           if (pfCands->At(iPF)->Mu() == mu)
             pf = pfCands->At(iPF);
@@ -128,7 +157,7 @@ mithep::nero::LeptonsFiller::fill()
 
         unsigned selBits(0);
         for (iSel = 0; iSel != 32; ++iSel) {
-          if (muIds[iSel] && muIds[iSel]->At(iM))
+          if (ids[kMu][iSel] && ids[kMu][iSel]->At(iM))
             selBits |= (1 << iSel);
         }
         out_.selBits->push_back(selBits);

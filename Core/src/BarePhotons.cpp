@@ -17,6 +17,8 @@ BarePhotons::~BarePhotons(){
     BareFunctions::Delete(phoIsoRC);
     BareFunctions::Delete(puIso);
     BareFunctions::Delete(puIsoRC);
+    BareFunctions::Delete(rawpt);
+    BareFunctions::Delete(r9);
 }
 
 void BarePhotons::init(){
@@ -34,6 +36,10 @@ void BarePhotons::init(){
     BareFunctions::New(puIso);
     BareFunctions::New(puIsoRC);
 
+    if (IsExtend()) {
+        BareFunctions::New(rawpt);
+        BareFunctions::New(r9);
+    }
 }
 
 void BarePhotons::clear(){
@@ -51,6 +57,11 @@ void BarePhotons::clear(){
     phoIsoRC -> clear();
     puIso -> clear();
     puIsoRC -> clear();
+
+    if (extend_) {
+        rawpt->clear();
+        r9->clear();
+    }
 }
 
 void BarePhotons::defineBranches(TTree *t){
@@ -72,6 +83,11 @@ void BarePhotons::defineBranches(TTree *t){
     t->Branch("photonPhoIsoRC","vector<float>",&phoIsoRC);
     t->Branch("photonPuIso","vector<float>",&puIso);
     t->Branch("photonPuIsoRC","vector<float>",&puIsoRC);
+
+    if (IsExtend()) {
+        t->Branch("photonRawPt", "vector<float>", &rawpt);
+        t->Branch("photonR9", "vector<float>", &r9);
+    }
 }
 
 void BarePhotons::setBranchAddresses(TTree *t){
@@ -90,6 +106,11 @@ void BarePhotons::setBranchAddresses(TTree *t){
     BareFunctions::SetBranchAddress(t,"photonPhoIsoRC",&phoIsoRC);
     BareFunctions::SetBranchAddress(t,"photonPuIso",&puIso);
     BareFunctions::SetBranchAddress(t,"photonPuIsoRC",&puIsoRC);
+
+    if (IsExtend()) {
+        BareFunctions::SetBranchAddress(t, "photonRawPt", &rawpt);
+        BareFunctions::SetBranchAddress(t, "photonR9", &r9);
+    }
 }
 // Local Variables:
 // mode:c++

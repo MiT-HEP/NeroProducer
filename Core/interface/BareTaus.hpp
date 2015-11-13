@@ -8,8 +8,9 @@ class BareTaus : virtual public BareP4
 {
     public:
         enum Selection{
-            TauDecayModeFindingNewDMs = 1UL <<0,
-            TauDecayModeFinding = 1UL <<1,
+            TauBaseline = 1UL << 0,
+            TauDecayModeFindingNewDMs = 1UL << 1,
+            TauDecayModeFinding = 1UL << 2,
 
             // 0--7 POG
             AgainstEleLoose = 1UL <<8,

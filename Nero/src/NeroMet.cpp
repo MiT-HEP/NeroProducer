@@ -37,6 +37,8 @@ int NeroMet::analyze(const edm::Event& iEvent){
     // FILL
     new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector( met.px(),met.py(),met.pz(),met.energy()  );
 
+    sumEtRaw = met.uncorSumEt();
+
     ptJESUP -> push_back( met.shiftedPt(pat::MET::JetEnUp) );
     ptJESDOWN -> push_back( met.shiftedPt(pat::MET::JetEnDown) );
 
@@ -71,9 +73,11 @@ int NeroMet::analyze(const edm::Event& iEvent){
 
         const pat::MET &metnohf = handle_noHF->front(); 
         *metNoHF = TLorentzVector( metnohf.px(),metnohf.py(),metnohf.pz(),metnohf.energy());
+        sumEtRawNoHF = metnohf.uncorSumEt();
 
         const pat::MET &puppi = handle_puppi->front(); 
         *metPuppi =  TLorentzVector( puppi.px(), puppi.py(),puppi.pz(),puppi.energy() );
+        sumEtRawPuppi = puppi.uncorSumEt();
 
         for(Syst mysyst = (Syst)0; mysyst < MaxSyst ; mysyst = (Syst)((int)mysyst +1 ) )
         {

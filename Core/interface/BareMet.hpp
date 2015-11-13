@@ -23,16 +23,20 @@ class BareMet : virtual public BareP4
         //TClonesArray *p4;
         vector<float> *ptJESUP{0};
         vector<float> *ptJESDOWN{0};
-
+    
         // Should not stay here, but in MC -> we will esculed it if run on onlyMc
         TClonesArray *genP4{0};
+
+        float sumEtRaw;
 
         TLorentzVector *metNoMu{0};
         TLorentzVector *pfMet_e3p0{0}; // raw
         TLorentzVector *metNoHF{0};
+        float sumEtRawNoHF;
         TLorentzVector *trackMet{0};
 
         TLorentzVector *metPuppi{0};
+        float sumEtRawPuppi;
         // --- SYSTEMATICS -- //
         enum Syst{ JesUp= 0 , JesDown, JerUp,JerDown,UnclusterUp, UnclusterDown, TauUp, TauDown, PhotonUp, PhotonDown , ElectronUp, ElectronDown, MuonUp, MuonDown,  MaxSyst};
 

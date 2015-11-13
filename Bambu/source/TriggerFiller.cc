@@ -14,6 +14,12 @@ ClassImp(mithep::nero::TriggerFiller)
 void
 mithep::nero::TriggerFiller::initialize()
 {
+  TString triggerNames;
+  for (auto& n : triggerNames_)
+    triggerNames += n + ",";
+  outputFile_->cd();
+  TNamed("triggerNames", triggerNames.Data()).Write();
+
   out_.triggerFired->resize(triggerNames_.size(), 0);
   out_.triggerPrescale->resize(triggerNames_.size(), 0);
 }

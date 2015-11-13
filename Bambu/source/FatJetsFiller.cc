@@ -48,7 +48,7 @@ mithep::nero::FatJetsFiller::fill()
     if (jets->At(iJ)->ObjType() != kXlFatJet)
       throw std::runtime_error("non-fat jet passed to FatJetsFiller");
     
-    auto& jet(*static_cast<mithep::XlFatJet*>(jets->At(iJ)));
+    auto& jet(*static_cast<mithep::XlFatJet const*>(jets->At(iJ)));
 
     if (jet.Pt() < 100.)
       continue;

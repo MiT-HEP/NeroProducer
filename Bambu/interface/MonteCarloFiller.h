@@ -6,6 +6,8 @@
 
 #include "MitAna/DataTree/interface/Names.h"
 
+#include "TH1D.h"
+
 namespace mithep {
   namespace nero {
 
@@ -17,21 +19,32 @@ namespace mithep {
       BareCollection* getObject() override { return &out_; }
       BaseFiller::Collection collection() const override { return BaseFiller::kMonteCarlo; }
 
+      void begin() override;
       void fill() override;
 
       void SetMCParticlesName(char const* _name) { mcParticlesName_ = _name; }
       void SetGenJetsName(char const* _name) { genJetsName_ = _name; }
+      void AddPdfReweightName(char const* _name) { pdfReweightGroupNames_.push_back(_name); }
+      void AddPdfReweightId(UInt_t _id) { pdfReweightGroupIds_.push_back(_id); }
       void SetMinParticlePt(Double_t _min) { minParticlePt_ = _min; }
       void SetMinGenJetPt(Double_t _min) { minGenJetPt_ = _min; }
+
+      // used by AllFiller
+      std::vector<unsigned> const& getPdfReweightId() { return pdfReweightId_; }
 
     private:
       BareMonteCarlo out_{};
 
       TString mcParticlesName_ = mithep::Names::gkMCPartBrn;
       TString genJetsName_ = mithep::Names::gkGenJetBrn;
+      
+      std::vector<TString> pdfReweightGroupNames_{};
+      std::vector<UInt_t> pdfReweightGroupIds_{};
 
       Double_t minParticlePt_ = 0.;
       Double_t minGenJetPt_ = 0.;
+
+      std::vector<unsigned> pdfReweightId_;
 
       ClassDef(MonteCarloFiller, 0)
     };

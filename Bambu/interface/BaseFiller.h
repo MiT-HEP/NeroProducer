@@ -3,7 +3,6 @@
 
 #include "NeroProducer/Core/interface/BareCollection.hpp"
 #include "NeroProducer/Core/interface/BareP4.hpp"
-#include "NeroProducer/Bambu/interface/Collections.h"
 
 #include "MitAna/DataTree/interface/Particle.h"
 
@@ -23,6 +22,7 @@ namespace mithep {
       enum Collection {
         kEvent,
         kJets,
+        kPuppiJets,
         kAK8Jets,
         kCA15Jets,
         kLeptons,
@@ -54,21 +54,25 @@ namespace mithep {
 
       virtual void defineBranches(TTree* tree) { getObject()->defineBranches(tree); };
 
-      typedef std::function<TObject*(char const*)> ProductGetter;
+      typedef std::function<TObject const*(char const*)> ProductGetter;
       void setProductGetter(ProductGetter _getter) { getter_ = _getter; }
+
+      void setOutputFile(TFile* _file) { outputFile_ = _file; }
 
       void activate() { active_ = true; }
       void disactivate() { active_ = false; }
 
     protected:
       template<class T>
-      T* getSource(char const* name, bool doThrow = true) const;
+      T const* getSource(char const* name, bool doThrow = true) const;
 
       void newP4(BareP4&, mithep::Particle const&) const;
       void newP4(TClonesArray&, mithep::Particle const&) const;
 
       virtual void begin() {} // @BeginRun
       virtual void fill() = 0; // @Process
+
+      TFile* outputFile_ = 0;
 
       bool active_ = true;
 
@@ -101,10 +105,10 @@ mithep::nero::BaseFiller::callFill()
 
 template<class T>
 inline
-T*
+T const*
 mithep::nero::BaseFiller::getSource(char const* _name, bool _doThrow/* = true*/) const
 {
-  auto* source = dynamic_cast<T*>(getter_(_name));
+  auto* source = dynamic_cast<T const*>(getter_(_name));
   if (!source && _doThrow)
     throw std::runtime_error((TString("ProductNotFound: ") + _name).Data());
 

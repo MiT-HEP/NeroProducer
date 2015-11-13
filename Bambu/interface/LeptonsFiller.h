@@ -2,57 +2,80 @@
 #define NeroProducer_Bambu_LeptonsFiller_h
 
 #include "NeroProducer/Bambu/interface/BaseFiller.h"
+#include "NeroProducer/Core/interface/BareEvent.hpp"
 #include "NeroProducer/Core/interface/BareLeptons.hpp"
 
 namespace mithep {
   namespace nero {
 
     class LeptonsFiller : public BaseFiller {
+      enum Lepton {
+        kEl,
+        kMu,
+        nLeptons
+      };
+
     public:
       LeptonsFiller() {}
       ~LeptonsFiller() {}
 
       BareCollection* getObject() override { return &out_; }
       BaseFiller::Collection collection() const override { return BaseFiller::kLeptons; }
+      void setCrossRef(BaseFiller* _fillers[]);
 
+      void initialize() override;
       void fill() override;
 
       void SetElectronsName(char const* _name) { electronsName_ = _name; }
       void SetMuonsName(char const* _name) { muonsName_ = _name; }
-      void SetVetoMuonIdName(char const* _name) { setDefinedId_(muonIdName_, BareLeptons::LepVeto, _name); }
-      void SetFakeMuonIdName(char const* _name) { setDefinedId_(muonIdName_, BareLeptons::LepFake, _name); }
-      void SetSoftMuonIdName(char const* _name) { setDefinedId_(muonIdName_, BareLeptons::LepSoft, _name); }
-      void SetLooseMuonIdName(char const* _name) { setDefinedId_(muonIdName_, BareLeptons::LepLoose, _name); }
-      void SetMediumMuonIdName(char const* _name) { setDefinedId_(muonIdName_, BareLeptons::LepMedium, _name); }
-      void SetTightMuonIdName(char const* _name) { setDefinedId_(muonIdName_, BareLeptons::LepTight, _name); }
-      void SetMuonIdName(UInt_t _bit, char const* _name) { muonIdName_[_bit] = _name; }
-      void SetVetoElectronIdName(char const* _name) { setDefinedId_(electronIdName_, BareLeptons::LepVeto, _name); }
-      void SetFakeElectronIdName(char const* _name) { setDefinedId_(electronIdName_, BareLeptons::LepFake, _name); }
-      void SetSoftElectronIdName(char const* _name) { setDefinedId_(electronIdName_, BareLeptons::LepSoft, _name); }
-      void SetLooseElectronIdName(char const* _name) { setDefinedId_(electronIdName_, BareLeptons::LepLoose, _name); }
-      void SetMediumElectronIdName(char const* _name) { setDefinedId_(electronIdName_, BareLeptons::LepMedium, _name); }
-      void SetTightElectronIdName(char const* _name) { setDefinedId_(electronIdName_, BareLeptons::LepTight, _name); }
-      void SetElectronIdName(UInt_t _bit, char const* _name) { electronIdName_[_bit] = _name; }
+      void SetBaselineMuonIdName(char const* _name, Bool_t _saveAllPass = kFALSE) { setDefinedId_(kMu, BareLeptons::LepBaseline, _name, _saveAllPass); }
+      void SetVetoMuonIdName(char const* _name, Bool_t _saveAllPass = kFALSE) { setDefinedId_(kMu, BareLeptons::LepVeto, _name, _saveAllPass); }
+      void SetFakeMuonIdName(char const* _name, Bool_t _saveAllPass = kFALSE) { setDefinedId_(kMu, BareLeptons::LepFake, _name, _saveAllPass); }
+      void SetSoftMuonIdName(char const* _name, Bool_t _saveAllPass = kFALSE) { setDefinedId_(kMu, BareLeptons::LepSoft, _name, _saveAllPass); }
+      void SetLooseMuonIdName(char const* _name, Bool_t _saveAllPass = kFALSE) { setDefinedId_(kMu, BareLeptons::LepLoose, _name, _saveAllPass); }
+      void SetMediumMuonIdName(char const* _name, Bool_t _saveAllPass = kFALSE) { setDefinedId_(kMu, BareLeptons::LepMedium, _name, _saveAllPass); }
+      void SetTightMuonIdName(char const* _name, Bool_t _saveAllPass = kFALSE) { setDefinedId_(kMu, BareLeptons::LepTight, _name, _saveAllPass); }
+      void SetLooseMuonIsoName(char const* _name, Bool_t _saveAllPass = kFALSE) { setDefinedId_(kMu, BareLeptons::LepLooseIso, _name, _saveAllPass); }
+      void SetMediumMuonIsoName(char const* _name, Bool_t _saveAllPass = kFALSE) { setDefinedId_(kMu, BareLeptons::LepMediumIso, _name, _saveAllPass); }
+      void SetTightMuonIsoName(char const* _name, Bool_t _saveAllPass = kFALSE) { setDefinedId_(kMu, BareLeptons::LepTightIso, _name, _saveAllPass); }
+      void SetMediumIPMuonIdName(char const* _name, Bool_t _saveAllPass = kFALSE) { setDefinedId_(kMu, BareLeptons::LepMediumIP, _name, _saveAllPass); }
+      void SetTightIPMuonIdName(char const* _name, Bool_t _saveAllPass = kFALSE) { setDefinedId_(kMu, BareLeptons::LepTightIP, _name, _saveAllPass); }
+      void SetSoftIPMuonIdName(char const* _name, Bool_t _saveAllPass = kFALSE) { setDefinedId_(kMu, BareLeptons::LepSoftIP, _name, _saveAllPass); }
+      void SetMuonIdName(UInt_t _bit, char const* _name, Bool_t _saveAllPass = kFALSE) { idName_[kMu][_bit] = _name; savePassing_[kMu][_bit] = _saveAllPass; }
+      void SetBaselineElectronIdName(char const* _name, Bool_t _saveAllPass = kFALSE) { setDefinedId_(kEl, BareLeptons::LepBaseline, _name, _saveAllPass); }
+      void SetVetoElectronIdName(char const* _name, Bool_t _saveAllPass = kFALSE) { setDefinedId_(kEl, BareLeptons::LepVeto, _name, _saveAllPass); }
+      void SetFakeElectronIdName(char const* _name, Bool_t _saveAllPass = kFALSE) { setDefinedId_(kEl, BareLeptons::LepFake, _name, _saveAllPass); }
+      void SetSoftElectronIdName(char const* _name, Bool_t _saveAllPass = kFALSE) { setDefinedId_(kEl, BareLeptons::LepSoft, _name, _saveAllPass); }
+      void SetLooseElectronIdName(char const* _name, Bool_t _saveAllPass = kFALSE) { setDefinedId_(kEl, BareLeptons::LepLoose, _name, _saveAllPass); }
+      void SetMediumElectronIdName(char const* _name, Bool_t _saveAllPass = kFALSE) { setDefinedId_(kEl, BareLeptons::LepMedium, _name, _saveAllPass); }
+      void SetTightElectronIdName(char const* _name, Bool_t _saveAllPass = kFALSE) { setDefinedId_(kEl, BareLeptons::LepTight, _name, _saveAllPass); }
+      void SetLooseElectronIsoName(char const* _name, Bool_t _saveAllPass = kFALSE) { setDefinedId_(kEl, BareLeptons::LepLooseIso, _name, _saveAllPass); }
+      void SetMediumElectronIsoName(char const* _name, Bool_t _saveAllPass = kFALSE) { setDefinedId_(kEl, BareLeptons::LepMediumIso, _name, _saveAllPass); }
+      void SetTightElectronIsoName(char const* _name, Bool_t _saveAllPass = kFALSE) { setDefinedId_(kEl, BareLeptons::LepTightIso, _name, _saveAllPass); }
+      void SetElectronIdName(UInt_t _bit, char const* _name, Bool_t _saveAllPass = kFALSE) { idName_[kEl][_bit] = _name; savePassing_[kEl][_bit] = _saveAllPass; }
       void SetVerticesName(char const* _name) { verticesName_ = _name; }
       void SetPFCandsName(char const* _name) { pfCandsName_ = _name; }
       void SetNoPUPFCandsName(char const* _name) { nopuPFCandsName_ = _name; }
       void SetPUPFCandsName(char const* _name) { puPFCandsName_ = _name; }
 
-      char const* GetMuonIdName(UInt_t _bit) { return muonIdName_[_bit]; }
-      char const* GetElectronIdName(UInt_t _bit) { return electronIdName_[_bit]; }
+      char const* GetMuonIdName(UInt_t _bit) { return idName_[kMu][_bit]; }
+      char const* GetElectronIdName(UInt_t _bit) { return idName_[kEl][_bit]; }
 
     private:
       BareLeptons out_{};
-      void setDefinedId_(TString [], BareLeptons::Selection, char const* _name);
+      void setDefinedId_(Lepton, BareLeptons::Selection, char const* name, Bool_t saveAllPass);
 
       TString electronsName_ = "Electrons";
       TString muonsName_ = "Muons";
-      TString muonIdName_[32]{};
-      TString electronIdName_[32]{};
+      TString idName_[nLeptons][32]{};
       TString verticesName_ = "PrimaryVertexes";
       TString pfCandsName_ = "PFCandidates";
       TString nopuPFCandsName_ = "PFNoPileup";
       TString puPFCandsName_ = "PFPileup";
+
+      Bool_t savePassing_[nLeptons][32]{};
+
+      BareEvent* event_;
 
       ClassDef(LeptonsFiller, 0)
     };

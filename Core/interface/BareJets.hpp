@@ -9,12 +9,14 @@ class BareJets : virtual public BareP4
     public:
 
         enum Selection{
+            JetBaseline = 1UL << 0,
             JetLoose  = 1UL << 3, 
             JetMedium = 1UL << 4,
             JetTight  = 1UL << 5,
             // 0--7 POG
-            mjId = 1UL<<8,
-            mjIdLoose = 1UL <<9
+            mjId = 1UL<< 8,
+            mjIdLoose = 1UL << 9,
+            mjId2015 = 1UL << 10
             //TODO add Pileup Id and remove corresponding variable
 
         };
