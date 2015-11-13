@@ -204,7 +204,7 @@ def DrawHistograms( dict, num=80 ) :
 	data.SetLineColor(ROOT.kBlack)
 
 	s=ROOT.THStack(data.GetName() + "_mcstack",data.GetTitle())
-	data.SetName( data.GetName() + "_data")
+	#data.SetName( data.GetName() + "_data")
 
 	all=data.GetName() + "_allmc"
 	dict[ all ] = None
@@ -430,3 +430,11 @@ for h in pu:
 	pu[h].Write()
 th1d_chi2.Write()
 f.Close()
+
+############ SUMMARY OF ALL THE PLOTS ###################
+f= ROOT.TFile.Open(opts.plotdir + "/mmNpv.root", "RECREATE" )
+f.cd()
+for h in mmNpv:
+	mmNpv[h].Write()
+f.Close()
+#########################################################
