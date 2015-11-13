@@ -37,6 +37,13 @@ int NeroAll::analyze(const edm::Event&iEvent)
         hDscaleReweightSums -> Fill( 5+.5 , info_handle -> weights() [8] ) ;     
     }
 
+    // ------ pdf
+    if (info_handle -> weights().size() > 109)
+        for( int pdfw = 9 ; pdfw<109 ;++pdfw)
+        {
+        hDpdfReweightSums -> Fill( pdfw -9 + .5, info_handle -> weights() [pdfw] );    
+        }
+
     if( isSkim() == 0) 
     {
         //TODO FILL all_

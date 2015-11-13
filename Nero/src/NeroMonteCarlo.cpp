@@ -51,7 +51,7 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
     if(VERBOSE>1) cout<<"                                     mcWeight="<<mcWeight<<endl;
     //weights() 
     //---  scale
-    if ( info_handle ->weights()  .size() >= 9){
+    if ( info_handle -> weights()  .size() >= 9){
         r1f2 = info_handle -> weights() [1] ;   
         r1f5 = info_handle -> weights() [2] ;   
         r2f1 = info_handle -> weights() [3] ;   
@@ -59,6 +59,12 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
         r5f1 = info_handle -> weights() [6] ;    
         r5f5 = info_handle -> weights() [8] ;     
     }
+
+    if (info_handle -> weights().size() > 109)
+        for( int pdfw = 9 ; pdfw<109 ;++pdfw)
+        {
+        pdfRwgt -> push_back( info_handle -> weights() [pdfw] );    
+        }
     // --- fill pdf Weights
     //
     if(VERBOSE>1) cout<<"[NeroMonteCarlo]::[analyze]::[DEBUG] PDF="<<endl;
