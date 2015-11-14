@@ -45,9 +45,11 @@ class NeroAll : virtual public NeroCollection,
 
         // --- Token
         // this are constructed by tFileservice at beginJob
-        TH1D * hDEvents;
-        TH1D * hDTotalMcWeight;
-        TH1D * hDPileup;
+        TH1D * hDEvents{0};
+        TH1D * hDTotalMcWeight{0};
+        TH1D * hDPileup{0};
+        TH1D * hDscaleReweightSums{0};
+        TH1D * hDpdfReweightSums{0};
 
 };
 

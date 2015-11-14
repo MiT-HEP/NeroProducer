@@ -36,7 +36,7 @@ lumi=opts.lumi ## pb
 fileLimit=-1
 
 #book=['DY','WZ','ZZ','WW','WJets','TTJets'] ## WJets is very big with low eff for double muon
-book=['DY','TTJets'] ## WJets is very big with low eff for double muon
+book=['DY','TTJets','WJets','WW','WZ','ZZ'] ## WJets is very big with low eff for double muon
 #book=['DY','WZ','ZZ','WW','TTJets']
 datasets=['SingleMuon','SingleElectron','Tau']
 ##configure
@@ -78,16 +78,7 @@ def ReadFromEos(eos):
 
 def DeactivateBranches(t):
 	''' deactivate used branches and speed up '''
-	t.SetBranchStatus("jet*",0)
-	t.SetBranchStatus("fatjet*",0)
-	t.SetBranchStatus("tau*",0)
-	t.SetBranchStatus("trigger*",0)
-	t.SetBranchStatus("pdf*",0)
-	t.SetBranchStatus("gen*",0)
-	t.SetBranchStatus("photon*",0)
-	t.SetBranchStatus("ak8*",0)
-	t.SetBranchStatus("calo*",0)
-	t.SetBranchStatus("track*",0)
+
 	t.SetBranchStatus("*",0)
 	
 	t.SetBranchStatus("jetP4",1)
@@ -104,6 +95,7 @@ def DeactivateBranches(t):
 	t.SetBranchStatus("eventNum",1)
 	t.SetBranchStatus("npv",1)
 	t.SetBranchStatus("rho",1)
+	t.SetBranchStatus("triggerFired",1)
 
 ### if a json is given parse it
 if opts.json != "":
@@ -313,6 +305,8 @@ mmPuIso={}
 mmNjets={}
 mmLeadJetPt={}
 
+emPt={}
+emNjets={}
 
 eeM={}
 eeEta={}
@@ -356,8 +350,11 @@ mmNhIso["data"] =ROOT.TH1D("mmNhIso","mmNhIso;I_{l1} [GeV]; Events",100,0,10)
 mmPhoIso["data"] =ROOT.TH1D("mmPhoIso","mmPhoIso;I_{l1} [GeV]; Events",100,0,10)
 mmPuIso["data"] =ROOT.TH1D("mmPuIso","mmPuIso;I_{l1} [GeV]; Events",100,0,10)
 
-mmNjets["data"] = ROOT.TH1D("mmNjets","mmNjets;N_{jets} (Z#rightarrow#mu#mu); Events",10,0,10)
+mmNjets["data"] = ROOT.TH1D("mmNjets","mmNjets;N_{jets}^{30 GeV} (Z#rightarrow#mu#mu); Events",10,0,10)
 mmLeadJetPt["data"] = ROOT.TH1D("mmLeadJetPt","mmLeadJetPt;p_{T}^{j1} (Z#rightarrow#mu#mu); Events",100,0,100)
+
+emPt["data"]=ROOT.TH1D("emPt","emPt;p_{T}^{e#mu};Events",150,0,300)
+emNjets["data"]=ROOT.TH1D("emNjets","emNjets;N_{jets}^{30 GeV} (Z#rightarrow e#mu);Events",10,0-.5,10-.5)
 
 eeM["data"] =ROOT.TH1D("eeM","eeM;M_{ee};Events",200,50,150)
 eeEta["data"] =ROOT.TH1D("eeEta","eeEta;Eta_{ee};Events",150,-5,5)
@@ -375,7 +372,7 @@ eeNhIso["data"] =ROOT.TH1D("eeNhIso","eeNhIso;I_{l1} [GeV]; Events",100,0,10)
 eePhoIso["data"] =ROOT.TH1D("eePhoIso","eePhoIso;I_{l1} [GeV]; Events",100,0,10)
 eePuIso["data"] =ROOT.TH1D("eePuIso","eePuIso;I_{l1} [GeV]; Events",100,0,10)
 
-eeNjets["data"] = ROOT.TH1D("eeNjets","eeNjets;N_{jets} (Z#rightarrow#mu#mu); Events",10,0,10)
+eeNjets["data"] = ROOT.TH1D("eeNjets","eeNjets;N_{jets}^{30GeV} (Z#rightarrow#mu#mu); Events",10,0,10)
 eeLeadJetPt["data"] = ROOT.TH1D("eeLeadJetPt","eeLeadJetPt;p_{T}^{j1} (Z#rightarrow#mu#mu); Events",100,0,100)
 
 ttM["data"] =ROOT.TH1D("ttM","ttM;M_{#tau#tau};Events",150,0,300)
@@ -383,7 +380,7 @@ ttPt["data"]=ROOT.TH1D("ttPt","ttPt;p_{T}^{#tau#tau};Events",150,0,300)
 ttMet["data"]=ROOT.TH1D("ttMet","ttMet;E_{T}^{miss}(DY#rightarrow #tau#tau); Events",150,0,300)
 ttRho["data"] =ROOT.TH1D("ttRho","ttRho;#rho [GeV];Events",100,0,50)
 ttIso["data"] =ROOT.TH1D("ttIso","ttIso;I_{l1} [GeV]; Events",100,0,10)
-ttLeadPt["data"] =ROOT.TH1D("ttLeadPt","ttLeadPt;p_{T}^{#tau 1} [GeV]; Events",100,0,10)
+ttLeadPt["data"] =ROOT.TH1D("ttLeadPt","ttLeadPt;p_{T}^{#tau 1} [GeV]; Events",1000,0,1000)
 
 ## normalize pu
 print "-> normalizing pu: "
@@ -423,6 +420,9 @@ for mc in book:
 	mmNhIso[mc] = mmNhIso["data"].Clone("%s_%s"%(mmNhIso["data"].GetName(),mc))
 	mmPhoIso[mc] = mmPhoIso["data"].Clone("%s_%s"%(mmPhoIso["data"].GetName(),mc))
 	mmPuIso[mc] = mmPuIso["data"].Clone("%s_%s"%(mmPuIso["data"].GetName(),mc))
+
+	emPt[mc] = emPt["data"].Clone("%s_%s"%(emPt["data"].GetName(),mc))
+	emNjets[mc] = emNjets["data"].Clone("%s_%s"%(emNjets["data"].GetName(),mc))
 
 	eeM[mc] = eeM["data"].Clone("%s_%s"%(eeM["data"].GetName(),mc))
 	eeEta[mc] = eeEta["data"].Clone("%s_%s"%(eeEta["data"].GetName(),mc))
@@ -477,6 +477,7 @@ for mc in book:
 		for i in range(0, t.jetP4.GetEntries() ):
 			if t.lepP4.GetEntries()>0 and t.jetP4[i].DeltaR(t.lepP4[0] ) <0.3  :continue
 			if t.lepP4.GetEntries()>1 and t.jetP4[i].DeltaR(t.lepP4[1] ) <0.3  :continue ## remove overlap with leptons
+			if t.jetP4[i].Pt()<30 : continue;
 			nJets += 1
 			if leadJetPt<5 : 
 				leadJetIdx = i
@@ -520,6 +521,11 @@ for mc in book:
 			mmNjets[mc].Fill( nJets, w) 
 			mmLeadJetPt[mc].Fill( leadJetPt,w)
 
+		if t.lepP4.GetEntries()>=2 and t.lepP4[1].Pt() > 20 and t.lepPdgId[0]* t.lepPdgId[1] == -13*11 :  ## OS OF muon, leading two
+			ll = t.lepP4[0] + t.lepP4[1]
+			emPt[mc].Fill( ll.Pt(), w ) 
+			emNjets[mc].Fill( nJets, w ) 
+
 		## EE
 		if t.lepP4.GetEntries()>=2 and t.lepP4[1].Pt() > 20 and t.lepPdgId[0]* t.lepPdgId[1] == -11*11 :  ## OS SF muon, leading two
 			#print '* DEBUG EE Event', t.lepP4[1].Pt(), t.lepPdgId[0]
@@ -548,7 +554,7 @@ for mc in book:
 		leadTau = -1
 		subleadTau = -1
 		for iT in range(0,t.tauP4.GetEntries()) :
-			if t.tauP4[iT].Pt()  <30 : continue
+			if t.tauP4[iT].Pt()  <51 : continue
 			if abs(t.tauP4[iT].Eta()) >2.1 : continue
 			if t.tauIso[iT] >1.5 : continue
 			#if t.tauSelBits[iT]<0.5: continue
@@ -585,6 +591,16 @@ for data in datasets:
 	stdout += " "+ str(n) + " files"
 	print '\r' + stdout,
 
+	t.GetEntry(0)
+	triggerNames=t.GetFile().Get("nero/triggerNames").GetTitle()
+	trIdx=-1
+	for i in range(0,len( triggerNames.split(',') )):
+		if 'HLT_LooseIsoPFTau50_Trk30_eta2p1_v' in triggerNames.split(','):
+			trIdx= i
+			break
+	if trIdx<0:
+		print "TRIGGER ERROR"
+
 	for i in range(0,t.GetEntries() ):
 		if i&1023 == 1:
 			print "\r"+stdout ,i,"/",t.GetEntriesFast(),
@@ -609,6 +625,7 @@ for data in datasets:
 		for i in range(0, t.jetP4.GetEntries() ) :
 			if t.jetP4[i].DeltaR(t.lepP4[0] ) <0.3  :continue
 			if t.jetP4[i].DeltaR(t.lepP4[1] ) <0.3  :continue ## remove overlap with leptons
+			if t.jetP4[i].Pt()<30 : continue;
 			nJets += 1
 			if leadJetPt<5 : 
 				leadJetIdx=i
@@ -640,6 +657,11 @@ for data in datasets:
 			mmNjets["data"].Fill( nJets) 
 			mmLeadJetPt["data"].Fill( leadJetPt)
 
+		if t.lepP4.GetEntries()>=2 and t.lepP4[1].Pt() > 20 and t.lepPdgId[0]* t.lepPdgId[1] == -13*11 and data=="SingleMuon":  ## OS OF muon, leading two
+			ll = t.lepP4[0] + t.lepP4[1]
+			emPt["data"].Fill( ll.Pt()) 
+			emNjets["data"].Fill( nJets ) 
+
                 if t.lepP4.GetEntries()>=2 and t.lepP4[1].Pt() > 20 and t.lepPdgId[0]* t.lepPdgId[1] == -11*11 and data=='SingleElectron': # OS SF muon, leading two
                 	ll = t.lepP4[0] + t.lepP4[1]
                 	eeM["data"].Fill( ll.M() )
@@ -665,7 +687,7 @@ for data in datasets:
 		leadTau = -1
 		subleadTau = -1
 		for iT in range(0,t.tauP4.GetEntries()) :
-			if t.tauP4[iT].Pt()  <30 : continue
+			if t.tauP4[iT].Pt()  <51 : continue
 			if t.tauIso[iT] >1.5 : continue
 			#if t.tauId[iT]<0.5: continue
 			if abs(t.tauP4[iT].Eta()) >2.1 : continue
@@ -676,7 +698,7 @@ for data in datasets:
 			if subleadTau <0 :
 				subleadTau = iT
 				break
-		if subleadTau>0 and data=="Tau":
+		if subleadTau>0 and data=="Tau" and t.triggerFired[trIdx]: 
 			ll = t.tauP4[leadTau] + t.tauP4[subleadTau]
 			ttRho["data"].Fill( t.rho )
 			ttM["data"].Fill( ll.M())
@@ -703,7 +725,8 @@ for name in ['mmM','mmPt','mmRho','mmMet',
 		'eeMetNoHf','eeEta','e2Eta','e2dPhiJ',
 		'ttM','ttPt', 'ttMet','ttRho','ttIso', 'ttLeadPt',
 		'eeNpv','mmNpv',
-		'mmMetPuppi','mmMetPhi'
+		'mmMetPuppi','mmMetPhi',
+		'emPt','emNjets',
 		]:
 
 	c=PrepareCanvas(name)

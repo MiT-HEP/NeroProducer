@@ -8,9 +8,6 @@ NeroAll::NeroAll():
 {
     isSkim_=1;
     isMc_=-1;
-    hDEvents=NULL;
-    hDTotalMcWeight=NULL;
-    hDPileup=NULL;
 }
 NeroAll::~NeroAll(){}
 
@@ -26,6 +23,27 @@ int NeroAll::analyze(const edm::Event&iEvent)
     
     if(VERBOSE>1) cout<<"[NeroAll]::[analyze]::[DEBUG] isMc_"<<isMc_<<endl;
 
+    // FILL the  histograms on the fly, TODO move in the skim ?!? SKIM will still be big if this is kept.
+    //
+    //I suppose to have a info_handle
+    iEvent.getByToken(info_token,info_handle);
+    //---  scale
+    if ( info_handle ->weights()  .size() >= 9){
+        hDscaleReweightSums -> Fill( 0+.5 , info_handle -> weights() [1] ) ;
+        hDscaleReweightSums -> Fill( 1+.5 , info_handle -> weights() [2] ) ;
+        hDscaleReweightSums -> Fill( 2+.5 , info_handle -> weights() [3] ) ;
+        hDscaleReweightSums -> Fill( 3+.5 , info_handle -> weights() [4] ) ;
+        hDscaleReweightSums -> Fill( 4+.5 , info_handle -> weights() [6] ) ;    
+        hDscaleReweightSums -> Fill( 5+.5 , info_handle -> weights() [8] ) ;     
+    }
+
+    // ------ pdf
+    if (info_handle -> weights().size() > 109)
+        for( int pdfw = 9 ; pdfw<109 ;++pdfw)
+        {
+        hDpdfReweightSums -> Fill( pdfw -9 + .5, info_handle -> weights() [pdfw] );    
+        }
+
     if( isSkim() == 0) 
     {
         //TODO FILL all_
@@ -38,7 +56,7 @@ int NeroAll::analyze(const edm::Event&iEvent)
             //iEvent.getByLabel(edm::InputTag("generator"), info_handle); // USE TOKEN AND INPUT TAG ?
             //iEvent.getByLabel(edm::InputTag("addPileupInfo"), pu_handle);
             //TODO! don't use this path for the moment. Check that double fetching the token still work
-            iEvent.getByToken(info_token,info_handle);
+            //iEvent.getByToken(info_token,info_handle);
             iEvent.getByToken(pu_token,pu_handle );
 
             if (not info_handle.isValid() ) cout<<"[NeroAll]::[analyze]::[ERROR] Info handle is not valid"<<endl;
