@@ -73,7 +73,11 @@ if __name__ == '__main__':
 	    if value == "True":
 		    url = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions15/13TeV/"
 		    if is25ns:
-		    	config.Data.lumiMask= url + "Cert_246908-258159_13TeV_PromptReco_Collisions15_25ns_JSON_v3.txt"
+		    	#config.Data.lumiMask= url + "Cert_246908-258159_13TeV_PromptReco_Collisions15_25ns_JSON_v3.txt"
+			# GOLDEN
+			##Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON.txt
+			# SILVER
+			config.Data.lumiMask= url + "Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_Silver.txt"
 		    else:
 		    	config.Data.lumiMask= url + "Cert_246908-255031_13TeV_PromptReco_Collisions15_50ns_JSON.txt"
 		    config.Data.splitting = 'LumiBased'
