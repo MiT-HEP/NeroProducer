@@ -14,6 +14,7 @@ parser.add_option("-b","--batch",dest="batch",action="store_true",help="Run in B
 parser.add_option("-l","--limit",dest="limit",type='int',help="max number of entries for mc.",default=-1); 
 parser.add_option("-L","--lumi",dest="lumi",type='float',help="Luminosity.",default=30); 
 parser.add_option("","--plotdir",dest="plotdir",type='string',help="plot directory [Default=%default].",default="plot"); 
+parser.add_option("","--pileupdir",dest="pileupdir",type='string',help="pileup directory [Default=%default].",default="pileup"); 
 
 parser.add_option("-j","--json",dest="json",type='string',help="json file",default=""); 
 
@@ -23,7 +24,7 @@ if opts.batch:
 	ROOT.gROOT.SetBatch()
 
 
-version="v1.1.1"
+version="v1.1.2"
 
 disks={}
 xsections={}
@@ -47,7 +48,7 @@ if True:
 	disks['WJets']=base+'WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/'
 	disks['TTJets']=base+'TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/'
 	### DATA -- promptReco
-	base='/store/user/amarini/Nero/' + version + "/"
+	base='/store/user/amarini/Nero/' + version + "/data/"
 	disks['SingleMuon']=base+'SingleMuon'
 	disks['SingleElectron']=base+'SingleElectron'
 	disks['SinglePhoton']=base+'SinglePhoton'
@@ -84,6 +85,9 @@ def DeactivateBranches(t):
 	t.SetBranchStatus("mcWeight",1)
 	t.SetBranchStatus("npv",1)
 	t.SetBranchStatus("rho",1)
+	if opts.json != "":
+		t.SetBranchStatus("run*",1)
+		t.SetBranchStatus("lumi*",1)
 
 ### if a json is given parse it
 if opts.json != "":
@@ -93,7 +97,7 @@ if opts.json != "":
 
 # get PU Target
 puFiles={}
-puFiles[80] = ROOT.TFile.Open("script/MyDataPileupHistogram.root")
+#puFiles[80] = ROOT.TFile.Open("script/MyDataPileupHistogram.root")
 #puFiles[65] = ROOT.TFile.Open("script/MyDataPileupHistogram_65mb.root")
 #puFiles[70] = ROOT.TFile.Open("script/MyDataPileupHistogram_70mb.root")
 #puFiles[71] = ROOT.TFile.Open("script/MyDataPileupHistogram_71mb.root")
@@ -104,15 +108,16 @@ puFiles[80] = ROOT.TFile.Open("script/MyDataPileupHistogram.root")
 #puFiles[76] = ROOT.TFile.Open("script/MyDataPileupHistogram_76mb.root")
 #puFiles[84] = ROOT.TFile.Open("script/MyDataPileupHistogram_84mb.root")
 
-for num in [69,68,67,66,64,65,70,71,72,73,74,75,76,84]:
-	puFiles[num] = ROOT.TFile.Open("script/MyDataPileupHistogram_%dmb.root"%num)
+#for num in [69,68,67,66,64,65,70,71,72,73,74,75,76,84]:
+for num in [ 65000 , 67000 , 68000 , 69000, 69200, 69300, 69400, 69500, 69600, 69800, 70000, 71000, 73000  ]:
+	puFiles[num] = ROOT.TFile.Open(opts.pileupdir + "/MyDataPileupHistogram_%dmb.root"%num)
 
 for num in puFiles :
 	print "getting pileup,",num
 	pu["data_%d"%num] = puFiles[num].Get("pileup").Clone("pileup_%d"%num)
 
 print "->Getting pu for data" ## TODO, for puTrueInt, this is meaningless
-puTarget= pu["data_80"].Clone("puTarget")
+puTarget= pu["data_69000"].Clone("puTarget")
 
 puTarget.Reset("ACE")
 
@@ -172,9 +177,10 @@ def CMS():
 	ltx.SetTextAlign(31)
 	ltx.DrawLatex(.96,.96,"%.1f pb^{-1} (13TeV)"%lumi)  ## ONLY TCANVAS
 	#ltx.DrawLatex(.96,.98,"%.1f pb^{-1} (13TeV)"%lumi)
-	ltx.SetTextAlign(13)
+	#ltx.SetTextAlign(13)
+	ltx.SetTextAlign(33)
 	ltx.SetTextSize(0.05)
-	ltx.DrawLatex(.17,.93,"#bf{CMS},#scale[0.75]{#it{ Preliminary}}") ##ONLY TCANVAS
+	ltx.DrawLatex(.90,.93,"#bf{CMS},#scale[0.75]{#it{ Preliminary}}") ##ONLY TCANVAS
 	#ltx.DrawLatex(.17,.95,"#bf{CMS},#scale[0.75]{#it{ Preliminary}}") 
 
 garbage=[]
@@ -203,7 +209,7 @@ def DrawHistograms( dict, num=80 ) :
 	data.SetMarkerColor(ROOT.kBlack)
 	data.SetLineColor(ROOT.kBlack)
 
-	s=ROOT.THStack(data.GetName() + "_mcstack",data.GetTitle())
+	s=ROOT.THStack(data.GetName() + "_mcstack_%d"%num,data.GetTitle())
 	#data.SetName( data.GetName() + "_data")
 
 	all=data.GetName() + "_allmc"
@@ -388,8 +394,10 @@ for data in datasets:
 				if t.lumiNum >= lumis[0] and t.lumiNum <= lumis[1] : isGood = True
 			if not isGood: continue
 
+
                 if t.lepP4.GetEntries()<2 : continue ## 2leptons
                 if t.lepP4[1].Pt() < 20 : continue ## pt 20
+
 
                 if t.lepP4.GetEntries()>=2 and t.lepP4[1].Pt() > 20 and t.lepPdgId[0]* t.lepPdgId[1] == -13*13 and data=='SingleMuon' : ## OS SF muon, leading two
                 	ll = t.lepP4[0] + t.lepP4[1]
@@ -405,7 +413,7 @@ ROOT.gStyle.SetOptTitle(0)
 
 canvas=[]
 
-th1d_chi2=ROOT.TH1D("chi2","chi2",100,0-.5,100-.5)
+th1d_chi2=ROOT.TH1D("chi2","chi2",100,0-.5,100000-.5)
 for num in puFiles:
 	c=PrepareCanvas("mmNpv_pileup%d"%num)
 	chi2=DrawHistograms(mmNpv,num)

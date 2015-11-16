@@ -1,7 +1,23 @@
 from CRABClient.UserUtilities import config, getUsernameFromSiteDB
 from subprocess import call,check_output
 
-import sys
+import sys, os
+
+### CHECK THAT CMS env and it is correct
+pwd = os.environ['PWD']
+if 'CMSSW_VERSION' not in os.environ:
+	print "Do cmsenv!"
+	exit(0)
+version = os.environ['CMSSW_VERSION']
+ok = False
+for dir in reversed(pwd.split('/')):
+	if version == dir : 
+		ok = True
+		break
+if not ok:
+	print "Do (redo) cmsenv (2) !"
+	exit(0)
+
 
 config = config()
 
@@ -141,6 +157,8 @@ if __name__ == '__main__':
     config.Data.inputDataset = '/ttHToNonbb_M125_13TeV_powheg_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
     submit(config)
     
+    config.Data.unitsPerJob = 10
+
     config.General.requestName = 'QCD-15-30-25ns'
     config.Data.inputDataset = '/QCD_Pt_15to30_TuneCUETP8M1_13TeV_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
     submit(config)
@@ -279,7 +297,7 @@ if __name__ == '__main__':
     ###################################################
     setdata("True",is25ns=True)
     ###################################################
-    config.Data.unitsPerJob = 30
+    config.Data.unitsPerJob = 300
 
     config.General.requestName = 'MET-Run2015D-05Oct2015'
     config.Data.inputDataset = '/MET/Run2015D-05Oct2015-v1/MINIAOD'

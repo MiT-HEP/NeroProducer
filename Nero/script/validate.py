@@ -25,7 +25,7 @@ if opts.batch:
 	ROOT.gROOT.SetBatch()
 
 
-version="v1.1.1"
+version="v1.1.2"
 
 disks={}
 xsections={}
@@ -51,7 +51,7 @@ if True:
 	disks['WJets']=base+'WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/'
 	disks['TTJets']=base+'TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/'
 	### DATA -- promptReco
-	base='/store/user/amarini/Nero/' + version + "/"
+	base='/store/user/amarini/Nero/' + version + "/data/"
 	disks['SingleMuon']=base+'SingleMuon'
 	disks['SingleElectron']=base+'SingleElectron'
 	disks['SinglePhoton']=base+'SinglePhoton'
@@ -118,16 +118,16 @@ pu['data'] = puTarget.Clone("puData")
 puTarget.Reset("ACE")
 
 ### GET MetPhi Corrections
-metFile = ROOT.TFile.Open("MetPhi.root")
-metCorrect={}
-metCorrect['x_data'] =metFile.Get("fx_data")
-metCorrect['y_data'] =metFile.Get("fy_data")
-metCorrect['x_mc'] =metFile.Get("fx_mc")
-metCorrect['y_mc'] =metFile.Get("fy_mc")
-
-if metCorrect['x_data'] == None or metCorrect['y_data'] == None or metCorrect['x_mc'] == None or metCorrect['y_mc'] == None:
-	print "Error no MET PHI CORRECTIONS"
-	exit(0)
+## metFile = ROOT.TFile.Open("MetPhi.root")
+## metCorrect={}
+## metCorrect['x_data'] =metFile.Get("fx_data")
+## metCorrect['y_data'] =metFile.Get("fy_data")
+## metCorrect['x_mc'] =metFile.Get("fx_mc")
+## metCorrect['y_mc'] =metFile.Get("fy_mc")
+## 
+## if metCorrect['x_data'] == None or metCorrect['y_data'] == None or metCorrect['x_mc'] == None or metCorrect['y_mc'] == None:
+## 	print "Error no MET PHI CORRECTIONS"
+## 	exit(0)
 
 ## compute nevents
 print "-> compute nevents and pileup histo for mc"
@@ -493,10 +493,11 @@ for mc in book:
 		w*=puReweight
 		pu[ mc + "_reweight" ] . Fill( puTrueInt, w ) 
 		#print "PU REWEIGHT DEBUG for,",t.puTrueInt,"=",puReweight, "(num=",num,"den=",den,")"
-		px = t.metPuppi.Px() - metCorrect['x_mc'].Eval( t.npv)
-		py = t.metPuppi.Py() -metCorrect['y_mc'].Eval(t.npv)
-		metCorr = ROOT.TLorentzVector()
-		metCorr.SetPxPyPzE(px,py,0 ,ROOT.TMath.Sqrt(px*px+py*py))
+		#px = t.metPuppi.Px() - metCorrect['x_mc'].Eval( t.npv)
+		#py = t.metPuppi.Py() -metCorrect['y_mc'].Eval(t.npv)
+		#metCorr = ROOT.TLorentzVector()
+		#metCorr.SetPxPyPzE(px,py,0 ,ROOT.TMath.Sqrt(px*px+py*py))
+		metCorr = t.metPuppi
 		
 		## MM
 		if t.lepP4.GetEntries()>=2 and t.lepP4[1].Pt() > 20 and t.lepPdgId[0]* t.lepPdgId[1] == -13*13 :  ## OS SF muon, leading two
@@ -630,10 +631,11 @@ for data in datasets:
 			if leadJetPt<5 : 
 				leadJetIdx=i
 				leadJetPt = t.jetP4[i].Pt()
-		px = t.metPuppi.Px() - metCorrect['x_data'].Eval( t.npv)
-		py = t.metPuppi.Py() - metCorrect['y_data'].Eval(t.npv)
-		metCorr = ROOT.TLorentzVector()
-		metCorr.SetPxPyPzE(px,py,0 ,ROOT.TMath.Sqrt(px*px+py*py))
+		#px = t.metPuppi.Px() - metCorrect['x_data'].Eval( t.npv)
+		#py = t.metPuppi.Py() - metCorrect['y_data'].Eval(t.npv)
+		#metCorr = ROOT.TLorentzVector()
+		#metCorr.SetPxPyPzE(px,py,0 ,ROOT.TMath.Sqrt(px*px+py*py))
+		metCorr = t.metPuppi
 
                 if t.lepP4.GetEntries()>=2 and t.lepP4[1].Pt() > 20 and t.lepPdgId[0]* t.lepPdgId[1] == -13*13 and data=='SingleMuon' : ## OS SF muon, leading two
                 	ll = t.lepP4[0] + t.lepP4[1]
