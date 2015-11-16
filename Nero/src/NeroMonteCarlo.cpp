@@ -137,6 +137,23 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
             new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(gen->px(), gen->py(), gen->pz(), gen->energy());
             pdgId -> push_back( pdg );
             flags -> push_back( ComputeFlags( *gen ) );
+            // computed dressed objects
+            //
+            if (apdg == 11 or apdg == 13) { // only for final state muons and electrons
+                    TLorentzVector dressedLepton(gen->px(),gen->py(),gen->pz(),gen->energy());
+                    TLorentzVector lepton(dressedLepton); //original lepton for dR
+                    for ( unsigned int j=0;j < packed_handle->size() ;++j)
+                    {
+                        const auto gen2  = & (*packed_handle)[j];
+                        TLorentzVector photon(gen2->px(),gen2->py(),gen2->pz(),gen2->energy());
+                        if (i != j and abs( gen->pdgId() ) ==22  and lepton.DeltaR( photon ) <0.1 ) dressedLepton += photon;
+                    }
+                    new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector( dressedLepton );
+                    pdgId -> push_back( pdg );
+                    flags -> push_back( Dressed );
+                    // --- end of dressing
+            }
+             
         }
 
     } //end packed

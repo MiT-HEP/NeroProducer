@@ -35,6 +35,7 @@ class BareMonteCarlo : virtual public BareP4
             HardProcessDecayed = 1UL<<5 , //fromHardProcessDecayed() -- like a tau from the hard process
             LastCopy  = 1UL<<6, // isLastCopy()
             LastCopyBeforeFSR = 1UL<<7, //isLastCopyBeforeFSR()
+            Dressed = 1UL<<8, // dressed PromptFinal Lepton, cone 0.1
         };
         vector<unsigned> *flags{0}; // status flags of the gen particles
 
