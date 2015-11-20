@@ -21,16 +21,17 @@ namespace mithep {
       void begin() override;
       void fill() override;
 
-      std::vector<TString> const& triggerNames() const { return triggerNames_; }
+      std::vector<TString> triggerNamesFlat() const;
 
-      void AddTriggerName(char const* path);
-      void AddFilterName(char const* path, char const* filter);
+      UInt_t AddTriggerName(char const* path, UInt_t bit = -1);
+      void AddFilterName(UInt_t bit, char const* filter);
 
     private:
       BareTrigger out_{};
 
-      std::vector<TString> triggerNames_{};
-      std::vector<unsigned> triggerIds_{};
+      // allow multiple paths (inner vector) per bit
+      std::vector<std::vector<TString>> triggerNames_{};
+      std::vector<std::vector<unsigned>> triggerIds_{};
 
       std::vector<std::vector<TString>> triggerObjectsNames_{};
 
