@@ -12,7 +12,7 @@ def switchBX(case25, case50):
     global analysis
     return case25 if analysis.custom['bx'] == '25ns' else case50
 
-jecVersion = switchBX('25nsV5', '50nsV5')
+jecVersion = switchBX('25nsV6', '50nsV5')
 
 if analysis.isRealData:
     jecPattern = mitdata + '/JEC/Summer15_' + jecVersion + '/Summer15_' + jecVersion + '_DATA_{level}_{jettype}.txt'
@@ -26,7 +26,6 @@ else:
 ### MODULES RUN WITH DEFAULT SETTINGS ###
 #########################################
 
-from MitPhysics.SelMods.BadEventsFilterMod import badEventsFilterMod
 from MitPhysics.Mods.GoodPVFilterMod import goodPVFilterMod
 from MitPhysics.Mods.SeparatePileUpMod import separatePileUpMod
 from MitPhysics.Mods.PuppiMod import puppiMod
@@ -107,13 +106,6 @@ looseAK4Jets = mithep.JetIdMod('AK4JetId',
     MVATrainingSet = mithep.JetIDMVA.nMVATypes,
     PtMin = 15.,
     EtaMax = 5.
-)
-
-tightAK4Jets = looseAK4Jets.clone('AK4JetIdTight',
-    InputName = looseAK4Jets.GetOutputName(),
-    OutputName = 'TightAK4Jets',
-    IsFilterMode = False,
-    PFId = mithep.JetTools.kPFTight
 )
 
 ###########################
@@ -587,11 +579,9 @@ neroMod.AddFiller(triggerFiller)
 ################
 
 triggers = [
-    ('PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight' if analysis.isRealData and analysis.custom['bx'] == '25ns' else 'PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight', []),
-    ('PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight' if analysis.isRealData and analysis.custom['bx'] == '25ns' else 'PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight', []),
-    ('PFMET170_NoiseCleaned', []),
-    ('PFMET170_HBHECleaned', []),
-    ('PFMET170_JetIdCleaned', []),
+    (['PFMETNoMu90_%sCleaned_PFMHTNoMu90_IDTight' % c for c in ['JetId', 'HBHE', 'Noise']] if analysis.isRealData and analysis.custom['bx'] == '25ns' else 'PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight', []),
+    (['PFMETNoMu120_%sCleaned_PFMHTNoMu120_IDTight' % c for c in ['JetId', 'HBHE', 'Noise']] if analysis.isRealData and analysis.custom['bx'] == '25ns' else 'PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight', []),
+    (['PFMET170_%sCleaned' % c for c in ['JetId', 'HBHE', 'Noise']], []),
     ('PFMET170', []),
     ('Ele23_WPLoose_Gsf' if analysis.isRealData else 'Ele22_eta2p1_WP75_Gsf', ['hltEle23WPLooseGsfTrackIsoFilter']),
     ('Ele27_WPLoose_Gsf' if analysis.isRealData else 'Ele27_WP85_Gsf', ['hltEle27WPLooseGsfTrackIsoFilter']), # filter only matches data
@@ -622,9 +612,15 @@ triggers = [
 ]
 
 for path, filters in triggers:
-    triggerFiller.AddTriggerName('HLT_' + path + '_v*')
+    if type(path) is str:
+        bit = triggerFiller.AddTriggerName('HLT_' + path + '_v*')
+    else:
+        bit = triggerFiller.AddTriggerName('HLT_' + path[0] + '_v*')
+        for p in path[1:]:
+            triggerFiller.AddTriggerName('HLT_' + p + '_v*', bit)
+
     for filt in filters:
-        triggerFiller.AddFilterName('HLT_' + path + '_v*', filt)
+        triggerFiller.AddFilterName(bit, filt)
 
 
 ################
@@ -632,7 +628,6 @@ for path, filters in triggers:
 ################
 
 initialFilterSequence = Chain([
-    badEventsFilterMod,
     goodPVFilterMod
 ])
 
@@ -658,7 +653,6 @@ postskimSequence = Chain([
     puppiMet,
     puppiMetCorrection,
     looseAK4Jets,
-    tightAK4Jets,    
     looseTaus,
     muonPrivSoftId,
     muonFakeId,
@@ -691,19 +685,29 @@ postskimSequence = Chain([
     ca15JetExtender
 ])
 
-########################
-### MC CUSTOMIZATION ###
-########################
+#############################
+### DATA/MC CUSTOMIZATION ###
+#############################
 
 if analysis.isRealData:
+    badEventsFilterMod = mithep.BadEventsFilterMod('BadEventsFilterMod',
+        EEBadScFilter = True,
+        HBHENoiseFilter = True,
+        FillHist = True
+    )
+
     hltMod = mithep.HLTMod(
         ExportTrigObjects = False
     )
 
     for path, filters in triggers:
-        hltMod.AddTrigger('HLT_' + path + '_v*')
+        if type(path) is str:
+            hltMod.AddTrigger('HLT_' + path + '_v*')
+        else:
+            for p in path:
+                hltMod.AddTrigger(p)
 
-    initialFilterSequence = hltMod * initialFilterSequence
+    initialFilterSequence = badEventsFilterMod * hltMod * initialFilterSequence
 
 else:
     generator = mithep.GeneratorMod(
@@ -740,11 +744,12 @@ else:
     )
     if 'pdfrwgt' in analysis.custom and analysis.custom['pdfrwgt'] != '-':
         if analysis.custom['pdfrwgt'] == 'amc_74':
-            mcFiller.AddPdfReweightName('PDF_variation')
+            mcFiller.AddPdfReweightGroupName('PDF_variation')
         elif analysis.custom['pdfrwgt'] == 'mg5_74':
-            mcFiller.AddPdfReweightName('NNPDF30_lo_as_0130.LHgrid')
+            mcFiller.AddPdfReweightGroupName('NNPDF30_lo_as_0130.LHgrid')
         elif analysis.custom['pdfrwgt'] == 'pwhg_74':
-            mcFiller.AddPdfReweightId(1) # group id = 0 -> scale reweights, 1 -> pdf reweights
+            for rid in range(9, 111):
+                mcFiller.AddPdfReweightId(rid) # 9-108: 260000 family, 109: 265000, 110: 266000
         else:
             print 'Unrecognized pdfrwgt option', analysis.custom['pdfrwgt']
             sys.exit(1)
