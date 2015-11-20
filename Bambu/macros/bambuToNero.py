@@ -740,11 +740,12 @@ else:
     )
     if 'pdfrwgt' in analysis.custom and analysis.custom['pdfrwgt'] != '-':
         if analysis.custom['pdfrwgt'] == 'amc_74':
-            mcFiller.AddPdfReweightName('PDF_variation')
+            mcFiller.AddPdfReweightGroupName('PDF_variation')
         elif analysis.custom['pdfrwgt'] == 'mg5_74':
-            mcFiller.AddPdfReweightName('NNPDF30_lo_as_0130.LHgrid')
+            mcFiller.AddPdfReweightGroupName('NNPDF30_lo_as_0130.LHgrid')
         elif analysis.custom['pdfrwgt'] == 'pwhg_74':
-            mcFiller.AddPdfReweightId(1) # group id = 0 -> scale reweights, 1 -> pdf reweights
+            for rid in range(9, 111):
+                mcFiller.AddPdfReweightId(rid) # 9-108: 260000 family, 109: 265000, 110: 266000
         else:
             print 'Unrecognized pdfrwgt option', analysis.custom['pdfrwgt']
             sys.exit(1)
