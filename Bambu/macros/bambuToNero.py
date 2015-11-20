@@ -109,13 +109,6 @@ looseAK4Jets = mithep.JetIdMod('AK4JetId',
     EtaMax = 5.
 )
 
-tightAK4Jets = looseAK4Jets.clone('AK4JetIdTight',
-    InputName = looseAK4Jets.GetOutputName(),
-    OutputName = 'TightAK4Jets',
-    IsFilterMode = False,
-    PFId = mithep.JetTools.kPFTight
-)
-
 ###########################
 ### LEPTON & PHOTON IDS ###
 ###########################
@@ -587,11 +580,9 @@ neroMod.AddFiller(triggerFiller)
 ################
 
 triggers = [
-    ('PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight' if analysis.isRealData and analysis.custom['bx'] == '25ns' else 'PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight', []),
-    ('PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight' if analysis.isRealData and analysis.custom['bx'] == '25ns' else 'PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight', []),
-    ('PFMET170_NoiseCleaned', []),
-    ('PFMET170_HBHECleaned', []),
-    ('PFMET170_JetIdCleaned', []),
+    (['PFMETNoMu90_%sCleaned_PFMHTNoMu90_IDTight' % c for c in ['JetId', 'HBHE', 'Noise']] if analysis.isRealData and analysis.custom['bx'] == '25ns' else 'PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight', []),
+    (['PFMETNoMu120_%sCleaned_PFMHTNoMu120_IDTight' % c for c in ['JetId', 'HBHE', 'Noise']] if analysis.isRealData and analysis.custom['bx'] == '25ns' else 'PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight', []),
+    (['PFMET170_%sCleaned' % c for c in ['JetId', 'HBHE', 'Noise']], []),
     ('PFMET170', []),
     ('Ele23_WPLoose_Gsf' if analysis.isRealData else 'Ele22_eta2p1_WP75_Gsf', ['hltEle23WPLooseGsfTrackIsoFilter']),
     ('Ele27_WPLoose_Gsf' if analysis.isRealData else 'Ele27_WP85_Gsf', ['hltEle27WPLooseGsfTrackIsoFilter']), # filter only matches data
@@ -622,9 +613,15 @@ triggers = [
 ]
 
 for path, filters in triggers:
-    triggerFiller.AddTriggerName('HLT_' + path + '_v*')
+    if type(path) is str:
+        bit = triggerFiller.AddTriggerName('HLT_' + path + '_v*')
+    else:
+        bit = triggerFiller.AddTriggerName('HLT_' + path[0] + '_v*')
+        for p in path[1:]:
+            triggerFiller.AddTriggerName('HLT_' + p + '_v*', bit)
+
     for filt in filters:
-        triggerFiller.AddFilterName('HLT_' + path + '_v*', filt)
+        triggerFiller.AddFilterName(bit, filt)
 
 
 ################
@@ -658,7 +655,6 @@ postskimSequence = Chain([
     puppiMet,
     puppiMetCorrection,
     looseAK4Jets,
-    tightAK4Jets,    
     looseTaus,
     muonPrivSoftId,
     muonFakeId,
@@ -701,7 +697,11 @@ if analysis.isRealData:
     )
 
     for path, filters in triggers:
-        hltMod.AddTrigger('HLT_' + path + '_v*')
+        if type(path) is str:
+            hltMod.AddTrigger('HLT_' + path + '_v*')
+        else:
+            for p in path:
+                hltMod.AddTrigger(p)
 
     initialFilterSequence = hltMod * initialFilterSequence
 
