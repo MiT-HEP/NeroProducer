@@ -12,7 +12,7 @@ def switchBX(case25, case50):
     global analysis
     return case25 if analysis.custom['bx'] == '25ns' else case50
 
-jecVersion = switchBX('25nsV5', '50nsV5')
+jecVersion = switchBX('25nsV6', '50nsV5')
 
 if analysis.isRealData:
     jecPattern = mitdata + '/JEC/Summer15_' + jecVersion + '/Summer15_' + jecVersion + '_DATA_{level}_{jettype}.txt'
@@ -26,7 +26,6 @@ else:
 ### MODULES RUN WITH DEFAULT SETTINGS ###
 #########################################
 
-from MitPhysics.SelMods.BadEventsFilterMod import badEventsFilterMod
 from MitPhysics.Mods.GoodPVFilterMod import goodPVFilterMod
 from MitPhysics.Mods.SeparatePileUpMod import separatePileUpMod
 from MitPhysics.Mods.PuppiMod import puppiMod
@@ -629,7 +628,6 @@ for path, filters in triggers:
 ################
 
 initialFilterSequence = Chain([
-    badEventsFilterMod,
     goodPVFilterMod
 ])
 
@@ -687,11 +685,17 @@ postskimSequence = Chain([
     ca15JetExtender
 ])
 
-########################
-### MC CUSTOMIZATION ###
-########################
+#############################
+### DATA/MC CUSTOMIZATION ###
+#############################
 
 if analysis.isRealData:
+    badEventsFilterMod = mithep.BadEventsFilterMod('BadEventsFilterMod',
+        EEBadScFilter = True,
+        HBHENoiseFilter = True,
+        FillHist = True
+    )
+
     hltMod = mithep.HLTMod(
         ExportTrigObjects = False
     )
@@ -703,7 +707,7 @@ if analysis.isRealData:
             for p in path:
                 hltMod.AddTrigger(p)
 
-    initialFilterSequence = hltMod * initialFilterSequence
+    initialFilterSequence = badEventsFilterMod * hltMod * initialFilterSequence
 
 else:
     generator = mithep.GeneratorMod(
