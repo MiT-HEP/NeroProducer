@@ -191,8 +191,6 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         iso->push_back(totIso);	
         sieie -> push_back( pho. full5x5_sigmaIetaIeta() );
 
-    
-
         selBits -> push_back( bits);
 
         chIso -> push_back( _chIso_);
@@ -205,6 +203,8 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         nhIsoRC -> push_back ( _nhIsoRC_ ) ;
         puIsoRC -> push_back ( _puIsoRC_ ) ;
     }
+   
+    if ( int(selBits -> size()) < mMinNpho  ) return 1;
 
     return 0;
 }
