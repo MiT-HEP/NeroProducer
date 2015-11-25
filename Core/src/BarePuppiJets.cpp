@@ -25,7 +25,7 @@ void BarePuppiJets::clear(){
 
 void BarePuppiJets::defineBranches(TTree *t, std::string prefix){
 
-    TString jetName("jet" + prefix);
+    TString jetName("puppijet" + prefix);
 
     BareP4::defineBranches(t, jetName.Data());
 
@@ -36,7 +36,7 @@ void BarePuppiJets::defineBranches(TTree *t, std::string prefix){
 
 void BarePuppiJets::setBranchAddresses(TTree* t, std::string prefix)
 {
-    TString jetName("jet" + prefix);
+    TString jetName("puppijet" + prefix);
 
     BareP4::setBranchAddresses(t,jetName.Data());
     BareFunctions::SetBranchAddress(t,jetName + "RawPt"	,&rawPt);
