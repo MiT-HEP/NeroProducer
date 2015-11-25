@@ -225,7 +225,9 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
                 apdg == 21 or // gluons (21)
                 apdg > 1000000 // susy neutrinos,neutralinos, charginos ...  lightest neutralinos (1000022)
                 or ( apdg == 11 and  ( flag &  HardProcessBeforeFSR) )
+                or ( apdg == 11 and  ( flag &  HardProcess) )
                 or ( apdg == 13 and  ( flag &  HardProcessBeforeFSR) )
+                or ( apdg == 13 and  ( flag &  HardProcess) )
                 )
         {
             new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(gen->px(), gen->py(), gen->pz(), gen->energy());
