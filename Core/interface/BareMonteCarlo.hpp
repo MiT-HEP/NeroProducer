@@ -66,6 +66,10 @@ class BareMonteCarlo : virtual public BareP4
         // PDF reweights
         std::vector<float> *pdfRwgt{0};
 
+        // Iso and Iso Frixione
+        std::vector<float> *genIso{0};
+        std::vector<float> *genIsoFrixione{0};
+
 };
 #endif
 // Local Variables:
