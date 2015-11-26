@@ -23,6 +23,7 @@ Implementation:
 #include "NeroProducer/Nero/interface/NeroTaus.hpp"
 #include "NeroProducer/Nero/interface/NeroEvent.hpp"
 #include "NeroProducer/Nero/interface/NeroFatJets.hpp"
+#include "NeroProducer/Nero/interface/NeroPuppiJets.hpp"
 #include "NeroProducer/Nero/interface/NeroVertex.hpp"
 #include "NeroProducer/Nero/interface/NeroMet.hpp"
 #include "NeroProducer/Nero/interface/NeroPhotons.hpp"
@@ -94,6 +95,16 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     jets -> pf = pf;
     jets -> vtx = vtx;
     obj.push_back(jets);
+
+    NeroPuppiJets *puppijets = new NeroPuppiJets();
+    puppijets -> mOnlyMc = onlyMc;
+    puppijets -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("puppijets"));
+    puppijets -> mMinPt = iConfig.getParameter<double>("minPuppiJetPt");
+    puppijets -> mMinNjets = iConfig.getParameter<int>("minPuppiJetN");
+    puppijets -> mMinEta = iConfig.getParameter<double>("minPuppiJetEta");
+    puppijets -> mMinId = iConfig.getParameter<string>("minPuppiJetId");
+    puppijets -> pf = pf;
+    obj.push_back(puppijets);
 
     // --- 
     NeroTaus *taus = new NeroTaus();
