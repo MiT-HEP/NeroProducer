@@ -5,6 +5,10 @@
 #include "NeroProducer/Core/interface/BarePuppiJets.hpp"
 
 
+//
+#include "NeroProducer/Nero/interface/NeroPF.hpp"
+
+
 class NeroPuppiJets : virtual public NeroCollection, virtual public BarePuppiJets
 {
     public:
@@ -28,6 +32,9 @@ class NeroPuppiJets : virtual public NeroCollection, virtual public BarePuppiJet
         int   mMinNjets;
         float mMinEta;
         string mMinId;
+
+        // extra info
+        NeroPF *pf;
 
 };
 

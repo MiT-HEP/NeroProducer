@@ -103,6 +103,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     puppijets -> mMinNjets = iConfig.getParameter<int>("minPuppiJetN");
     puppijets -> mMinEta = iConfig.getParameter<double>("minPuppiJetEta");
     puppijets -> mMinId = iConfig.getParameter<string>("minPuppiJetId");
+    puppijets -> pf = pf;
     obj.push_back(puppijets);
 
     // --- 
