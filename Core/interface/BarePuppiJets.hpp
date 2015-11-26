@@ -31,6 +31,7 @@ class BarePuppiJets : virtual public BareP4
         vector<float> *rawPt{0};
         vector<float> *bDiscr{0};
         vector<unsigned> *selBits{0};
+        vector<float> *Q{0};
 };
 
 #endif
