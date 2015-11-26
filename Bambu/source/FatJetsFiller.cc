@@ -15,6 +15,12 @@ mithep::nero::FatJetsFiller::defineBranches(TTree* _tree)
   case BaseFiller::kCA15Jets:
     out_.defineBranches(_tree, "ca15");
     break;
+  case BaseFiller::kAK8PuppiJets:
+    out_.defineBranches(_tree, "ak8puppi");
+    break;
+  case BaseFiller::kCA15PuppiJets:
+    out_.defineBranches(_tree, "ca15puppi");
+    break;
   default:
     break;
   }
@@ -23,11 +29,23 @@ mithep::nero::FatJetsFiller::defineBranches(TTree* _tree)
 void
 mithep::nero::FatJetsFiller::initialize()
 {
+  if (MVAOn) {
+      topANN = new NeuralNet(5,2);
+      #include "topTagger_simple.icc" // these are just weights - move to MIT_DATA?
+      topANN->AllocateMemory();
+      topANN->AddBranchAddress(&nn_mSD,69.14170513,70.41396876);
+      topANN->AddBranchAddress(&nn_QGTag,0.24245312,0.31660758);
+      topANN->AddBranchAddress(&nn_groomedIso,0.18981184,0.25050463);
+      topANN->AddBranchAddress(&nn_tau32,0.79239905,0.10837058);
+      topANN->AddBranchAddress(&nn_tau21,0.64983544,0.17112768);
+    }
 }
 
 void
 mithep::nero::FatJetsFiller::finalize()
 {
+  if (MVAOn)
+    delete topANN;
 }
 
 void
@@ -71,6 +89,14 @@ mithep::nero::FatJetsFiller::fill()
     for (unsigned iS=0; iS != nSJBtags; ++iS) 
       out_.ak8subjet_btag->push_back(subjetBtags[iS]);
   
+    if (MVAOn) {
+      nn_mSD = out_.softdropMass->back();
+      nn_QGTag = cleanInput(jet.QGTag());
+      nn_groomedIso = computePull(jet.Mom(),jet.SoftDropP());
+      nn_tau32 = cleanInput(jet.Tau3()/jet.Tau2());
+      nn_tau21 = cleanInput(jet.Tau2()/jet.Tau1());
+      out_.topMVA->push_back(topANN->Evaluate()[1]);
+    }
   }
 }
 

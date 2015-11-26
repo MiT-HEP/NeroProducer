@@ -31,6 +31,7 @@ from MitPhysics.Mods.GoodPVFilterMod import goodPVFilterMod
 from MitPhysics.Mods.SeparatePileUpMod import separatePileUpMod
 from MitPhysics.Mods.PuppiMod import puppiMod
 from MitPhysics.Mods.PuppiPFJetMod import puppiPFJetMod
+from MitPhysics.Mods.PuppiFatJetMod import puppiFatJetMod
 
 ################################
 ### JET/MET ID & CORRECTIONS ###
@@ -376,6 +377,8 @@ loosePhotons = photonLooseId.clone('LoosePhotons',
 ### FAT JET ID, CORRECTION + SUBSTRUCTURE ###
 #############################################
 
+### CHS ###
+
 ak8JetCorrection = mithep.JetCorrectionMod('AK8JetCorrection',
     InputName = 'AKt8FatJetsCHS',
     CorrectedJetsName = 'CorrectedAK8Jets',
@@ -430,6 +433,94 @@ ca15JetExtender = mithep.FatJetExtenderMod('CA15JetExtender',
     BeVerbose = False
 )
 ca15JetExtender.SetSubJetTypeOn(mithep.XlSubJet.kSoftDrop)
+
+### PUPPI ###
+
+puppiAK8Jets=puppiFatJetMod.clone('puppiAK8Jets',
+                                    InputName       =puppiMod.GetOutputName(),
+                                    OutputName      ='AK8FatJetsPuppi',
+                                    R0              =0.8,
+                                    JetAlgorithm    =mithep.PuppiFatJetMod.kAntiKT,
+                                    DoMatching      =True,
+                                    MatchingJetsName='AKt8FatJetsCHS')
+
+puppiCA15Jets=puppiFatJetMod.clone('puppiCA15Jets',
+                                     InputName       =puppiMod.GetOutputName(),
+                                     OutputName      ='CA15FatJetsPuppi',
+                                     R0              =1.5,
+                                     JetAlgorithm    =mithep.PuppiFatJetMod.kCambridgeAachen,
+                                     DoMatching      =True,
+                                     MatchingJetsName='CA15FatJetsCHS')
+
+puppiAK8CorrectionMod=mithep.JetCorrectionMod('puppiAK8Correction',
+    InputName=puppiAK8Jets.GetOutputName(),
+    CorrectedJetsName='CorrectedAK8PuppiJets',
+    RhoAlgo=mithep.PileupEnergyDensity.kFixedGridFastjetAll
+)
+for level in jecLevels:
+    ak8JetCorrection.AddCorrectionFromFile(jecPattern.format(level = level, jettype = 'AK8PFPuppi'))
+
+
+goodAK8PuppiJets=jetIdMod.clone('GoodAK8PuppiJets',
+    InputName=puppiAK8CorrectionMod.GetOutputName(),
+    OutputName='GoodAK8Jets',
+    MVATrainingSet=mithep.JetIDMVA.nMVATypes
+)
+ak8PuppiJetExtender=mithep.FatJetExtenderMod.clone('puppiAK8Extender',
+    ConeSize=0.8,
+    InputName=goodAK8PuppiJets.GetOutputName(),
+    OutputName="XlAK8Jets",
+    ProcessNJets = 4,
+    QGTaggerCHS=True,
+    QGTaggingOn=True,
+    PFCandsName=puppiMod.GetOutputName(),
+    VertexesName=goodPVFilterMod.GetOutputName(),
+    SoftDropR0=0.8,
+    SoftDropZCut=0.1,
+    DoShowerDeconstruction=False,
+    BeVerbose=False,
+    DoECF=False,
+    DoQjets=False,
+    UseSoftDropLib=False,
+    DoCMSandHTT=False,
+    ReApplyJEC=True
+)
+ak8PuppiJetExtender.SetSubJetTypeOn(mithep.XlSubJet.kSoftDrop)
+
+puppiCA15CorrectionMod=mithep.JetCorrectionMod('puppiCA15Correction',
+    InputName=puppiCA15Jets.GetOutputName(),
+    CorrectedJetsName='CorrectedCA15PuppiJets',
+    RhoAlgo=mithep.PileupEnergyDensity.kFixedGridFastjetAll
+)
+for level in jecLevels:
+    ca15JetCorrection.AddCorrectionFromFile(jecPattern.format(level = level, jettype = 'AK8PFPuppi'))
+
+
+goodCA15PuppiJets=jetIdMod.clone('GoodCA15PuppiJets',
+    InputName=puppiCA15CorrectionMod.GetOutputName(),
+    OutputName='GoodCA15Jets',
+    MVATrainingSet=mithep.JetIDMVA.nMVATypes
+)
+ca15PuppiJetExtender=mithep.FatJetExtenderMod.clone('puppiCA15Extender',
+    ConeSize=1.5,
+    InputName=goodCA15PuppiJets.GetOutputName(),
+    OutputName="XlCA15Jets",
+    ProcessNJets = 4,
+    QGTaggerCHS=True,
+    QGTaggingOn=True,
+    PFCandsName=puppiMod.GetOutputName(),
+    VertexesName=goodPVFilterMod.GetOutputName(),
+    SoftDropR0=1.5,
+    SoftDropZCut=0.1,
+    DoShowerDeconstruction=False,
+    BeVerbose=False,
+    DoECF=False,
+    DoQjets=False,
+    UseSoftDropLib=False,
+    DoCMSandHTT=False,
+    ReApplyJEC=True
+)
+ca15PuppiJetExtender.SetSubJetTypeOn(mithep.XlSubJet.kSoftDrop)
 
 ####################
 ### EVENT FILTER ###
