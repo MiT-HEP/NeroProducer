@@ -26,7 +26,6 @@ else:
 ### MODULES RUN WITH DEFAULT SETTINGS ###
 #########################################
 
-from MitPhysics.SelMods.BadEventsFilterMod import badEventsFilterMod
 from MitPhysics.Mods.GoodPVFilterMod import goodPVFilterMod
 from MitPhysics.Mods.SeparatePileUpMod import separatePileUpMod
 from MitPhysics.Mods.PuppiMod import puppiMod
@@ -411,8 +410,18 @@ ak8JetExtender = mithep.FatJetExtenderMod('AK8JetExtender',
 )
 ak8JetExtender.SetSubJetTypeOn(mithep.XlSubJet.kSoftDrop)
 
-goodCA15Jets = looseAK4Jets.clone('GoodCA15Jets',
+ca15JetCorrection = mithep.JetCorrectionMod('CA15JetCorrection',
     InputName = 'CA15FatJetsCHS',
+    CorrectedJetsName = 'CorrectedCA15Jets',
+    RhoAlgo = mithep.PileupEnergyDensity.kFixedGridFastjetAll
+)
+
+for level in jecLevels:
+    ca15JetCorrection.AddCorrectionFromFile(jecPattern.format(level = level, jettype = 'AK8PFchs'))
+
+
+goodCA15Jets = looseAK4Jets.clone('GoodCA15Jets',
+    InputName = ca15JetCorrection.GetOutputName(),
     OutputName = 'GoodCA15Jets'
 )
 
@@ -461,15 +470,15 @@ for level in jecLevels:
     ak8JetCorrection.AddCorrectionFromFile(jecPattern.format(level = level, jettype = 'AK8PFPuppi'))
 
 
-goodAK8PuppiJets=jetIdMod.clone('GoodAK8PuppiJets',
+goodAK8PuppiJets=mithep.JetIdMod('GoodAK8PuppiJets',
     InputName=puppiAK8CorrectionMod.GetOutputName(),
-    OutputName='GoodAK8Jets',
+    OutputName='GoodAK8PuppiJets',
     MVATrainingSet=mithep.JetIDMVA.nMVATypes
 )
-ak8PuppiJetExtender=mithep.FatJetExtenderMod.clone('puppiAK8Extender',
+ak8PuppiJetExtender=mithep.FatJetExtenderMod('puppiAK8Extender',
     ConeSize=0.8,
     InputName=goodAK8PuppiJets.GetOutputName(),
-    OutputName="XlAK8Jets",
+    OutputName="XlAK8PuppiJets",
     ProcessNJets = 4,
     QGTaggerCHS=True,
     QGTaggingOn=True,
@@ -483,7 +492,6 @@ ak8PuppiJetExtender=mithep.FatJetExtenderMod.clone('puppiAK8Extender',
     DoQjets=False,
     UseSoftDropLib=False,
     DoCMSandHTT=False,
-    ReApplyJEC=True
 )
 ak8PuppiJetExtender.SetSubJetTypeOn(mithep.XlSubJet.kSoftDrop)
 
@@ -495,16 +503,15 @@ puppiCA15CorrectionMod=mithep.JetCorrectionMod('puppiCA15Correction',
 for level in jecLevels:
     ca15JetCorrection.AddCorrectionFromFile(jecPattern.format(level = level, jettype = 'AK8PFPuppi'))
 
-
-goodCA15PuppiJets=jetIdMod.clone('GoodCA15PuppiJets',
+goodCA15PuppiJets=mithep.JetIdMod('GoodCA15PuppiJets',
     InputName=puppiCA15CorrectionMod.GetOutputName(),
-    OutputName='GoodCA15Jets',
+    OutputName='GoodCA15PuppiJets',
     MVATrainingSet=mithep.JetIDMVA.nMVATypes
 )
-ca15PuppiJetExtender=mithep.FatJetExtenderMod.clone('puppiCA15Extender',
+ca15PuppiJetExtender=mithep.FatJetExtenderMod('puppiCA15Extender',
     ConeSize=1.5,
     InputName=goodCA15PuppiJets.GetOutputName(),
-    OutputName="XlCA15Jets",
+    OutputName="XlCA15PuppiJets",
     ProcessNJets = 4,
     QGTaggerCHS=True,
     QGTaggingOn=True,
@@ -518,7 +525,6 @@ ca15PuppiJetExtender=mithep.FatJetExtenderMod.clone('puppiCA15Extender',
     DoQjets=False,
     UseSoftDropLib=False,
     DoCMSandHTT=False,
-    ReApplyJEC=True
 )
 ca15PuppiJetExtender.SetSubJetTypeOn(mithep.XlSubJet.kSoftDrop)
 
@@ -650,6 +656,15 @@ neroMod.AddFiller(mithep.nero.FatJetsFiller(mithep.nero.BaseFiller.kCA15Jets,
     FatJetsName = ca15JetExtender.GetOutputName()
 ))
 
+neroMod.AddFiller(mithep.nero.FatJetsFiller(mithep.nero.BaseFiller.kAK8PuppiJets,
+    FatJetsName = ak8PuppiJetExtender.GetOutputName()
+))
+
+neroMod.AddFiller(mithep.nero.FatJetsFiller(mithep.nero.BaseFiller.kCA15PuppiJets,
+    FatJetsName = ca15PuppiJetExtender.GetOutputName()
+))
+
+
 metFiller = mithep.nero.MetFiller(
     MetName = metCorrection.GetOutputName(),
     JESUpMetName = metCorrectionJESUp.GetOutputName(),
@@ -723,7 +738,6 @@ for path, filters in triggers:
 ################
 
 initialFilterSequence = Chain([
-    badEventsFilterMod,
     goodPVFilterMod
 ])
 
@@ -776,10 +790,19 @@ postskimSequence = Chain([
     photonTightId,
     photonHighPtId,
     ak8JetCorrection,
+    ca15JetCorrection,
     goodAK8Jets,
     goodCA15Jets,
     ak8JetExtender,
-    ca15JetExtender
+    ca15JetExtender,
+    puppiAK8Jets,
+    puppiCA15Jets,
+    puppiAK8CorrectionMod,
+    puppiCA15CorrectionMod,
+    goodAK8PuppiJets,
+    goodCA15PuppiJets,
+    ak8PuppiJetExtender,
+    ca15PuppiJetExtender
 ])
 
 ########################
