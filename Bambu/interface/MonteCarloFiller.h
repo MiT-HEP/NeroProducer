@@ -24,8 +24,9 @@ namespace mithep {
 
       void SetMCParticlesName(char const* _name) { mcParticlesName_ = _name; }
       void SetGenJetsName(char const* _name) { genJetsName_ = _name; }
-      void AddPdfReweightName(char const* _name) { pdfReweightGroupNames_.push_back(_name); }
-      void AddPdfReweightId(UInt_t _id) { pdfReweightGroupIds_.push_back(_id); }
+      void AddPdfReweightGroupName(char const* _name) { pdfReweightGroupNames_.push_back(_name); }
+      void AddPdfReweightGroupId(UInt_t _id) { pdfReweightGroupIds_.push_back(_id); }
+      void AddPdfReweightId(UInt_t _id) { pdfReweightId_.push_back(_id); }
       void SetMinParticlePt(Double_t _min) { minParticlePt_ = _min; }
       void SetMinGenJetPt(Double_t _min) { minGenJetPt_ = _min; }
 
@@ -44,7 +45,7 @@ namespace mithep {
       Double_t minParticlePt_ = 0.;
       Double_t minGenJetPt_ = 0.;
 
-      std::vector<unsigned> pdfReweightId_;
+      std::vector<UInt_t> pdfReweightId_;
 
       ClassDef(MonteCarloFiller, 0)
     };

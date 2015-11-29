@@ -19,9 +19,9 @@ ClassImp(mithep::nero::MonteCarloFiller)
 void
 mithep::nero::MonteCarloFiller::begin()
 {
-  if ((pdfReweightGroupNames_.size() != 0 || pdfReweightGroupIds_.size() != 0) && pdfReweightId_.size() == 0) {
-    auto* mcRunInfo = getSource<mithep::MCRunInfo>(Names::gkMCRunInfoBrn);
+  auto* mcRunInfo = getSource<mithep::MCRunInfo>(Names::gkMCRunInfoBrn);
 
+  if (pdfReweightGroupNames_.size() != 0 || pdfReweightGroupIds_.size() != 0) {
     // first convert group names to ids
     for (auto& name : pdfReweightGroupNames_) {
       unsigned iG = 0;
@@ -35,6 +35,9 @@ mithep::nero::MonteCarloFiller::begin()
       if (std::find(pdfReweightGroupIds_.begin(), pdfReweightGroupIds_.end(), iG) == pdfReweightGroupIds_.end())
         pdfReweightGroupIds_.push_back(iG);
     }
+
+    // we don't need this info any more
+    pdfReweightGroupNames_.clear();
 
     outputFile_->cd();
     auto* namesTree = new TTree("pdfReweight", "PDF set names");
@@ -53,9 +56,23 @@ mithep::nero::MonteCarloFiller::begin()
       }
     }
 
+    // we don't need this info any more
+    pdfReweightGroupIds_.clear();
+
     outputFile_->cd();
     namesTree->Write();
     delete namesTree;
+  }
+
+  if (pdfReweightId_.size() != 0) {
+    unsigned maxId(0);
+    for (unsigned id : pdfReweightId_) {
+      if (id > maxId)
+        maxId = id;
+    }
+
+    if (mcRunInfo->NWeights() <= maxId)
+      std::cerr << "Current file has fewer PDF reweight ids than is expected!!";
   }
 }
 
@@ -85,8 +102,10 @@ mithep::nero::MonteCarloFiller::fill()
     out_.r5f1 = mcEventInfo->ReweightScaleFactor(6);
     out_.r5f5 = mcEventInfo->ReweightScaleFactor(8);
   }
-  for (unsigned id : pdfReweightId_)
-    out_.pdfRwgt->push_back(mcEventInfo->ReweightScaleFactor(id));
+  for (unsigned id : pdfReweightId_) {
+    if (id < mcEventInfo->NReweightScaleFactors())
+      out_.pdfRwgt->push_back(mcEventInfo->ReweightScaleFactor(id));
+  }
 
   auto* puInfo = getSource<mithep::PileupInfoCol>("PileupInfo");
   out_.puTrueInt = 0;
