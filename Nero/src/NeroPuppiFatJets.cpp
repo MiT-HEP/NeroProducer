@@ -54,7 +54,7 @@ int NeroPuppiFatJets::analyze(const edm::Event& iEvent){
         prunedMass  ->push_back(j.userFloat("ak8PuppiJetsPrunedMass"));
         filteredMass->push_back(j.userFloat("ak8PuppiJetsFilteredMass"));
         softdropMass->push_back(j.userFloat("ak8PuppiJetsSoftDropMass"));
-        hasSubjet->push_back(j.hasSubjets("SoftDrop"));
+        ak8_hasSubjet->push_back(j.hasSubjets("SoftDrop"));
 
         // --float hbb= j.bDiscriminator("pfBoostedDoubleSecondaryVertexAK8BJetTags"); // HBB 75X
         // --cout <<"Hbb tagger="<<hbb<<endl;
@@ -64,8 +64,8 @@ int NeroPuppiFatJets::analyze(const edm::Event& iEvent){
 
         auto Subjets = j.subjets("SoftDrop");
         for ( auto const & i : Subjets ) {
-            new ( (*subjet)[nsubjet]) TLorentzVector(i->px(), i->py(), i->pz(), i->energy());
-            subjetBtag->push_back(i->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+            new ( (*ak8_subjet)[nsubjet]) TLorentzVector(i->px(), i->py(), i->pz(), i->energy());
+            ak8subjet_btag->push_back(i->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
             nsubjet++;
         }
 

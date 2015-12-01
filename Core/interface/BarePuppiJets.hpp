@@ -13,6 +13,10 @@ class BarePuppiJets : virtual public BareP4
             JetLoose  = 1UL << 3, 
             JetMedium = 1UL << 4,
             JetTight  = 1UL << 5
+            // 0--7 POG
+            mjId = 1UL<< 8,
+            mjIdLoose = 1UL << 9,
+            mjId2015 = 1UL << 10
         };
 
         BarePuppiJets();
