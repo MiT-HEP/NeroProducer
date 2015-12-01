@@ -29,6 +29,7 @@ int NeroVertex::analyze(const edm::Event& iEvent){
     // good quality criteria
     VertexCollection::const_iterator firstGoodVertex = handle->end();
     firstGoodVertexIdx = -1;
+    npv=0;
     for (VertexCollection::const_iterator vtx = handle->begin(); 
             vtx != handle->end(); ++vtx) {
         bool isFake = (vtx->chi2()==0 && vtx->ndof()==0);
