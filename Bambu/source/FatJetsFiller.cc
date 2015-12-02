@@ -85,7 +85,7 @@ mithep::nero::FatJetsFiller::fill()
     // btags are stored in Bambu and ordered by decreasing subjet pT.
     // note that btag vector may be out of sync with other fatjet vectors
     // since different jet algorithms are being used
-    std::vector<float> const &subjetBtags = jet.GetSubJetBtags();
+    std::vector<float> subjetBtags = jet.GetSubJetBtags();
     std::sort(subjetBtags.begin(),subjetBtags.end());
     unsigned int nSJBtags = subjetBtags.size();
     out_.ak8subjet_btag->push_back(subjetBtags[nSJBtags-1]);
