@@ -14,9 +14,11 @@ ClassImp(mithep::nero::TriggerFiller)
 void
 mithep::nero::TriggerFiller::initialize()
 {
+  auto&& flat(triggerNamesFlat());
   TString triggerNames;
-  for (auto& n : triggerNames_)
+  for (auto& n : flat)
     triggerNames += n + ",";
+
   outputFile_->cd();
   TNamed("triggerNames", triggerNames.Data()).Write();
 
@@ -38,26 +40,27 @@ void
 mithep::nero::TriggerFiller::begin()
 {
   // load new trigger table
-  triggerIds_.clear();
+  triggerIds_.assign(triggerNames_.size(), std::vector<unsigned>());
   
   auto* hltTable = getSource<mithep::TriggerTable>(TString::Format("%sFwk", Names::gkHltTableBrn));
-  for (auto trigger : triggerNames_) {
-    bool isWildcard(false);
-    if (trigger.EndsWith("*")) {
-      trigger.ReplaceAll("*", "");
-      isWildcard = true;
+  for (unsigned iBit(0); iBit != triggerNames_.size(); ++iBit) {
+    auto& ids(triggerIds_[iBit]);
+    for (auto trigger : triggerNames_[iBit]) {
+      bool isWildcard(false);
+      if (trigger.EndsWith("*")) {
+        trigger.ReplaceAll("*", "");
+        isWildcard = true;
+      }
+
+      TriggerName const* triggerName(0);
+      if (isWildcard)
+        triggerName = hltTable->GetWildcard(trigger);
+      else
+        triggerName = hltTable->Get(trigger);
+
+      if (triggerName)
+        ids.push_back(triggerName->Id());
     }
-
-    TriggerName const* triggerName(0);
-    if (isWildcard)
-      triggerName = hltTable->GetWildcard(trigger);
-    else
-      triggerName = hltTable->Get(trigger);
-
-    if (triggerName)
-      triggerIds_.push_back(triggerName->Id());
-    else
-      triggerIds_.push_back(-1);
   }
 }
 
@@ -92,17 +95,28 @@ mithep::nero::TriggerFiller::fill()
     jets_
   };
 
-  for (unsigned iT(0); iT != triggerNames_.size(); ++iT) {
-    if (!triggerMask->At(triggerIds_[iT]))
+  for (unsigned iBit(0); iBit != triggerNames_.size(); ++iBit) {
+    auto& ids(triggerIds_[iBit]);
+
+    // at least one path fires
+    unsigned iT(0);
+    for (; iT != ids.size(); ++iT) {
+      if (triggerMask->At(ids[iT]))
+        break;
+    }
+    if (iT == ids.size())
       continue;
 
-    out_.triggerFired->at(iT) = 1;
+    out_.triggerFired->at(iBit) = 1;
 
-    auto& objsNames(triggerObjectsNames_[iT]);
+    auto& objsNames(triggerObjectsNames_[iBit]);
 
     if (objsNames.size() != 0) {
-      TList const* filterList(triggerObjs->GetList(triggerIds_[iT]));
-      for (TObject* obj : *filterList) {
+      TList filterList;
+      for (unsigned id : triggerIds_[iBit])
+        filterList.AddAll(triggerObjs->GetList(id));
+
+      for (TObject* obj : filterList) {
         auto& trigObj(*static_cast<mithep::TriggerObject*>(obj));
 
         // not very efficient but not worth putting too much time improving this..
@@ -127,26 +141,49 @@ mithep::nero::TriggerFiller::fill()
           }
         
           if (minIndex >= 0)
-            bitmaskArr->at(minIndex) |= (1 << iT);
+            bitmaskArr->at(minIndex) |= (1 << iBit);
         }
       }
     }
   }
 }
 
-void
-mithep::nero::TriggerFiller::AddTriggerName(char const* _path)
+std::vector<TString>
+mithep::nero::TriggerFiller::triggerNamesFlat() const
 {
-  triggerNames_.emplace_back(_path);
-  triggerObjectsNames_.resize(triggerNames_.size());
+  std::vector<TString> result;
+
+  for (auto& names : triggerNames_) {
+    TString concatenated;
+    for (unsigned iN(0); iN != names.size(); ++iN) {
+      if (iN != 0)
+        concatenated += "||";
+      concatenated += names[iN];
+    }
+    result.push_back(concatenated);
+  }
+
+  return result;
+}
+
+UInt_t
+mithep::nero::TriggerFiller::AddTriggerName(char const* _path, UInt_t _bit/* = -1*/)
+{
+  if (_bit >= triggerNames_.size()) {
+    triggerNames_.emplace_back(std::vector<TString>(1, _path));
+    return triggerNames_.size() - 1;
+  }
+  else {
+    triggerNames_[_bit].emplace_back(_path);
+    return _bit;
+  }
 }
 
 void
-mithep::nero::TriggerFiller::AddFilterName(char const* _path, char const* _filter)
+mithep::nero::TriggerFiller::AddFilterName(UInt_t _bit, char const* _filter)
 {
-  auto pItr(std::find(triggerNames_.begin(), triggerNames_.end(), _path));
-  if (pItr == triggerNames_.end())
-    throw std::runtime_error((TString("AddFilterName could not find a trigger path named ") + _path).Data());
+  if (_bit >= triggerObjectsNames_.size())
+    triggerObjectsNames_.resize(_bit + 1);
 
-  triggerObjectsNames_[pItr - triggerNames_.begin()].emplace_back(_filter);
+  triggerObjectsNames_[_bit].emplace_back(_filter);
 }

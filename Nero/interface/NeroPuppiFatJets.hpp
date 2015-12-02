@@ -21,6 +21,11 @@ class NeroPuppiFatJets : virtual public NeroCollection,
         // --- Token
         edm::EDGetTokenT<pat::JetCollection> token;
 
+        // --- configuration
+        float mMinPt;
+        int   mMinNjets;
+        float mMaxEta;
+        string mMinId;
 
 
 };
