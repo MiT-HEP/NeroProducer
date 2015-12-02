@@ -467,7 +467,7 @@ puppiAK8CorrectionMod=mithep.JetCorrectionMod('puppiAK8Correction',
     RhoAlgo=mithep.PileupEnergyDensity.kFixedGridFastjetAll
 )
 for level in jecLevels:
-    ak8JetCorrection.AddCorrectionFromFile(jecPattern.format(level = level, jettype = 'AK8PFPuppi'))
+    puppiAK8CorrectionMod.AddCorrectionFromFile(jecPattern.format(level = level, jettype = 'AK8PFPuppi'))
 
 
 goodAK8PuppiJets=mithep.JetIdMod('GoodAK8PuppiJets',
@@ -501,7 +501,7 @@ puppiCA15CorrectionMod=mithep.JetCorrectionMod('puppiCA15Correction',
     RhoAlgo=mithep.PileupEnergyDensity.kFixedGridFastjetAll
 )
 for level in jecLevels:
-    ca15JetCorrection.AddCorrectionFromFile(jecPattern.format(level = level, jettype = 'AK8PFPuppi'))
+    puppiCA15CorrectionMod.AddCorrectionFromFile(jecPattern.format(level = level, jettype = 'AK8PFPuppi'))
 
 goodCA15PuppiJets=mithep.JetIdMod('GoodCA15PuppiJets',
     InputName=puppiCA15CorrectionMod.GetOutputName(),

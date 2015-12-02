@@ -74,7 +74,10 @@ mithep::nero::FatJetsFiller::fill()
     out_.trimmedMass->push_back(jet.MassTrimmed());
     out_.prunedMass->push_back(jet.MassPruned());
     out_.filteredMass->push_back(jet.MassFiltered());
-    out_.softdropMass->push_back(jet.MassSDb0());
+    if (collection_==BaseFiller::kCA15Jets || collection_==BaseFiller::kCA15PuppiJets) 
+      out_.softdropMass->push_back(jet.MassSDb1());
+    else
+      out_.softdropMass->push_back(jet.MassSDb0());
     auto& subjets(jet.GetSubJets(XlSubJet::kSoftDrop));
     out_.ak8jet_hasSubjet->push_back(subjets.GetEntries());
     for (unsigned iS(0); iS != subjets.GetEntries(); ++iS) {
@@ -86,9 +89,13 @@ mithep::nero::FatJetsFiller::fill()
     // note that btag vector may be out of sync with other fatjet vectors
     // since different jet algorithms are being used
     std::vector<float> subjetBtags = jet.GetSubJetBtags();
-    std::sort(subjetBtags.begin(),subjetBtags.end());
     unsigned int nSJBtags = subjetBtags.size();
-    out_.ak8subjet_btag->push_back(subjetBtags[nSJBtags-1]);
+    if (nSJBtags>0) {
+      std::sort(subjetBtags.begin(),subjetBtags.end());
+      out_.ak8subjet_btag->push_back(subjetBtags[nSJBtags-1]);
+    } else {
+      out_.ak8subjet_btag->push_back(-1);
+    }
   
     if (MVAOn) {
       nn_mSD = out_.softdropMass->back();
