@@ -110,6 +110,7 @@ puFiles={}
 
 #for num in [69,68,67,66,64,65,70,71,72,73,74,75,76,84]:
 for num in [ 65000 , 67000 , 68000 , 69000, 69200, 69300, 69400, 69500, 69600, 69800, 70000, 71000, 73000  ]:
+#for num in [ 65000 , 67000 , 68000 , 68600, 68800, 69000, 69200, 69300, 69400, 69500, 69600, 69800, 70000, 71000, 73000  ]:
 	puFiles[num] = ROOT.TFile.Open(opts.pileupdir + "/MyDataPileupHistogram_%dmb.root"%num)
 
 for num in puFiles :
