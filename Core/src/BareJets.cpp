@@ -65,7 +65,6 @@ void BareJets::defineBranches(TTree *t, std::string prefix){
     TString jetName("jet" + prefix);
 
     //
-    //t->Branch(jetName + "P4","TClonesArray", &p4, 128000, 0);
     BareP4::defineBranches(t, jetName.Data());
     //
     t->Branch(jetName + "RawPt","vector<float>",&rawPt);
