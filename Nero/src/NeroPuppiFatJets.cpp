@@ -19,29 +19,31 @@ int NeroPuppiFatJets::analyze(const edm::Event& iEvent){
 
     if ( mOnlyMc  ) return 0;
 
+    if ( mMinId == "none" ) return 0;
+
     // maybe handle should be taken before
     iEvent.getByToken(token, handle);
 
     edm::Handle<reco::JetTagCollection> pfBoostedDoubleSecondaryVertex;  //HBB 74X
     iEvent.getByLabel("pfBoostedDoubleSecondaryVertexAK8BJetTags",pfBoostedDoubleSecondaryVertex); //HBB 74X
 
-    if ( not handle.isValid() ) cout<<"[NeroFatJets]::[analyze]::[ERROR] handle is not valid"<<endl;
-    if ( not pfBoostedDoubleSecondaryVertex.isValid() )  cout<<"[NeroFatJets]::[analyze]::[ERROR] pfBoosted.. handle is not valid"<<endl;
+    if ( not handle.isValid() ) cout<<"[NeroPuppiFatJets]::[analyze]::[ERROR] handle is not valid"<<endl;
+    if ( not pfBoostedDoubleSecondaryVertex.isValid() )  cout<<"[NeroPuppiFatJets]::[analyze]::[ERROR] pfBoosted.. handle is not valid"<<endl;
 
     int ijetRef = -1;
     int nsubjet = 0;
     for (const pat::Jet& j : *handle)
     {
         ijetRef++;
-        if (j.pt() < 100 ) continue;
+        if (j.pt() < mMinPt ) continue;
+	if (fabs(j.eta() ) > mMaxEta)  continue;
 
         // JET ID
-        if ( !NeroPuppiJets::JetId(j,"loose") ) continue;
+        if ( !NeroPuppiJets::JetId(j,mMinId) ) continue;
 
         // GET  ValueMaps
 
         // Fill output object   
-        //p4 -> AddLast(new TLorentzVector(j.px(), j.py(), j.pz(), j.energy())  );
         new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(j.px(), j.py(), j.pz(), j.energy());
 
         rawPt -> push_back (j.pt()*j.jecFactor("Uncorrected"));
