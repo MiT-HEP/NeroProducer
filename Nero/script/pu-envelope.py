@@ -1,15 +1,18 @@
-import ROOT
 from optparse import OptionParser
 
 parser = OptionParser(usage="usage")
 parser.add_option("-f","--file",type="string",help="Input File",default="plotPu2/mmNpv.root")
 parser.add_option("","--base",type="string",help="base",default="67")
 parser.add_option("","--envelope",type="string",help="envelope numbers comma separated",default="69,71")
+parser.add_option("-L","--lumi",dest="lumi",type='float',help="Luminosity.",default=30); 
+
+opts,args= parser.parse_args()
+
+import ROOT
 
 ROOT.gStyle.SetOptStat(0)
 ROOT.gStyle.SetOptTitle(0)
 
-opts,args= parser.parse_args()
 
 # mmNpv
 # mmNpv_DY_pileup75
@@ -17,7 +20,7 @@ opts,args= parser.parse_args()
 fROOT = ROOT.TFile.Open(opts.file)
 data=fROOT.Get("mmNpv")
 base=fROOT.Get("mmNpv_DY_pileup%d"%( int (opts.base )) )
-lumi=579
+lumi=opts.lumi
 
 if base == None:
 	print "BASE IS NONE"
@@ -164,3 +167,6 @@ env_r.GetYaxis().SetRangeUser(0,2)
 env_r.GetXaxis().SetTitleOffset(3)
 
 raw_input("ok?")
+
+c.SaveAs("mmNpv_base" + str(opts.base) + "_env" + str(opts.envelope) +".pdf")
+c.SaveAs("mmNpv_base" + str(opts.base) + "_env" + str(opts.envelope) +".png")

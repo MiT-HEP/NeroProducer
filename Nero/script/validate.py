@@ -25,7 +25,8 @@ if opts.batch:
 	ROOT.gROOT.SetBatch()
 
 
-version="v1.1.1"
+#version="v1.1.2"
+version="v1.2"
 
 disks={}
 xsections={}
@@ -51,7 +52,7 @@ if True:
 	disks['WJets']=base+'WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/'
 	disks['TTJets']=base+'TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/'
 	### DATA -- promptReco
-	base='/store/user/amarini/Nero/' + version + "/"
+	base='/store/user/amarini/Nero/' + version +"/" #+ "/data/"
 	disks['SingleMuon']=base+'SingleMuon'
 	disks['SingleElectron']=base+'SingleElectron'
 	disks['SinglePhoton']=base+'SinglePhoton'
@@ -118,16 +119,16 @@ pu['data'] = puTarget.Clone("puData")
 puTarget.Reset("ACE")
 
 ### GET MetPhi Corrections
-metFile = ROOT.TFile.Open("MetPhi.root")
-metCorrect={}
-metCorrect['x_data'] =metFile.Get("fx_data")
-metCorrect['y_data'] =metFile.Get("fy_data")
-metCorrect['x_mc'] =metFile.Get("fx_mc")
-metCorrect['y_mc'] =metFile.Get("fy_mc")
-
-if metCorrect['x_data'] == None or metCorrect['y_data'] == None or metCorrect['x_mc'] == None or metCorrect['y_mc'] == None:
-	print "Error no MET PHI CORRECTIONS"
-	exit(0)
+## metFile = ROOT.TFile.Open("MetPhi.root")
+## metCorrect={}
+## metCorrect['x_data'] =metFile.Get("fx_data")
+## metCorrect['y_data'] =metFile.Get("fy_data")
+## metCorrect['x_mc'] =metFile.Get("fx_mc")
+## metCorrect['y_mc'] =metFile.Get("fy_mc")
+## 
+## if metCorrect['x_data'] == None or metCorrect['y_data'] == None or metCorrect['x_mc'] == None or metCorrect['y_mc'] == None:
+## 	print "Error no MET PHI CORRECTIONS"
+## 	exit(0)
 
 ## compute nevents
 print "-> compute nevents and pileup histo for mc"
@@ -388,6 +389,22 @@ for what in book + ['data']:
 	print what,
 	if pu[what].Integral():
 		pu[what].Scale( 1./ pu[what].Integral() ) 
+
+for what in book:
+	print "Rescaling ", what, "to preserve lumi"
+	s=0.
+	for i in range (0, pu[what].GetNbinsX() ):
+		c=pu[what].GetBinCenter(i+1)
+		num = pu['data'].GetBinContent( pu['data'].FindBin(c) ) 
+		den = pu[what].GetBinContent(i+1)
+                if den==0:
+                        print "\n EVENT WITH NULL PU REWEIGHT", c
+                        num=0
+                        den=1
+		s += (num/den)  * den
+	print "-> Scale =", 1./s
+	pu[what].Scale(1./s)
+
 print "DONE"
 
 print "-> compute observables"
@@ -405,6 +422,7 @@ for mc in book:
 			print "File Limit reached for mc", mc, "at",n,"files"
 		t.Add(f)
 
+	xsecSum=0.0
 	mmM[mc] = mmM["data"].Clone("%s_%s"%(mmM["data"].GetName(),mc))
 	mmEta[mc] = mmEta["data"].Clone("%s_%s"%(mmEta["data"].GetName(),mc))
 	mmPt[mc] = mmPt["data"].Clone("%s_%s"%(mmPt["data"].GetName(),mc))
@@ -468,7 +486,8 @@ for mc in book:
 			print "\t * xsec",xsections[mc]
 			print "\t * lumi",lumi
 			print "\t * sumW",nevents[mc]
-		
+
+		xsecSum += w/lumi
 
 		## counts jets
 		nJets=0
@@ -493,13 +512,14 @@ for mc in book:
 		w*=puReweight
 		pu[ mc + "_reweight" ] . Fill( puTrueInt, w ) 
 		#print "PU REWEIGHT DEBUG for,",t.puTrueInt,"=",puReweight, "(num=",num,"den=",den,")"
-		px = t.metPuppi.Px() - metCorrect['x_mc'].Eval( t.npv)
-		py = t.metPuppi.Py() -metCorrect['y_mc'].Eval(t.npv)
-		metCorr = ROOT.TLorentzVector()
-		metCorr.SetPxPyPzE(px,py,0 ,ROOT.TMath.Sqrt(px*px+py*py))
+		#px = t.metPuppi.Px() - metCorrect['x_mc'].Eval( t.npv)
+		#py = t.metPuppi.Py() -metCorrect['y_mc'].Eval(t.npv)
+		#metCorr = ROOT.TLorentzVector()
+		#metCorr.SetPxPyPzE(px,py,0 ,ROOT.TMath.Sqrt(px*px+py*py))
+		metCorr = t.metPuppi
 		
 		## MM
-		if t.lepP4.GetEntries()>=2 and t.lepP4[1].Pt() > 20 and t.lepPdgId[0]* t.lepPdgId[1] == -13*13 :  ## OS SF muon, leading two
+		if t.lepP4.GetEntries()>=2 and t.lepP4[1].Pt() > 25 and t.lepPdgId[0]* t.lepPdgId[1] == -13*13 :  ## OS SF muon, leading two
 			#print '* DEBUG MM Event', t.lepP4[1].Pt(), t.lepPdgId[0]
 			ll = t.lepP4[0] + t.lepP4[1]
 			mmRho[mc].Fill( t.rho ,w)
@@ -521,13 +541,13 @@ for mc in book:
 			mmNjets[mc].Fill( nJets, w) 
 			mmLeadJetPt[mc].Fill( leadJetPt,w)
 
-		if t.lepP4.GetEntries()>=2 and t.lepP4[1].Pt() > 20 and t.lepPdgId[0]* t.lepPdgId[1] == -13*11 :  ## OS OF muon, leading two
+		if t.lepP4.GetEntries()>=2 and t.lepP4[1].Pt() > 25 and t.lepPdgId[0]* t.lepPdgId[1] == -13*11 :  ## OS OF muon, leading two
 			ll = t.lepP4[0] + t.lepP4[1]
 			emPt[mc].Fill( ll.Pt(), w ) 
 			emNjets[mc].Fill( nJets, w ) 
 
 		## EE
-		if t.lepP4.GetEntries()>=2 and t.lepP4[1].Pt() > 20 and t.lepPdgId[0]* t.lepPdgId[1] == -11*11 :  ## OS SF muon, leading two
+		if t.lepP4.GetEntries()>=2 and t.lepP4[1].Pt() > 25 and t.lepPdgId[0]* t.lepPdgId[1] == -11*11 :  ## OS SF muon, leading two
 			#print '* DEBUG EE Event', t.lepP4[1].Pt(), t.lepPdgId[0]
 			ll = t.lepP4[0] + t.lepP4[1]
 			eeRho[mc].Fill( t.rho,w )
@@ -578,6 +598,7 @@ for mc in book:
 			ttLeadPt[mc].Fill( t.tauP4[leadTau].Pt() ,w)
 
 	print '\r'+stdout+" DONE                            "
+	print "xsec mc is:", xsections[mc],"~~" ,xsecSum
 
 for data in datasets:
 	stdout=" * for data "+ data
@@ -617,7 +638,7 @@ for data in datasets:
 			if not isGood: continue
 
                 if t.lepP4.GetEntries()<2 : continue ## 2leptons
-                if t.lepP4[1].Pt() < 20 : continue ## pt 20
+                if t.lepP4[1].Pt() < 25 : continue ## pt 20
 		## counts jets
 		nJets=0
 		leadJetPt=0
@@ -630,12 +651,13 @@ for data in datasets:
 			if leadJetPt<5 : 
 				leadJetIdx=i
 				leadJetPt = t.jetP4[i].Pt()
-		px = t.metPuppi.Px() - metCorrect['x_data'].Eval( t.npv)
-		py = t.metPuppi.Py() - metCorrect['y_data'].Eval(t.npv)
-		metCorr = ROOT.TLorentzVector()
-		metCorr.SetPxPyPzE(px,py,0 ,ROOT.TMath.Sqrt(px*px+py*py))
+		#px = t.metPuppi.Px() - metCorrect['x_data'].Eval( t.npv)
+		#py = t.metPuppi.Py() - metCorrect['y_data'].Eval(t.npv)
+		#metCorr = ROOT.TLorentzVector()
+		#metCorr.SetPxPyPzE(px,py,0 ,ROOT.TMath.Sqrt(px*px+py*py))
+		metCorr = t.metPuppi
 
-                if t.lepP4.GetEntries()>=2 and t.lepP4[1].Pt() > 20 and t.lepPdgId[0]* t.lepPdgId[1] == -13*13 and data=='SingleMuon' : ## OS SF muon, leading two
+                if t.lepP4.GetEntries()>=2 and t.lepP4[1].Pt() > 25 and t.lepPdgId[0]* t.lepPdgId[1] == -13*13 and data=='SingleMuon' : ## OS SF muon, leading two
                 	ll = t.lepP4[0] + t.lepP4[1]
 			#print "data pass", ll.M(), ll.Pt() ## DEBUG
                 	mmM["data"].Fill( ll.M() )
@@ -657,12 +679,12 @@ for data in datasets:
 			mmNjets["data"].Fill( nJets) 
 			mmLeadJetPt["data"].Fill( leadJetPt)
 
-		if t.lepP4.GetEntries()>=2 and t.lepP4[1].Pt() > 20 and t.lepPdgId[0]* t.lepPdgId[1] == -13*11 and data=="SingleMuon":  ## OS OF muon, leading two
+		if t.lepP4.GetEntries()>=2 and t.lepP4[1].Pt() > 25 and t.lepPdgId[0]* t.lepPdgId[1] == -13*11 and data=="SingleMuon":  ## OS OF muon, leading two
 			ll = t.lepP4[0] + t.lepP4[1]
 			emPt["data"].Fill( ll.Pt()) 
 			emNjets["data"].Fill( nJets ) 
 
-                if t.lepP4.GetEntries()>=2 and t.lepP4[1].Pt() > 20 and t.lepPdgId[0]* t.lepPdgId[1] == -11*11 and data=='SingleElectron': # OS SF muon, leading two
+                if t.lepP4.GetEntries()>=2 and t.lepP4[1].Pt() > 25 and t.lepPdgId[0]* t.lepPdgId[1] == -11*11 and data=='SingleElectron': # OS SF muon, leading two
                 	ll = t.lepP4[0] + t.lepP4[1]
                 	eeM["data"].Fill( ll.M() )
                 	eeRho["data"].Fill( t.rho )
