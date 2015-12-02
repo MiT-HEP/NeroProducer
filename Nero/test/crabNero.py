@@ -48,7 +48,7 @@ tag = check_output("git describe --tags | cut -d'-' -f 1 | tr -d '\n' ",shell=Tr
 print "-> current tag is '"+tag + "'"
 config.Data.outLFNDirBase = '/store/user/%s/Nero/%s/' % (getUsernameFromSiteDB(), tag)
 config.Data.publication = False
-config.Data.publishDataName ='NeroNtuples'
+config.Data.outputDatasetTag ='NeroNtuples'
 
 config.Site.storageSite = 'T2_CH_CERN'
 #config.Site.blacklist = [ 'T2_US_Florida','T2_US_Vanderbilt']
@@ -77,7 +77,7 @@ if __name__ == '__main__':
 		if sys.argv[1] !=  config.General.requestName: return
 	###
 	print "--- Submitting " + "\033[01;32m" + config.Data.inputDataset.split('/')[1] + "\033[00m"  + " ---"
-	config.Data.publishDataName = config.General.requestName
+	config.Data.outputDatasetTag = config.General.requestName
         try:
             crabCommand('submit', config = config)
         except HTTPException as hte:
