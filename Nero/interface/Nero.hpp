@@ -34,9 +34,13 @@ class Nero : public edm::EDAnalyzer {
         virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
         virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
 
+        void respondToOpenInputFile(edm::FileBlock const&) override;
         // ----------member data ---------------------------
         TTree *tree_;
         TTree *all_;
+        TTree *files_; // saved analized file Names
+        string *fileName;
+
         TH1F  *hXsec_;
         map<string,TH1D*> hD_;
 

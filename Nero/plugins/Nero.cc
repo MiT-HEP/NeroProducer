@@ -32,7 +32,7 @@ Implementation:
 #include "NeroProducer/Nero/interface/NeroTrigger.hpp"
 #include "NeroProducer/Nero/interface/NeroMatching.hpp"
 
-//#define VERBOSE 2
+#define VERBOSE 2
 
 //
 // constants, enums and typedefs
@@ -344,6 +344,8 @@ Nero::beginJob()
 
     tree_    = fileService_ -> make<TTree>("events", "events");
     all_     = fileService_ -> make<TTree>("all", "all");	  
+    files_   = fileService_ -> make<TTree>("files","files"); 
+
     hXsec_   = fileService_ -> make<TH1F>("xSec", "xSec",20,-0.5,19.5); hXsec_ ->Sumw2();
 
     hD_["Events"]   = fileService_ -> make<TH1D>("hDEvents", "hDEvents",1,0,1); hD_["Events"] ->Sumw2();
@@ -382,7 +384,9 @@ Nero::beginJob()
 
     for(auto o : lumiObj)
         o -> defineBranches(all_);
-    
+   
+    files_ -> Branch("filename", "string",&fileName);
+
     //set histogram map
     for(auto o : lumiObj){
         if (dynamic_cast<NeroAll*> (o) !=NULL ) {
@@ -453,6 +457,13 @@ Nero::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
         if(VERBOSE) cout <<" -------- BEGIN LUMI --------"<<endl;
     #endif
 
+}
+
+// -----
+void 
+Nero::respondToOpenInputFile(edm::FileBlock const&f){
+    *fileName = f.fileName();
+    files_->Fill();
 }
 
 
