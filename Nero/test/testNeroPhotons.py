@@ -307,7 +307,7 @@ if options.isParticleGun:
 process.load('NeroProducer.Skim.DoubleEGFilterSequence_cff')
 ## this cut will be enforced on the all photon collection dumped
 process.nero.minPhoPt = cms.double(30)
-process.nero.minPhoN = cms.double(0)
+process.nero.minPhoN = cms.int(0)
 
 ### 
 process.p = cms.Path(
