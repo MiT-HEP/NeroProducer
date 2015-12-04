@@ -18,6 +18,9 @@ using namespace std;
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "CommonTools/Utils/interface/TFileDirectory.h"
 
+// FileBlock#
+#include "FWCore/Framework/interface/FileBlock.h"
+
 // MINIAOD INCLUDES
 //
 
