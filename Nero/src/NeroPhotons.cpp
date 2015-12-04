@@ -51,6 +51,8 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         if (VERBOSE>0) cout<<"[NeroPhotons]::[analyze]::[DEBUG] analyzing photon"<<iPho<<" pt="<<pho.pt() <<" pz"<<pho.pz() <<endl;
         #endif
 
+        if ( not pho.passElectronVeto ()  ) continue;
+
         // r9()>0.8 , chargedHadronIso()<20, chargedHadronIso()<0.3*pt()
         if (pho.pt() <15 or pho.chargedHadronIso()/pho.pt() > 0.3) continue; // 10 -- 14  GeV photons are saved if chargedHadronIso()<10
         if (fabs(pho.eta()) > mMinEta ) continue;
@@ -212,8 +214,6 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
 bool NeroPhotons::cutBasedPhotonId( const pat::Photon& pho, string type, bool withIso, bool withSieie)
 {
 // https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedPhotonIdentificationRun2#
-    if ( not pho.passElectronVeto ()  )  return false; 
-
     float hoe   = pho.hadTowOverEm();
     float sieie = pho.full5x5_sigmaIetaIeta() ;
     float chiso = pho.chargedHadronIso();
