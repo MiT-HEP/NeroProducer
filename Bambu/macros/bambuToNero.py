@@ -71,17 +71,6 @@ metCorrectionJESDown = metCorrection.clone('MetCorrectionJESDown',
     JESUncertaintySigma = -1.
 )
 
-for level in jecLevels:
-    repl = {'level': level, 'jettype': 'AK4PFchs'}
-    jetCorrection.AddCorrectionFromFile(jecPattern.format(**repl))
-    metCorrection.AddJetCorrectionFromFile(jecPattern.format(**repl))
-    metCorrectionJESUp.AddJetCorrectionFromFile(jecPattern.format(**repl))
-    metCorrectionJESDown.AddJetCorrectionFromFile(jecPattern.format(**repl))
-
-repl = {'level': 'Uncertainty', 'jettype': 'AK4PFchs'}
-metCorrectionJESUp.AddJetCorrectionFromFile(jecPattern.format(**repl))
-metCorrectionJESDown.AddJetCorrectionFromFile(jecPattern.format(**repl))
-
 puppiMet = mithep.MetMod('PuppiMet',
     InputName = puppiMod.GetOutputName(),
     OutputName = 'PuppiMet',
@@ -93,6 +82,19 @@ puppiMetCorrection = metCorrection.clone('PuppiMetCorrection',
     OutputName = 'PuppiType1CorrectedMet',
     JetsName = puppiPFJetMod.GetOutputName()
 )
+
+### JEC files must be added AFTER cloning ###
+
+for level in jecLevels:
+    repl = {'level': level, 'jettype': 'AK4PFchs'}
+    jetCorrection.AddCorrectionFromFile(jecPattern.format(**repl))
+    metCorrection.AddJetCorrectionFromFile(jecPattern.format(**repl))
+    metCorrectionJESUp.AddJetCorrectionFromFile(jecPattern.format(**repl))
+    metCorrectionJESDown.AddJetCorrectionFromFile(jecPattern.format(**repl))
+
+repl = {'level': 'Uncertainty', 'jettype': 'AK4PFchs'}
+metCorrectionJESUp.AddJetCorrectionFromFile(jecPattern.format(**repl))
+metCorrectionJESDown.AddJetCorrectionFromFile(jecPattern.format(**repl))
 
 for level in jecLevels:
     repl = {'level': level, 'jettype': 'AK4PFPuppi'}
