@@ -67,7 +67,6 @@ int NeroPuppiFatJets::analyze(const edm::Event& iEvent)
         // Fill output object   
 
         if (!mUseCA15) {
-          fprintf(stderr,"hello\n");
           // this is an AK8 jet straight from mini AOD
           
           if (j.pt() < mMinPt ) continue;
@@ -135,7 +134,6 @@ int NeroPuppiFatJets::analyze(const edm::Event& iEvent)
           tau3 -> push_back(j.userFloat("Njettiness15:tau3"));
   
           softdropMass->push_back(j.userFloat("SoftDrop15:Mass"));
-          fprintf(stderr,"[NeroPuppiFatJets::analyze] Loaded CA15 jet with mSD = %.3f\n",softdropMass->back());
           ak8_hasSubjet->push_back(j.hasSubjets("SoftDrop"));
     
           unsigned int nsubjetThisJet=0;
