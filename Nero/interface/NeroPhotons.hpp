@@ -47,7 +47,7 @@ class NeroPhotons : virtual public NeroCollection,
         // --- configuration
         float mMinPt;
         int   mMinNpho;
-        float mMinEta;
+        float mMaxEta;
         float mMaxIso;
 
         // -- PF
