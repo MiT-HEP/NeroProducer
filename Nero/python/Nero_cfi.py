@@ -66,7 +66,8 @@ nero = cms.EDAnalyzer("Nero",
 				### DoubleMu / DoubleE cross check and sync with Z
 				'HLT_Mu17_v1',
 				'HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v1',
-                                'HLT_CaloMET200_NoiseCleaned'
+                                'HLT_CaloMET200_NoiseCleaned',
+				'HLT_IsoTkMu20', ## Muon POG
 				]),
     prescales = cms.InputTag('patTrigger'),
     trigger = cms.InputTag("TriggerResults","","HLT"),
