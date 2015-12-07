@@ -297,41 +297,49 @@ if __name__ == '__main__':
     ###################################################
     setdata("True",is25ns=True)
     ###################################################
-    config.Data.unitsPerJob = 300
+    config.Data.unitsPerJob = 150
 
-    config.General.requestName = 'MET-Run2015D-05Oct2015'
-    config.Data.inputDataset = '/MET/Run2015D-05Oct2015-v1/MINIAOD'
+    config.General.requestName = 'DoubleEG_Run2015D-04Dec2015-v1'
+    config.Data.inputDataset = '/DoubleEG/Run2015D-04Dec2015-v1/MINIAOD'
     submit(config)
 
-    config.General.requestName = 'Tau-Run2015D-05Oct2015'
-    config.Data.inputDataset = '/Tau/Run2015D-05Oct2015-v1/MINIAOD'
+    config.General.requestName = 'SingleElectron_Run2015D-04Dec2015-v1'
+    config.Data.inputDataset = '/SingleElectron/Run2015D-04Dec2015-v1/MINIAOD'
     submit(config)
 
-    config.General.requestName = 'SingleMuon-Run2015D-05Oct2015'
-    config.Data.inputDataset = '/SingleMuon/Run2015D-05Oct2015-v1/MINIAOD'
-    submit(config)
+    ### config.General.requestName = 'MET-Run2015D-05Oct2015'
+    ### config.Data.inputDataset = '/MET/Run2015D-05Oct2015-v1/MINIAOD'
+    ### submit(config)
 
-    config.General.requestName = 'SingleElectron-Run2015D-05Oct2015'
-    config.Data.inputDataset = '/SingleElectron/Run2015D-05Oct2015-v1/MINIAOD'
-    submit(config)
+    ### config.General.requestName = 'Tau-Run2015D-05Oct2015'
+    ### config.Data.inputDataset = '/Tau/Run2015D-05Oct2015-v1/MINIAOD'
+    ### submit(config)
 
-    #config.General.requestName = 'SinglePhoton-25ns-PromptReco'
-    #config.Data.inputDataset = '/SinglePhoton/Run2015C-PromptReco-v1/MINIAOD'
-    #submit(config)
+    ### config.General.requestName = 'SingleMuon-Run2015D-05Oct2015'
+    ### config.Data.inputDataset = '/SingleMuon/Run2015D-05Oct2015-v1/MINIAOD'
+    ### submit(config)
 
-    config.General.requestName = 'MET-Run2015D-PrompRecov4'
-    config.Data.inputDataset = '/MET/Run2015D-PromptReco-v4/MINIAOD'
-    submit(config)
+    ### config.General.requestName = 'SingleElectron-Run2015D-05Oct2015'
+    ### config.Data.inputDataset = '/SingleElectron/Run2015D-05Oct2015-v1/MINIAOD'
+    ### submit(config)
 
-    config.General.requestName = 'Tau-Run2015D-PromptRecov4'
-    config.Data.inputDataset = '/Tau/Run2015D-PromptReco-v4/MINIAOD'
-    submit(config)
+    ### #config.General.requestName = 'SinglePhoton-25ns-PromptReco'
+    ### #config.Data.inputDataset = '/SinglePhoton/Run2015C-PromptReco-v1/MINIAOD'
+    ### #submit(config)
 
-    config.General.requestName = 'SingleMuon-Run2015D-PromptRecov4'
-    config.Data.inputDataset = '/SingleMuon/Run2015D-PromptReco-v4/MINIAOD'
-    submit(config)
+    ### config.General.requestName = 'MET-Run2015D-PrompRecov4'
+    ### config.Data.inputDataset = '/MET/Run2015D-PromptReco-v4/MINIAOD'
+    ### submit(config)
 
-    config.General.requestName = 'SingleElectron-Run2015D-PromptRecov4'
-    config.Data.inputDataset = '/SingleElectron/Run2015D-PromptReco-v4/MINIAOD'
-    submit(config)
+    ### config.General.requestName = 'Tau-Run2015D-PromptRecov4'
+    ### config.Data.inputDataset = '/Tau/Run2015D-PromptReco-v4/MINIAOD'
+    ### submit(config)
+
+    ### config.General.requestName = 'SingleMuon-Run2015D-PromptRecov4'
+    ### config.Data.inputDataset = '/SingleMuon/Run2015D-PromptReco-v4/MINIAOD'
+    ### submit(config)
+
+    ### config.General.requestName = 'SingleElectron-Run2015D-PromptRecov4'
+    ### config.Data.inputDataset = '/SingleElectron/Run2015D-PromptReco-v4/MINIAOD'
+    ### submit(config)
 
