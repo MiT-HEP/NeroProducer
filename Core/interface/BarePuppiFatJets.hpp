@@ -10,7 +10,7 @@ class BarePuppiFatJets : virtual public BareP4
 
         BarePuppiFatJets();
         ~BarePuppiFatJets();
-        void init() override;
+        virtual void init() override;
         void clear() override;
         void defineBranches(TTree* t) override { defineBranches(t, ""); }
         void defineBranches(TTree*, std::string prefix) override;
@@ -35,6 +35,7 @@ class BarePuppiFatJets : virtual public BareP4
         vector<float> *softdropMass{0};
 
         TClonesArray  *ak8_subjet{0};
+        vector<int>   *ak8_nSubjets{0};
         vector<int>   *ak8_hasSubjet{0};
         vector<float> *ak8subjet_btag{0};
     

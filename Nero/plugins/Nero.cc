@@ -110,10 +110,12 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     NeroPuppiFatJets *puppifatjets= new NeroPuppiFatJets();
     puppifatjets -> mOnlyMc = onlyMc;
     puppifatjets -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("puppifatjets"));
+    puppifatjets -> rho_token = evt->rho_token;
     puppifatjets -> mMinPt = iConfig.getParameter<double>("minPuppiFatJetPt");
     puppifatjets -> mMinNjets = iConfig.getParameter<int>("minPuppiFatJetN");
     puppifatjets -> mMaxEta = iConfig.getParameter<double>("minPuppiFatJetEta");
     puppifatjets -> mMinId = iConfig.getParameter<string>("minPuppiFatJetId");
+    puppifatjets -> mUseCA15 = iConfig.getParameter<bool>("useFatJetCA15"); // these have to be reclustered from miniAOD with different user floats
     obj.push_back(puppifatjets);
 
     // --- 
