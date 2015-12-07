@@ -11,7 +11,7 @@ NeroPhotons::NeroPhotons() :
     mMinPt = 15;
     mMaxIso = -1;
     mMinNpho = 0;
-    mMinEta = 2.5;
+    mMaxEta = 2.5;
 
     pf = NULL;
 }
@@ -55,7 +55,7 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
 
         // r9()>0.8 , chargedHadronIso()<20, chargedHadronIso()<0.3*pt()
         if (pho.pt() <15 or pho.chargedHadronIso()/pho.pt() > 0.3) continue; // 10 -- 14  GeV photons are saved if chargedHadronIso()<10
-        if (fabs(pho.eta()) > mMinEta ) continue;
+        if (fabs(pho.eta()) > mMaxEta ) continue;
         if (pho.pt() < mMinPt) continue;
 
         #ifdef VERBOSE

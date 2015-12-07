@@ -178,7 +178,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     phos -> mMinPt = iConfig.getParameter<double>("minPhoPt");
     phos -> mMaxIso = iConfig.getParameter<double>("maxPhoIso");
     phos -> mMinNpho = iConfig.getParameter<int>("minPhoN");
-    phos -> mMinEta = iConfig.getParameter<double>("minPhoEta");
+    phos -> mMaxEta = iConfig.getParameter<double>("maxPhoEta");
     phos -> SetMatch( iConfig.getParameter<bool>("matchPho") );
     phos -> pf = pf;
     phos -> jets = jets;
