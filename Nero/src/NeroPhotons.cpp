@@ -51,7 +51,7 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         if (VERBOSE>0) cout<<"[NeroPhotons]::[analyze]::[DEBUG] analyzing photon"<<iPho<<" pt="<<pho.pt() <<" pz"<<pho.pz() <<endl;
         #endif
 
-        if ( not pho.passElectronVeto ()  ) continue;
+        //if ( not pho.passElectronVeto ()  ) continue;
 
         // r9()>0.8 , chargedHadronIso()<20, chargedHadronIso()<0.3*pt()
         if (pho.pt() <15 or pho.chargedHadronIso()/pho.pt() > 0.3) continue; // 10 -- 14  GeV photons are saved if chargedHadronIso()<10
@@ -92,6 +92,8 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         bits |= isPassVLoose25 * PhoVLoose25;
 
         if (not bits) continue; // even if there is some misalignment ntuples will not be corrupted
+
+        bits |= pho.passElectronVeto() * PhoElectronVeto;
 
         // RC -- with FPR
         //
