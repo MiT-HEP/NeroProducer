@@ -43,11 +43,14 @@ t2mit/filefi/042 GJets_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8+RunIIS
 t2mit/filefi/042 GJets_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8+RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1+AODSIM - 25ns mg5_74 ~
 t2mit/filefi/042 GJets_HT-40To100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8+RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1+AODSIM - 25ns mg5_74 ~
 t2mit/filefi/042 GJets_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8+RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1+AODSIM - 25ns mg5_74 ~
+t2mit/filefi/042 QCD_HT100to200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8+RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2+AODSIM - 25ns mg5_74 ~
 t2mit/filefi/042 QCD_HT200to300_TuneCUETP8M1_13TeV-madgraphMLM-pythia8+RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2+AODSIM - 25ns mg5_74 ~
 t2mit/filefi/042 QCD_HT300to500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8+RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2+AODSIM - 25ns mg5_74 ~
 t2mit/filefi/042 QCD_HT500to700_TuneCUETP8M1_13TeV-madgraphMLM-pythia8+RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1+AODSIM - 25ns mg5_74 ~
 t2mit/filefi/042 QCD_HT700to1000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8+RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1+AODSIM - 25ns mg5_74 ~
 t2mit/filefi/042 QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8+RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2+AODSIM - 25ns mg5_74 ~
+t2mit/filefi/042 QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8+RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1+AODSIM - 25ns mg5_74 ~
+t2mit/filefi/042 QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8+RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1+AODSIM - 25ns mg5_74 ~
 t2mit/filefi/042 WJetsToQQ_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8+RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2+AODSIM - 25ns mg5_74 ~
 t2mit/filefi/042 ZJetsToQQ_HT600toInf_13TeV-madgraph+RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1+AODSIM - 25ns mg5_74 ~
 # PYTHIA8
