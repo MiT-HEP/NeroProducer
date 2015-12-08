@@ -59,7 +59,7 @@ process.source = cms.Source("PoolSource",
 # ---- define the output file -------------------------------------------
 process.TFileService = cms.Service("TFileService",
 			closeFileFast = cms.untracked.bool(True),
-			fileName = cms.string("output.root"),
+      fileName = cms.string("NeroNtuples.root"),
                 )
 # ------------------------QG-----------------------------------------------
 process.load('RecoJets.JetProducers.QGTagger_cfi')
