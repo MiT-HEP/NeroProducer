@@ -65,6 +65,7 @@ mithep::nero::FatJetsFiller::fill()
 
     newP4(out_, jet);
 
+
     out_.rawPt->push_back(jet.RawMom().Pt());
     out_.flavour->push_back(jet.MatchedMCFlavor());
     out_.tau1->push_back(jet.Tau1());
