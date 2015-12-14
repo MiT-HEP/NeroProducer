@@ -16,8 +16,6 @@ int NeroEvent::analyze(const edm::Event& iEvent){
     lumiNum    = iEvent.luminosityBlock();
     eventNum   = iEvent.id().event();
 
-    fprintf(stderr,"EVENT: %llu\n",eventNum);
-
     if ( mOnlyMc  ) return 0;
     iEvent.getByToken(rho_token,rho_handle);
     if ( not rho_handle.isValid() ) cout <<"[NeroEvent]::[analyze]::[ERROR] rho_handle is not valid"<<endl;
