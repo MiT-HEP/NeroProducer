@@ -34,12 +34,16 @@ class BareTaus : virtual public BareP4
         vector<int>     *Q{0}; // charge
         vector<float>   *M{0}; // mass
         vector<float>   *iso{0};
+        vector<unsigned> *selBits{0};
 
         // EXTENDED VARIABLES
         vector<float>   *chargedIsoPtSum{0};
         vector<float>   *neutralIsoPtSum{0};
         vector<float>   *isoDeltaBetaCorr{0};
-        vector<unsigned> *selBits{0};
+        
+        // the ids are RecoTauTag/Configuration/python/HPSPFTaus_cff.py
+        // VL=3.5 L=2.5 M=1.5 T=0.8
+        vector<float>   *isoPileupWeightedRaw{0};//byPileupWeightedIsolationRaw3Hits{0};
 };
 
 #endif
