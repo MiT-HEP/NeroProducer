@@ -68,6 +68,7 @@ int NeroTrigger::analyze(const edm::Event& iEvent){
     if (leps_ !=NULL) triggerLeps -> resize(leps_ -> p4 -> GetEntries()  ,0);
     if (jets_ !=NULL) triggerJets -> resize(jets_ -> p4 -> GetEntries()  ,0);
     if (taus_ !=NULL) triggerTaus -> resize(taus_ -> p4 -> GetEntries()  ,0);
+    if (taus_ !=NULL) triggerNoneTaus -> resize(taus_ -> p4 -> GetEntries()  ,0);
     if (photons_ !=NULL) triggerPhotons -> resize(photons_ -> p4 -> GetEntries()  ,0);
 
 
