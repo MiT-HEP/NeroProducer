@@ -23,6 +23,9 @@ namespace mithep {
       void SetMuonsName(char const* _name) { muonsName_ = _name; }
       void SetPFCandidatesName(char const* _name) { pfCandidatesName_ = _name; }
       void SetPuppiMetName(char const* _name) { puppiMetName_ = _name; }
+      void SetPuppiRawMetName(char const* _name) { puppiRawMetName_ = _name; }
+      void SetRawMetName(char const* _name) { rawMetName_ = _name; }
+      void SetCaloMetName(char const* _name) { caloMetName_ = _name; }
       void SetGenMetName(char const* _name) { genMetName_ = _name; }
 
     private:
@@ -34,7 +37,9 @@ namespace mithep {
       TString muonsName_ = "Muons";
       TString pfCandidatesName_ = "PFCandidates";
       TString puppiMetName_ = "";
+      TString puppiRawMetName_ = "";
       TString caloMetName_ = "CaloMet";
+      TString rawMetName_ = "PFMet";
       TString genMetName_ = "";
 
       ClassDef(MetFiller, 0)
