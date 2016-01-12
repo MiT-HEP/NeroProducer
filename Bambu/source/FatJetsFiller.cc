@@ -2,6 +2,7 @@
 
 #include "MitAna/DataTree/interface/XlFatJetCol.h"
 #include "MitAna/DataTree/interface/XlFatJet.h"
+#include <algorithm>
 
 ClassImp(mithep::nero::FatJetsFiller)
 
@@ -15,6 +16,12 @@ mithep::nero::FatJetsFiller::defineBranches(TTree* _tree)
   case BaseFiller::kCA15Jets:
     out_.defineBranches(_tree, "ca15");
     break;
+  case BaseFiller::kAK8PuppiJets:
+    out_.defineBranches(_tree, "ak8puppi");
+    break;
+  case BaseFiller::kCA15PuppiJets:
+    out_.defineBranches(_tree, "ca15puppi");
+    break;
   default:
     break;
   }
@@ -23,20 +30,23 @@ mithep::nero::FatJetsFiller::defineBranches(TTree* _tree)
 void
 mithep::nero::FatJetsFiller::initialize()
 {
-	topANN = new NeuralNet(5,2);
-	#include "topTagger_simple.icc" // these are just weights - move to MIT_DATA?
-	topANN->AllocateMemory();
-	topANN->AddBranchAddress(&nn_mSD,69.14170513,70.41396876);
-	topANN->AddBranchAddress(&nn_QGTag,0.24245312,0.31660758);
-	topANN->AddBranchAddress(&nn_groomedIso,0.18981184,0.25050463);
-	topANN->AddBranchAddress(&nn_tau32,0.79239905,0.10837058);
-	topANN->AddBranchAddress(&nn_tau21,0.64983544,0.17112768);
+  if (MVAOn) {
+      topANN = new NeuralNet(5,2);
+      #include "topTagger_simple.icc" // these are just weights - move to MIT_DATA?
+      topANN->AllocateMemory();
+      topANN->AddBranchAddress(&nn_mSD,69.14170513,70.41396876);
+      topANN->AddBranchAddress(&nn_QGTag,0.24245312,0.31660758);
+      topANN->AddBranchAddress(&nn_groomedIso,0.18981184,0.25050463);
+      topANN->AddBranchAddress(&nn_tau32,0.79239905,0.10837058);
+      topANN->AddBranchAddress(&nn_tau21,0.64983544,0.17112768);
+    }
 }
 
 void
 mithep::nero::FatJetsFiller::finalize()
 {
-  delete topANN;
+  if (MVAOn)
+    delete topANN;
 }
 
 void
@@ -55,6 +65,7 @@ mithep::nero::FatJetsFiller::fill()
 
     newP4(out_, jet);
 
+
     out_.rawPt->push_back(jet.RawMom().Pt());
     out_.flavour->push_back(jet.MatchedMCFlavor());
     out_.tau1->push_back(jet.Tau1());
@@ -64,20 +75,37 @@ mithep::nero::FatJetsFiller::fill()
     out_.trimmedMass->push_back(jet.MassTrimmed());
     out_.prunedMass->push_back(jet.MassPruned());
     out_.filteredMass->push_back(jet.MassFiltered());
-    out_.softdropMass->push_back(jet.MassSDb0());
+    if (collection_==BaseFiller::kCA15Jets || collection_==BaseFiller::kCA15PuppiJets) 
+      out_.softdropMass->push_back(jet.MassSDb1());
+    else
+      out_.softdropMass->push_back(jet.MassSDb0());
     auto& subjets(jet.GetSubJets(XlSubJet::kSoftDrop));
-    out_.ak8jet_hasSubjet->push_back(subjets.GetEntries() == 0 ? 0 : 1);
+    out_.ak8jet_hasSubjet->push_back(subjets.GetEntries());
     for (unsigned iS(0); iS != subjets.GetEntries(); ++iS) {
       auto& subjet(*subjets.At(iS));
       newP4(*out_.ak8_subjet, subjet);
-      out_.ak8subjet_btag->push_back(subjet.BTag());
     }
-    nn_mSD = out_.softdropMass->back();
-    nn_QGTag = cleanInput(jet.QGTag());
-    nn_groomedIso = computePull(jet.Mom(),jet.SoftDropP());
-    nn_tau32 = cleanInput(jet.Tau3()/jet.Tau2());
-    nn_tau21 = cleanInput(jet.Tau2()/jet.Tau1());
-    out_.topMVA->push_back(topANN->Evaluate()[1]);
+
+    // btags are stored in Bambu and ordered by decreasing subjet pT.
+    // note that btag vector may be out of sync with other fatjet vectors
+    // since different jet algorithms are being used
+    std::vector<float> subjetBtags = jet.GetSubJetBtags();
+    unsigned int nSJBtags = subjetBtags.size();
+    if (nSJBtags>0) {
+      std::sort(subjetBtags.begin(),subjetBtags.end());
+      out_.ak8subjet_btag->push_back(subjetBtags[nSJBtags-1]);
+    } else {
+      out_.ak8subjet_btag->push_back(-1);
+    }
+  
+    if (MVAOn) {
+      nn_mSD = out_.softdropMass->back();
+      nn_QGTag = cleanInput(jet.QGTag());
+      nn_groomedIso = computePull(jet.Mom(),jet.SoftDropP());
+      nn_tau32 = cleanInput(jet.Tau3()/jet.Tau2());
+      nn_tau21 = cleanInput(jet.Tau2()/jet.Tau1());
+      out_.topMVA->push_back(topANN->Evaluate()[1]);
+    }
   }
 }
 
