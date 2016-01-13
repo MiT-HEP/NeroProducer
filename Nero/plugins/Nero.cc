@@ -24,6 +24,7 @@ Implementation:
 #include "NeroProducer/Nero/interface/NeroEvent.hpp"
 #include "NeroProducer/Nero/interface/NeroFatJets.hpp"
 #include "NeroProducer/Nero/interface/NeroPuppiJets.hpp"
+#include "NeroProducer/Nero/interface/NeroPuppiFatJets.hpp"
 #include "NeroProducer/Nero/interface/NeroVertex.hpp"
 #include "NeroProducer/Nero/interface/NeroMet.hpp"
 #include "NeroProducer/Nero/interface/NeroPhotons.hpp"
@@ -105,6 +106,17 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     puppijets -> mMinId = iConfig.getParameter<string>("minPuppiJetId");
     puppijets -> pf = pf;
     obj.push_back(puppijets);
+
+    NeroPuppiFatJets *puppifatjets= new NeroPuppiFatJets();
+    puppifatjets -> mOnlyMc = onlyMc;
+    puppifatjets -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("puppifatjets"));
+    puppifatjets -> rho_token = evt->rho_token;
+    puppifatjets -> mMinPt = iConfig.getParameter<double>("minPuppiFatJetPt");
+    puppifatjets -> mMinNjets = iConfig.getParameter<int>("minPuppiFatJetN");
+    puppifatjets -> mMaxEta = iConfig.getParameter<double>("minPuppiFatJetEta");
+    puppifatjets -> mMinId = iConfig.getParameter<string>("minPuppiFatJetId");
+    puppifatjets -> mUseCA15 = iConfig.getParameter<bool>("useFatJetCA15"); // these have to be reclustered from miniAOD with different user floats
+    obj.push_back(puppifatjets);
 
     // --- 
     NeroTaus *taus = new NeroTaus();
