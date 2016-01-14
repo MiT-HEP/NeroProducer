@@ -21,7 +21,13 @@ class NeroFatJets : virtual public NeroCollection,
         // --- Token
         edm::EDGetTokenT<pat::JetCollection> token;
 
-
+        // --- configuration
+        float mMinPt;
+        float mMaxEta;
+        string mMinId;
+        bool runJEC=false;
+        FactorizedJetCorrector *mMCJetCorrector;   // needed for reclustered jets
+        FactorizedJetCorrector *mDataJetCorrector; 
 
 };
 

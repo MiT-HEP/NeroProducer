@@ -13,10 +13,10 @@ BarePuppiFatJets::~BarePuppiFatJets(){
     BareFunctions::Delete(prunedMass     );
     BareFunctions::Delete(filteredMass   );
     BareFunctions::Delete(softdropMass   );
-    BareFunctions::Delete(ak8_subjet         );
-    BareFunctions::Delete(ak8_nSubjets       );
-    BareFunctions::Delete(ak8_hasSubjet      );
-    BareFunctions::Delete(ak8subjet_btag     );
+    BareFunctions::Delete(subjet         );
+    BareFunctions::Delete(nSubjets       );
+    BareFunctions::Delete(firstSubjet    );
+    BareFunctions::Delete(subjet_btag    );
     BareFunctions::Delete(topMVA         );
 }
 
@@ -31,10 +31,10 @@ void BarePuppiFatJets::init(){
     BareFunctions::New(prunedMass     );
     BareFunctions::New(filteredMass   );
     BareFunctions::New(softdropMass   );
-    BareFunctions::New(ak8_subjet         );
-    BareFunctions::New(ak8_nSubjets       );
-    BareFunctions::New(ak8_hasSubjet      );
-    BareFunctions::New(ak8subjet_btag     );
+    BareFunctions::New(subjet         );
+    BareFunctions::New(nSubjets       );
+    BareFunctions::New(firstSubjet    );
+    BareFunctions::New(subjet_btag    );
     BareFunctions::New(topMVA         );
 }
 
@@ -50,78 +50,71 @@ void BarePuppiFatJets::clear(){
     prunedMass -> clear();
     filteredMass -> clear();
     softdropMass -> clear();
-    ak8_subjet->Clear();
-    ak8_nSubjets->clear();
-    ak8subjet_btag ->clear();
-    ak8_hasSubjet->clear();
+    subjet->Clear();
+    nSubjets->clear();
+    firstSubjet->clear();
+    subjet_btag ->clear();
     hbb -> clear();
     topMVA->clear();
 }
 
 void BarePuppiFatJets::defineBranches(TTree *t, std::string prefix){
 
-    TString jetName("fatjetpuppi" + prefix);
-    TString algo(prefix+"puppi");
-    if (prefix == "")
-        algo = "ak8puppi";
+    TString jetName("fatjet" + prefix);
 
     // init() called by BareP4
     BareP4::defineBranches(t, jetName.Data());
     //
-    t->Branch(jetName + "RawPt","vector<float>",&rawPt);
-    t->Branch(jetName + "Flavour","vector<int>",&flavour);
+    t->Branch(jetName + "_RawPt","vector<float>",&rawPt);
+    t->Branch(jetName + "_Flavour","vector<int>",&flavour);
     //
-    t->Branch(jetName + "Tau1","vector<float>",&tau1);
-    t->Branch(jetName + "Tau2","vector<float>",&tau2);
-    t->Branch(jetName + "Tau3","vector<float>",&tau3);
+    t->Branch(jetName + "_Tau1","vector<float>",&tau1);
+    t->Branch(jetName + "_Tau2","vector<float>",&tau2);
+    t->Branch(jetName + "_Tau3","vector<float>",&tau3);
     //
-    t->Branch(jetName + "TrimmedMass","vector<float>",&trimmedMass);
-    t->Branch(jetName + "PrunedMass","vector<float>",&prunedMass);
-    t->Branch(jetName + "FilteredMass","vector<float>",&filteredMass);
-    t->Branch(jetName + "SoftdropMass","vector<float>",&softdropMass);
+    t->Branch(jetName + "_TrimmedMass","vector<float>",&trimmedMass);
+    t->Branch(jetName + "_PrunedMass","vector<float>",&prunedMass);
+    t->Branch(jetName + "_FilteredMass","vector<float>",&filteredMass);
+    t->Branch(jetName + "_SoftdropMass","vector<float>",&softdropMass);
 
-    t->Branch(algo + "_ak8_subjet","TClonesArray", &ak8_subjet, 128000, 0);
-    t->Branch(algo + "jet_ak8_nSubjets","vector<int>",&ak8_nSubjets);
-    t->Branch(algo + "jet_ak8_hasSubjet","vector<int>",&ak8_hasSubjet);
-    t->Branch(algo + "subjet_btag","vector<float>",&ak8subjet_btag);
+    t->Branch(jetName + "_subjet","TClonesArray", &subjet, 128000, 0);
+    t->Branch(jetName + "_nSubjets","vector<int>",&nSubjets);
+    t->Branch(jetName + "_firstSubjet","vector<int>",&firstSubjet);
+    t->Branch(jetName + "_subjet_btag","vector<float>",&subjet_btag);
 
-    t->Branch(jetName + "Hbb","vector<float>",&hbb);
+    t->Branch(jetName + "_Hbb","vector<float>",&hbb);
 
-    t->Branch(jetName + "topMVA","vector<float>",&topMVA);
+    t->Branch(jetName + "_topMVA","vector<float>",&topMVA);
 }
 
 void BarePuppiFatJets::setBranchAddresses(TTree* t, std::string prefix)
 {
-    TString jetName("fatjetpuppi" + prefix);
-    TString algo(prefix);
-    if (prefix == "")
-        algo = "ak8";
-
+    TString jetName("fatjet" + prefix);
     // init() called by BareP4
     BareP4::setBranchAddresses(t,jetName.Data());
 
-    BareFunctions::SetBranchAddress(t,jetName + "RawPt", &rawPt);
+    BareFunctions::SetBranchAddress(t,jetName + "_RawPt", &rawPt);
 
-    BareFunctions::SetBranchAddress(t,jetName + "Flavour" ,&flavour);
-    BareFunctions::SetBranchAddress(t,jetName + "Tau1"  ,&tau1);
-    BareFunctions::SetBranchAddress(t,jetName + "Tau2"  ,&tau2);
-    BareFunctions::SetBranchAddress(t,jetName + "Tau3"  ,&tau3);
+    BareFunctions::SetBranchAddress(t,jetName + "_Flavour" ,&flavour);
+    BareFunctions::SetBranchAddress(t,jetName + "_Tau1"  ,&tau1);
+    BareFunctions::SetBranchAddress(t,jetName + "_Tau2"  ,&tau2);
+    BareFunctions::SetBranchAddress(t,jetName + "_Tau3"  ,&tau3);
 
-    BareFunctions::SetBranchAddress(t,jetName + "TrimmedMass"   ,&trimmedMass);
-    BareFunctions::SetBranchAddress(t,jetName + "PrunedMass"    ,&prunedMass);
-    BareFunctions::SetBranchAddress(t,jetName + "FilteredMass"  ,&filteredMass);
-    BareFunctions::SetBranchAddress(t,jetName + "SoftdropMass"  ,&softdropMass);
+    BareFunctions::SetBranchAddress(t,jetName + "_TrimmedMass"   ,&trimmedMass);
+    BareFunctions::SetBranchAddress(t,jetName + "_PrunedMass"    ,&prunedMass);
+    BareFunctions::SetBranchAddress(t,jetName + "_FilteredMass"  ,&filteredMass);
+    BareFunctions::SetBranchAddress(t,jetName + "_SoftdropMass"  ,&softdropMass);
 
-    BareFunctions::SetBranchAddress(t,algo + "_ak8_subjet"  ,&ak8_subjet);
-    BareFunctions::SetBranchAddress(t,algo + "jet_ak8_nSubjets",&ak8_nSubjets);
-    BareFunctions::SetBranchAddress(t,algo + "jet_ak8_hasSubjet",&ak8_hasSubjet);
-    BareFunctions::SetBranchAddress(t,algo + "subjet_btag",&ak8subjet_btag);
+    BareFunctions::SetBranchAddress(t,jetName + "_subjet"  ,&subjet);
+    BareFunctions::SetBranchAddress(t,jetName + "_nSubjets",&nSubjets);
+    BareFunctions::SetBranchAddress(t,jetName + "_firstSubjet",&firstSubjet);
+    BareFunctions::SetBranchAddress(t,jetName + "_subjet_btag",&subjet_btag);
 
-    BareFunctions::SetBranchAddress(t,jetName + "Hbb",&hbb);
-    BareFunctions::SetBranchAddress(t,jetName + "topMVA",&topMVA);
+    BareFunctions::SetBranchAddress(t,jetName + "_Hbb",&hbb);
+    BareFunctions::SetBranchAddress(t,jetName + "_topMVA",&topMVA);
 }
 void BarePuppiFatJets::compress(){
     BareP4::compress();
-    for(int i=0;i<ak8_subjet->GetEntries();++i)
-        BareFunctions::Compress( * (TLorentzVector*) ak8_subjet->At(i)  );
+    for(int i=0;i<subjet->GetEntries();++i)
+        BareFunctions::Compress( * (TLorentzVector*) subjet->At(i)  );
 }

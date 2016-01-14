@@ -4,6 +4,8 @@
 #include "NeroProducer/Nero/interface/NeroCollection.hpp"
 #include "NeroProducer/Core/interface/BareMet.hpp"
 #include "NeroProducer/Nero/interface/NeroPF.hpp"
+#include "DataFormats/METReco/interface/PFMET.h"
+#include "DataFormats/METReco/interface/PFMETCollection.h"
 
 
 class NeroMet : virtual public NeroCollection,
@@ -18,12 +20,14 @@ class NeroMet : virtual public NeroCollection,
         // --- Handle
         edm::Handle<pat::METCollection> handle;	
         edm::Handle<pat::METCollection> handle_noHF;
-        edm::Handle<pat::METCollection> handle_puppi;
+        //edm::Handle<pat::METCollection> handle_puppi;
+        edm::Handle<reco::PFMETCollection> handle_puppi;
 
         // --- Token
         edm::EDGetTokenT<pat::METCollection> token;
         edm::EDGetTokenT<pat::METCollection> token_noHF;
-        edm::EDGetTokenT<pat::METCollection> token_puppi;
+        //edm::EDGetTokenT<pat::METCollection> token_puppi;
+        edm::EDGetTokenT<reco::PFMETCollection> token_puppi;
         //
         NeroPF * pf;
 

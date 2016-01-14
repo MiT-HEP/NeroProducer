@@ -34,10 +34,10 @@ class BarePuppiFatJets : virtual public BareP4
         vector<float> *filteredMass{0};
         vector<float> *softdropMass{0};
 
-        TClonesArray  *ak8_subjet{0};
-        vector<int>   *ak8_nSubjets{0};
-        vector<int>   *ak8_hasSubjet{0};
-        vector<float> *ak8subjet_btag{0};
+        TClonesArray  *subjet{0};
+        vector<int>   *nSubjets{0};
+        vector<int>   *firstSubjet{0};
+        vector<float> *subjet_btag{0};
     
         vector<float> *hbb{0};
         vector<float> *topMVA{0};

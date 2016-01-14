@@ -22,7 +22,8 @@ nero = cms.EDAnalyzer("Nero",
     puppifatjets = cms.InputTag("slimmedJetsAK8"),
     mets = cms.InputTag("slimmedMETs"),
     metsNoHF = cms.InputTag("slimmedMETsNoHF"),
-    metsPuppi = cms.InputTag("slimmedMETsPuppi"),
+    metsPuppi = cms.InputTag("type1PuppiMET"),
+#    metsPuppi = cms.InputTag("slimmedMETsPuppi"),
     pfCands = cms.InputTag("packedPFCandidates"),
 
 

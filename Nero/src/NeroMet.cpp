@@ -75,10 +75,11 @@ int NeroMet::analyze(const edm::Event& iEvent){
         *metNoHF = TLorentzVector( metnohf.px(),metnohf.py(),metnohf.pz(),metnohf.energy());
         sumEtRawNoHF = metnohf.uncorSumEt();
 
-        const pat::MET &puppi = handle_puppi->front(); 
+        auto &puppi = handle_puppi->front(); 
         *metPuppi =  TLorentzVector( puppi.px(), puppi.py(),puppi.pz(),puppi.energy() );
-        sumEtRawPuppi = puppi.uncorSumEt();
+        sumEtRawPuppi = puppi.sumEt();
 
+        /*
         for(Syst mysyst = (Syst)0; mysyst < MaxSyst ; mysyst = (Syst)((int)mysyst +1 ) )
         {
             pat::MET::METUncertainty miniAODUnc=pat::MET::METUncertaintySize;
@@ -117,6 +118,7 @@ int NeroMet::analyze(const edm::Event& iEvent){
                     puppi . shiftedP4(miniAODUnc).energy()
                     );
         }// end syst loop
+        */
 
     }    
     // GEN INFO

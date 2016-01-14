@@ -2,6 +2,14 @@ import FWCore.ParameterSet.Config as cms
 import FWCore.ParameterSet.VarParsing as VarParsing
 import re
 
+def makeBtagSequence(p,btagDiscriminators,btagInfos,label):
+   p.btagSequence = cms.Sequence()
+   for info in btagInfos:
+     p.btagSequence += getattr(p,info+label)
+   for disc in btagDiscriminators:
+     p.btagSequence += getattr(p,disc+label)
+   return p.btagSequence
+
 process = cms.Process("nero")
 
 options = VarParsing.VarParsing ('analysis')
@@ -22,30 +30,34 @@ options.parseArguments()
 isData = options.isData
 
 if options.is25ns and options.is50ns : 
-	raise('cannot run both on 25 and 50ns. Pick up one')
+  raise('cannot run both on 25 and 50ns. Pick up one')
 if not options.is25ns and not options.is50ns:
-	raise('cannot run nor 25ns nor 50ns configuration. Pick up one.')
+  raise('cannot run nor 25ns nor 50ns configuration. Pick up one.')
 
 if options.is25ns:
-	print "-> Loading 25ns configuration"
+  print "-> Loading 25ns configuration"
 if options.is50ns:
-	print "-> Loading 50ns configuration"
+  print "-> Loading 50ns configuration"
 if options.isData:
-	print "-> Loading DATA configuration"
+  print "-> Loading DATA configuration"
 else:
-	print "-> Loading MC configuration"
+  print "-> Loading MC configuration"
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 # If you run over many samples and you save the log, remember to reduce
 # the size of the output by prescaling the report of the event number
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(20) )
+#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10000) )
 
 fileList = [
     #'file:/tmp/amarini/step3_0.root'
     #'/store/data/Run2015D/SinglePhoton/MINIAOD/PromptReco-v3/000/256/630/00000/BE4748B0-295F-E511-A271-02163E014402.root',
-    '/store/mc/RunIISpring15MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/50000/E4F89698-DE6E-E511-8681-0025905A60F4.root'
+    #'/store/mc/RunIISpring15MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/50000/E4F89698-DE6E-E511-8681-0025905A60F4.root'
+    #'file:/tmp/snarayan/miniaod_qcd.root'
+    'file:/tmp/snarayan/miniaod_ttdm1.root',
+    'file:/tmp/snarayan/miniaod_ttdm2.root',
 ]
 
 
@@ -53,13 +65,13 @@ fileList = [
 ###FILELIST###
 
 process.source = cms.Source("PoolSource",
-    	fileNames = cms.untracked.vstring(fileList)
+      fileNames = cms.untracked.vstring(fileList)
     )
 
 # ---- define the output file -------------------------------------------
 process.TFileService = cms.Service("TFileService",
-			closeFileFast = cms.untracked.bool(True),
-			fileName = cms.string("NeroNtuples.root"),
+      closeFileFast = cms.untracked.bool(True),
+      fileName = cms.string("testnero.root"),
                 )
 # ------------------------QG-----------------------------------------------
 process.load('RecoJets.JetProducers.QGTagger_cfi')
@@ -75,20 +87,20 @@ process.load('Configuration.StandardSequences.Services_cff')
 if (isData):
     process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
     if options.is25ns:
-    	process.GlobalTag.globaltag = '74X_dataRun2_Prompt_v2'
+      process.GlobalTag.globaltag = '74X_dataRun2_Prompt_v2'
     if options.is50ns:
-    	process.GlobalTag.globaltag = '74X_dataRun2_Prompt_v1'
+      process.GlobalTag.globaltag = '74X_dataRun2_Prompt_v1'
 else:
     process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
     if options.is25ns:
-	    #process.GlobalTag.globaltag = '74X_mcRun2_asymptotic_realisticBS_v1'
-	    #process.GlobalTag.globaltag = '74X_mcRun2_asymptotic_realisticBS_v1'
-	    process.GlobalTag.globaltag = 'MCRUN2_74_V9::All'
-	    #process.GlobalTag.globaltag = '74X_mcRun2_asymptotic_v2'
+      #process.GlobalTag.globaltag = '74X_mcRun2_asymptotic_realisticBS_v1'
+      #process.GlobalTag.globaltag = '74X_mcRun2_asymptotic_realisticBS_v1'
+      process.GlobalTag.globaltag = 'MCRUN2_74_V9::All'
+      #process.GlobalTag.globaltag = '74X_mcRun2_asymptotic_v2'
     if options.is50ns:
-	    #process.GlobalTag.globaltag = '741_p1_mcRun2_Realistic_50ns_v0::All'
-	    process.GlobalTag.globaltag = 'MCRUN2_74_V9A::All'
-	    #process.GlobalTag.globaltag = '74X_mcRun2_startup_v2::All'
+      #process.GlobalTag.globaltag = '741_p1_mcRun2_Realistic_50ns_v0::All'
+      process.GlobalTag.globaltag = 'MCRUN2_74_V9A::All'
+      #process.GlobalTag.globaltag = '74X_mcRun2_startup_v2::All'
 
 
 ######## LUMI MASK
@@ -127,30 +139,31 @@ process.pfInclusiveSecondaryVertexFinderTagInfosAK8.extSVCollection = cms.InputT
 
 ## DEBUG
 ## process.output = cms.OutputModule(
-## 		   "PoolOutputModule",
-## 		         fileName = cms.untracked.string('output.root'),
-## 			 )
+##       "PoolOutputModule",
+##             fileName = cms.untracked.string('output.root'),
+##       )
 ## process.output_step = cms.EndPath(process.output)
 process.HBB = cms.Sequence(
-		process.pfImpactParameterTagInfosAK8 *
-		process.pfInclusiveSecondaryVertexFinderTagInfosAK8 *
-		process.softPFMuonsTagInfosAK8 *
-		process.softPFElectronsTagInfosAK8 *
-		process.pfBoostedDoubleSecondaryVertexAK8BJetTags 
-		)
+    process.pfImpactParameterTagInfosAK8 *
+    process.pfInclusiveSecondaryVertexFinderTagInfosAK8 *
+    process.softPFMuonsTagInfosAK8 *
+    process.softPFElectronsTagInfosAK8 *
+    process.pfBoostedDoubleSecondaryVertexAK8BJetTags 
+    )
 ############ END HBB ####
 
 
 ## SKIM INFO
 process.load('NeroProducer.Skim.infoProducerSequence_cff')
 process.load('NeroProducer.Nero.Nero_cfi')
+process.load('NeroProducer.Nero.NeroMonotop_cfi')
 #process.load('NeroProducer.Nero.NeroMonojet_cfi')
 #process.load('NeroProducer.Nero.NeroChargedHiggs_cfi')
 
 if options.is25ns:
-	replace = {'bx' : '25ns'}
+  replace = {'bx' : '25ns'}
 if options.is50ns:
-	replace = {'bx' : '50ns'}
+  replace = {'bx' : '50ns'}
 
 toProduce={}
 for obj in ['ele','pho']:
@@ -171,6 +184,116 @@ for obj in ['ele','pho']:
       myid = (string%replace ).replace('-','_').split(':')[1]
       myid = re.sub('_standalone.*','',myid)
       toProduce[obj][ directory + '.Identification.' + myid + "_cff"] = 1 #remove duplicates
+
+#----------------------PUPPI, MET, & CORRECTIONS-------------------
+process.puppiSequence = cms.Sequence()
+### puppi ###
+process.load('CommonTools.PileupAlgos.Puppi_cff')
+process.puppi.candName = cms.InputTag('packedPFCandidates')
+process.puppi.vertexName = cms.InputTag('offlineSlimmedPrimaryVertices')
+process.pfCandNoLep = cms.EDFilter("CandPtrSelector", src = cms.InputTag("packedPFCandidates"), cut = cms.string("abs(pdgId) != 13 && abs(pdgId) != 11 && abs(pdgId) != 15"))
+process.pfCandLep   = cms.EDFilter("CandPtrSelector", src = cms.InputTag("packedPFCandidates"), cut = cms.string("abs(pdgId) == 13 || abs(pdgId) == 11 || abs(pdgId) == 15"))
+process.puppinolep = process.puppi.clone()
+process.puppinolep.candName = 'pfCandNoLep'
+process.puppiSequence += process.puppi
+process.puppiSequence += process.pfCandNoLep
+process.puppiSequence += process.pfCandLep
+process.puppiSequence += process.puppinolep
+
+### MET ###
+process.load('RecoMET.METProducers.PFMET_cfi')
+process.puppiForMET = cms.EDProducer("CandViewMerger",src = cms.VInputTag( 'puppinolep','pfCandLep'))
+process.puppiSequence += process.puppiForMET
+process.pfMETPuppi = process.pfMet.clone();
+process.pfMETPuppi.src = cms.InputTag('puppiForMET')
+process.pfMETPuppi.calculateSignificance = False
+process.puppiSequence += process.pfMETPuppi
+
+### set up JEC ###
+if options.isData:
+   connectString = cms.string('sqlite:jec/Summer15_25nsV6_DATA.db')
+   tagName = 'Summer15_25nsV6_DATA_AK4PFPuppi'
+else:
+   connectString = cms.string('sqlite:jec/Summer15_25nsV6_MC.db')
+   tagName = 'Summer15_25nsV6_MC_AK4PFPuppi'
+
+process.jec = cms.ESSource("PoolDBESSource",
+      DBParameters = cms.PSet(
+        messageLevel = cms.untracked.int32(0)
+      ),
+      timetype = cms.string('runnumber'),
+      toGet = cms.VPSet(
+      cms.PSet(
+            record = cms.string('JetCorrectionsRecord'),
+            tag    = cms.string('JetCorrectorParametersCollection_%s'%tagName),
+            label  = cms.untracked.string('AK4PFPuppi')
+      ),
+     ), 
+     connect = connectString
+)
+process.load('JetMETCorrections.Configuration.JetCorrectorsAllAlgos_cff')
+puppilabel='PFPuppi'
+process.ak4PuppiL1FastjetCorrector  = process.ak4PFCHSL1FastjetCorrector.clone (algorithm   = cms.string('AK4'+puppilabel))
+process.ak4PuppiL2RelativeCorrector = process.ak4PFCHSL2RelativeCorrector.clone(algorithm   = cms.string('AK4'+puppilabel))
+process.ak4PuppiL3AbsoluteCorrector = process.ak4PFCHSL3AbsoluteCorrector.clone(algorithm   = cms.string('AK4'+puppilabel))
+process.ak4PuppiResidualCorrector   = process.ak4PFCHSResidualCorrector.clone  (algorithm   = cms.string('AK4'+puppilabel))
+process.ak4PuppiL1FastL2L3Corrector = process.ak4PFL1FastL2L3Corrector.clone(
+        correctors = cms.VInputTag("ak4PuppiL1FastjetCorrector", "ak4PuppiL2RelativeCorrector", "ak4PuppiL3AbsoluteCorrector")
+)
+process.ak4PuppiL1FastL2L3ResidualCorrector = process.ak4PFL1FastL2L3Corrector.clone(
+        correctors = cms.VInputTag("ak4PuppiL1FastjetCorrector", "ak4PuppiL2RelativeCorrector", "ak4PuppiL3AbsoluteCorrector",'ak4PuppiResidualCorrector')
+)
+process.ak4PuppiL1FastL2L3Chain = cms.Sequence(
+        process.ak4PuppiL1FastjetCorrector * process.ak4PuppiL2RelativeCorrector * process.ak4PuppiL3AbsoluteCorrector * process.ak4PuppiL1FastL2L3Corrector
+)
+process.ak4PuppiL1FastL2L3ResidualChain = cms.Sequence(
+        process.ak4PuppiL1FastjetCorrector * process.ak4PuppiL2RelativeCorrector * process.ak4PuppiL3AbsoluteCorrector * process.ak4PuppiResidualCorrector * process.ak4PuppiL1FastL2L3ResidualCorrector
+)
+if isData:
+  process.puppiSequence += process.ak4PuppiL1FastL2L3ResidualChain
+else:
+  process.puppiSequence += process.ak4PuppiL1FastL2L3Chain
+
+### MET corrections ###
+from RecoJets.JetProducers.ak4PFJets_cfi import ak4PFJets
+process.AK4PFJetsPuppi = ak4PFJets.clone(
+        src          = cms.InputTag('puppinolep'),
+        jetAlgorithm = cms.string("AntiKt"),
+        rParam       = cms.double(0.4),
+        jetPtMin     = cms.double(20)
+)
+
+process.puppiSequence += process.AK4PFJetsPuppi
+process.puppiMETCorr = cms.EDProducer("PFJetMETcorrInputProducer",
+    src = cms.InputTag('AK4PFJetsPuppi'),
+    offsetCorrLabel = cms.InputTag("ak4PuppiL1FastjetCorrector"),
+    jetCorrLabel = cms.InputTag("ak4PuppiL1FastL2L3Corrector"),
+    jetCorrLabelRes = cms.InputTag("ak4PuppiL1FastL2L3ResidualCorrector"),
+    jetCorrEtaMax = cms.double(9.9),
+    type1JetPtThreshold = cms.double(15.0),
+    skipEM = cms.bool(True),
+    skipEMfractionThreshold = cms.double(0.90),
+    skipMuons = cms.bool(True),
+    skipMuonSelection = cms.string("isGlobalMuon | isStandAloneMuon")
+)
+if isData:
+  process.puppiMETCorr.jetCorrLabel = cms.InputTag("ak4PuppiL1FastL2L3ResidualCorrector")
+process.puppiSequence += process.puppiMETCorr
+
+process.type1PuppiMET = cms.EDProducer("CorrectedPFMETProducer",
+    src = cms.InputTag('pfMETPuppi'),
+    applyType0Corrections = cms.bool(False),
+    applyType1Corrections = cms.bool(True),
+    srcCorrections = cms.VInputTag(
+      cms.InputTag('puppiMETCorr','type1')
+    ),
+    applyType2Corrections = cms.bool(False)
+)
+process.puppiSequence += process.type1PuppiMET
+
+from NeroProducer.Nero.makeFatJets_cff.py import *
+process.fatJetInitSequence = initFatJets(process,isData)
+process.ca15PuppiSequence = makeFatJets(process,isData,'puppiForMET','CA','1.5')
 
 #-----------------------ELECTRON ID-------------------------------
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
@@ -208,19 +331,19 @@ process.load("RecoEgamma/ElectronIdentification/ElectronIDValueMapProducer_cfi")
 ## from CondCore.DBCommon.CondDBSetup_cfi import *
 ## 
 ## if options.isData:
-## 	if options.is25ns:
-## 		connectString = cms.string('sqlite:jec/Summer15_25nsV2_DATA.db')
-## 		tagName = 'Summer15_25nsV2_DATA_AK4PFchs'
-## 	if options.is50ns:
-## 		connectString = cms.string('sqlite:jec/Summer15_50nsV5_DATA.db')
-## 		tagName = 'Summer15_50nsV5_DATA_AK5PFchs'
+##  if options.is25ns:
+##    connectString = cms.string('sqlite:jec/Summer15_25nsV2_DATA.db')
+##    tagName = 'Summer15_25nsV2_DATA_AK4PFchs'
+##  if options.is50ns:
+##    connectString = cms.string('sqlite:jec/Summer15_50nsV5_DATA.db')
+##    tagName = 'Summer15_50nsV5_DATA_AK5PFchs'
 ## else:
-## 	if options.is25ns:
-## 		connectString = cms.string('sqlite:jec/Summer15_25nsV2_MC.db')
-## 		tagName = 'Summer15_25nsV2_MC_AK5PFchs'
-## 	if options.is50ns:
-## 		connectString = cms.string('sqlite:jec/Summer15_50nsV5_MC.db')
-## 		tagName = 'Summer15_50nsV5_MC_AK5PFchs'
+##  if options.is25ns:
+##    connectString = cms.string('sqlite:jec/Summer15_25nsV2_MC.db')
+##    tagName = 'Summer15_25nsV2_MC_AK5PFchs'
+##  if options.is50ns:
+##    connectString = cms.string('sqlite:jec/Summer15_50nsV5_MC.db')
+##    tagName = 'Summer15_50nsV5_MC_AK5PFchs'
 ## 
 ## process.jec = cms.ESSource("PoolDBESSource",
 ##       DBParameters = cms.PSet(
@@ -251,24 +374,24 @@ process.load("RecoEgamma/ElectronIdentification/ElectronIDValueMapProducer_cfi")
 ## jecLevels= ['L1FastJet',  'L2Relative', 'L3Absolute']
 ## 
 ## if options.isData:
-## 	print "NO L2L3 Residual Applied so far. FIXME"
-## 	#jecLevels.append( 'L2L3Residuals')
+##  print "NO L2L3 Residual Applied so far. FIXME"
+##  #jecLevels.append( 'L2L3Residuals')
 ## 
 ## process.patJetCorrFactorsReapplyJEC = process.patJetCorrFactorsUpdated.clone(
-## 		  src = cms.InputTag("slimmedJets"),
-## 		  levels = jecLevels,
-## 		  payload = 'AK4PFchs' ) # 
+##      src = cms.InputTag("slimmedJets"),
+##      levels = jecLevels,
+##      payload = 'AK4PFchs' ) # 
 ## 
 ## process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
 ## process.patJetsReapplyJEC = process.patJetsUpdated.clone(
-## 		  jetSource = cms.InputTag("slimmedJets"),
-## 		  jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
-## 		  )
+##      jetSource = cms.InputTag("slimmedJets"),
+##      jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
+##      )
 ## 
 ## process.jecSequence = cms.Sequence( 
-## 		process.patJetCorrFactorsReapplyJEC + 
-## 		process. patJetsReapplyJEC 
-## 		)
+##    process.patJetCorrFactorsReapplyJEC + 
+##    process. patJetsReapplyJEC 
+##    )
 ##___________________________HCAL_Noise_Filter________________________________||
 process.load('CommonTools.RecoAlgos.HBHENoiseFilterResultProducer_cfi')
 process.HBHENoiseFilterResultProducer.minZeros = cms.int32(99999)
@@ -276,55 +399,49 @@ process.HBHENoiseFilterResultProducer.IgnoreTS4TS5ifJetInLowBVRegion=cms.bool(Fa
 process.HBHENoiseFilterResultProducer.defaultDecision = cms.string("HBHENoiseFilterResultRun2Loose")
 
 process.ApplyBaselineHBHENoiseFilter = cms.EDFilter('BooleanFlagFilter',
-		   inputLabel = cms.InputTag('HBHENoiseFilterResultProducer','HBHENoiseFilterResult'),
-		      reverseDecision = cms.bool(False)
-		      )
+       inputLabel = cms.InputTag('HBHENoiseFilterResultProducer','HBHENoiseFilterResult'),
+          reverseDecision = cms.bool(False)
+          )
 
 process.ApplyBaselineHBHEIsoNoiseFilter = cms.EDFilter('BooleanFlagFilter',
-		   inputLabel = cms.InputTag('HBHENoiseFilterResultProducer','HBHEIsoNoiseFilterResult'),
-		      reverseDecision = cms.bool(False)
-		      )
+       inputLabel = cms.InputTag('HBHENoiseFilterResultProducer','HBHEIsoNoiseFilterResult'),
+          reverseDecision = cms.bool(False)
+          )
 
 process.hcalNoiseFilter = cms.Sequence(
-		    process.HBHENoiseFilterResultProducer* #produces HBHE baseline bools
-		    process.ApplyBaselineHBHENoiseFilter  #reject events based 
-		    #process.ApplyBaselineHBHEIsoNoiseFilter*   #reject events based  < 10e-3 mistake rate 
-		    )
+        process.HBHENoiseFilterResultProducer* #produces HBHE baseline bools
+        process.ApplyBaselineHBHENoiseFilter  #reject events based 
+        #process.ApplyBaselineHBHEIsoNoiseFilter*   #reject events based  < 10e-3 mistake rate 
+        )
 ###############################
 
 if options.isGrid:
-	process.nero.head=options.nerohead ##'git rev-parse HEAD'
-	process.nero.tag=options.nerotag ## git describe --tags
+  process.nero.head=options.nerohead ##'git rev-parse HEAD'
+  process.nero.tag=options.nerotag ## git describe --tags
 
 if options.isParticleGun:
-	process.nero.particleGun = cms.untracked.bool(True)
-	## this option is for the embedding informations
-	process.nero.extendEvent = cms.untracked.bool(False)
+  process.nero.particleGun = cms.untracked.bool(True)
+  ## this option is for the embedding informations
+  process.nero.extendEvent = cms.untracked.bool(False)
 
 #------------------------------------------------------
-### FILTER
-# this will just filter the events, I didn't enforce the photon in the filter to pass the pixel veto, the electron shuold be in the electron collection
-process.load('NeroProducer.Skim.DoubleEGFilterSequence_cff')
-## this cut will be enforced on the all photon collection dumped
-process.nero.minPhoPt = cms.double(30)
-process.nero.minPhoN = cms.int32(0)
-
-### 
 process.p = cms.Path(
-		process.infoProducerSequence *
-		process.doubleEGFilterSequence *
-		process.hcalNoiseFilter * 
+    process.infoProducerSequence *
+    process.hcalNoiseFilter * 
                 process.QGTagger *
                 process.egmGsfElectronIDSequence *
                 process.egmPhotonIDSequence *
                 process.photonIDValueMapProducer * ## ISO MAP FOR PHOTONS
                 process.electronIDValueMapProducer * ## ISO MAP FOR PHOTONS
-		process.HBB * ## HBB 74X
-		#process.jecSequence *
+                process.HBB * ## HBB 74X
+                process.puppiSequence * ## does puppi, puppi met, type1 corrections
+                process.fatJetInitSequence*
+                process.ca15PuppiSequence*
+    #process.jecSequence *
                 process.nero
                 )
 
 ## DEBUG -- dump the event content with all the value maps ..
 ## process.schedule = cms.Schedule(
-## 		process.p,
-## 		process.output_step)
+##    process.p,
+##    process.output_step)
