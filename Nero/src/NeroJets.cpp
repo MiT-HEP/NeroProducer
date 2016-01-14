@@ -135,6 +135,7 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
         bits |= JetId(j,"monojetloose") * mjIdLoose;
         bits |= JetId(j,"loose") * JetLoose;
         bits |= JetId(j,"tight") * JetTight;
+        bits |= JetId(j,"monojet2015") * mjId2015;
 
         selBits -> push_back( bits);
         Q      -> push_back( charge/charge_den);
@@ -193,6 +194,9 @@ bool NeroJets::JetId(const pat::Jet &j, std::string id)
 
     if (id=="monojetloose")
         jetid = jetid && (NHF < 0.7 && NEMF < 0.9);
+
+    if (id=="monojet2015")
+        jetid = jetid && (NHF < 0.8 && CHF > 0.1);
 
     return jetid;
 }
