@@ -18,8 +18,10 @@ parser.add_option("-f", "--file", dest="input_file", default='NeroNtuple.root',
                   help="input root file [default: %default]")
 parser.add_option("-t", "--treename", dest="input_tree", default='events',
                   help="root tree name [default: %default]")
-parser.add_option("-n", "--nprocs", dest="nprocs", type="int", default=10,
+parser.add_option("-n", "--nprocs", dest="nprocs", type="int", default=-1,
                   help="number of processed entries [default: %default]")
+parser.add_option("-d","--debug", dest="debug", action="store_true", default=False,
+                  help="Show debugging information")
 (options, args) = parser.parse_args()
 
 from testUnit import PrintCompare
@@ -55,8 +57,65 @@ if options.nprocs > 0 and options.nprocs < n_entries:
 
 print 'INFO - Number of entries to be processed: ' + str(n_entries)
 
+def deltaBetaIsolation(tree,i):
+  return tree.lepChIso[i] + max(0., tree.lepPhoIso[i] + tree.lepNhIso[i] - 0.5*tree.lepPuIso[i]);
+
+def isLooseMuon(tree,i):
+  # https://twiki.cern.ch/twiki/bin/viewauth/CMS/Monojet
+  if abs(tree.lepPdgId[i]) != 13: return False
+  if abs(tree.lepP4[i].Eta()) > 2.4: return False
+  # ID
+  if (tree.lepSelBits[i] & 16) == 0: 
+    if options.debug: print "failed loose muon id"
+    return False
+  # Isolation
+  # if tree.lepIso[i]/tree.lepP4[i].Pt() > 0.20: 
+  if deltaBetaIsolation(tree,i)/tree.lepP4[i].Pt() > 0.20: 
+    if options.debug: print "failed loose muon isolation"
+    return False
+  if options.debug: print "Loose muon is found"
+  return True
+
+def isLooseElectron(tree,i):
+  # https://twiki.cern.ch/twiki/bin/viewauth/CMS/Monojet
+  if abs(tree.lepPdgId[i]) != 11: return False
+  if abs(tree.lepP4[i].Eta()) > 2.5: return False
+  # ID
+  if (tree.lepSelBits[i] & 2) == 0: 
+    if options.debug: print "failed loose electron id"
+    return False
+  # Isolation
+  # relIso = tree.lepIso[i]/tree.lepP4[i].Pt()
+  relIso = deltaBetaIsolation(tree,i)/tree.lepP4[i].Pt()
+  if abs(tree.lepP4[i].Eta()) > 1.479:
+    # endcap
+    if relIso > 0.144: 
+      if options.debug: print "failed loose electron iso endcap"
+      return False
+  else:
+    # barrel
+    if relIso > 0.126: 
+      if options.debug: print "failed loose electron iso"
+      return False
+  if options.debug: print "Loose electron is found"
+  return True
+
+def isLooseLepton(tree,i):
+  if tree.lepP4[i].Pt() < 10: return False
+  return isLooseMuon(tree,i) or isLooseElectron(tree,i)
+
+def getNLooseLeptons(tree):
+  nLeptons = tree.lepP4.GetEntriesFast()
+  if options.debug: print "nLeptons: ", nLeptons
+  nLooseLeptons = 0
+  for i in range(nLeptons):
+    if isLooseLepton(tree,i):
+      nLooseLeptons+=1
+  return nLooseLeptons
+
 # Loop over the entries
 for ientry in range(0,n_entries):
+  # if ientry!=104: continue
   # Grab the n'th entry
   input_tree.GetEntry(ientry)
 
@@ -64,31 +123,36 @@ for ientry in range(0,n_entries):
   #print 'INFO ------------------------ Event '+str(ientry)+' ------------------------ '
 
   dphi = -10000.
-  
-  if(input_tree.jetP4.GetEntriesFast() > 1 and input_tree.jetP4[0].Pt() > 110 and input_tree.jetMonojetId[0] and input_tree.jetMonojetIdLoose[1]) : # and input_tree.jetPuId() > -0.62) : 
-    dphi = deltaPhi( input_tree.jetP4[0].Phi(),input_tree.jetP4[1].Phi() )
-  else:
-     if (input_tree.jetP4.GetEntriesFast() < 2):
-       dphi= -99.999
-     else:
-       dphi = -10000.
 
-  if (input_tree.jetP4.GetEntriesFast() > 0 and input_tree.jetP4[0].Pt() > 110 and input_tree.jetMonojetId[0]):
-    n_jet += 1
-    if (input_tree.jetP4.GetEntriesFast() == 1 or (input_tree.jetP4.GetEntriesFast() > 1 and input_tree.jetMonojetIdLoose[1])):
-      n_2ndjet += 1
-      if( fabs(dphi) < 2.5  or dphi == -99.999 ):
-        n_dphi += 1
-        if(input_tree.metP4[0].Energy() > 200 ):  
-          n_met += 1
-          if(input_tree.jetP4.GetEntriesFast() < 3): 
-            n_njet += 1
-            if(input_tree.lepP4.GetEntriesFast() < 1): 
-              n_nlep += 1
-              if(input_tree.tauP4.GetEntriesFast() < 1): 
-                n_ntau += 1
-                if(input_tree.photonP4.GetEntriesFast() < 1):
-                  n_npho += 1
+  if getNLooseLeptons(input_tree)==0:
+    if options.debug: print "%d (%d) \t Event: %d" % (ientry,n_nlep,input_tree.eventNum)
+    n_nlep += 1
+
+  # Broken
+  # if(input_tree.jetP4.GetEntriesFast() > 1 and input_tree.jetP4[0].Pt() > 110 and input_tree.jetMonojetId[0] and input_tree.jetMonojetIdLoose[1]) : # and input_tree.jetPuId() > -0.62) : 
+  #   dphi = deltaPhi( input_tree.jetP4[0].Phi(),input_tree.jetP4[1].Phi() )
+  # else:
+  #    if (input_tree.jetP4.GetEntriesFast() < 2):
+  #      dphi= -99.999
+  #    else:
+  #      dphi = -10000.
+
+  # if (input_tree.jetP4.GetEntriesFast() > 0 and input_tree.jetP4[0].Pt() > 110 and input_tree.jetMonojetId[0]):
+  #   n_jet += 1
+  #   if (input_tree.jetP4.GetEntriesFast() == 1 or (input_tree.jetP4.GetEntriesFast() > 1 and input_tree.jetMonojetIdLoose[1])):
+  #     n_2ndjet += 1
+  #     if( fabs(dphi) < 2.5  or dphi == -99.999 ):
+  #       n_dphi += 1
+  #       if(input_tree.metP4[0].Energy() > 200 ):  
+  #         n_met += 1
+  #         if(input_tree.jetP4.GetEntriesFast() < 3): 
+  #           n_njet += 1
+  #           if(input_tree.lepP4.GetEntriesFast() < 1): 
+  #             n_nlep += 1
+  #             if(input_tree.tauP4.GetEntriesFast() < 1): 
+  #               n_ntau += 1
+  #               if(input_tree.photonP4.GetEntriesFast() < 1):
+  #                 n_npho += 1
 
 print 'INFO - Cut Flow Chart: '
 print 'INFO - FULL     '+ str(input_all.GetEntries() )
