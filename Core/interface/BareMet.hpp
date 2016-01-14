@@ -45,6 +45,8 @@ class BareMet : virtual public BareP4
         float caloMet_Pt;
         float caloMet_Phi;
         float caloMet_SumEt;
+        float rawMet_Pt;
+        float rawMet_Phi;
 };
 #endif
 // Local Variables:
