@@ -73,6 +73,9 @@ mithep::nero::PhotonsFiller::fill()
     bool csafeveto(PhotonTools::PassElectronVetoConvRecovery(&photon, electrons, conversions, beamspot));
 
     unsigned selBits(BarePhotons::PhoBaseline);
+    if (csafeveto)
+      selBits |= BarePhotons::PhoElectronVeto;
+
     if (looseId->At(iP)) {
       selBits |= BarePhotons::PhoLooseNoEVeto;
       if (csafeveto)
