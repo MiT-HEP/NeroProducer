@@ -18,7 +18,7 @@ class BareFatJets : virtual public BareP4
         inline string name() override { return "BareFatJets"; }
         void compress() override;
 
-        std::string cachedPrefix;
+        std::string cachedPrefix="";
         
         // -- variables
         //TClonesArray  *p4;

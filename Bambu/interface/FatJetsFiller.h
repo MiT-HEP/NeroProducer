@@ -40,7 +40,7 @@ namespace mithep {
 
       TString fatJetsName_ = "AKt8PFJetsCHS";
       
-      bool MVAOn;
+      bool MVAOn=false;
       NeuralNet *topANN;
       float nn_mSD;
       float nn_QGTag;

@@ -17,7 +17,7 @@ class BarePuppiFatJets : virtual public BareP4
         void setBranchAddresses(TTree* t) override { setBranchAddresses(t, ""); }
         void setBranchAddresses(TTree*, std::string prefix) override;
 
-        std::string cachedPrefix;
+        std::string cachedPrefix="";
 
         void compress() override;
 

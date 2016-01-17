@@ -19,7 +19,7 @@ class BarePuppiJets : virtual public BareP4
             mjId2015 = 1UL << 10
         };
 
-        std::string cachedPrefix;
+        std::string cachedPrefix="";
 
         BarePuppiJets();
         ~BarePuppiJets();

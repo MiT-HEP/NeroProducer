@@ -3,14 +3,6 @@ import FWCore.ParameterSet.VarParsing as VarParsing
 import re
 import os
 
-def makeBtagSequence(p,btagDiscriminators,btagInfos,label):
-   p.btagSequence = cms.Sequence()
-   for info in btagInfos:
-     p.btagSequence += getattr(p,info+label)
-   for disc in btagDiscriminators:
-     p.btagSequence += getattr(p,disc+label)
-   return p.btagSequence
-
 process = cms.Process("nero")
 
 options = VarParsing.VarParsing ('analysis')
@@ -291,6 +283,8 @@ process.type1PuppiMET = cms.EDProducer("CorrectedPFMETProducer",
     applyType2Corrections = cms.bool(False)
 )
 process.puppiSequence += process.type1PuppiMET
+
+#------------------------FATJETS--------------------------------
 
 from NeroProducer.Nero.makeFatJets_cff import *
 fatjetInitSequence = initFatJets(process,isData)

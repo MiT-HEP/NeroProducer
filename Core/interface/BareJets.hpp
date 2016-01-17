@@ -21,7 +21,7 @@ class BareJets : virtual public BareP4
 
         };
 
-        std::string cachedPrefix;
+        std::string cachedPrefix="";
 
         BareJets();
         ~BareJets();
