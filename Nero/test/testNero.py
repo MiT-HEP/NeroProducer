@@ -174,6 +174,125 @@ for obj in ['ele','pho']:
       toProduce[obj][ directory + '.Identification.' + myid + "_cff"] = 1 #remove duplicates
 
 
+#----------------------PUPPI, MET, & CORRECTIONS-------------------
+process.puppiSequence = cms.Sequence()
+### puppi ###
+process.load('CommonTools.PileupAlgos.Puppi_cff')
+process.puppi.candName = cms.InputTag('packedPFCandidates')
+process.puppi.vertexName = cms.InputTag('offlineSlimmedPrimaryVertices')
+process.pfCandNoLep = cms.EDFilter("CandPtrSelector", src = cms.InputTag("packedPFCandidates"), cut = cms.string("abs(pdgId) != 13 && abs(pdgId) != 11 && abs(pdgId) != 15"))
+process.pfCandLep   = cms.EDFilter("CandPtrSelector", src = cms.InputTag("packedPFCandidates"), cut = cms.string("abs(pdgId) == 13 || abs(pdgId) == 11 || abs(pdgId) == 15"))
+process.puppinolep = process.puppi.clone()
+process.puppinolep.candName = 'pfCandNoLep'
+process.puppiSequence += process.puppi
+process.puppiSequence += process.pfCandNoLep
+process.puppiSequence += process.pfCandLep
+process.puppiSequence += process.puppinolep
+
+### MET ###
+process.load('RecoMET.METProducers.PFMET_cfi')
+process.puppiForMET = cms.EDProducer("CandViewMerger",src = cms.VInputTag( 'puppinolep','pfCandLep'))
+process.puppiSequence += process.puppiForMET
+process.pfMETPuppi = process.pfMet.clone();
+process.pfMETPuppi.src = cms.InputTag('puppiForMET')
+process.pfMETPuppi.calculateSignificance = False
+process.puppiSequence += process.pfMETPuppi
+
+### set up JEC ###
+cmssw_base = os.environ['CMSSW_BASE']
+if options.isData:
+   connectString = cms.string('sqlite:////'+cmssw_base+'/src/NeroProducer/Nero/test/jec/Summer15_25nsV6_DATA.db')
+   tagName = 'Summer15_25nsV6_DATA_AK4PFPuppi'
+else:
+   connectString = cms.string('sqlite:////'+cmssw_base+'/src/NeroProducer/Nero/test/jec/Summer15_25nsV6_MC.db')
+   tagName = 'Summer15_25nsV6_MC_AK4PFPuppi'
+process.jec = cms.ESSource("PoolDBESSource",
+      DBParameters = cms.PSet(
+        messageLevel = cms.untracked.int32(0)
+      ),
+      timetype = cms.string('runnumber'),
+      toGet = cms.VPSet(
+      cms.PSet(
+            record = cms.string('JetCorrectionsRecord'),
+            tag    = cms.string('JetCorrectorParametersCollection_%s'%tagName),
+            label  = cms.untracked.string('AK4PFPuppi')
+      ),
+     ), 
+     connect = connectString
+)
+process.load('JetMETCorrections.Configuration.JetCorrectorsAllAlgos_cff')
+puppilabel='PFPuppi'
+process.ak4PuppiL1FastjetCorrector  = process.ak4PFCHSL1FastjetCorrector.clone (algorithm   = cms.string('AK4'+puppilabel))
+process.ak4PuppiL2RelativeCorrector = process.ak4PFCHSL2RelativeCorrector.clone(algorithm   = cms.string('AK4'+puppilabel))
+process.ak4PuppiL3AbsoluteCorrector = process.ak4PFCHSL3AbsoluteCorrector.clone(algorithm   = cms.string('AK4'+puppilabel))
+process.ak4PuppiResidualCorrector   = process.ak4PFCHSResidualCorrector.clone  (algorithm   = cms.string('AK4'+puppilabel))
+process.ak4PuppiL1FastL2L3Corrector = process.ak4PFL1FastL2L3Corrector.clone(
+        correctors = cms.VInputTag("ak4PuppiL1FastjetCorrector", "ak4PuppiL2RelativeCorrector", "ak4PuppiL3AbsoluteCorrector")
+)
+process.ak4PuppiL1FastL2L3ResidualCorrector = process.ak4PFL1FastL2L3Corrector.clone(
+        correctors = cms.VInputTag("ak4PuppiL1FastjetCorrector", "ak4PuppiL2RelativeCorrector", "ak4PuppiL3AbsoluteCorrector",'ak4PuppiResidualCorrector')
+)
+process.ak4PuppiL1FastL2L3Chain = cms.Sequence(
+        process.ak4PuppiL1FastjetCorrector * process.ak4PuppiL2RelativeCorrector * process.ak4PuppiL3AbsoluteCorrector * process.ak4PuppiL1FastL2L3Corrector
+)
+process.ak4PuppiL1FastL2L3ResidualChain = cms.Sequence(
+        process.ak4PuppiL1FastjetCorrector * process.ak4PuppiL2RelativeCorrector * process.ak4PuppiL3AbsoluteCorrector * process.ak4PuppiResidualCorrector * process.ak4PuppiL1FastL2L3ResidualCorrector
+)
+if isData:
+  process.puppiSequence += process.ak4PuppiL1FastL2L3ResidualChain
+else:
+  process.puppiSequence += process.ak4PuppiL1FastL2L3Chain
+
+### MET corrections ###
+from RecoJets.JetProducers.ak4PFJets_cfi import ak4PFJets
+process.AK4PFJetsPuppi = ak4PFJets.clone(
+        src          = cms.InputTag('puppinolep'),
+        jetAlgorithm = cms.string("AntiKt"),
+        rParam       = cms.double(0.4),
+        jetPtMin     = cms.double(20)
+)
+
+process.puppiSequence += process.AK4PFJetsPuppi
+process.puppiMETCorr = cms.EDProducer("PFJetMETcorrInputProducer",
+    src = cms.InputTag('AK4PFJetsPuppi'),
+    offsetCorrLabel = cms.InputTag("ak4PuppiL1FastjetCorrector"),
+    jetCorrLabel = cms.InputTag("ak4PuppiL1FastL2L3Corrector"),
+    jetCorrLabelRes = cms.InputTag("ak4PuppiL1FastL2L3ResidualCorrector"),
+    jetCorrEtaMax = cms.double(9.9),
+    type1JetPtThreshold = cms.double(15.0),
+    skipEM = cms.bool(True),
+    skipEMfractionThreshold = cms.double(0.90),
+    skipMuons = cms.bool(True),
+    skipMuonSelection = cms.string("isGlobalMuon | isStandAloneMuon")
+)
+if isData:
+  process.puppiMETCorr.jetCorrLabel = cms.InputTag("ak4PuppiL1FastL2L3ResidualCorrector")
+process.puppiSequence += process.puppiMETCorr
+
+process.type1PuppiMET = cms.EDProducer("CorrectedPFMETProducer",
+    src = cms.InputTag('pfMETPuppi'),
+    applyType0Corrections = cms.bool(False),
+    applyType1Corrections = cms.bool(True),
+    srcCorrections = cms.VInputTag(
+      cms.InputTag('puppiMETCorr','type1')
+    ),
+    applyType2Corrections = cms.bool(False)
+)
+process.puppiSequence += process.type1PuppiMET
+
+#------------------------FATJETS--------------------------------
+
+from NeroProducer.Nero.makeFatJets_cff import *
+fatjetInitSequence = initFatJets(process,isData)
+ak8PuppiSequence = makeFatJets(process,isData=isData,pfCandidates='puppiForMET',algoLabel='AK',jetRadius=0.8)
+ca15CHSSequence = makeFatJets(process,isData=isData,pfCandidates='pfCHS',algoLabel='CA',jetRadius=1.5)
+ca15PuppiSequence = makeFatJets(process,isData=isData,pfCandidates='puppiForMET',algoLabel='CA',jetRadius=1.5)
+process.jetSequence = cms.Sequence(fatjetInitSequence*
+                                     ak8PuppiSequence*
+                                     ca15CHSSequence*
+                                     ca15PuppiSequence
+                                    )
+
 #-----------------------ELECTRON ID-------------------------------
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 # turn on VID producer, indicate data format  to be
@@ -312,8 +431,10 @@ process.p = cms.Path(
                 process.egmPhotonIDSequence *
                 process.photonIDValueMapProducer * ## ISO MAP FOR PHOTONS
                 process.electronIDValueMapProducer * ## ISO MAP FOR PHOTONS
-		process.HBB * ## HBB 74X
-		#process.jecSequence *
+            		process.HBB * ## HBB 74X
+                process.puppiSequence * ## does puppi, puppi met, type1 corrections
+                process.jetSequence *
+            		#process.jecSequence *
                 process.nero
                 )
 
