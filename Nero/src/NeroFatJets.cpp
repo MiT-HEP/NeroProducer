@@ -27,17 +27,17 @@ void NeroFatJets::init()
     
   if (mRunJEC) {
       std::vector<JetCorrectorParameters> mcParams;
-      mcParams.push_back(JetCorrectorParameters(jecDir + "Summer15_25nsV6_MC_L1FastJet_AK8PFCHS.txt"));
-      mcParams.push_back(JetCorrectorParameters(jecDir + "Summer15_25nsV6_MC_L2Relative_AK8PFCHS.txt"));
-      mcParams.push_back(JetCorrectorParameters(jecDir + "Summer15_25nsV6_MC_L3Absolute_AK8PFCHS.txt"));
-      mcParams.push_back(JetCorrectorParameters(jecDir + "Summer15_25nsV6_MC_L2L3Residual_AK8PFCHS.txt"));
+      mcParams.push_back(JetCorrectorParameters(jecDir + "Summer15_25nsV6_MC_L1FastJet_AK8PFchs.txt"));
+      mcParams.push_back(JetCorrectorParameters(jecDir + "Summer15_25nsV6_MC_L2Relative_AK8PFchs.txt"));
+      mcParams.push_back(JetCorrectorParameters(jecDir + "Summer15_25nsV6_MC_L3Absolute_AK8PFchs.txt"));
+      mcParams.push_back(JetCorrectorParameters(jecDir + "Summer15_25nsV6_MC_L2L3Residual_AK8PFchs.txt"));
       mMCJetCorrector = new FactorizedJetCorrector(mcParams);
      
       std::vector<JetCorrectorParameters> dataParams;
-      dataParams.push_back(JetCorrectorParameters(jecDir + "Summer15_25nsV6_DATA_L1FastJet_AK8PFCHS.txt"));
-      dataParams.push_back(JetCorrectorParameters(jecDir + "Summer15_25nsV6_DATA_L2Relative_AK8PFCHS.txt"));
-      dataParams.push_back(JetCorrectorParameters(jecDir + "Summer15_25nsV6_DATA_L3Absolute_AK8PFCHS.txt"));
-      dataParams.push_back(JetCorrectorParameters(jecDir + "Summer15_25nsV6_DATA_L2L3Residual_AK8PFCHS.txt"));
+      dataParams.push_back(JetCorrectorParameters(jecDir + "Summer15_25nsV6_DATA_L1FastJet_AK8PFchs.txt"));
+      dataParams.push_back(JetCorrectorParameters(jecDir + "Summer15_25nsV6_DATA_L2Relative_AK8PFchs.txt"));
+      dataParams.push_back(JetCorrectorParameters(jecDir + "Summer15_25nsV6_DATA_L3Absolute_AK8PFchs.txt"));
+      dataParams.push_back(JetCorrectorParameters(jecDir + "Summer15_25nsV6_DATA_L2L3Residual_AK8PFchs.txt"));
       mDataJetCorrector = new FactorizedJetCorrector(dataParams);
   }
 }
@@ -174,7 +174,6 @@ int NeroFatJets::analyze(const edm::Event& iEvent){
 
                 reco::JetBaseRef sjBaseRef(reco::PFJetRef(subjets_handle,i-subjetCol->begin()));
                 subjet_btag->push_back((float)(*(btags_handle.product()))[sjBaseRef]);
-                fprintf(stderr,"%i => %.3f\n",nsubjetThisJet,subjet_btag->back()); 
               }
 
               nSubjets->push_back(nsubjetThisJet);

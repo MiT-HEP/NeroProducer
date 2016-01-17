@@ -122,7 +122,6 @@ int NeroPuppiFatJets::analyze(const edm::Event& iEvent)
 
             reco::JetBaseRef sjBaseRef(reco::PFJetRef(subjets_handle,i-subjetCol->begin()));
             subjet_btag->push_back((float)(*(btags_handle.product()))[sjBaseRef]);
-            fprintf(stderr,"%i => %.3f\n",nsubjetThisJet,subjet_btag->back()); 
           }
 
           nSubjets->push_back(nsubjetThisJet);

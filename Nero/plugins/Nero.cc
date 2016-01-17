@@ -136,6 +136,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     chsCA15 -> mRunJEC = true; // these jets are already corrected in MiniAOD
     chsCA15 -> mOnlyMc = onlyMc;
     chsCA15 -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("chsCA15"));
+    chsCA15 -> rho_token = evt->rho_token;
     chsCA15 -> mMinPt = iConfig.getParameter<double>("minCA15CHSPt");
     chsCA15 -> mMaxEta = iConfig.getParameter<double>("minCA15CHSEta");
     chsCA15 -> mMinId = iConfig.getParameter<string>("minCA15CHSId");
