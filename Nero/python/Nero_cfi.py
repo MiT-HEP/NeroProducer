@@ -19,6 +19,8 @@ nero = cms.EDAnalyzer("Nero",
     jets = cms.InputTag("slimmedJets"),
     puppijets = cms.InputTag("slimmedJetsPuppi"),
     chsAK8 = cms.InputTag("slimmedJetsAK8"),
+    puppiAK8 = cms.InputTag("packedPatJetsPFAK8Puppi"),
+    chsCA15 = cms.InputTag("packedPatJetsPFCA15CHS"),
     puppiCA15 = cms.InputTag("packedPatJetsPFCA15Puppi"),
     mets = cms.InputTag("slimmedMETs"),
     metsNoHF = cms.InputTag("slimmedMETsNoHF"),
@@ -100,6 +102,20 @@ nero = cms.EDAnalyzer("Nero",
     minAK8CHSN   = cms.int32  (0),
     minAK8CHSId  = cms.string ('loose'),
     AK8CHSName   = cms.string ('AK8CHS'),
+
+    ## Puppi AK8
+    minAK8PuppiPt  = cms.double (100.),
+    minAK8PuppiEta = cms.double (4.7),
+    minAK8PuppiN   = cms.int32  (0),
+    minAK8PuppiId  = cms.string ('loose'),
+    AK8PuppiName   = cms.string ('AK8Puppi'),
+
+    ## CHS CA15
+    minCA15CHSPt  = cms.double (100.),
+    minCA15CHSEta = cms.double (4.7),
+    minCA15CHSN   = cms.int32  (0),
+    minCA15CHSId  = cms.string ('loose'),
+    CA15CHSName   = cms.string ('CA15CHS'),
 
     ## PUPPI CA15
     minCA15PuppiPt  = cms.double (100.),

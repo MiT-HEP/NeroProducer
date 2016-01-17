@@ -111,15 +111,37 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     
     //--
     NeroFatJets *chsAK8 = new NeroFatJets();
+    chsAK8 -> mRunJEC = false; // these jets are already corrected in MiniAOD
     chsAK8 -> mOnlyMc = onlyMc;
     chsAK8 -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("chsAK8"));
-    chsAK8 -> mMinId= iConfig.getParameter<string>("AK8CHSName");
     chsAK8 -> mMinPt = iConfig.getParameter<double>("minAK8CHSPt");
     chsAK8 -> mMaxEta = iConfig.getParameter<double>("minAK8CHSEta");
     chsAK8 -> mMinId = iConfig.getParameter<string>("minAK8CHSId");
     chsAK8 -> cachedPrefix = iConfig.getParameter<string>("AK8CHSName");
     chsAK8 -> jetRadius = 0.8;
     obj.push_back(chsAK8);
+
+    NeroPuppiFatJets *puppiAK8= new NeroPuppiFatJets();
+    puppiAK8 -> mOnlyMc = onlyMc;
+    puppiAK8 -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("puppiAK8"));
+    puppiAK8 -> rho_token = evt->rho_token;
+    puppiAK8 -> mMinPt = iConfig.getParameter<double>("minAK8PuppiPt");
+    puppiAK8 -> mMaxEta = iConfig.getParameter<double>("minAK8PuppiEta");
+    puppiAK8 -> mMinId = iConfig.getParameter<string>("minAK8PuppiId");
+    puppiAK8 -> cachedPrefix = iConfig.getParameter<string>("AK8PuppiName");
+    puppiAK8 -> jetRadius = 0.8;
+    obj.push_back(puppiAK8);
+
+    NeroFatJets *chsCA15 = new NeroFatJets();
+    chsCA15 -> mRunJEC = true; // these jets are already corrected in MiniAOD
+    chsCA15 -> mOnlyMc = onlyMc;
+    chsCA15 -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("chsCA15"));
+    chsCA15 -> mMinPt = iConfig.getParameter<double>("minCA15CHSPt");
+    chsCA15 -> mMaxEta = iConfig.getParameter<double>("minCA15CHSEta");
+    chsCA15 -> mMinId = iConfig.getParameter<string>("minCA15CHSId");
+    chsCA15 -> cachedPrefix = iConfig.getParameter<string>("CA15CHSName");
+    chsCA15 -> jetRadius = 1.5;
+    obj.push_back(chsCA15);
 
     NeroPuppiFatJets *puppiCA15= new NeroPuppiFatJets();
     puppiCA15 -> mOnlyMc = onlyMc;
