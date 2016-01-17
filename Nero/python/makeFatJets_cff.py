@@ -6,6 +6,7 @@ from RecoJets.JetProducers.ak4PFJetsPuppi_cfi import ak4PFJetsPuppi
 from RecoJets.JetProducers.ak4GenJets_cfi import ak4GenJets
 from PhysicsTools.PatAlgos.tools.pfTools import *
 from RecoJets.JetProducers.nJettinessAdder_cfi import Njettiness
+from RecoBTag.Configuration.RecoBTag_cff import *
 
 def initFatJets(process,isData):
   adaptPVs(process, pvCollection=cms.InputTag('offlineSlimmedPrimaryVertices'))
@@ -45,11 +46,7 @@ def initFatJets(process,isData):
   ]
   ## b-tag discriminators
   bTagDiscriminators = [
-       'pfJetBProbabilityBJetTags'
-      ,'pfJetProbabilityBJetTags'
-      ,'pfTrackCountingHighPurBJetTags'
-      ,'pfTrackCountingHighEffBJetTags'
-      ,'pfCombinedSecondaryVertexV2BJetTags'
+      'pfCombinedSecondaryVertexV2BJetTags'
       ,'pfCombinedInclusiveSecondaryVertexV2BJetTags'
   ]
   
@@ -78,11 +75,10 @@ def initFatJets(process,isData):
   )
 
   process.fatjetInitSequence = cms.Sequence(
-      process.genParticlesForJetsNoNu*
-      process.ak4GenJetsNoNu*
-      process.pfCHS*
-      process.ak4PFJets*
-
+      process.packedGenParticlesForJetsNoNu+
+      process.ak4GenJetsNoNu+
+      process.pfCHS+
+      process.ak4PFJets
   )
 
   return process.fatjetInitSequence
@@ -91,6 +87,10 @@ def makeFatJets(process,isData,pfCandidates,algoLabel,jetRadius):
     
   postfix='PFlow'
   if pfCandidates=='particleFlow':
+    # mini aod needs a different config
+    pfCandidates = 'pfCHS'
+  
+  if pfCandidates=='pfCHS':
     puMethod='CHS'
   else:
     puMethod='Puppi'
@@ -110,13 +110,11 @@ def makeFatJets(process,isData,pfCandidates,algoLabel,jetRadius):
     sdZcut = 0.2
     sdBeta = 1.0
 
-  setattr(process,rLabel+'Sequence',cms.Sequence())
-  newSeq = getattr(process,rLabel+'Sequence')
+  setattr(process,neroLabel+'Sequence',cms.Sequence())
+  newSeq = getattr(process,neroLabel+'Sequence')
   
   ## Various collection names
   genParticles = 'prunedGenParticles'
-  jetSource = 'ak4PFJets'
-  genJetCollection = 'ak4GenJetsNoNu'
   pvSource = 'offlineSlimmedPrimaryVertices'
   svSource = 'slimmedSecondaryVertices'
   muSource = 'slimmedMuons'
@@ -130,11 +128,7 @@ def makeFatJets(process,isData,pfCandidates,algoLabel,jetRadius):
   ]
   ## b-tag discriminators
   bTagDiscriminators = [
-       'pfJetBProbabilityBJetTags'
-      ,'pfJetProbabilityBJetTags'
-      ,'pfTrackCountingHighPurBJetTags'
-      ,'pfTrackCountingHighEffBJetTags'
-      ,'pfCombinedSecondaryVertexV2BJetTags'
+      'pfCombinedSecondaryVertexV2BJetTags'
       ,'pfCombinedInclusiveSecondaryVertexV2BJetTags'
   ]
 
@@ -152,6 +146,9 @@ def makeFatJets(process,isData,pfCandidates,algoLabel,jetRadius):
       ,'pfCombinedInclusiveSecondaryVertexV2BJetTags'
   ]
 
+  bTagInfosSubjets=['None']
+  bTagDiscriminatorsSubjets=['None']
+
   ### jet clustering ### 
   ########################################
   ##           REMAKE JETS              ##
@@ -164,7 +161,7 @@ def makeFatJets(process,isData,pfCandidates,algoLabel,jetRadius):
     setattr(process,"genJetsNoNu"+rLabel, ak4GenJets.clone(
                                            jetAlgorithm = cms.string(jetAlgo),
                                            rParam = cms.double(jetRadius),
-                                           src = cms.InputTag("genParticlesForJetsNoNu"+postfix)
+                                           src = cms.InputTag("packedGenParticlesForJetsNoNu")
                                          )
     )
   setattr(process,"PFJets"+neroLabel, ak4PFJets.clone(
@@ -178,11 +175,8 @@ def makeFatJets(process,isData,pfCandidates,algoLabel,jetRadius):
   )
   if not(hasattr(process,"genJetsNoNuSoftDrop"+rLabel)):
     addingGenJets = True
-    setattr(process,"genJetsNoNuSoftDrop"+rLabel, ak4GenJets.clone(
-                                                      jetAlgorithm = cms.string(jetAlgo),
-                                                      rParam = cms.double(jetRadius),
+    setattr(process,"genJetsNoNuSoftDrop"+rLabel, getattr(process,'genJetsNoNu'+rLabel).clone(
                                                       R0 = cms.double(jetRadius),
-                                                      src = cms.InputTag("genParticlesForJetsNoNu"+postfix),
                                                       useSoftDrop = cms.bool(True),
                                                       zcut = cms.double(sdZcut),
                                                       beta = cms.double(sdBeta),
@@ -190,25 +184,22 @@ def makeFatJets(process,isData,pfCandidates,algoLabel,jetRadius):
                                                       jetCollInstanceName=cms.string("SubJets")
                                                   )
     )
-  setattr(process,"PFJets"+"SoftDrop"+neroLabel, ak4PFJetsSoftDrop.clone(
-                                                          jetAlgorithm = cms.string(jetAlgo),
-                                                          rParam = cms.double(jetRadius),
+  setattr(process,"PFJets"+"SoftDrop"+neroLabel, getattr(process,'PFJets'+neroLabel).clone(
+                                                          useSoftDrop = cms.bool(True),
                                                           R0 = cms.double(jetRadius),
                                                           zcut = cms.double(sdZcut),
                                                           beta = cms.double(sdBeta),
-                                                          src = cms.InputTag(pfCandidates),
-                                                          srcPVs = cms.InputTag(pvSource),
-                                                          doAreaFastjet = cms.bool(True),
                                                           writeCompound = cms.bool(True),
+                                                          useExplicitGhosts = cms.bool(True),
                                                           jetCollInstanceName=cms.string("SubJets"),
                                                           jetPtMin = cms.double(150)
                                                       )
   )
-  if addingGenJets:
-    newSeq *= getattr(process,'genJetsNoNu'+rLabel)
-    newSeq *= getattr(process,'genJetsNoNuSoftDrop'+rLabel)
-  newSeq *= getattr(process,'PFJets'+neroLabel)
-  newSeq *= getattr(process,'PFJets'+"SoftDrop"+neroLabel)
+  if addingGenJets and not(isData):
+    newSeq += getattr(process,'genJetsNoNu'+rLabel)
+    newSeq += getattr(process,'genJetsNoNuSoftDrop'+rLabel)
+  newSeq += getattr(process,'PFJets'+neroLabel)
+  newSeq += getattr(process,'PFJets'+"SoftDrop"+neroLabel)
   
   ########################################
   ##           SUBSTRUCTURE             ##
@@ -232,24 +223,23 @@ def makeFatJets(process,isData,pfCandidates,algoLabel,jetRadius):
       )
   )
 
-  newSeq *= getattr(process,neroLabel+'Njettiness')
-  newSeq *= getattr(process,neroLabel+'SDKinematics')
+  newSeq += getattr(process,neroLabel+'SDKinematics')
+  newSeq += getattr(process,neroLabel+'Njettiness')
 
   ### subjet b-tagging ###
-  from RecoBTag.Configuration.RecoBTag_cff import *
 
   setattr(process,neroLabel+'PFImpactParameterTagInfos',
       pfImpactParameterTagInfos.clone(
           jets      = cms.InputTag('PFJets'+"SoftDrop"+neroLabel,'SubJets'),
           maxDeltaR = cms.double(jetRadius),
           primaryVertex = cms.InputTag('offlineSlimmedPrimaryVertices'),
-          candidates = cms.InputTag(pfCandidates)
+          candidates = cms.InputTag('packedPFCandidates')
       )
   )
 
   setattr(process,neroLabel+'PFInclusiveSecondaryVertexFinderTagInfos',
     pfInclusiveSecondaryVertexFinderTagInfos.clone(
-      trackIPTagInfos = cms.InputTag("CA15PFImpactParameterTagInfosSJPuppi"),
+      trackIPTagInfos = cms.InputTag(neroLabel+'PFImpactParameterTagInfos'),
       extSVCollection = cms.InputTag('slimmedSecondaryVertices')
     )
   )
@@ -261,9 +251,9 @@ def makeFatJets(process,isData,pfCandidates,algoLabel,jetRadius):
       )
     )
   )
-  newSeq *= getattr(process,neroLabel+'PFImpactParameterTagInfos')
-  newSeq *= getattr(process,neroLabel+'PFInclusiveSecondaryVertexFinderTagInfos')
-  newSeq *= getattr(process,neroLabel+'PFCombinedInclusiveSecondaryVertexV2BJetTags')
+  newSeq += getattr(process,neroLabel+'PFImpactParameterTagInfos')
+  newSeq += getattr(process,neroLabel+'PFInclusiveSecondaryVertexFinderTagInfos')
+  newSeq += getattr(process,neroLabel+'PFCombinedInclusiveSecondaryVertexV2BJetTags')
   
   bTagInfos = ['None']
   bTagDiscriminators = ['None']
@@ -278,7 +268,7 @@ def makeFatJets(process,isData,pfCandidates,algoLabel,jetRadius):
       jetSource=cms.InputTag('PFJets'+neroLabel),
       algo=algoLabel,           # needed for jet flavor clustering
       rParam=jetRadius, # needed for jet flavor clustering
-      pfCandidates = cms.InputTag(pfCandidates),
+      pfCandidates = cms.InputTag('packedPFCandidates'),
       pvSource = cms.InputTag(pvSource),
       svSource = cms.InputTag(svSource),
       muSource = cms.InputTag(muSource),
@@ -287,21 +277,22 @@ def makeFatJets(process,isData,pfCandidates,algoLabel,jetRadius):
       btagDiscriminators = bTagDiscriminators,
       genJetCollection = cms.InputTag('genJetsNoNu'+rLabel),
       genParticles = cms.InputTag(genParticles),
-      postfix = postfix
+      getJetMCFlavour = False, # jet flavor disabled
   )
-  getattr(process,'selectedPatJetsPF'+neroLabel+postfix).cut = cms.string("abs(eta) < " + str(2.5))
+  getattr(process,'selectedPatJetsPF'+neroLabel).cut = cms.string("abs(eta) < " + str(2.5))
   ## SOFT DROP ##
   addJetCollection(
       process,
       labelName='SoftDropPF'+neroLabel,
       jetSource=cms.InputTag('PFJets'+"SoftDrop"+neroLabel),
+      pfCandidates = cms.InputTag('packedPFCandidates'),
       algo=algoLabel,
+      rParam=jetRadius,
       btagInfos = ['None'],
       btagDiscriminators = ['None'],
       genJetCollection = cms.InputTag('genJetsNoNu'+rLabel),
       genParticles = cms.InputTag(genParticles),
       getJetMCFlavour = False, # jet flavor disabled
-      postfix = postfix
   )
   addJetCollection(
       process,
@@ -309,7 +300,7 @@ def makeFatJets(process,isData,pfCandidates,algoLabel,jetRadius):
       jetSource=cms.InputTag('PFJets'+"SoftDrop"+neroLabel,'SubJets'),
       algo=algoLabel,  
       rParam=jetRadius, 
-      pfCandidates = cms.InputTag(pfCandidates),
+      pfCandidates = cms.InputTag('packedPFCandidates'),
       pvSource = cms.InputTag(pvSource),
       svSource = cms.InputTag(svSource),
       muSource = cms.InputTag(muSource),
@@ -320,22 +311,41 @@ def makeFatJets(process,isData,pfCandidates,algoLabel,jetRadius):
       genParticles = cms.InputTag(genParticles),
       explicitJTA = True,  # needed for subjet b tagging
       svClustering = True, # needed for subjet b tagging
-      getJetMCFlavour = False, # jet flavor disabled
       fatJets = cms.InputTag('PFJets'+neroLabel),              # needed for subjet flavor clustering
       groomedFatJets = cms.InputTag('PFJets'+"SoftDrop"+neroLabel), # needed for subjet flavor clustering
       runIVF = False,
-      postfix = postfix
+      getJetMCFlavour = False, # jet flavor disabled
   )
+  
+  isMC = not(isData)
+  if isMC:
+    newSeq += getattr(process,'patJetPartonMatchPF'+neroLabel)
+    newSeq += getattr(process,'patJetGenJetMatchPF'+neroLabel)
+  newSeq += getattr(process,'patJetsPF'+neroLabel)
+  newSeq += getattr(process,'selectedPatJetsPF'+neroLabel)
+  
+  if isMC:
+    newSeq += getattr(process,'patJetPartonMatchSoftDropPF'+neroLabel)
+    newSeq += getattr(process,'patJetGenJetMatchSoftDropPF'+neroLabel)
+  newSeq += getattr(process,'patJetsSoftDropPF'+neroLabel)
+  newSeq += getattr(process,'selectedPatJetsSoftDropPF'+neroLabel)
+  
+  if isMC:
+    newSeq += getattr(process,'patJetPartonMatchSoftDropSubjetsPF'+neroLabel)
+    newSeq += getattr(process,'patJetGenJetMatchSoftDropSubjetsPF'+neroLabel)
+  newSeq += getattr(process,'patJetsSoftDropSubjetsPF'+neroLabel)
+  newSeq += getattr(process,'selectedPatJetsSoftDropSubjetsPF'+neroLabel)
+  
   setattr(process,"selectedPatJetsSoftDropPF"+"Packed"+neroLabel, 
           cms.EDProducer("BoostedJetMerger",    
-                          jetSrc=cms.InputTag("selectedPatJetsSoftDropPF"+neroLabel+postfix),
-                          subjetSrc=cms.InputTag("selectedPatJetsSoftDropSubjetsPF"+neroLabel+postfix)  
+                          jetSrc=cms.InputTag("selectedPatJetsSoftDropPF"+neroLabel),
+                          subjetSrc=cms.InputTag("selectedPatJetsSoftDropSubjetsPF"+neroLabel)  
           )
   )
   ## PACK ##
   setattr(process,"packedPatJetsPF"+neroLabel, 
           cms.EDProducer("JetSubstructurePacker",
-                          jetSrc = cms.InputTag('selectedPatJetsPF'+neroLabel+postfix),
+                          jetSrc = cms.InputTag('selectedPatJetsPF'+neroLabel),
                           distMax = cms.double(jetRadius),
                           algoTags = cms.VInputTag(),
                           algoLabels = cms.vstring(),
@@ -348,33 +358,23 @@ def makeFatJets(process,isData,pfCandidates,algoLabel,jetRadius):
   getattr(process,"packedPatJetsPF"+neroLabel).algoLabels.append(
       'SoftDrop'
   )
-  getattr(process,'patJetsPF'+neroLabel+postfix).userData.userFloats.src += [neroLabel+'Njettiness:tau1']
-  getattr(process,'patJetsPF'+neroLabel+postfix).userData.userFloats.src += [neroLabel+'Njettiness:tau2']
-  getattr(process,'patJetsPF'+neroLabel+postfix).userData.userFloats.src += [neroLabel+'Njettiness:tau3']
-  getattr(process,'patJetsPF'+neroLabel+postfix).userData.userFloats.src += [neroLabel+'Njettiness:tau4']
-  getattr(process,'patJetsPF'+neroLabel+postfix).userData.userFloats.src += [neroLabel+'SDKinematics:Mass']
+  getattr(process,'patJetsPF'+neroLabel).userData.userFloats.src += [neroLabel+'Njettiness:tau1']
+  getattr(process,'patJetsPF'+neroLabel).userData.userFloats.src += [neroLabel+'Njettiness:tau2']
+  getattr(process,'patJetsPF'+neroLabel).userData.userFloats.src += [neroLabel+'Njettiness:tau3']
+  getattr(process,'patJetsPF'+neroLabel).userData.userFloats.src += [neroLabel+'Njettiness:tau4']
+  getattr(process,'patJetsPF'+neroLabel).userData.userFloats.src += [neroLabel+'SDKinematics:Mass']
 
-  for m in ['patJetsPF'+neroLabel+postfix,'patJetsSoftDropSubjetsPF'+neroLabel+postfix]:
+  for m in ['patJetsPF'+neroLabel,'patJetsSoftDropSubjetsPF'+neroLabel]:
     if hasattr(process,m) and getattr( getattr(process,m),'addBTagInfo'):
       setattr( getattr(process,m), 'addTagInfos', cms.bool(True))
-    if hasattr(process,m):
-      setattr( getattr(process,m), 'addJetFlavourInfo', cms.bool(False))
+    #if hasattr(process,m):
+    #  setattr( getattr(process,m), 'addJetFlavourInfo', cms.bool(True))
 
-  newSeq *= cms.Sequence(
-      getattr(process,'patJetsSoftDropPF'+neroLabel+'PFlow')*
-      getattr(process,'selectedPatJetsSoftDropPF'+neroLabel+'PFlow')*
-      getattr(process,'patJetsSoftDropSubjetsPF'+neroLabel+'PFlow')*
-      getattr(process,'selectedPatJetsSoftDropSubjetsPF'+neroLabel+'PFlow')*
-      getattr(process,'selectedPatJetsSoftDropPF'+"Packed"+neroLabel)*
-      getattr(process,'patJetsPF'+neroLabel+'PFlow')*
-      getattr(process,'selectedPatJetsPF'+neroLabel+'PFlow')*
+  newSeq += cms.Sequence(
+      getattr(process,'selectedPatJetsSoftDropPF'+"Packed"+neroLabel)+
       getattr(process,'packedPatJetsPF'+neroLabel)
   )
 
-  if not(isData):
-    if addingGenJets:
-      newSeq.insert(0,cms.Sequence(getattr(process,'genJetsNoNu'+rLabel)*
-                                   getattr(process,'genJetsNoNuSoftDrop'+rLabel)
-                      )
-      )
+  if isData:
+      removeMCMatching(process, ['All'], outputModules = [])
   return newSeq

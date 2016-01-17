@@ -95,28 +95,42 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     jets -> SetMatch( iConfig.getParameter<bool>("matchJet") );
     jets -> pf = pf;
     jets -> vtx = vtx;
+    jets -> cachedPrefix = "";
     obj.push_back(jets);
 
     NeroPuppiJets *puppijets = new NeroPuppiJets();
     puppijets -> mOnlyMc = onlyMc;
     puppijets -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("puppijets"));
     puppijets -> mMinPt = iConfig.getParameter<double>("minPuppiJetPt");
-    puppijets -> mMinNjets = iConfig.getParameter<int>("minPuppiJetN");
     puppijets -> mMinEta = iConfig.getParameter<double>("minPuppiJetEta");
+    puppijets -> mMinNjets = iConfig.getParameter<int>("minPuppiJetN");
     puppijets -> mMinId = iConfig.getParameter<string>("minPuppiJetId");
     puppijets -> pf = pf;
+    puppijets -> cachedPrefix = "";
     obj.push_back(puppijets);
+    
+    //--
+    NeroFatJets *chsAK8 = new NeroFatJets();
+    chsAK8 -> mOnlyMc = onlyMc;
+    chsAK8 -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("chsAK8"));
+    chsAK8 -> mMinId= iConfig.getParameter<string>("AK8CHSName");
+    chsAK8 -> mMinPt = iConfig.getParameter<double>("minAK8CHSPt");
+    chsAK8 -> mMaxEta = iConfig.getParameter<double>("minAK8CHSEta");
+    chsAK8 -> mMinId = iConfig.getParameter<string>("minAK8CHSId");
+    chsAK8 -> cachedPrefix = iConfig.getParameter<string>("AK8CHSName");
+    chsAK8 -> jetRadius = 0.8;
+    obj.push_back(chsAK8);
 
-    NeroPuppiFatJets *puppifatjets= new NeroPuppiFatJets();
-    puppifatjets -> mOnlyMc = onlyMc;
-    puppifatjets -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("puppifatjets"));
-    puppifatjets -> rho_token = evt->rho_token;
-    puppifatjets -> mMinPt = iConfig.getParameter<double>("minPuppiFatJetPt");
-    puppifatjets -> mMinNjets = iConfig.getParameter<int>("minPuppiFatJetN");
-    puppifatjets -> mMaxEta = iConfig.getParameter<double>("minPuppiFatJetEta");
-    puppifatjets -> mMinId = iConfig.getParameter<string>("minPuppiFatJetId");
-    puppifatjets -> mUseCA15 = iConfig.getParameter<bool>("useFatJetCA15"); // these have to be reclustered from miniAOD with different user floats
-    obj.push_back(puppifatjets);
+    NeroPuppiFatJets *puppiCA15= new NeroPuppiFatJets();
+    puppiCA15 -> mOnlyMc = onlyMc;
+    puppiCA15 -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("puppiCA15"));
+    puppiCA15 -> rho_token = evt->rho_token;
+    puppiCA15 -> mMinPt = iConfig.getParameter<double>("minCA15PuppiPt");
+    puppiCA15 -> mMaxEta = iConfig.getParameter<double>("minCA15PuppiEta");
+    puppiCA15 -> mMinId = iConfig.getParameter<string>("minCA15PuppiId");
+    puppiCA15 -> cachedPrefix = iConfig.getParameter<string>("CA15PuppiName");
+    puppiCA15 -> jetRadius = 1.5;
+    obj.push_back(puppiCA15);
 
     // --- 
     NeroTaus *taus = new NeroTaus();
@@ -161,12 +175,6 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     obj. push_back(leps);
 
     //--
-    NeroFatJets *fatjets = new NeroFatJets();
-    fatjets -> mOnlyMc = onlyMc;
-    fatjets -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("fatjets"));
-    obj.push_back(fatjets);
-
-    //--
     NeroMet *met = new NeroMet();
     met -> mOnlyMc = onlyMc;
     met -> token = consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("mets"));
@@ -191,7 +199,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     phos -> mMinPt = iConfig.getParameter<double>("minPhoPt");
     phos -> mMaxIso = iConfig.getParameter<double>("maxPhoIso");
     phos -> mMinNpho = iConfig.getParameter<int>("minPhoN");
-    phos -> mMaxEta = iConfig.getParameter<double>("maxPhoEta");
+    phos -> mMaxEta = iConfig.getParameter<double>("minPhoEta");
     phos -> SetMatch( iConfig.getParameter<bool>("matchPho") );
     phos -> pf = pf;
     phos -> jets = jets;

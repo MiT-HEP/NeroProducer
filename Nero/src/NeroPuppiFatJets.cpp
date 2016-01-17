@@ -8,7 +8,8 @@
 NeroPuppiFatJets::NeroPuppiFatJets() : 
         NeroCollection(),
         BarePuppiFatJets(),
-        mUseCA15(false),
+        mMinId("loose"),
+        jetRadius(0.8),
         mMCJetCorrector(0),
         mDataJetCorrector(0)
 {
@@ -26,17 +27,19 @@ void NeroPuppiFatJets::init()
   // set up jet energy corrections
   std::string jecDir(getenv("CMSSW_BASE"));
   jecDir += "/src/NeroProducer/Nero/test/jec/";
+
   std::vector<JetCorrectorParameters> mcParams;
-  std::vector<JetCorrectorParameters> dataParams;
   mcParams.push_back(JetCorrectorParameters(jecDir + "Summer15_25nsV6_MC_L1FastJet_AK8PFPuppi.txt"));
   mcParams.push_back(JetCorrectorParameters(jecDir + "Summer15_25nsV6_MC_L2Relative_AK8PFPuppi.txt"));
   mcParams.push_back(JetCorrectorParameters(jecDir + "Summer15_25nsV6_MC_L3Absolute_AK8PFPuppi.txt"));
   mcParams.push_back(JetCorrectorParameters(jecDir + "Summer15_25nsV6_MC_L2L3Residual_AK8PFPuppi.txt"));
+  mMCJetCorrector = new FactorizedJetCorrector(mcParams);
+ 
+  std::vector<JetCorrectorParameters> dataParams;
   dataParams.push_back(JetCorrectorParameters(jecDir + "Summer15_25nsV6_DATA_L1FastJet_AK8PFPuppi.txt"));
   dataParams.push_back(JetCorrectorParameters(jecDir + "Summer15_25nsV6_DATA_L2Relative_AK8PFPuppi.txt"));
   dataParams.push_back(JetCorrectorParameters(jecDir + "Summer15_25nsV6_DATA_L3Absolute_AK8PFPuppi.txt"));
   dataParams.push_back(JetCorrectorParameters(jecDir + "Summer15_25nsV6_DATA_L2L3Residual_AK8PFPuppi.txt"));
-  mMCJetCorrector = new FactorizedJetCorrector(mcParams);
   mDataJetCorrector = new FactorizedJetCorrector(dataParams);
 }
 
@@ -51,7 +54,7 @@ int NeroPuppiFatJets::analyze(const edm::Event& iEvent)
     iEvent.getByToken(token, handle);
     iEvent.getByToken(rho_token,rho_handle);
     
-    TString tPrefix(prefix);
+    TString tPrefix(cachedPrefix);
 
     edm::Handle<reco::PFJetCollection> subjets_handle;
     edm::InputTag subjetLabel("PFJetsSoftDrop"+tPrefix,"SubJets");
@@ -59,10 +62,8 @@ int NeroPuppiFatJets::analyze(const edm::Event& iEvent)
     const reco::PFJetCollection *subjetCol = subjets_handle.product();
     assert(subjets_handle.isValid());
 
-
-
     edm::Handle<reco::JetTagCollection> btags_handle;
-    iEvent.getByLabel(tPrefix+"PFCombinedInclusiveSecondaryVertexV2BJetTags",btags_handle);
+    iEvent.getByLabel(edm::InputTag((tPrefix+"PFCombinedInclusiveSecondaryVertexV2BJetTags").Data()),btags_handle);
     assert((btags_handle.isValid()));
 
     FactorizedJetCorrector *corrector = ( iEvent.isRealData() ) ? mDataJetCorrector : mMCJetCorrector;
@@ -111,20 +112,9 @@ int NeroPuppiFatJets::analyze(const edm::Event& iEvent)
     
           unsigned int nsubjetThisJet=0;
           firstSubjet->push_back(nsubjet);
-          auto &Subjets = j.subjets("SoftDrop");
-          for (auto const & i : Subjets) {
-            // TODO: TEST IF THIS WORKS
-            assert(false); // so I don't forget
-            nsubjetThisJet++;
-            nsubjet++;
-            new ( (*subjet)[nsubjet]) TLorentzVector(i.px(), i.py(), i.pz(), i.energy());
-            subjet_btag->push_back(i.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
-          }
-
-         /* 
 
           for (reco::PFJetCollection::const_iterator i = subjetCol->begin(); i!=subjetCol->end(); ++i) {
-            if (reco::deltaR(i->eta(),i->phi(),j.eta(),j.phi())>) continue;
+            if (reco::deltaR(i->eta(),i->phi(),j.eta(),j.phi())>jetRadius) continue;
             nsubjetThisJet++;
            
             new ( (*subjet)[nsubjet]) TLorentzVector(i->px(), i->py(), i->pz(), i->energy());
@@ -134,7 +124,6 @@ int NeroPuppiFatJets::analyze(const edm::Event& iEvent)
             subjet_btag->push_back((float)(*(btags_handle.product()))[sjBaseRef]);
             fprintf(stderr,"%i => %.3f\n",nsubjetThisJet,subjet_btag->back()); 
           }
-          */
 
           nSubjets->push_back(nsubjetThisJet);
 

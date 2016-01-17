@@ -12,13 +12,14 @@ class BareFatJets : virtual public BareP4
         ~BareFatJets();
         void clear() override;
         void init() override;
-        void defineBranches(TTree* t) override { defineBranches(t, ""); }
-        void defineBranches(TTree*, std::string) override;
+        void defineBranches(TTree* t) override;
         void setBranchAddresses(TTree* t) override { setBranchAddresses(t, ""); }
         void setBranchAddresses(TTree*, std::string) override;
         inline string name() override { return "BareFatJets"; }
         void compress() override;
 
+        std::string cachedPrefix;
+        
         // -- variables
         //TClonesArray  *p4;
         vector<float> *rawPt{0};

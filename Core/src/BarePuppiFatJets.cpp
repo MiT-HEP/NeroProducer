@@ -58,9 +58,9 @@ void BarePuppiFatJets::clear(){
     topMVA->clear();
 }
 
-void BarePuppiFatJets::defineBranches(TTree *t, std::string prefix){
+void BarePuppiFatJets::defineBranches(TTree *t){
 
-    TString jetName("fatjet" + prefix);
+    TString jetName("fatjet" + cachedPrefix);
 
     // init() called by BareP4
     BareP4::defineBranches(t, jetName.Data());
@@ -89,7 +89,9 @@ void BarePuppiFatJets::defineBranches(TTree *t, std::string prefix){
 
 void BarePuppiFatJets::setBranchAddresses(TTree* t, std::string prefix)
 {
-    TString jetName("fatjet" + prefix);
+    cachedPrefix = prefix;
+
+    TString jetName("fatjet" + cachedPrefix);
     // init() called by BareP4
     BareP4::setBranchAddresses(t,jetName.Data());
 

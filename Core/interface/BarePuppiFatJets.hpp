@@ -12,11 +12,12 @@ class BarePuppiFatJets : virtual public BareP4
         ~BarePuppiFatJets();
         virtual void init() override;
         void clear() override;
-        void defineBranches(TTree* t) override { defineBranches(t, ""); }
-        void defineBranches(TTree*, std::string prefix) override;
+        void defineBranches(TTree* t) override;
 
         void setBranchAddresses(TTree* t) override { setBranchAddresses(t, ""); }
         void setBranchAddresses(TTree*, std::string prefix) override;
+
+        std::string cachedPrefix;
 
         void compress() override;
 

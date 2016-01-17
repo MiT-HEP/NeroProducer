@@ -64,9 +64,9 @@ void BareFatJets::clear(){
     topMVA->clear();
 }
 
-void BareFatJets::defineBranches(TTree *t, std::string prefix){
+void BareFatJets::defineBranches(TTree *t){
 
-    TString jetName("fatjet" + prefix);
+    TString jetName("fatjet" + cachedPrefix);
 
     // init() called by BareP4
     BareP4::defineBranches(t, jetName.Data());
@@ -94,7 +94,9 @@ void BareFatJets::defineBranches(TTree *t, std::string prefix){
 }
 
 void BareFatJets::setBranchAddresses(TTree *t, std::string prefix){
-    TString jetName("fatjet" + prefix);
+
+    cachedPrefix = prefix;
+    TString jetName("fatjet" + cachedPrefix);
     // init() called by BareP4
     BareP4::setBranchAddresses(t,jetName.Data());
 
@@ -120,8 +122,8 @@ void BareFatJets::setBranchAddresses(TTree *t, std::string prefix){
 }
 void BareFatJets::compress(){
     BareP4::compress();
-	for(int i=0;i<ak8_subjet->GetEntries();++i)
-		BareFunctions::Compress( * (TLorentzVector*) ak8_subjet->At(i)  );
+	for(int i=0;i<subjet->GetEntries();++i)
+		BareFunctions::Compress( * (TLorentzVector*) subjet->At(i)  );
 }
 // Local Variables:
 // mode:c++
