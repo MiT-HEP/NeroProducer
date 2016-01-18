@@ -25,6 +25,9 @@ int NeroMet::analyze(const edm::Event& iEvent){
 
     iEvent.getByToken(token_puppi,handle_puppi);
     if ( not handle_puppi.isValid() ) cout<<"[NeroMet]::[analyze]::[ERROR] handle_puppi is not valid"<<endl;
+
+    iEvent.getByToken(token_puppiUncorr,handle_puppiUncorr);
+    if ( not handle_puppiUncorr.isValid() ) cout<<"[NeroMet]::[analyze]::[ERROR] handle_puppiUncorr is not valid"<<endl;
     //--
 
     const pat::MET &met = handle->front();
@@ -77,7 +80,7 @@ int NeroMet::analyze(const edm::Event& iEvent){
 
         auto &puppi = handle_puppi->front(); 
         *metPuppi =  TLorentzVector( puppi.px(), puppi.py(),puppi.pz(),puppi.energy() );
-        sumEtRawPuppi = puppi.sumEt();
+        sumEtRawPuppi = handle_puppiUncorr->front().sumEt();
 
         /*
         for(Syst mysyst = (Syst)0; mysyst < MaxSyst ; mysyst = (Syst)((int)mysyst +1 ) )

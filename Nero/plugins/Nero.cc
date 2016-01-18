@@ -202,8 +202,8 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     met -> mOnlyMc = onlyMc;
     met -> token = consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("mets"));
     met -> token_noHF = consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("metsNoHF"));
-    //met -> token_puppi = consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("metsPuppi"));
     met -> token_puppi = consumes<reco::PFMETCollection>(iConfig.getParameter<edm::InputTag>("metsPuppi"));
+    met -> token_puppiUncorr = consumes<reco::PFMETCollection>(iConfig.getParameter<edm::InputTag>("metsPuppiUncorrected"));
     met -> pf = pf;
     met -> SetExtend (iConfig.getParameter<bool>("extendMet"));
     obj.push_back(met);
