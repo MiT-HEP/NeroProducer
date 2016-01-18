@@ -648,7 +648,8 @@ neroMod.AddFiller(mithep.nero.FatJetsFiller(mithep.nero.BaseFiller.kAK8Jets,
 ))
 
 neroMod.AddFiller(mithep.nero.FatJetsFiller(mithep.nero.BaseFiller.kCA15Jets,
-    FatJetsName = ca15JetExtender.GetOutputName()
+    FatJetsName = ca15JetExtender.GetOutputName(),
+    MJId = True
 ))
 
 neroMod.AddFiller(mithep.nero.FatJetsFiller(mithep.nero.BaseFiller.kAK8PuppiJets,
@@ -656,7 +657,8 @@ neroMod.AddFiller(mithep.nero.FatJetsFiller(mithep.nero.BaseFiller.kAK8PuppiJets
 ))
 
 neroMod.AddFiller(mithep.nero.FatJetsFiller(mithep.nero.BaseFiller.kCA15PuppiJets,
-    FatJetsName = ca15PuppiJetExtender.GetOutputName()
+    FatJetsName = ca15PuppiJetExtender.GetOutputName(),
+    MJId = True
 ))
 
 

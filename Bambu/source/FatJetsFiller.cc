@@ -64,6 +64,13 @@ mithep::nero::FatJetsFiller::fill()
     if (jet.Pt() < 100.)
       continue;
 
+    double rawE = jet.RawMom().E();
+    double chf = jet.ChargedHadronEnergy()/rawE;
+    double nhf = jet.NeutralHadronEnergy()/rawE;
+
+    if (applyMJId && (nhf>0.8 || chf<0.1))
+      continue;
+
     newP4(out_, jet);
 
 
