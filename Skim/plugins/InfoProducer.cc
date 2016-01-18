@@ -72,7 +72,7 @@ class InfoProducer : public edm::one::EDProducer<edm::one::WatchLuminosityBlocks
     };
 
 InfoProducer::InfoProducer(const edm::ParameterSet& iConfig)
-    : info_token(consumes<GenEventInfoProduct>(edm::InputTag("generator")) ),
+    : info_token(consumes<GenEventInfoProduct>(iConfig.getParameter<edm::InputTag>("generator")) ),
     //pu_token(consumes<std::vector<PileupSummaryInfo> >(edm::InputTag("addPileupInfo")))
     pu_token(consumes<std::vector<PileupSummaryInfo> >(edm::InputTag("slimmedAddPileupInfo")))
 {
