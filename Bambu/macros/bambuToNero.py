@@ -55,7 +55,8 @@ metCorrection = mithep.MetCorrectionMod('MetCorrection',
     RhoAlgo = mithep.PileupEnergyDensity.kFixedGridFastjetAll,
     MaxEMFraction = 0.9,
     SkipMuons = True,
-    MinJetPt = 15.
+    MinJetPt = 15.,
+    MuonGeometricMatch = True
 )
 metCorrection.ApplyType0(False)
 metCorrection.ApplyType1(True)
@@ -121,7 +122,7 @@ looseTaus = mithep.PFTauIdMod('PFTauId',
     PtMin = 18.,
     EtaMax = 2.3
 )
-looseTaus.AddDiscriminator(mithep.PFTau.kDiscriminationByDecayModeFindingNewDMs)
+looseTaus.AddDiscriminator(mithep.PFTau.kDiscriminationByDecayModeFinding)
 looseTaus.AddCutDiscriminator(mithep.PFTau.kDiscriminationByRawCombinedIsolationDBSumPtCorr3Hits, 5., False)
 
 # Electrons
@@ -414,7 +415,6 @@ ca15JetCorrection = mithep.JetCorrectionMod('CA15JetCorrection',
 for level in jecLevels:
     ca15JetCorrection.AddCorrectionFromFile(jecPattern.format(level = level, jettype = 'AK8PFchs'))
 
-
 goodCA15Jets = looseAK4Jets.clone('GoodCA15Jets',
     InputName = ca15JetCorrection.GetOutputName(),
     OutputName = 'GoodCA15Jets'
@@ -440,86 +440,90 @@ ca15JetExtender.SetSubJetTypeOn(mithep.XlSubJet.kSoftDrop)
 
 ### PUPPI ###
 
-puppiAK8Jets=puppiFatJetMod.clone('puppiAK8Jets',
-                                    InputName       =puppiMod.GetOutputName(),
-                                    OutputName      ='AK8FatJetsPuppi',
-                                    R0              =0.8,
-                                    JetAlgorithm    =mithep.PuppiFatJetMod.kAntiKT,
-                                    DoMatching      =True,
-                                    MatchingJetsName='AKt8FatJetsCHS')
-
-puppiCA15Jets=puppiFatJetMod.clone('puppiCA15Jets',
-                                     InputName       =puppiMod.GetOutputName(),
-                                     OutputName      ='CA15FatJetsPuppi',
-                                     R0              =1.5,
-                                     JetAlgorithm    =mithep.PuppiFatJetMod.kCambridgeAachen,
-                                     DoMatching      =True,
-                                     MatchingJetsName='CA15FatJetsCHS')
-
-puppiAK8CorrectionMod=mithep.JetCorrectionMod('puppiAK8Correction',
-    InputName=puppiAK8Jets.GetOutputName(),
-    CorrectedJetsName='CorrectedAK8PuppiJets',
-    RhoAlgo=mithep.PileupEnergyDensity.kFixedGridFastjetAll
+puppiAK8Jets = puppiFatJetMod.clone('puppiAK8Jets',
+    InputName = puppiMod.GetOutputName(),
+    OutputName = 'AK8FatJetsPuppi',
+    R0 = 0.8,
+    JetAlgorithm = mithep.PuppiFatJetMod.kAntiKT,
+    DoMatching = True,
+    MatchingJetsName = 'AKt8FatJetsCHS'
 )
+
+puppiCA15Jets = puppiFatJetMod.clone('puppiCA15Jets',
+    InputName = puppiMod.GetOutputName(),
+    OutputName = 'CA15FatJetsPuppi',
+    R0 = 1.5,
+    JetAlgorithm = mithep.PuppiFatJetMod.kCambridgeAachen,
+    DoMatching = True,
+    MatchingJetsName = 'CA15FatJetsCHS'
+)
+
+puppiAK8CorrectionMod = mithep.JetCorrectionMod('puppiAK8Correction',
+    InputName = puppiAK8Jets.GetOutputName(),
+    CorrectedJetsName = 'CorrectedAK8PuppiJets',
+    RhoAlgo = mithep.PileupEnergyDensity.kFixedGridFastjetAll
+)
+
 for level in jecLevels:
     puppiAK8CorrectionMod.AddCorrectionFromFile(jecPattern.format(level = level, jettype = 'AK8PFPuppi'))
 
-
-goodAK8PuppiJets=mithep.JetIdMod('GoodAK8PuppiJets',
-    InputName=puppiAK8CorrectionMod.GetOutputName(),
-    OutputName='GoodAK8PuppiJets',
-    MVATrainingSet=mithep.JetIDMVA.nMVATypes
+goodAK8PuppiJets = mithep.JetIdMod('GoodAK8PuppiJets',
+    InputName = puppiAK8CorrectionMod.GetOutputName(),
+    OutputName = 'GoodAK8PuppiJets',
+    MVATrainingSet = mithep.JetIDMVA.nMVATypes
 )
-ak8PuppiJetExtender=mithep.FatJetExtenderMod('puppiAK8Extender',
-    ConeSize=0.8,
-    InputName=goodAK8PuppiJets.GetOutputName(),
-    OutputName="XlAK8PuppiJets",
+ak8PuppiJetExtender = mithep.FatJetExtenderMod('puppiAK8Extender',
+    ConeSize = 0.8,
+    InputName = goodAK8PuppiJets.GetOutputName(),
+    OutputName = "XlAK8PuppiJets",
     ProcessNJets = 4,
-    QGTaggerCHS=True,
-    QGTaggingOn=True,
-    PFCandsName=puppiMod.GetOutputName(),
-    VertexesName=goodPVFilterMod.GetOutputName(),
-    SoftDropR0=0.8,
-    SoftDropZCut=0.1,
-    DoShowerDeconstruction=False,
-    BeVerbose=False,
-    DoECF=False,
-    DoQjets=False,
-    UseSoftDropLib=False,
-    DoCMSandHTT=False,
+    QGTaggerCHS = True,
+    QGTaggingOn = True,
+    PFCandsName = puppiMod.GetOutputName(),
+    VertexesName = goodPVFilterMod.GetOutputName(),
+    SoftDropR0 = 0.8,
+    SoftDropZCut = 0.1,
+    DoShowerDeconstruction = False,
+    BeVerbose = False,
+    DoECF = False,
+    DoQjets = False,
+    UseSoftDropLib = False,
+    DoCMSandHTT = False
 )
 ak8PuppiJetExtender.SetSubJetTypeOn(mithep.XlSubJet.kSoftDrop)
 
-puppiCA15CorrectionMod=mithep.JetCorrectionMod('puppiCA15Correction',
-    InputName=puppiCA15Jets.GetOutputName(),
-    CorrectedJetsName='CorrectedCA15PuppiJets',
-    RhoAlgo=mithep.PileupEnergyDensity.kFixedGridFastjetAll
+puppiCA15CorrectionMod = mithep.JetCorrectionMod('puppiCA15Correction',
+    InputName = puppiCA15Jets.GetOutputName(),
+    CorrectedJetsName = 'CorrectedCA15PuppiJets',
+    RhoAlgo = mithep.PileupEnergyDensity.kFixedGridFastjetAll
 )
+
 for level in jecLevels:
     puppiCA15CorrectionMod.AddCorrectionFromFile(jecPattern.format(level = level, jettype = 'AK8PFPuppi'))
 
-goodCA15PuppiJets=mithep.JetIdMod('GoodCA15PuppiJets',
-    InputName=puppiCA15CorrectionMod.GetOutputName(),
-    OutputName='GoodCA15PuppiJets',
-    MVATrainingSet=mithep.JetIDMVA.nMVATypes
+goodCA15PuppiJets = mithep.JetIdMod('GoodCA15PuppiJets',
+    InputName = puppiCA15CorrectionMod.GetOutputName(),
+    OutputName = 'GoodCA15PuppiJets',
+    MVATrainingSet = mithep.JetIDMVA.nMVATypes
 )
-ca15PuppiJetExtender=mithep.FatJetExtenderMod('puppiCA15Extender',
-    ConeSize=1.5,
-    InputName=goodCA15PuppiJets.GetOutputName(),
-    OutputName="XlCA15PuppiJets",
+
+ca15PuppiJetExtender = mithep.FatJetExtenderMod('puppiCA15Extender',
+    ConeSize = 1.5,
+    InputName = goodCA15PuppiJets.GetOutputName(),
+    OutputName = "XlCA15PuppiJets",
     ProcessNJets = 4,
-    QGTaggerCHS=True,
-    QGTaggingOn=True,
-    PFCandsName=puppiMod.GetOutputName(),
-    VertexesName=goodPVFilterMod.GetOutputName(),
-    SoftDropR0=1.5,
-    SoftDropZCut=0.1,
-    DoShowerDeconstruction=False,
-    BeVerbose=False,
-    DoECF=False,
-    DoQjets=False,
-    UseSoftDropLib=False,
-    DoCMSandHTT=False,
+    QGTaggerCHS = True,
+    QGTaggingOn = True,
+    PFCandsName = puppiMod.GetOutputName(),
+    VertexesName = goodPVFilterMod.GetOutputName(),
+    SoftDropR0 = 1.5,
+    SoftDropZCut = 0.1,
+    DoShowerDeconstruction = False,
+    BeVerbose = False,
+    DoECF = False,
+    DoQjets = False,
+    UseSoftDropLib = False,
+    DoCMSandHTT = False
 )
 ca15PuppiJetExtender.SetSubJetTypeOn(mithep.XlSubJet.kSoftDrop)
 
@@ -571,7 +575,7 @@ skim = mithep.BooleanMod('Skim',
 ###############
 
 head = 'HEAD'
-tag = 'BAMBU_042_V0004'
+tag = 'BAMBU_042_V0005'
 
 neroMod = mithep.NeroMod(
     Info = 'Nero',
@@ -659,15 +663,17 @@ neroMod.AddFiller(mithep.nero.FatJetsFiller(mithep.nero.BaseFiller.kCA15PuppiJet
     FatJetsName = ca15PuppiJetExtender.GetOutputName()
 ))
 
-
 metFiller = mithep.nero.MetFiller(
     MetName = metCorrection.GetOutputName(),
     JESUpMetName = metCorrectionJESUp.GetOutputName(),
     JESDownMetName = metCorrectionJESDown.GetOutputName(),
     PuppiMetName = puppiMetCorrection.GetOutputName(),
+    PuppiRawMetName = puppiMet.GetOutputName(),
+    RawMetName = 'PFMet',
     MuonsName = tightMuons.GetOutputName()
 )
 neroMod.AddFiller(metFiller)
+neroMod.SetPrintLevel(1)
 
 neroMod.AddFiller(mithep.nero.PhotonsFiller(
     PhotonsName = baselinePhotons.GetOutputName(),

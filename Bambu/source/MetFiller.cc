@@ -16,69 +16,78 @@ ClassImp(mithep::nero::MetFiller)
 void
 mithep::nero::MetFiller::fill()
 {
-  auto* metCol = getSource<mithep::PFMetCol>(metName_);
-  mithep::PFMetCol const* jesUpMetCol(0);
-  mithep::PFMetCol const* jesDownMetCol(0);
-  if (jesUpMetName_.Length() != 0) 
-    jesUpMetCol = getSource<mithep::PFMetCol>(jesUpMetName_, false);
-  if (jesDownMetName_.Length() != 0)
-    jesDownMetCol = getSource<mithep::PFMetCol>(jesDownMetName_, false);
-
-  auto& met(*metCol->At(0));
-
+  auto& met(*getSource<mithep::PFMetCol>(metName_)->At(0));
   newP4(out_, met);
 
-  if (jesUpMetCol)
-    out_.ptJESUP->push_back(jesUpMetCol->At(0)->Pt());
-  if (jesDownMetCol)
-    out_.ptJESDOWN->push_back(jesDownMetCol->At(0)->Pt());
-
-  out_.sumEtRaw = met.SumEt();
-
-  out_.metNoMu->SetXYZT(met.Px(), met.Py(), met.Pz(), met.E());
-  auto* muons = getSource<mithep::ParticleCol>(muonsName_);
-  for (unsigned iM(0); iM != muons->GetEntries(); ++iM) {
-    auto& muon(*muons->At(iM));
-    *out_.metNoMu += TLorentzVector(muon.Px(), muon.Py(), muon.Pz(), muon.E());
+  if (jesUpMetName_.Length() != 0) {
+    auto& jesUpMet(*getSource<mithep::PFMetCol>(jesUpMetName_)->At(0));
+    out_.ptJESUP->push_back(jesUpMet.Pt());
+  }
+  if (jesDownMetName_.Length() != 0) {
+    auto& jesDownMet(*getSource<mithep::PFMetCol>(jesDownMetName_)->At(0));
+    out_.ptJESDOWN->push_back(jesDownMet.Pt());
   }
 
-  *out_.pfMet_e3p0 *= 0.;
-  *out_.trackMet *= 0.;
-  auto* pfCandidates = getSource<mithep::PFCandidateCol>(pfCandidatesName_);
-  for (unsigned iP(0); iP != pfCandidates->GetEntries(); ++iP) {
-    auto& cand(*pfCandidates->At(iP));
-
-    if (cand.AbsEta() < 3.)
-      *out_.pfMet_e3p0 -= TLorentzVector(cand.Px(), cand.Py(), cand.Pz(), cand.E());
-
-    switch (cand.PFType()) {
-    case mithep::PFCandidate::eHadron:
-    case mithep::PFCandidate::eElectron:
-    case mithep::PFCandidate::eMuon:
-      *out_.trackMet -= TLorentzVector(cand.Px(), cand.Py(), cand.Pz(), cand.E());
-      break;
-    default:
-      break;
+  if (muonsName_.Length() != 0) {
+    out_.metNoMu->SetXYZT(met.Px(), met.Py(), met.Pz(), met.E());
+    auto& muons(*getSource<mithep::ParticleCol>(muonsName_));
+    for (unsigned iM(0); iM != muons.GetEntries(); ++iM) {
+      auto& muon(*muons.At(iM));
+      *out_.metNoMu += TLorentzVector(muon.Px(), muon.Py(), muon.Pz(), muon.E());
     }
   }
 
-  auto* caloMet = getSource<mithep::CaloMetCol>(caloMetName_)->At(0);
+  if (pfCandidatesName_.Length() != 0) {
+    *out_.pfMet_e3p0 *= 0.;
+    out_.sumEtRawNoHF = 0.;
+    *out_.trackMet *= 0.;
+    auto& pfCandidates(*getSource<mithep::PFCandidateCol>(pfCandidatesName_));
+    for (unsigned iP(0); iP != pfCandidates.GetEntries(); ++iP) {
+      auto& cand(*pfCandidates.At(iP));
 
-  out_.caloMet_Pt = caloMet->Pt();
-  out_.caloMet_Phi = caloMet->Phi();
-  out_.caloMet_SumEt = caloMet->SumEt();
+      if (cand.AbsEta() < 3.) {
+        *out_.pfMet_e3p0 -= TLorentzVector(cand.Px(), cand.Py(), cand.Pz(), cand.E());
+        out_.sumEtRawNoHF += cand.Pt();
+      }
 
-  if (puppiMetName_.Length() != 0) {
-    auto* puppiMetCol = getSource<mithep::PFMetCol>(puppiMetName_, false);
-    auto& inPuppi(*puppiMetCol->At(0));
-
-    out_.metPuppi->SetXYZT(inPuppi.Px(), inPuppi.Py(), inPuppi.Elongitudinal(), inPuppi.SumEt());
+      switch (cand.PFType()) {
+      case mithep::PFCandidate::eHadron:
+      case mithep::PFCandidate::eElectron:
+      case mithep::PFCandidate::eMuon:
+        *out_.trackMet -= TLorentzVector(cand.Px(), cand.Py(), cand.Pz(), cand.E());
+        break;
+      default:
+        break;
+      }
+    }
   }
 
-  if (genMetName_ != "" && getSource<mithep::EventHeader>(Names::gkEvtHeaderBrn)->IsMC()) {
-    auto* genMetCol = getSource<mithep::MetCol>(genMetName_);
-    auto& genMet(*genMetCol->At(0));
+  if (caloMetName_.Length() != 0) {
+    auto& caloMet(*getSource<mithep::CaloMetCol>(caloMetName_)->At(0));
+    out_.caloMet_Pt = caloMet.Pt();
+    out_.caloMet_Phi = caloMet.Phi();
+    out_.caloMet_SumEt = caloMet.SumEt();
+  }
 
+  if (rawMetName_.Length() != 0) {
+    auto& rawMet(*getSource<mithep::PFMetCol>(rawMetName_)->At(0));
+    out_.sumEtRaw = rawMet.SumEt();
+    out_.rawMet_Pt = rawMet.Pt();
+    out_.rawMet_Phi = rawMet.Phi();
+  }
+
+  if (puppiMetName_.Length() != 0) {
+    auto& puppiMet(*getSource<mithep::PFMetCol>(puppiMetName_)->At(0));
+    out_.metPuppi->SetXYZT(puppiMet.Px(), puppiMet.Py(), puppiMet.Elongitudinal(), puppiMet.SumEt());
+  }
+
+  if (puppiRawMetName_.Length() != 0) {
+    auto& puppiRawMet(*getSource<mithep::MetCol>(puppiRawMetName_)->At(0));
+    out_.sumEtRawPuppi = puppiRawMet.SumEt();
+  }
+
+  if (genMetName_.Length() != 0 && getSource<mithep::EventHeader>(Names::gkEvtHeaderBrn)->IsMC()) {
+    auto& genMet(*getSource<mithep::MetCol>(genMetName_)->At(0));
     newP4(*out_.genP4, genMet);
   }
 }
