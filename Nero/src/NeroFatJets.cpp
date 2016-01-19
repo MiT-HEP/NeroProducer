@@ -14,8 +14,8 @@ NeroFatJets::NeroFatJets() :
 }
 
 NeroFatJets::~NeroFatJets(){
-  if (mMCJetCorrector)   delete mMCJetCorrector;
-  if (mDataJetCorrector) delete mDataJetCorrector;
+  Delete(mMCJetCorrector);
+  Delete(mDataJetCorrector);
 }
 
 void NeroFatJets::init()

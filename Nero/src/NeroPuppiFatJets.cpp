@@ -17,8 +17,8 @@ NeroPuppiFatJets::NeroPuppiFatJets() :
 
 NeroPuppiFatJets::~NeroPuppiFatJets()
 {
-  if (mMCJetCorrector)   delete mMCJetCorrector;
-  if (mDataJetCorrector) delete mDataJetCorrector;
+  Delete(mMCJetCorrector);
+  Delete(mDataJetCorrector);
 }
 
 void NeroPuppiFatJets::init()
