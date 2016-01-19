@@ -49,13 +49,15 @@ int NeroPuppiJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSet
 
         if ( charge_den == 0 ) { charge=0.0 ; charge_den =1.0;}  //  guard, if no jet id
 
-
         // Fill output object	
         new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(j.px(), j.py(), j.pz(), j.energy());
         rawPt  -> push_back (j.pt()*j.jecFactor("Uncorrected"));
         bDiscr -> push_back( j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") );
         unsigned bits=0;
         bits |=  (1 * JetBaseline);
+        bits |= JetId(j,"monojet") * mjId;
+        bits |= JetId(j,"monojetloose") * mjIdLoose;
+        bits |= JetId(j,"monojet2015") * mjId2015;
         bits |= JetId(j,"loose") * JetLoose;
         bits |= JetId(j,"tight") * JetTight;
 
@@ -95,7 +97,7 @@ bool NeroPuppiJets::JetId(const pat::Jet &j, std::string id)
 
     //tightLepVetoJetID = (NHF<0.90 && NEMF<0.90 && NumConst>1 && MUF<0.8) && ((fabs(eta)<=2.4 && CHF>0 && CHM>0 && CEMF<0.90) || fabs(eta)>2.4) && fabs(eta)<=3.0 
 
-    if (id=="loose" || id=="monojet" || id=="monojetloose")
+    if (id=="loose" || id=="monojet" || id=="monojetloose" || id=="monojet2015")
     {
         //jetid = (NHF<0.99 && NEMF<0.99 && NumConst>1 && MUF<0.8) && ((fabs(j.eta())<=2.4 && CHF>0 && CHM>0 && CEMF<0.99) || fabs(j.eta())>2.4);
         jetid = (NHF<0.99 && NEMF<0.99 && NumConst>1) && ((fabs(eta)<=2.4 && CHF>0 && CHM>0 && CEMF<0.99) || fabs(eta)>2.4) && fabs(eta)<=3.0;
@@ -114,6 +116,9 @@ bool NeroPuppiJets::JetId(const pat::Jet &j, std::string id)
 
     if (id=="monojetloose")
         jetid = jetid && (NHF < 0.7 && NEMF < 0.9);
+
+    if (id=="monojet2015")
+        jetid = jetid && (NHF < 0.8 && CHF > 0.1);
 
     return jetid;
 }

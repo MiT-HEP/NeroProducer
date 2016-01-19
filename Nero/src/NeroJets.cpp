@@ -131,11 +131,12 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
         motherPdgId -> push_back( motherPdgId_I );
         grMotherPdgId -> push_back( grMotherPdgId_I );
         unsigned bits=0;
+        bits |=  (1 * JetBaseline);
         bits |= JetId(j,"monojet") * mjId;
         bits |= JetId(j,"monojetloose") * mjIdLoose;
+        bits |= JetId(j,"monojet2015") * mjId2015;
         bits |= JetId(j,"loose") * JetLoose;
         bits |= JetId(j,"tight") * JetTight;
-        bits |= JetId(j,"monojet2015") * mjId2015;
 
         selBits -> push_back( bits);
         Q      -> push_back( charge/charge_den);
