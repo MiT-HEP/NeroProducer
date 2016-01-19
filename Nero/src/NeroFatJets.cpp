@@ -1,6 +1,7 @@
 #include "NeroProducer/Nero/interface/NeroFatJets.hpp"
 #include "NeroProducer/Nero/interface/NeroJets.hpp" // JetId
 #include "NeroProducer/Nero/interface/Nero.hpp"
+#include "NeroProducer/Core/interface/BareFunctions.hpp"
 
 NeroFatJets::NeroFatJets() : 
         NeroCollection(),
@@ -14,8 +15,8 @@ NeroFatJets::NeroFatJets() :
 }
 
 NeroFatJets::~NeroFatJets(){
-  Delete(mMCJetCorrector);
-  Delete(mDataJetCorrector);
+  BareFunctions::Delete(mMCJetCorrector);
+  BareFunctions::Delete(mDataJetCorrector);
 }
 
 void NeroFatJets::init()

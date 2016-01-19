@@ -1,6 +1,7 @@
 #include "NeroProducer/Nero/interface/NeroPuppiFatJets.hpp"
 #include "NeroProducer/Nero/interface/NeroPuppiJets.hpp" // JetId
 #include "NeroProducer/Nero/interface/Nero.hpp"
+#include "NeroProducer/Core/interface/BareFunctions.hpp"
 #include <cstdlib>
 #include <string>
 
@@ -17,8 +18,8 @@ NeroPuppiFatJets::NeroPuppiFatJets() :
 
 NeroPuppiFatJets::~NeroPuppiFatJets()
 {
-  Delete(mMCJetCorrector);
-  Delete(mDataJetCorrector);
+  BareFunctions::Delete(mMCJetCorrector);
+  BareFunctions::Delete(mDataJetCorrector);
 }
 
 void NeroPuppiFatJets::init()
