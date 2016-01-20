@@ -172,6 +172,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     NeroLeptons *leps = new NeroLeptons();
     leps -> mOnlyMc = onlyMc;
     leps -> vtx_ = vtx; // Set the Vertex class
+    leps -> evt_ = evt; // Set the Event class
     leps -> mu_token = consumes<pat::MuonCollection>(iConfig.getParameter<edm::InputTag>("muons"));
     leps -> el_token = consumes<pat::ElectronCollection>(iConfig.getParameter<edm::InputTag>("electrons"));
     leps -> el_vetoid_token = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleVetoIdMap"));
