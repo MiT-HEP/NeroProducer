@@ -11,6 +11,7 @@ parser = OptionParser(usage = "usage");
 parser.add_option("-y","--yes",dest="yes",type="int",help="Should I assume yes as an answer. [0-3],0 = ask, 1= almost always, 3= yes (dangerous).",default=0);
 parser.add_option("-t","--token",dest="token",type="string",help="token [Default=%default]",default="");
 parser.add_option("-f","--token-file",dest="tokenfile",type="string",help="tokenfile [Default=%default]",default=os.environ["HOME"]+"/.ssh/id_status_token");
+parser.add_option("-o","--override",dest="override",type="string",help="setup file to be parser instead of the PR one [Default=%default]",default="");
 
 (opts,args) = parser.parse_args()
 
@@ -71,6 +72,10 @@ def TryPullReq(sha, origin):
 	dep ="rm %s/setup.sh ; wget --no-check-certificate 'https://raw.githubusercontent.com/%s/%s/Nero/script/setup.sh' -O %s/setup.sh"% (tmpdir,origin,sha,tmpdir)
 	print "Calling",dep ##DEBUG
 	call (dep,shell=True)
+	if opts.override != "":
+		print cyan+"-> Replace setup.sh"+white
+		cmd = "cp %s ./setup.sh"%opts.override
+		call(cmd,shell=True)
 	setup =open("%s/setup.sh"%tmpdir)
 	dangerous = re.compile('[$`;!]')
 	options=""
@@ -174,6 +179,7 @@ def TryPullReq(sha, origin):
 	print cyan+"-> Replacing"+white
 	if flStr != "":
 		#replace
+		print ' * str=' + '"'+ flStr + '"'
 		cmd = "cd %s/%s/src && %s &&" %(tmpdir,CMSSW,cmsenv)
 		cmd += "cd NeroProducer/Nero/test && "
 		cmd += "sed -i'' 's:###FILELIST###:"+flStr+":g' " + "testNero.py"
