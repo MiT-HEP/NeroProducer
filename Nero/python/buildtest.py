@@ -74,7 +74,7 @@ def TryPullReq(sha, origin):
 	call (dep,shell=True)
 	if opts.override != "":
 		print cyan+"-> Replace setup.sh"+white
-		cmd = "cp %s ./setup.sh"%opts.override
+		cmd = "cp -v %s %s/setup.sh"%(opts.override,tmpdir)
 		call(cmd,shell=True)
 	setup =open("%s/setup.sh"%tmpdir)
 	dangerous = re.compile('[$`;!]')
@@ -99,7 +99,7 @@ def TryPullReq(sha, origin):
 			for i in range(0, len(parts) -1 ) :
 				if parts[i] == "[fileList]":
 					inStr=parts[i+1]
-			fl = [ "'" + f + "'" for f in inStr.split(',') ]
+			fl = [ '"' + f + '"' for f in inStr.split(',') ]
 			flStr = "fileList = [ "+ ','.join(fl) + "]";
 			#replace
 			#cmd = "sed -i'' 's:###FILELIST###:"+flStr+":g' " + pset 
