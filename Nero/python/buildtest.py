@@ -74,6 +74,7 @@ def TryPullReq(sha, origin):
 	setup =open("%s/setup.sh"%tmpdir)
 	dangerous = re.compile('[$`;!]')
 	options=""
+	flStr=""
 	for line in setup:
 		if '[CMSSW]' in line and not dangerous.search(line): 
 			# line is of the form # [CMSSW] CMSSW_release
@@ -87,6 +88,17 @@ def TryPullReq(sha, origin):
 			for i in range(0,len(parts)-1):
 				if parts[i] == '[Options]':
 					options = " ".join(parts[i+1:])
+
+		if '[fileList]' in line and not dangerous.search(line):
+			parts = line.split()
+			for i in range(0, len(parts) -1 ) :
+				if parts[i] == "[fileList]":
+					inStr=parts[i+1]
+			fl = [ "'" + f + "'" for f in inStr.split(',') ]
+			flStr = "fileList = [ "+ ','.join(fl) + "]";
+			#replace
+			#cmd = "sed -i'' 's:###FILELIST###:"+flStr+":g' " + pset 
+			#call(cmd,shell=True)
 
 		l = line.split('#')[0]
 		l = re.sub('\n','',l)
@@ -159,6 +171,14 @@ def TryPullReq(sha, origin):
 		print "\t'"+cmd+"'"
 		return 4
 	
+	print cyan+"-> Replacing"+white
+	if flStr != "":
+		#replace
+		cmd = "cd %s/%s/src && %s &&" %(tmpdir,CMSSW,cmsenv)
+		cmd += "cd NeroProducer/Nero/test && "
+		cmd += "sed -i'' 's:###FILELIST###:"+flStr+":g' " + "testNero.py"
+		call(cmd,shell=True)
+
 	print cyan+"-> Test"+white
 	cmd = "cd %s/%s/src && %s &&" %(tmpdir,CMSSW,cmsenv)
 	cmd += "cd NeroProducer/Nero/test && "
