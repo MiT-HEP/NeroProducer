@@ -51,8 +51,9 @@ def initFatJets(process,isData):
   ]
   
   process.pfCHS = cms.EDFilter("CandPtrSelector", src = cms.InputTag("packedPFCandidates"), cut = cms.string("fromPV"))
-  process.packedGenParticlesForJetsNoNu = cms.EDFilter("CandPtrSelector", src = cms.InputTag("packedGenParticles"), cut = cms.string("abs(pdgId) != 12 && abs(pdgId) != 14 && abs(pdgId) != 16"))
-  process.ak4GenJetsNoNu = ak4GenJets.clone(src = 'packedGenParticlesForJetsNoNu')
+  if isMC:
+    process.packedGenParticlesForJetsNoNu = cms.EDFilter("CandPtrSelector", src = cms.InputTag("packedGenParticles"), cut = cms.string("abs(pdgId) != 12 && abs(pdgId) != 14 && abs(pdgId) != 16"))
+    process.ak4GenJetsNoNu = ak4GenJets.clone(src = 'packedGenParticlesForJetsNoNu')
   process.ak4PFJets = ak4PFJets.clone(src='pfCHS',doAreaFastjet=True)
 
   postfix='PFlow'
@@ -74,17 +75,21 @@ def initFatJets(process,isData):
       postfix = postfix
   )
 
-  process.fatjetInitSequence = cms.Sequence(
-      process.packedGenParticlesForJetsNoNu+
-      process.ak4GenJetsNoNu+
-      process.pfCHS+
-      process.ak4PFJets
-  )
+  if isMC:
+    process.fatjetInitSequence = cms.Sequence(
+        process.packedGenParticlesForJetsNoNu+
+        process.ak4GenJetsNoNu
+    )
+  else:
+    process.fatjetInitSequence = cms.Sequence()
+  process.fatjetInitSequence += process.pfCHS
+  process.fatjetInitSequence += process.ak4PFJets
 
   return process.fatjetInitSequence
 
 def makeFatJets(process,isData,pfCandidates,algoLabel,jetRadius):
-    
+  
+  isMC = not isData
   postfix='PFlow'
   if pfCandidates=='particleFlow':
     # mini aod needs a different config
@@ -156,7 +161,7 @@ def makeFatJets(process,isData,pfCandidates,algoLabel,jetRadius):
 
   addingGenJets = False
 
-  if not(hasattr(process,"genJetsNoNu"+rLabel)):
+  if not(hasattr(process,"genJetsNoNu"+rLabel)) and isMC:
     addingGenJets = True
     setattr(process,"genJetsNoNu"+rLabel, ak4GenJets.clone(
                                            jetAlgorithm = cms.string(jetAlgo),
@@ -173,7 +178,7 @@ def makeFatJets(process,isData,pfCandidates,algoLabel,jetRadius):
                                                 jetPtMin = cms.double(150)
                                             )
   )
-  if not(hasattr(process,"genJetsNoNuSoftDrop"+rLabel)):
+  if not(hasattr(process,"genJetsNoNuSoftDrop"+rLabel)) and isMC:
     addingGenJets = True
     setattr(process,"genJetsNoNuSoftDrop"+rLabel, getattr(process,'genJetsNoNu'+rLabel).clone(
                                                       R0 = cms.double(jetRadius),
