@@ -56,8 +56,8 @@ int NeroTrigger::analyze(const edm::Event& iEvent){
                     if (handle->accept(i)){
                         ((*triggerFired)[j]) = 1;
                     }
+                    (*triggerPrescale)[j] = prescale_handle -> getPrescaleForIndex(i) ; // TODO: what if already set ? 
                 }
-                (*triggerPrescale)[j] = prescale_handle -> getPrescaleForIndex(i) ;
 
             } // my trigger end
         } // trigger loop
@@ -68,6 +68,7 @@ int NeroTrigger::analyze(const edm::Event& iEvent){
     if (leps_ !=NULL) triggerLeps -> resize(leps_ -> p4 -> GetEntries()  ,0);
     if (jets_ !=NULL) triggerJets -> resize(jets_ -> p4 -> GetEntries()  ,0);
     if (taus_ !=NULL) triggerTaus -> resize(taus_ -> p4 -> GetEntries()  ,0);
+    if (taus_ !=NULL) triggerNoneTaus -> resize(taus_ -> p4 -> GetEntries()  ,0);
     if (photons_ !=NULL) triggerPhotons -> resize(photons_ -> p4 -> GetEntries()  ,0);
 
 
@@ -119,12 +120,13 @@ int NeroTrigger::analyze(const edm::Event& iEvent){
         if(VERBOSE)cout<<"[NeroTrigger]::[analize] Lopping on path names and filling"<<endl;
         for (unsigned h = 0, n = pathNamesAll.size(); h < n; ++h) {
             if(VERBOSE)cout<<"[NeroTrigger]::[analize] pathNames h="<<h<<endl;
-            bool isBoth = obj.hasPathName( pathNamesAll[h], true, true ); 
+            //bool isBoth = obj.hasPathName( pathNamesAll[h], true, true ); 
             bool isL3   = obj.hasPathName( pathNamesAll[h], false, true ); 
             bool isLF   = obj.hasPathName( pathNamesAll[h], true, false ); 
-            bool isNone = obj.hasPathName( pathNamesAll[h], false, false ); 
+            //bool isNone = obj.hasPathName( pathNamesAll[h], false, false ); 
             //std::cout << "   " << pathNamesAll[h];
-            if (isNone && !isBoth && !isL3 && !isLF) continue;
+            //if (isNone && !isBoth && !isL3 && !isLF) continue;
+
             for ( unsigned i =0  ; i<triggerNames->size() ;++i)
             {
                 if(VERBOSE)cout<<"[NeroTrigger]::[analize] triggerNames i="<<i<<endl;
@@ -132,15 +134,17 @@ int NeroTrigger::analyze(const edm::Event& iEvent){
                 {
                     if(VERBOSE) cout <<"Considering SUCCESS Path: eleIndex"<< eleIndex <<"/"<<triggerLeps->size()<<" :"<<pathNamesAll[h]<<" and Match string "<<(*triggerNames)[i]<<endl;
                     if(VERBOSE)cout<<"[NeroTrigger]::[analize] ----- Mu "<<muonIndex<<endl;
-                    if (muonIndex >=0) (*triggerLeps)[muonIndex] |= 1<<i;
+                    if (muonIndex >=0 and (isL3 or isLF) ) (*triggerLeps)[muonIndex] |= 1<<i;
                     if(VERBOSE)cout<<"[NeroTrigger]::[analize] ----- E "<<eleIndex<<endl;
-                    if (eleIndex >=0) (*triggerLeps)[eleIndex] |= 1<<i;
+                    if (eleIndex >=0 and (isL3 or isLF) ) (*triggerLeps)[eleIndex] |= 1<<i;
                     if(VERBOSE)cout<<"[NeroTrigger]::[analize] ----- Tau "<<tauIndex <<endl;
-                    if (tauIndex >=0) (*triggerTaus)[tauIndex] |= 1<<i;
+                    if (tauIndex >=0 and (isL3 or isLF) ) (*triggerTaus)[tauIndex] |= 1<<i;
                     if(VERBOSE)cout<<"[NeroTrigger]::[analize] ----- Jet "<< jetIndex<<endl;
-                    if (jetIndex >=0) (*triggerJets)[jetIndex] |= 1<<i;
+                    if (jetIndex >=0 and (isL3 or isLF) ) (*triggerJets)[jetIndex] |= 1<<i;
                     if(VERBOSE)cout<<"[NeroTrigger]::[analize] ----- Phot "<<photonIndex<<endl;
-                    if (photonIndex >=0) (*triggerPhotons)[photonIndex] |= 1<<i;
+                    if (photonIndex >=0 and (isL3 or isLF) ) (*triggerPhotons)[photonIndex] |= 1<<i;
+                    if(VERBOSE)cout<<"[NeroTrigger]::[analize] ------ Tau None"<<endl;
+                    if (tauIndex >=0 ) (*triggerNoneTaus)[tauIndex] |= 1<<i;
                     if(VERBOSE)cout<<"[NeroTrigger]::[analize] ----------"<<endl;
                 }
             } // end loop for in the trigger names I'm interested in
