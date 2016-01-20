@@ -33,8 +33,11 @@ n=0
 chain = r.TChain("nero/events")
 for f in fileList:
 	n+=chain.Add(f)
+if n==0:
+	print "no file: trying local"
+	n+=chain.Add(opts.eos)
 
-print "-> Added ",n,"files to the chain"
+print "-> Added ",n,"files to the chain. Chain has",chain.GetEntries(),"entries"
 
 chain.SetBranchStatus("*",0)
 chain.SetBranchStatus("lep*",1)
