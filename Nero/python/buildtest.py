@@ -80,6 +80,7 @@ def TryPullReq(sha, origin):
 	dangerous = re.compile('[$`;!]')
 	options=""
 	flStr=""
+	maxEvtStr=""
 	for line in setup:
 		if '[CMSSW]' in line and not dangerous.search(line): 
 			# line is of the form # [CMSSW] CMSSW_release
@@ -104,6 +105,11 @@ def TryPullReq(sha, origin):
 			#replace
 			#cmd = "sed -i'' 's:###FILELIST###:"+flStr+":g' " + pset 
 			#call(cmd,shell=True)
+		if '[MaxEvents]' in line and not dangerous.search(line):
+			parts = line.split()
+			for i in range(0, len(parts) -1 ) :
+				if parts[i] == "[MaxEvents]":
+					maxEvtStr=parts[i+1]
 
 		l = line.split('#')[0]
 		l = re.sub('\n','',l)
@@ -182,7 +188,17 @@ def TryPullReq(sha, origin):
 		print ' * str=' + '"'+ flStr + '"'
 		cmd = "cd %s/%s/src && %s &&" %(tmpdir,CMSSW,cmsenv)
 		cmd += "cd NeroProducer/Nero/test && "
-		cmd += "sed -i'' 's:###FILELIST###:"+flStr+":g' " + "testNero.py"
+		#cmd += "sed -i'' 's:###FILELIST###:"+flStr+":g' " + "testNero.py"
+		cmd += "sed -i'' 's:###FILELIST###:"+flStr+"\\n###FILELIST###:g' " + "testNero.py"
+		call(cmd,shell=True)
+
+	if maxEvtStr != "":
+		#replace
+		print ' * str=' + '"'+ maxEvtStr + '"'
+		rplStr="process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(%s) )"%maxEvtStr
+		cmd = "cd %s/%s/src && %s &&" %(tmpdir,CMSSW,cmsenv)
+		cmd += "cd NeroProducer/Nero/test && "
+		cmd += "sed -i'' 's:###FILELIST###:"+rplStr+":g' " + "testNero.py"
 		call(cmd,shell=True)
 
 	print cyan+"-> Test"+white
