@@ -16,9 +16,21 @@ class BareTaus : virtual public BareP4
             AgainstEleLoose = 1UL <<8,
             AgainstEleMedium = 1UL<<9,
             AgainstMuLoose = 1UL<<10,
-            AgainstMuTight = 1UL<<11
+            AgainstMuTight = 1UL<<11,
+
+            //--- MVA ISO
+            byLooseIsolationMVArun2v1DBoldDMwLT = 1UL <<12,
+            byMediumIsolationMVArun2v1DBoldDMwLT= 1UL <<13,
+            byTightIsolationMVArun2v1DBoldDMwLT = 1UL <<14,
+            byVTightIsolationMVArun2v1DBoldDMwLT= 1UL <<15,
+
+            byLooseIsolationMVArun2v1DBnewDMwLT = 1UL <<16,
+            byMediumIsolationMVArun2v1DBnewDMwLT= 1UL <<17,
+            byTightIsolationMVArun2v1DBnewDMwLT = 1UL <<18, 
+            byVTightIsolationMVArun2v1DBnewDMwLT= 1UL <<19,
 
         };
+
         BareTaus();
         ~BareTaus();
         void init() override;
