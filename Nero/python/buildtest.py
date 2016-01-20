@@ -265,14 +265,22 @@ if __name__ == "__main__":
 		if 'build' in available and ('success' not in available['build'] and 'pending' not in available['build']): 
 			print "PR:" +dict[id]["title"]+ " already checked:"
 			print "\t* build: " + available['build'] 
-			continue
+			if opts.yes<1:
+				print 
+				ans=raw_input("Do you want to re-test Pull Req. " +id+": "+ dict[id]['title'] + "? [y/n]" )
+				if ans.lower() != "y"  and ans.lower() != "yes" :  continue;
+			else: continue
 
 		## if failed to run, continue
 		if 'run' in available and 'success' not in available['run']:
 			print "PR:" +dict[id]["title"]+ " already checked:"
 			if 'build' in available: print "\t* build: " + available['build'] 
 			print "\t* run: " + available['run'] 
-			continue
+			if opts.yes<1:
+				print 
+				ans=raw_input("Do you want to re-test Pull Req. " +id+": "+ dict[id]['title'] + "? [y/n]" )
+				if ans.lower() != "y"  and ans.lower() != "yes" :  continue;
+			else: continue
 
 		## if failed to core, continue
 		if 'core' in available and 'success' not in available['core']: 
@@ -280,7 +288,11 @@ if __name__ == "__main__":
 			if 'build' in available: print "\t* build: " + available['build'] 
 			if 'run' in available: print "\t* run: " + available['run'] 
 			print "\t* core: " + available['core'] 
-			continue
+			if opts.yes<1:
+				print 
+				ans=raw_input("Do you want to re-test Pull Req. " +id+": "+ dict[id]['title'] + "? [y/n]" )
+				if ans.lower() != "y"  and ans.lower() != "yes" :  continue;
+			else: continue
 
 		if opts.yes<1:
 			ans=raw_input("Do you want to test Pull Req. " +id+": "+ dict[id]['title'] + "? [y/n]" )
