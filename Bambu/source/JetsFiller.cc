@@ -15,14 +15,15 @@ mithep::nero::JetsFiller::defineBranches(TTree* _tree)
 {
   switch (collection_) {
   case BaseFiller::kJets:
-    out_.defineBranches(_tree, "");
+    out_.cachedPrefix="";
     break;
   case BaseFiller::kPuppiJets:
-    out_.defineBranches(_tree, "puppi");
+    out_.cachedPrefix="";
     break;
   default:
     break;
   }
+  out_.defineBranches(_tree);
 }
 
 void

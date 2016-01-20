@@ -158,19 +158,19 @@ for obj in ['ele','pho']:
   if obj=='ele': directory = 'RecoEgamma.ElectronIdentification'
   if obj=='pho': directory = 'RecoEgamma.PhotonIdentification'
   for ID in ['veto','medium','loose','tight']:
-	if obj == 'pho' and ID == 'veto' : continue
-	if obj == 'pho' : replace['bx'] = '50ns' ##FIXME, we have only this
+      if obj == 'pho' and ID == 'veto' : continue
+      if obj == 'pho' : replace['bx'] = '50ns' ##FIXME, we have only this
 
-	replace['id'] = ID
-	cmd = 'string = process.nero.' + obj + ID.title() + 'IdMap.value()'
-	exec(cmd)
-	cmd = 'process.nero.'+obj + ID.title() + 'IdMap = cms.InputTag("' + string % replace+ '")'
-	print 'executing replacement:',cmd
-	exec(cmd)
+      replace['id'] = ID
+      cmd = 'string = process.nero.' + obj + ID.title() + 'IdMap.value()'
+      exec(cmd)
+      cmd = 'process.nero.'+obj + ID.title() + 'IdMap = cms.InputTag("' + string % replace+ '")'
+      print 'executing replacement:',cmd
+      exec(cmd)
 
-	myid = (string%replace ).replace('-','_').split(':')[1]
-	myid = re.sub('_standalone.*','',myid)
-	toProduce[obj][ directory + '.Identification.' + myid + "_cff"] = 1 #remove duplicates
+      myid = (string%replace ).replace('-','_').split(':')[1]
+      myid = re.sub('_standalone.*','',myid)
+      toProduce[obj][ directory + '.Identification.' + myid + "_cff"] = 1 #remove duplicates
 
 #-----------------------ELECTRON ID-------------------------------
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *

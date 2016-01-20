@@ -11,20 +11,21 @@ mithep::nero::FatJetsFiller::defineBranches(TTree* _tree)
 {
   switch (collection_) {
   case BaseFiller::kAK8Jets:
-    out_.defineBranches(_tree, "ak8");
+    out_.cachedPrefix = "AK8CHS";
     break;
   case BaseFiller::kCA15Jets:
-    out_.defineBranches(_tree, "ca15");
+    out_.cachedPrefix = "CA15CHS";
     break;
   case BaseFiller::kAK8PuppiJets:
-    out_.defineBranches(_tree, "ak8puppi");
+    out_.cachedPrefix="AK8Puppi";
     break;
   case BaseFiller::kCA15PuppiJets:
-    out_.defineBranches(_tree, "ca15puppi");
+    out_.cachedPrefix="CA15Puppi";
     break;
   default:
     break;
   }
+  out_.defineBranches(_tree);
 }
 
 void
@@ -53,7 +54,7 @@ void
 mithep::nero::FatJetsFiller::fill()
 {
   auto* jets = getSource<mithep::XlFatJetCol>(fatJetsName_);
-
+  unsigned int subjetCounter=0;
   for (unsigned iJ(0); iJ != jets->GetEntries(); ++iJ) {
     if (jets->At(iJ)->ObjType() != kXlFatJet)
       throw std::runtime_error("non-fat jet passed to FatJetsFiller");
@@ -61,6 +62,13 @@ mithep::nero::FatJetsFiller::fill()
     auto& jet(*static_cast<mithep::XlFatJet const*>(jets->At(iJ)));
 
     if (jet.Pt() < 100.)
+      continue;
+
+    double rawE = jet.RawMom().E();
+    double chf = jet.ChargedHadronEnergy()/rawE;
+    double nhf = jet.NeutralHadronEnergy()/rawE;
+
+    if (applyMJId && (nhf>0.8 || chf<0.1))
       continue;
 
     newP4(out_, jet);
@@ -80,24 +88,25 @@ mithep::nero::FatJetsFiller::fill()
     else
       out_.softdropMass->push_back(jet.MassSDb0());
     auto& subjets(jet.GetSubJets(XlSubJet::kSoftDrop));
-    out_.ak8jet_hasSubjet->push_back(subjets.GetEntries());
+    unsigned int nSubjets = subjets.GetEntries();
+    out_.nSubjets->push_back(nSubjets);
+    out_.firstSubjet->push_back(subjetCounter);
+    subjetCounter += nSubjets;
+
     for (unsigned iS(0); iS != subjets.GetEntries(); ++iS) {
       auto& subjet(*subjets.At(iS));
-      newP4(*out_.ak8_subjet, subjet);
+      newP4(*out_.subjet, subjet);
     }
 
-    // btags are stored in Bambu and ordered by decreasing subjet pT.
-    // note that btag vector may be out of sync with other fatjet vectors
-    // since different jet algorithms are being used
     std::vector<float> subjetBtags = jet.GetSubJetBtags();
     unsigned int nSJBtags = subjetBtags.size();
-    if (nSJBtags>0) {
-      std::sort(subjetBtags.begin(),subjetBtags.end());
-      out_.ak8subjet_btag->push_back(subjetBtags[nSJBtags-1]);
-    } else {
-      out_.ak8subjet_btag->push_back(-1);
+    for (unsigned int iB=0; iB!=nSubjets; ++iB) {
+      if (iB>=nSJBtags)
+        out_.subjet_btag->push_back(-1);
+      else
+        out_.subjet_btag->push_back(subjetBtags[iB]);
     }
-  
+    
     if (MVAOn) {
       nn_mSD = out_.softdropMass->back();
       nn_QGTag = cleanInput(jet.QGTag());

@@ -12,11 +12,12 @@ class BarePuppiFatJets : virtual public BareP4
         ~BarePuppiFatJets();
         virtual void init() override;
         void clear() override;
-        void defineBranches(TTree* t) override { defineBranches(t, ""); }
-        void defineBranches(TTree*, std::string prefix) override;
+        void defineBranches(TTree* t) override;
 
         void setBranchAddresses(TTree* t) override { setBranchAddresses(t, ""); }
         void setBranchAddresses(TTree*, std::string prefix) override;
+
+        std::string cachedPrefix="";
 
         void compress() override;
 
@@ -34,10 +35,10 @@ class BarePuppiFatJets : virtual public BareP4
         vector<float> *filteredMass{0};
         vector<float> *softdropMass{0};
 
-        TClonesArray  *ak8_subjet{0};
-        vector<int>   *ak8_nSubjets{0};
-        vector<int>   *ak8_hasSubjet{0};
-        vector<float> *ak8subjet_btag{0};
+        TClonesArray  *subjet{0};
+        vector<int>   *nSubjets{0};
+        vector<int>   *firstSubjet{0};
+        vector<float> *subjet_btag{0};
     
         vector<float> *hbb{0};
         vector<float> *topMVA{0};
