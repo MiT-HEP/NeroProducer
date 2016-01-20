@@ -51,6 +51,8 @@ void BareMet::clear(){
         *metNoHF *= 0.;
         *pfMet_e3p0 *= 0.;
         *trackMet *= 0.;
+        rawMet_Pt = 0.;
+        rawMet_Phi = 0.;
     }
     sumEtRaw = -99.;
     sumEtRawPuppi = -99.;
@@ -85,6 +87,8 @@ void BareMet::defineBranches(TTree *t){
         t->Branch("caloMet_Pt",&caloMet_Pt,"caloMet_Pt/F");
         t->Branch("caloMet_Phi",&caloMet_Phi,"caloMet_Phi/F");
         t->Branch("caloMet_SumEt",&caloMet_SumEt,"caloMet_SumEt/F");
+        t->Branch("rawMet_Pt",&rawMet_Pt,"rawMet_Pt/F");
+        t->Branch("rawMet_Phi",&rawMet_Phi,"rawMet_Phi/F");
     }
     //
 }
@@ -112,6 +116,8 @@ void BareMet::setBranchAddresses(TTree *t){
         BareFunctions::SetBranchAddress(t,"caloMet_Pt", &caloMet_Pt);
         BareFunctions::SetBranchAddress(t,"caloMet_Phi", &caloMet_Phi);
         BareFunctions::SetBranchAddress(t,"caloMet_SumEt", &caloMet_SumEt);
+        BareFunctions::SetBranchAddress(t,"rawMet_Pt", &rawMet_Pt);
+        BareFunctions::SetBranchAddress(t,"rawMet_Phi", &rawMet_Phi);
     }
 }
 

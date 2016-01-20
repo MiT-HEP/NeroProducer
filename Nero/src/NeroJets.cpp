@@ -131,8 +131,10 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
         motherPdgId -> push_back( motherPdgId_I );
         grMotherPdgId -> push_back( grMotherPdgId_I );
         unsigned bits=0;
+        bits |=  (1 * JetBaseline);
         bits |= JetId(j,"monojet") * mjId;
         bits |= JetId(j,"monojetloose") * mjIdLoose;
+        bits |= JetId(j,"monojet2015") * mjId2015;
         bits |= JetId(j,"loose") * JetLoose;
         bits |= JetId(j,"tight") * JetTight;
 
@@ -174,7 +176,7 @@ bool NeroJets::JetId(const pat::Jet &j, std::string id)
 
     //tightLepVetoJetID = (NHF<0.90 && NEMF<0.90 && NumConst>1 && MUF<0.8) && ((fabs(eta)<=2.4 && CHF>0 && CHM>0 && CEMF<0.90) || fabs(eta)>2.4) && fabs(eta)<=3.0 
 
-    if (id=="loose")
+    if (id=="loose" || id=="monojet" || id=="monojetloose" || id=="monojet2015")
     {
         //jetid = (NHF<0.99 && NEMF<0.99 && NumConst>1 && MUF<0.8) && ((fabs(j.eta())<=2.4 && CHF>0 && CHM>0 && CEMF<0.99) || fabs(j.eta())>2.4);
         jetid = (NHF<0.99 && NEMF<0.99 && NumConst>1) && ((fabs(eta)<=2.4 && CHF>0 && CHM>0 && CEMF<0.99) || fabs(eta)>2.4) && fabs(eta)<=3.0;
@@ -189,10 +191,13 @@ bool NeroJets::JetId(const pat::Jet &j, std::string id)
     }
 
     if (id=="monojet")
-        jetid = (CHF > 0.2 && NHF < 0.7 && NEMF < 0.7);
+        jetid = jetid && (CHF > 0.2 && NHF < 0.7 && NEMF < 0.7);
 
     if (id=="monojetloose")
-        jetid = (NHF < 0.7 && NEMF < 0.9);
+        jetid = jetid && (NHF < 0.7 && NEMF < 0.9);
+
+    if (id=="monojet2015")
+        jetid = jetid && (NHF < 0.8 && CHF > 0.1);
 
     return jetid;
 }

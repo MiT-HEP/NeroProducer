@@ -4,6 +4,7 @@
 #include "NeroProducer/Nero/interface/NeroCollection.hpp"
 #include "NeroProducer/Core/interface/BareLeptons.hpp"
 #include "NeroProducer/Nero/interface/NeroVertex.hpp"
+#include "NeroProducer/Nero/interface/NeroEvent.hpp"
 
 
 class NeroLeptons : virtual public NeroCollection,
@@ -36,6 +37,7 @@ class NeroLeptons : virtual public NeroCollection,
         //void inline SetPV( const reco::Vertex *pv){ pv_ = pv ; }
         //void inline SetPV( const reco::Vertex &pv){ pv_ = &pv ; }
         NeroVertex *vtx_ ;
+        NeroEvent  *evt_ ; // rho 
 
         // Token
         edm::EDGetTokenT<pat::MuonCollection> mu_token;

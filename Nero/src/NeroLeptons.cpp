@@ -7,6 +7,7 @@ NeroLeptons::NeroLeptons():
         BareLeptons()
 {
     vtx_   = NULL;
+    evt_   = NULL;
 
     mMinPt_mu = 10;
     mMinEta_mu = 2.4;
@@ -29,6 +30,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 
     if ( vtx_ == NULL) cout<<"[NeroLeptons]::[analyze]::[WARNING] Vertex Class not set."<<endl;
     if ( vtx_ -> GetPV() == NULL) cout<<"[NeroLeptons]::[analyze]::[WARNING] Primary Vertex not set."<<endl;
+    if ( evt_ == NULL) cout<<"[NeroLeptons]::[analyze]::[WARNING] Event Class not set."<<endl;
 
     iEvent.getByToken(mu_token,mu_handle);	
     iEvent.getByToken(el_token,el_handle);	
@@ -49,13 +51,13 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 
     for (const pat::Muon &mu : *mu_handle) {
         // selection
-        if (mu.pt() < 10 ) continue;
+        if (mu.pt() < 10. ) continue;
         if (mu.pt() < mMinPt_mu || fabs(mu.eta()) > mMinEta_mu || !mu.isLooseMuon()) continue; 
         float chiso  = mu.pfIsolationR04().sumChargedHadronPt;
         float niso   = mu.pfIsolationR04().sumNeutralHadronEt;
         float phoiso = mu.pfIsolationR04().sumPhotonEt;
         float puiso = mu.pfIsolationR04().sumPUPt;
-        float totiso = chiso + TMath::Max(niso + phoiso - .5*puiso, 0. ) ;
+        float totiso = chiso + TMath::Max( niso + phoiso - .5*puiso, 0. ) ;
     
         if ( totiso/mu.pt() > mMaxIso_mu ) continue;
 
@@ -98,11 +100,15 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 
         myLepton l;
         l.pdgId = -el.charge()*11;
-        //l.iso = el.ecalPFClusterIso() + el.hcalPFClusterIso(); //not working, use GEDIdTools or ValueMap
+
         
-        float chIso = el.chargedHadronIso();
-        float nhIso = el.neutralHadronIso();
-        float phoIso = el.photonIso();
+        // float chIso = el.chargedHadronIso();
+        // float nhIso = el.neutralHadronIso();
+        // float phoIso = el.photonIso();
+        float chIso = el.pfIsolationVariables().sumChargedHadronPt;
+        float nhIso = el.pfIsolationVariables().sumNeutralHadronEt;
+        float phoIso = el.pfIsolationVariables().sumPhotonEt;
+
         float puChIso= el.puChargedHadronIso();
 
         bool isEB = el.isEB();
@@ -113,7 +119,19 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         bool isEERingGap = el.isEERingGap(); //for EE
         bool isEEDeeGap = el.isEEDeeGap ();//for EE
 
-        l.iso = chIso + nhIso + phoIso; 
+        //l.iso = chIso + nhIso + phoIso; 
+        // effective area from
+        // https://indico.cern.ch/event/369239/contribution/4/attachments/1134761/1623262/talk_effective_areas_25ns.pdf
+        double ea = 0.;
+        if ( fabs(el.eta() ) < 1.0 ) ea= 0.1752 ; 
+        else if (fabs(el.eta() ) < 1.479 ) ea = 0.1862 ;
+        else if (fabs(el.eta() ) < 2.0 ) ea = 0.1411 ;
+        else if (fabs(el.eta() ) < 2.2 ) ea = 0.1534 ;
+        else if (fabs(el.eta() ) < 2.3 ) ea = 0.1903 ;
+        else if (fabs(el.eta() ) < 2.4 ) ea = 0.2243 ;
+        else if (fabs(el.eta() ) < 2.5 ) ea = 0.2687 ;
+        l.iso = chIso + TMath::Max( nhIso + phoIso - evt_->rho * ea , 0. ) ; 
+
         l.p4.SetPxPyPzE( el.px(),el.py(),el.pz(),el.energy());
         l.selBits = 0 ;
             l.selBits |= unsigned(isPassTight)*LepTight;
