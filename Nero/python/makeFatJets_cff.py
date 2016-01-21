@@ -8,6 +8,7 @@ from PhysicsTools.PatAlgos.tools.pfTools import *
 from RecoJets.JetProducers.nJettinessAdder_cfi import Njettiness
 from RecoBTag.Configuration.RecoBTag_cff import *
 
+
 def initFatJets(process,isData):
   adaptPVs(process, pvCollection=cms.InputTag('offlineSlimmedPrimaryVertices'))
   isMC = not isData

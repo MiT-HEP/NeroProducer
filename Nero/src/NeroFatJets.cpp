@@ -111,13 +111,14 @@ int NeroFatJets::analyze(const edm::Event& iEvent){
         TString tPrefix(cachedPrefix);
 
         edm::Handle<reco::PFJetCollection> subjets_handle;
-        edm::InputTag subjetLabel("PFJetsSoftDrop"+tPrefix,"SubJets");
-        iEvent.getByLabel(subjetLabel,subjets_handle);
+        //edm::InputTag subjetLabel("PFJetsSoftDrop"+tPrefix,"SubJets");
+        iEvent.getByToken(subjets_token,subjets_handle);
         const reco::PFJetCollection *subjetCol = subjets_handle.product();
         assert(subjets_handle.isValid());
 
         edm::Handle<reco::JetTagCollection> btags_handle;
-        iEvent.getByLabel(edm::InputTag((tPrefix+"PFCombinedInclusiveSecondaryVertexV2BJetTags").Data()),btags_handle);
+        //iEvent.getByLabel(edm::InputTag((tPrefix+"PFCombinedInclusiveSecondaryVertexV2BJetTags").Data()),btags_handle);
+        iEvent.getByToken(btags_token,btags_handle);
         assert((btags_handle.isValid()));
 
         FactorizedJetCorrector *corrector = ( iEvent.isRealData() ) ? mDataJetCorrector : mMCJetCorrector;

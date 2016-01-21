@@ -81,6 +81,7 @@ process.QGTagger.useQualityCuts = cms.bool(False)
 # used by photon id and jets
 process.load("Configuration.Geometry.GeometryIdeal_cff") 
 process.load('Configuration.StandardSequences.Services_cff')
+process.load("Configuration.StandardSequences.MagneticField_cff")
 
 #mc https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions#Global_Tags_for_Run2_MC_Producti
 if (isData):
