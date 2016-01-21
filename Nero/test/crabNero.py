@@ -2,6 +2,7 @@ from CRABClient.UserUtilities import config, getUsernameFromSiteDB
 from subprocess import call,check_output
 
 import sys, os
+from glob import glob
 
 ### CHECK THAT CMS env and it is correct
 pwd = os.environ['PWD']
@@ -33,6 +34,7 @@ config.JobType.pyCfgParams=['isGrid=True','isData=False','is25ns=True','is50ns=F
 
 # request shipping of the JEC V4 -- local
 #config.JobType.inputFiles=['jec/Summer15_50nsV4_DATA.db','jec/Summer15_50nsV4_MC.db']
+config.JobType.inputFiles=glob("jec/*")
 
 ### DATA configuration
 config.Data.inputDataset = '/HplusToTauNu-M500/amarini-amarini_PrivateMC_HPlusToTauNu_June2015-16aa19d591b8b49c55c4508e7a7c9233/USER'
