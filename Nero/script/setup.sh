@@ -3,7 +3,7 @@
 # Instruct builder to use a particular CMSSW release
 # [CMSSW] CMSSW_7_6_3_patch2
 # [Options] isData=False is25ns=True is50ns=False
-# [fileList] /store/mc/RunIIFall15DR76/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/25nsFlat10to25TSG_HCALDebug_76X_mcRun2_asymptotic_v11-v1/40000/FEEBF471-F987-E511-BC13-002590D0B002.root,/store/mc/RunIIFall15DR76/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/25nsFlat10to25TSG_HCALDebug_76X_mcRun2_asymptotic_v11-v1/40000/D0A3314C-1788-E511-9A86-002590D0B098.root
+# [fileList] /store/mc/RunIIFall15MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/70000/FA0A72D5-C7B8-E511-8B1D-901B0E6459E0.root 
 # [MaxEvents] 5000
 
 #CMSSW_7_4_12
