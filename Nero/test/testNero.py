@@ -114,32 +114,6 @@ process.load('NeroProducer.Nero.Nero_cfi')
 #process.load('NeroProducer.Nero.NeroMonojet_cfi')
 #process.load('NeroProducer.Nero.NeroChargedHiggs_cfi')
 
-if options.is25ns:
-	replace = {'bx' : '25ns', 'vs' : 'V1'}
-if options.is50ns:
-	replace = {'bx' : '50ns', 'vs' : 'V2'}
-
-toProduce={}
-for obj in ['ele','pho']:
-  toProduce[obj]={}
-  if obj=='ele': directory = 'RecoEgamma.ElectronIdentification'
-  if obj=='pho': directory = 'RecoEgamma.PhotonIdentification'
-  for ID in ['veto','medium','loose','tight']:
-      if obj == 'pho' and ID == 'veto' : continue
-      if obj == 'pho' : 
-	 	replace['bx'] = '50ns' ##FIXME, we have only this
-		replace['vs'] = 'V1'
-
-      replace['id'] = ID
-      cmd = 'string = process.nero.' + obj + ID.title() + 'IdMap.value()'
-      exec(cmd)
-      cmd = 'process.nero.'+obj + ID.title() + 'IdMap = cms.InputTag("' + string % replace+ '")'
-      print 'executing replacement:',cmd
-      exec(cmd)
-
-      myid = (string%replace ).replace('-','_').split(':')[1]
-      myid = re.sub('_standalone.*','',myid)
-      toProduce[obj][ directory + '.Identification.' + myid + "_cff"] = 1 #remove duplicates
 
 
 #----------------------PUPPI, MET, & CORRECTIONS-------------------
@@ -266,30 +240,9 @@ process.jetSequence = cms.Sequence(fatjetInitSequence*
                                     )
 
 #-----------------------ELECTRON ID-------------------------------
-from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
-# turn on VID producer, indicate data format  to be
-# DataFormat.AOD or DataFormat.MiniAOD, as appropriate 
+from NeroProducer.Nero.egammavid_cfi import *
 
-dataFormat = DataFormat.MiniAOD
-
-switchOnVIDElectronIdProducer(process, dataFormat)
-
-### # define which IDs we want to produce. it is silly to redifine them here hard coded
-### my_id_modules = [ #'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_25ns_V1_cff' ]
-### 
-### #add them to the VID producer
-### for idmod in my_id_modules:
-for idmod in toProduce['ele']:
-   print "will produce", idmod
-   setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
-### 
-### ### PHOTONS
-switchOnVIDPhotonIdProducer(process, dataFormat) ### PHOTON
-### pho_id_modules = [ #'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring15_50ns_V1_cff']
-###         'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_PHYS14_PU20bx25_V2_cff']
-### for idmod in pho_id_modules:
-for idmod in toProduce['pho']:
-      setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
+initEGammaVID(process,options)
 
 ### ##ISO
 process.load("RecoEgamma/PhotonIdentification/PhotonIDValueMapProducer_cfi")
