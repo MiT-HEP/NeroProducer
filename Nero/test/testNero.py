@@ -47,13 +47,15 @@ fileList = [
     #'file:/tmp/amarini/step3_0.root'
     #'/store/data/Run2015D/SinglePhoton/MINIAOD/PromptReco-v3/000/256/630/00000/BE4748B0-295F-E511-A271-02163E014402.root',
     #'/store/mc/RunIISpring15MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/50000/E4F89698-DE6E-E511-8681-0025905A60F4.root'
-    '/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v4/000/260/373/00000/50EB0717-B081-E511-B4E2-02163E014169.root', 
-    '/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v4/000/260/373/00000/58DC7348-C481-E511-8232-02163E011AC9.root',
-    '/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v4/000/260/373/00000/5E276556-C481-E511-B025-02163E014414.root',
-    '/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v4/000/260/373/00000/903B69BB-EC81-E511-B029-02163E0142F1.root',
-    '/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v4/000/260/373/00000/AE673A5A-C481-E511-AC81-02163E0136DB.root',
-    '/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v4/000/260/373/00000/BA5C1056-C481-E511-A636-02163E01182F.root',
-    '/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v4/000/260/373/00000/CCCE9F28-D481-E511-970E-02163E0141B5.root',
+    #'/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v4/000/260/373/00000/50EB0717-B081-E511-B4E2-02163E014169.root', 
+    #'/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v4/000/260/373/00000/58DC7348-C481-E511-8232-02163E011AC9.root',
+    #'/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v4/000/260/373/00000/5E276556-C481-E511-B025-02163E014414.root',
+    #'/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v4/000/260/373/00000/903B69BB-EC81-E511-B029-02163E0142F1.root',
+    #'/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v4/000/260/373/00000/AE673A5A-C481-E511-AC81-02163E0136DB.root',
+    #'/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v4/000/260/373/00000/BA5C1056-C481-E511-A636-02163E01182F.root',
+    #'/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v4/000/260/373/00000/CCCE9F28-D481-E511-970E-02163E0141B5.root',
+    '/store/mc/RunIIFall15DR76/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/25nsFlat10to25TSG_HCALDebug_76X_mcRun2_asymptotic_v11-v1/40000/FEEBF471-F987-E511-BC13-002590D0B002.root',
+    '/store/mc/RunIIFall15DR76/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/25nsFlat10to25TSG_HCALDebug_76X_mcRun2_asymptotic_v11-v1/40000/D0A3314C-1788-E511-9A86-002590D0B098.root'
 ]
 
 
@@ -77,7 +79,7 @@ process.QGTagger.srcVertexCollection = cms.InputTag("offlineSlimmedPrimaryVertic
 process.QGTagger.useQualityCuts = cms.bool(False)
 ##----------------GLOBAL TAG ---------------------------
 # used by photon id and jets
-#process.load("Configuration.StandardSequences.Geometry_cff") ### VETO BY HBB 74X SEQ
+process.load("Configuration.Geometry.GeometryIdeal_cff") 
 process.load('Configuration.StandardSequences.Services_cff')
 
 #mc https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions#Global_Tags_for_Run2_MC_Producti
@@ -90,14 +92,10 @@ if (isData):
 else:
     process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
     if options.is25ns:
-	    #process.GlobalTag.globaltag = '74X_mcRun2_asymptotic_realisticBS_v1'
-	    #process.GlobalTag.globaltag = '74X_mcRun2_asymptotic_realisticBS_v1'
-	    process.GlobalTag.globaltag = 'MCRUN2_74_V9::All'
+	    process.GlobalTag.globaltag = '76X_mcRun2_asymptotic_v11'
 	    #process.GlobalTag.globaltag = '74X_mcRun2_asymptotic_v2'
     if options.is50ns:
-	    #process.GlobalTag.globaltag = '741_p1_mcRun2_Realistic_50ns_v0::All'
-	    process.GlobalTag.globaltag = 'MCRUN2_74_V9A::All'
-	    #process.GlobalTag.globaltag = '74X_mcRun2_startup_v2::All'
+	    process.GlobalTag.globaltag = 'MCRUN2_74_V9A::All' ## FIXME
 
 
 ######## LUMI MASK
@@ -106,45 +104,6 @@ if isData and not options.isGrid : ## don't load the lumiMaks, will be called by
     import FWCore.PythonUtilities.LumiList as LumiList
     ## SILVER
     process.source.lumisToProcess = LumiList.LumiList(filename='/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_Silver.txt').getVLuminosityBlockRange()
-
-
-### HBB 74X ####
-process.load("Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cff")
-process.load("Configuration.Geometry.GeometryRecoDB_cff")
-process.load("RecoBTag.Configuration.RecoBTag_cff") # this loads all available b-taggers
-process.load("RecoBTag.SecondaryVertex.pfBoostedDoubleSecondaryVertexAK8BJetTags_cfi")
-
-process.pfImpactParameterTagInfosAK8.primaryVertex = cms.InputTag("offlineSlimmedPrimaryVertices")
-process.pfImpactParameterTagInfosAK8.candidates = cms.InputTag("packedPFCandidates")
-process.pfImpactParameterTagInfosAK8.jets = cms.InputTag("slimmedJetsAK8") 
-
-process.load("RecoBTag.SoftLepton.softPFMuonTagInfosAK8_cfi")
-process.softPFMuonsTagInfosAK8.jets=cms.InputTag("slimmedJetsAK8")
-process.softPFMuonsTagInfosAK8.muons=cms.InputTag("slimmedMuons")
-process.softPFMuonsTagInfosAK8.primaryVertex=cms.InputTag("offlineSlimmedPrimaryVertices")
-
-process.load("RecoBTag.SoftLepton.softPFElectronTagInfosAK8_cfi")
-process.softPFElectronsTagInfosAK8.jets=cms.InputTag("slimmedJetsAK8")
-process.softPFElectronsTagInfosAK8.electrons=cms.InputTag("slimmedElectrons")
-process.softPFElectronsTagInfosAK8.primaryVertex=cms.InputTag("offlineSlimmedPrimaryVertices")
-
-process.load("RecoBTag.SecondaryVertex.pfInclusiveSecondaryVertexFinderTagInfosAK8_cfi")
-process.pfInclusiveSecondaryVertexFinderTagInfosAK8.extSVCollection = cms.InputTag("slimmedSecondaryVertices")
-
-## DEBUG
-## process.output = cms.OutputModule(
-## 		   "PoolOutputModule",
-## 		         fileName = cms.untracked.string('output.root'),
-## 			 )
-## process.output_step = cms.EndPath(process.output)
-process.HBB = cms.Sequence(
-		process.pfImpactParameterTagInfosAK8 *
-		process.pfInclusiveSecondaryVertexFinderTagInfosAK8 *
-		process.softPFMuonsTagInfosAK8 *
-		process.softPFElectronsTagInfosAK8 *
-		process.pfBoostedDoubleSecondaryVertexAK8BJetTags 
-		)
-############ END HBB ####
 
 
 ## SKIM INFO
@@ -207,11 +166,13 @@ process.puppiSequence += process.pfMETPuppi
 ### set up JEC ###
 cmssw_base = os.environ['CMSSW_BASE']
 if options.isData:
-   connectString = cms.string('sqlite:////'+cmssw_base+'/src/NeroProducer/Nero/test/jec/Summer15_25nsV6_DATA.db')
+   #connectString = cms.string('sqlite:////'+cmssw_base+'/src/NeroProducer/Nero/test/jec/Summer15_25nsV6_DATA.db')
+   connectString = cms.string('sqlite:jec/Summer15_25nsV6_DATA.db')
    tagName = 'Summer15_25nsV6_DATA_AK4PFPuppi'
 else:
-   connectString = cms.string('sqlite:////'+cmssw_base+'/src/NeroProducer/Nero/test/jec/Summer15_25nsV6_MC.db')
+   connectString = cms.string('sqlite:jec/Summer15_25nsV6_MC.db')
    tagName = 'Summer15_25nsV6_MC_AK4PFPuppi'
+
 process.jec = cms.ESSource("PoolDBESSource",
       DBParameters = cms.PSet(
         messageLevel = cms.untracked.int32(0)
@@ -249,6 +210,8 @@ if isData:
 else:
   process.puppiSequence += process.ak4PuppiL1FastL2L3Chain
 
+## in case of conflict, use jec instead of GlobalTag
+process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 ### MET corrections ###
 from RecoJets.JetProducers.ak4PFJets_cfi import ak4PFJets
 process.AK4PFJetsPuppi = ak4PFJets.clone(
@@ -437,7 +400,6 @@ process.p = cms.Path(
                 process.egmPhotonIDSequence *
                 process.photonIDValueMapProducer * ## ISO MAP FOR PHOTONS
                 process.electronIDValueMapProducer * ## ISO MAP FOR PHOTONS
-                process.HBB * ## HBB 74X
                 process.puppiSequence * ## does puppi, puppi met, type1 corrections
                 process.jetSequence *
             		#process.jecSequence *
