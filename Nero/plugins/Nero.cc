@@ -119,6 +119,8 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     chsAK8 -> mMinId = iConfig.getParameter<string>("minAK8CHSId");
     chsAK8 -> cachedPrefix = iConfig.getParameter<string>("AK8CHSName");
     chsAK8 -> jetRadius = 0.8;
+    chsAK8 -> subjets_token = mayConsume<reco::PFJetCollection>(edm::InputTag("PFJetsSoftDrop"+chsAK8 -> cachedPrefix ,"SubJets"));
+    chsAK8 -> btags_token = mayConsume<reco::JetTagCollection>(edm::InputTag(chsAK8->cachedPrefix + "PFCombinedInclusiveSecondaryVertexV2BJetTags") ) ;
     obj.push_back(chsAK8);
 
     NeroPuppiFatJets *puppiAK8= new NeroPuppiFatJets();
@@ -130,6 +132,8 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     puppiAK8 -> mMinId = iConfig.getParameter<string>("minAK8PuppiId");
     puppiAK8 -> cachedPrefix = iConfig.getParameter<string>("AK8PuppiName");
     puppiAK8 -> jetRadius = 0.8;
+    puppiAK8 -> subjets_token = mayConsume<reco::PFJetCollection>(edm::InputTag("PFJetsSoftDrop"+puppiAK8 -> cachedPrefix ,"SubJets"));
+    puppiAK8 -> btags_token = mayConsume<reco::JetTagCollection>(edm::InputTag(puppiAK8->cachedPrefix + "PFCombinedInclusiveSecondaryVertexV2BJetTags") ) ;
     obj.push_back(puppiAK8);
 
     NeroFatJets *chsCA15 = new NeroFatJets();
@@ -142,6 +146,8 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     chsCA15 -> mMinId = iConfig.getParameter<string>("minCA15CHSId");
     chsCA15 -> cachedPrefix = iConfig.getParameter<string>("CA15CHSName");
     chsCA15 -> jetRadius = 1.5;
+    chsCA15 -> subjets_token = mayConsume<reco::PFJetCollection>(edm::InputTag("PFJetsSoftDrop"+chsCA15 -> cachedPrefix ,"SubJets"));
+    chsCA15 -> btags_token = mayConsume<reco::JetTagCollection>(edm::InputTag(chsCA15->cachedPrefix + "PFCombinedInclusiveSecondaryVertexV2BJetTags") ) ;
     obj.push_back(chsCA15);
 
     NeroPuppiFatJets *puppiCA15= new NeroPuppiFatJets();
@@ -153,6 +159,8 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     puppiCA15 -> mMinId = iConfig.getParameter<string>("minCA15PuppiId");
     puppiCA15 -> cachedPrefix = iConfig.getParameter<string>("CA15PuppiName");
     puppiCA15 -> jetRadius = 1.5;
+    puppiCA15 -> subjets_token = mayConsume<reco::PFJetCollection>(edm::InputTag("PFJetsSoftDrop"+puppiCA15 -> cachedPrefix ,"SubJets"));
+    puppiCA15 -> btags_token = mayConsume<reco::JetTagCollection>(edm::InputTag(puppiCA15->cachedPrefix + "PFCombinedInclusiveSecondaryVertexV2BJetTags") ) ;
     obj.push_back(puppiCA15);
 
     // --- 
@@ -202,7 +210,6 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     NeroMet *met = new NeroMet();
     met -> mOnlyMc = onlyMc;
     met -> token = consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("mets"));
-    met -> token_noHF = consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("metsNoHF"));
     met -> token_puppi = consumes<reco::PFMETCollection>(iConfig.getParameter<edm::InputTag>("metsPuppi"));
     met -> token_puppiUncorr = consumes<reco::PFMETCollection>(iConfig.getParameter<edm::InputTag>("metsPuppiUncorrected"));
     met -> pf = pf;
