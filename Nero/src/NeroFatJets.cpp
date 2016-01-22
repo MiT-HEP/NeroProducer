@@ -23,8 +23,7 @@ void NeroFatJets::init()
 {
   BareFatJets::init();
   // set up jet energy corrections
-  std::string jecDir(getenv("CMSSW_BASE"));
-  jecDir += "/src/NeroProducer/Nero/test/jec/";
+  jecDir += "jec/";
     
   if (mRunJEC) {
       std::vector<JetCorrectorParameters> mcParams;
