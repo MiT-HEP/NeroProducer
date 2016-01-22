@@ -26,8 +26,7 @@ void NeroPuppiFatJets::init()
 {
   BarePuppiFatJets::init();
   // set up jet energy corrections
-  std::string jecDir(getenv("CMSSW_BASE"));
-  jecDir += "/src/NeroProducer/Nero/test/jec/";
+  std::string jecDir = "jec/";
 
   std::vector<JetCorrectorParameters> mcParams;
   mcParams.push_back(JetCorrectorParameters(jecDir + "Summer15_25nsV6_MC_L1FastJet_AK8PFPuppi.txt"));
