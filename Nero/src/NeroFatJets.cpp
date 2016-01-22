@@ -23,7 +23,7 @@ void NeroFatJets::init()
 {
   BareFatJets::init();
   // set up jet energy corrections
-  jecDir += "jec/";
+  std::string jecDir = "jec/";
     
   if (mRunJEC) {
       std::vector<JetCorrectorParameters> mcParams;
