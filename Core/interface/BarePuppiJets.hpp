@@ -19,12 +19,13 @@ class BarePuppiJets : virtual public BareP4
             mjId2015 = 1UL << 10
         };
 
+        std::string cachedPrefix="";
+
         BarePuppiJets();
         ~BarePuppiJets();
         void init() override;
         void clear() override;
-        void defineBranches(TTree* t) override { defineBranches(t, ""); }
-        void defineBranches(TTree*, std::string prefix) override;
+        void defineBranches(TTree* t) override; 
 
         void setBranchAddresses(TTree* t) override { setBranchAddresses(t, ""); }
         void setBranchAddresses(TTree*, std::string prefix) override;

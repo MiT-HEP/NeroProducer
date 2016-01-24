@@ -37,6 +37,9 @@ for idx,fName in enumerate(fileList):
 	else:
 		h = fROOT.Get("nero/xSec")
 		print "\txSec in file is ",h.GetBinContent(1)/h.GetBinContent(2),"+/-",math.sqrt(1./h.GetBinContent(2))
+		try:
+			print "\text xSec in file is ",h.GetBinContent(3)/h.GetBinContent(4),"+/-",math.sqrt(1./h.GetBinContent(4))
+		except: pass
 		h_xSec.Add( h )
 
 	t = fROOT.Get("nero/all")
@@ -47,6 +50,9 @@ for idx,fName in enumerate(fileList):
 	fROOT.Close()
 print "---------------------------------------------"
 print "xSec = ",h_xSec.GetBinContent(1)/h_xSec.GetBinContent(2), "+/-", math.sqrt(1./h_xSec.GetBinContent(2))
+try:
+	print "external xSec = ",h_xSec.GetBinContent(3)/h_xSec.GetBinContent(4), "+/-", math.sqrt(1./h_xSec.GetBinContent(4))
+except: pass
 print "SumWeights = ", sum.GetBinContent(1)
 print "Tot Entries = ", n
 print "---------------------------------------------"

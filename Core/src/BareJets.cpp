@@ -61,8 +61,8 @@ void BareJets::clear(){
     QnoPU->clear();
 }
 
-void BareJets::defineBranches(TTree *t, std::string prefix){
-    TString jetName("jet" + prefix);
+void BareJets::defineBranches(TTree *t){
+    TString jetName("jet" + cachedPrefix);
 
     //
     BareP4::defineBranches(t, jetName.Data());
@@ -96,7 +96,8 @@ void BareJets::defineBranches(TTree *t, std::string prefix){
 
 void BareJets::setBranchAddresses(TTree* t, std::string prefix)
 {
-    TString jetName("jet" + prefix);
+    cachedPrefix = prefix;
+    TString jetName("jet" + cachedPrefix);
 
     BareP4::setBranchAddresses(t,jetName.Data());
     BareFunctions::SetBranchAddress(t,jetName + "RawPt"	,&rawPt);

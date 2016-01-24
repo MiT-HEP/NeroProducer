@@ -28,11 +28,10 @@ class NeroPuppiFatJets : virtual public NeroCollection,
 
         // --- configuration
         float mMinPt;
-        int   mMinNjets;
         float mMaxEta;
         string mMinId;
-        bool mUseCA15;
-        FactorizedJetCorrector *mMCJetCorrector;   // needed for puppi CA15 jets
+        float jetRadius; // used for subjet matching
+        FactorizedJetCorrector *mMCJetCorrector;   // needed for puppi jets
         FactorizedJetCorrector *mDataJetCorrector; 
 
 };

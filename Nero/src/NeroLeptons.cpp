@@ -100,11 +100,15 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 
         myLepton l;
         l.pdgId = -el.charge()*11;
-        //l.iso = el.ecalPFClusterIso() + el.hcalPFClusterIso(); //not working, use GEDIdTools or ValueMap
+
         
-        float chIso = el.chargedHadronIso();
-        float nhIso = el.neutralHadronIso();
-        float phoIso = el.photonIso();
+        // float chIso = el.chargedHadronIso();
+        // float nhIso = el.neutralHadronIso();
+        // float phoIso = el.photonIso();
+        float chIso = el.pfIsolationVariables().sumChargedHadronPt;
+        float nhIso = el.pfIsolationVariables().sumNeutralHadronEt;
+        float phoIso = el.pfIsolationVariables().sumPhotonEt;
+
         float puChIso= el.puChargedHadronIso();
 
         bool isEB = el.isEB();

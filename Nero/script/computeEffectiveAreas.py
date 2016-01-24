@@ -1,6 +1,7 @@
 #!/bin/env python
 
 import os,sys,re
+import math
 from subprocess import call, check_output
 
 from optparse import OptionParser
@@ -32,8 +33,11 @@ n=0
 chain = r.TChain("nero/events")
 for f in fileList:
 	n+=chain.Add(f)
+if n==0:
+	print "no file: trying local"
+	n+=chain.Add(opts.eos)
 
-print "-> Added ",n,"files to the chain"
+print "-> Added ",n,"files to the chain. Chain has",chain.GetEntries(),"entries"
 
 chain.SetBranchStatus("*",0)
 chain.SetBranchStatus("lep*",1)
@@ -46,6 +50,7 @@ chain.SetBranchStatus("eventNum",1)
 
 ### if a json is given parse it
 if opts.json != "":
+	print "-> Parsing JSON FIXME",opts.json
 	jstring = open(opts.json).read() 
 	goodLumis = json.loads( jstring )
 
@@ -54,6 +59,7 @@ histos={}
 
 def findRange(value,list):
 	for i in range(0,len(list) ):
+		if i+1 >= len(list) : continue
 		if value>= list[i] and value < list[i+1]: return (list[i],list[i+1])
 	return (-1,-1)
 
@@ -64,14 +70,15 @@ def fill( type, pt, eta,x,y):
 	pt0,pt1 = findRange( pt, ptbins)
 	eta0,eta1 = findRange( abs(eta), etabins)
 
-	name= "%s_pt%.0f_%.0f_eta%.0f_%.0f"%(type,pt0,pt1,eta0,eta1)
+	name= "%s_pt%.0f_%.0f_eta%.1f_%.1f"%(type,pt0,pt1,eta0,eta1)
 
 	if name not in histos:
-		if name.startswith('th2d'):
+		print "\n  * Creating histo with name",name
+		if type.startswith('th2d'):
 			histos[name]= r.TH2D(name,name,200,0,100,100,0,30)
-		elif name.startswith('tprofile'):
-			histos[name]= r.TProfile(name,name,200,0,100)
-		elif name.startswith('th1d'):
+		elif type.startswith('tprofile'):
+			histos[name]= r.TProfile(name,name,200,0,100,100,0,30)
+		elif type.startswith('th1d'):
 			histos[name]= r.TH1D(name,name,200,0,100)
 	histos[name].Fill(x,y)
 
@@ -112,34 +119,78 @@ def findQuantile(h, quantile, ntoys=100):
 				mylist.append(toy.GetBinCenter(ibin))
 				break
 		toy.Delete()
-	return (mymean,rms(mylist) )
+	return (mymean,math.sqrt(rms(mylist) ) )
+
+print "-> Setting up Profiling"
+sw=[]  ### PROFILE
+for i in range(0,10): ## PROFILE
+	sw.append(r.TStopwatch() ) ## PROFILE
+	sw[i].Reset() ## PROFILE
+
+last=0
+def Start(i):
+	global last
+	if i>0: sw[i-1].Stop()
+	elif i==0: sw[last].Stop()
+	last=i
+	sw[i].Start(0) ## 0 = do not reset
+	return
+
+def Reset():
+	for s in sw:
+		s.Stop()
+		s.Reset()
+	return
 
 ### LOOP ###
-for i in range(0,chain.GetEntries() ):
+print "-> Start Loop"
+try:
+   for i in range(0,chain.GetEntries() ):
 	if i&1023 == 1:
 		print "\r Doing Entries" ,i,"/",chain.GetEntriesFast(),
+		print " PROFILE (CPU,REAL):",
+		print " GetEntry (" + "%.2f"%(sw[0].CpuTime()) + "," +"%.2f"%(sw[0].RealTime()) +")",
+		print " TProfile-1 (" + "%.2f"%(sw[1].CpuTime()) + ","+ "%.2f"%(sw[1].RealTime()) +")",
+		## print " TProfile-2 (" + str(sw[2].CpuTime()) + ","+ str(sw[2].RealTime()) +")",
+		print " TH2D (" + "%.2f"%(sw[3].CpuTime()) + ","+ "%.2f"%(sw[3].RealTime()) +")",
 		sys.stdout.flush()
+		Reset()
+
+	Start(0) ## PROFILE
 	chain.GetEntry(i)
 
+	Start(1) ## PROFILE
 	if chain.lepP4.GetEntries()==0 or abs(chain.lepPdgId[0] ) != 11	: continue
-	fill("tprofile_ch_rho",chain.lepP4[0].Pt(),chain.lepP4[0].Eta(),chain.rho,chain.lepChIso[0])
-	fill("tprofile_nh_rho",chain.lepP4[0].Pt(),chain.lepP4[0].Eta(),chain.rho,chain.lepNhIso[0])
-	fill("tprofile_ph_rho",chain.lepP4[0].Pt(),chain.lepP4[0].Eta(),chain.rho,chain.lepPhoIso[0])
-	fill("tprofile_pu_rho",chain.lepP4[0].Pt(),chain.lepP4[0].Eta(),chain.rho,chain.lepPuIso[0])
-	fill("tprofile_tot_rho",chain.lepP4[0].Pt(),chain.lepP4[0].Eta(),chain.rho,chain.lepIso[0])
+	#fill("tprofile_ch_rho",chain.lepP4[0].Pt(),chain.lepP4[0].Eta(),chain.rho,chain.lepChIso[0])
+	#fill("tprofile_nh_rho",chain.lepP4[0].Pt(),chain.lepP4[0].Eta(),chain.rho,chain.lepNhIso[0])
+	#fill("tprofile_ph_rho",chain.lepP4[0].Pt(),chain.lepP4[0].Eta(),chain.rho,chain.lepPhoIso[0])
+	#fill("tprofile_pu_rho",chain.lepP4[0].Pt(),chain.lepP4[0].Eta(),chain.rho,chain.lepPuIso[0])
+	#fill("tprofile_tot_rho",chain.lepP4[0].Pt(),chain.lepP4[0].Eta(),chain.rho,chain.lepIso[0])
 
-	fill("tprofile_ch_npv",chain.lepP4[0].Pt(),chain.lepP4[0].Eta(),chain.npv,chain.lepChIso[0])
-	fill("tprofile_nh_npv",chain.lepP4[0].Pt(),chain.lepP4[0].Eta(),chain.npv,chain.lepNhIso[0])
-	fill("tprofile_ph_npv",chain.lepP4[0].Pt(),chain.lepP4[0].Eta(),chain.npv,chain.lepPhoIso[0])
-	fill("tprofile_pu_npv",chain.lepP4[0].Pt(),chain.lepP4[0].Eta(),chain.npv,chain.lepPuIso[0])
-	fill("tprofile_tot_npv",chain.lepP4[0].Pt(),chain.lepP4[0].Eta(),chain.npv,chain.lepIso[0])
+	Start(2) ## PROFILE
+	##fill("tprofile_ch_npv",chain.lepP4[0].Pt(),chain.lepP4[0].Eta(),chain.npv,chain.lepChIso[0])
+	##fill("tprofile_nh_npv",chain.lepP4[0].Pt(),chain.lepP4[0].Eta(),chain.npv,chain.lepNhIso[0])
+	##fill("tprofile_ph_npv",chain.lepP4[0].Pt(),chain.lepP4[0].Eta(),chain.npv,chain.lepPhoIso[0])
+	##fill("tprofile_pu_npv",chain.lepP4[0].Pt(),chain.lepP4[0].Eta(),chain.npv,chain.lepPuIso[0])
+	##fill("tprofile_tot_npv",chain.lepP4[0].Pt(),chain.lepP4[0].Eta(),chain.npv,chain.lepIso[0])
 
+	Start(3) ## PROFILE
 	fill("th2d_ch_rho",chain.lepP4[0].Pt(),chain.lepP4[0].Eta(),chain.rho,chain.lepChIso[0])
 	fill("th2d_nh_rho",chain.lepP4[0].Pt(),chain.lepP4[0].Eta(),chain.rho,chain.lepNhIso[0])
 	fill("th2d_ph_rho",chain.lepP4[0].Pt(),chain.lepP4[0].Eta(),chain.rho,chain.lepPhoIso[0])
 	fill("th2d_pu_rho",chain.lepP4[0].Pt(),chain.lepP4[0].Eta(),chain.rho,chain.lepPuIso[0])
 	fill("th2d_tot_rho",chain.lepP4[0].Pt(),chain.lepP4[0].Eta(),chain.rho,chain.lepIso[0])
 
+except KeyboardInterrupt: 
+	print "Caught Keyboard Interrupt. Stop Looping."
+	print "Loop ended at entry",i
+	pass
+
+## Produce profile
+for h in histos.keys():
+	if h.startswith("th2d"):
+		name=re.sub("th2d","tprofile",h)
+		histos[name]=histos[h].ProfileX()
 
 line=r.TF1("line","[0]+x*[1]",0,100)
 quad=r.TF1("quad","[0]+x*[1]+x*x*[2]",0,100)
@@ -155,7 +206,7 @@ text.SetTextAlign(11)
 
 txt=open(opts.dir+"/effArea.txt","w")
 fOut=r.TFile.Open(opts.dir+"/effArea.root","RECREATE") ## save histos 
-for h in histos:
+for h in histos.keys():
 	histos[h].Write()
 	## draw the canvas
 	c=r.TCanvas("c_"+h,h)

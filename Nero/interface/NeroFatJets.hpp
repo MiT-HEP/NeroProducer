@@ -3,6 +3,9 @@
 
 #include "NeroProducer/Nero/interface/NeroCollection.hpp"
 #include "NeroProducer/Core/interface/BareFatJets.hpp"
+#include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
+#include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
+#include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
 
 
 class NeroFatJets : virtual public NeroCollection, 
@@ -13,15 +16,25 @@ class NeroFatJets : virtual public NeroCollection,
         ~NeroFatJets();
         int analyze(const edm::Event& iEvent);
         virtual inline string name(){return "NeroFatJets";};
+        void init() override;
 
         // --- specific fuctions
         // --- Handle
         edm::Handle<pat::JetCollection> handle;	
+        edm::Handle<double> rho_handle;
 
         // --- Token
         edm::EDGetTokenT<pat::JetCollection> token;
+        edm::EDGetTokenT<double> rho_token;
 
-
+        // --- configuration
+        float mMinPt;
+        float mMaxEta;
+        bool mRunJEC=false;
+        string mMinId;
+        float jetRadius; // used for subjet matching
+        FactorizedJetCorrector *mMCJetCorrector;   // needed for reclustered jets
+        FactorizedJetCorrector *mDataJetCorrector; 
 
 };
 

@@ -16,6 +16,8 @@ BareTrigger::~BareTrigger(){
     BareFunctions::Delete(triggerJets);
     BareFunctions::Delete(triggerTaus);
     BareFunctions::Delete(triggerPhotons);
+
+    BareFunctions::Delete(triggerNoneTaus);
 }
 
 void BareTrigger::init(){
@@ -25,6 +27,8 @@ void BareTrigger::init(){
     BareFunctions::New(triggerJets);
     BareFunctions::New(triggerTaus);
     BareFunctions::New(triggerPhotons);
+
+    BareFunctions::New(triggerNoneTaus);
 }
 
 void BareTrigger::clear(){
@@ -36,6 +40,8 @@ void BareTrigger::clear(){
     triggerJets -> clear();
     triggerTaus -> clear();
     triggerPhotons -> clear();
+    // ---
+    triggerNoneTaus -> clear();
 }
 
 void BareTrigger::defineBranches(TTree *t){
@@ -48,6 +54,8 @@ void BareTrigger::defineBranches(TTree *t){
     t->Branch("triggerJets","vector<int>",&triggerLeps);
     t->Branch("triggerTaus","vector<int>",&triggerTaus);
     t->Branch("triggerPhotons","vector<int>",&triggerPhotons);
+    // ---
+    t->Branch("triggerNoneTaus","vector<unsigned>",&triggerNoneTaus);
 }
 
 void BareTrigger::setBranchAddresses(TTree*t)
@@ -61,6 +69,7 @@ void BareTrigger::setBranchAddresses(TTree*t)
     BareFunctions::SetBranchAddress(t,"triggerJets", &triggerJets);
     BareFunctions::SetBranchAddress(t,"triggerTaus", &triggerTaus);
     BareFunctions::SetBranchAddress(t,"triggerPhotons", &triggerPhotons);
+    BareFunctions::SetBranchAddress(t,"triggerNoneTaus", &triggerNoneTaus);
 }
 
 // Local Variables:
