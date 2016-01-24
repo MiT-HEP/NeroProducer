@@ -6,7 +6,6 @@ from optparse import OptionParser
 # Get all the root classes
 from ROOT import *
 from math import *
-from cutflow_core import *
 
 gROOT.ProcessLine(".x " + os.path.dirname(os.path.realpath(__file__)) + "/functions.C");
 
@@ -44,6 +43,119 @@ if input_tree:
 else:
   print 'ERROR - Cannot open root tree: ' + options.input_tree + ' , exiting!'
   raise SystemExit
+
+# ===========================================================================
+
+def deltaBetaIsolation(tree,i):
+  return tree.lepChIso[i] + max(0., tree.lepPhoIso[i] + tree.lepNhIso[i] - 0.5*tree.lepPuIso[i]);
+
+def isLooseMuon(tree,i):
+  # https://twiki.cern.ch/twiki/bin/viewauth/CMS/Monojet
+  if abs(tree.lepPdgId[i]) != 13: return False
+  if abs(tree.lepP4[i].Eta()) > 2.4: return False
+  # ID
+  if (tree.lepSelBits[i] & 16) != 16: 
+    if options.debug: print "failed loose muon id"
+    return False
+  # Isolation
+  if tree.lepIso[i]/tree.lepP4[i].Pt() > 0.20: 
+  # if deltaBetaIsolation(tree,i)/tree.lepP4[i].Pt() > 0.20: 
+    if options.debug: print "failed loose muon isolation"
+    return False
+  if options.debug: print "Loose muon is found"
+  return True
+
+def isLooseElectron(tree,i):
+  # https://twiki.cern.ch/twiki/bin/viewauth/CMS/Monojet
+  # WARNING: we need super cluster Eta, not P4
+  if abs(tree.lepPdgId[i]) != 11: return False
+  if abs(tree.lepP4[i].Eta()) > 2.5: return False
+  # ID
+  if (tree.lepSelBits[i] & 2) != 2: 
+    if options.debug: print "failed loose electron id"
+    return False
+  # Isolation
+  if options.debug:
+    print "lepIso[i]: %0.4f" % tree.lepIso[i]
+    print "lepP4[i].Pt(): %0.4f" % tree.lepP4[i].Pt()
+  relIso = tree.lepIso[i]/tree.lepP4[i].Pt()
+  if abs(tree.lepP4[i].Eta()) > 1.479:
+  # if (tree.lepSelBits[i] & 32768) != 32768:
+    # endcap
+    if relIso > 0.144: 
+      if options.debug: print "failed loose electron iso endcap"
+      return False
+  else:
+    # barrel
+    if relIso > 0.126: 
+      if options.debug: print "failed loose electron iso"
+      return False
+  if options.debug: print "Loose electron is found"
+  return True
+
+def isLooseLepton(tree,i):
+  if tree.lepP4[i].Pt() < 10: return False
+  return isLooseMuon(tree,i) or isLooseElectron(tree,i)
+
+def getNLooseLeptons(tree):
+  nLeptons = tree.lepP4.GetEntriesFast()
+  if options.debug: print "nLeptons: ", nLeptons
+  nLooseLeptons = 0
+  for i in range(nLeptons):
+    if isLooseLepton(tree,i):
+      nLooseLeptons+=1
+  return nLooseLeptons
+
+def isGoodTau(tree,i):
+  if tree.tauP4[i].Pt() < 18. or abs(tree.tauP4[i].Eta()) > 2.3: return False
+  if (tree.tauSelBits[i]&6) != 6: return False
+  if tree.tauIsoDeltaBetaCorr[i] > 5: return False
+  # warning: for Bambu version use 4.5 
+  return True
+
+def getNTaus(tree):
+  n = tree.tauP4.GetEntriesFast()
+  nTaus = 0
+  for i in range(n):
+    if isGoodTau(tree,i):
+      nTaus+=1
+  return nTaus
+
+def isLoosePhoton(tree,i):
+  if tree.photonP4[i].Pt()<15 or abs(tree.photonP4[i].Eta()) > 2.5: return False
+  if (tree.photonSelBits[i] & 8) != 8: 
+    return False
+  return True
+
+def getNLoosePhotons(tree):
+  n = tree.photonP4.GetEntriesFast()
+  nSelected = 0
+  for i in range(n):
+    if isLoosePhoton(tree,i):
+      nSelected+=1
+  return nSelected
+
+def isGoodJet(tree,i):
+  return True
+
+def isBJet(tree,i):
+  if tree.jetP4[i].Pt()<15 or abs(tree.jetP4[i].Eta()) > 2.5: return False
+  # if (tree.jetSelBits[i] & 16) != 16: return False
+  if tree.jetPuId[i] <= -0.63: return False
+  if tree.jetBdiscr[i] <= 0.89: return False
+  # if (tree.
+  #   return False
+  return True
+
+def getNBJets(tree):
+  n = tree.jetP4.GetEntriesFast()
+  nSelected = 0
+  for i in range(n):
+    if isBJet(tree,i):
+      nSelected+=1
+  return nSelected
+
+# ===========================================================================
 
 #initialize 
 n_jet=0; n_met=0; n_njet=0; n_nlep=0; n_ntau=0; n_npho=0; n_dphi=0;n_2ndjet=0;
