@@ -491,7 +491,7 @@ if options.isParticleGun:
 #------------------------------------------------------
 process.p = cms.Path(
 		process.infoProducerSequence *
-		process.hcalNoiseFilter * 
+#		process.hcalNoiseFilter * 
                 process.QGTagger *
                 process.egmGsfElectronIDSequence *
                 process.egmPhotonIDSequence *
