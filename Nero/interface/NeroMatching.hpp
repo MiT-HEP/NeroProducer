@@ -16,7 +16,7 @@ class Matcher
     public:
         Matcher(){dR_ = 0.3; }
         ~Matcher(){}
-        
+
         void SetDr(float dR ){dR_=dR;} 
 
         void match(TClonesArray *a, TClonesArray *b, 
@@ -42,7 +42,7 @@ class NeroMatching :virtual public NeroCollection
         void setBranchAddresses(TTree*){};
         void defineBranches(TTree*){};
         virtual inline string name(){return "NeroMatching";};
-        
+
         Matcher matcher_;
 
         NeroJets    *jets_;

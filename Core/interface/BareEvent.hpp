@@ -13,7 +13,7 @@ class BareEvent : virtual public BareCollection
         void setBranchAddresses(TTree*) override;
         inline string name() override { return "BareEvent"; }
         inline unsigned size() const override { return 1; }
-    
+
 
         // -- variables
         int isRealData;

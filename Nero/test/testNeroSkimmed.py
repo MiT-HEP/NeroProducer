@@ -21,19 +21,27 @@ fileList = []
 ###FILELIST###
 
 process.source = cms.Source("PoolSource",
-    	fileNames = cms.untracked.vstring(fileList)
-    )
+        fileNames = cms.untracked.vstring(fileList)
+        )
 
 # ---- define the output file -------------------------------------------
 process.TFileService = cms.Service("TFileService",
-			closeFileFast = cms.untracked.bool(True),
-			fileName = cms.string("NeroNtuples.root"),
-                )
+        closeFileFast = cms.untracked.bool(True),
+        fileName = cms.string("NeroNtuples.root"),
+        )
 
 #process.load('NeroProducer.Nero.Nero_cfi')
 process.load('NeroProducer.Nero.NeroChargedHiggs_cfi')
 #process.load('NeroProducer.Nero.NeroMonojet_cfi')
 
 process.p = cms.Path(
-                process.nero
-                )
+        process.nero
+        )
+
+# Local Variables:
+# mode:python
+# indent-tabs-mode:nil
+# tab-width:4
+# c-basic-offset:4
+# End:
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4

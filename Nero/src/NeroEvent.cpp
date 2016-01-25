@@ -2,8 +2,8 @@
 #include "NeroProducer/Nero/interface/Nero.hpp"
 
 NeroEvent::NeroEvent():
-        NeroCollection(),
-        BareEvent()
+    NeroCollection(),
+    BareEvent()
 {
 }
 

@@ -5,7 +5,7 @@
 
 class NeroPF : virtual public NeroCollection
 {
-// class to handle the PFCandidates
+    // class to handle the PFCandidates
     public:
         NeroPF():NeroCollection(){}
         ~NeroPF(){}
@@ -19,7 +19,7 @@ class NeroPF : virtual public NeroCollection
         void clear() {}
         void defineBranches(TTree *t) {}
         void setBranchAddresses(TTree*){} 
-        
+
 };
 
 #endif

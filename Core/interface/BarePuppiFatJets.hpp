@@ -39,10 +39,18 @@ class BarePuppiFatJets : virtual public BareP4
         vector<int>   *nSubjets{0};
         vector<int>   *firstSubjet{0};
         vector<float> *subjet_btag{0};
-    
+
         vector<float> *hbb{0};
         vector<float> *topMVA{0};
 
 };
 
 #endif
+
+// Local Variables:
+// mode:c++
+// indent-tabs-mode:nil
+// tab-width:4
+// c-basic-offset:4
+// End:
+// vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4

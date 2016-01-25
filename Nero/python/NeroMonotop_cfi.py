@@ -6,8 +6,8 @@ print " ------- LOADING MONO TOP CONFIGURATION -------- "
 nero.info = cms.string("NeroMonotop")
 
 nero.triggerNames = cms.vstring(['HLT_PFMET170_NoiseCleaned',
-                                 'HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight',
-                                 'HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight'])
+    'HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight',
+    'HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight'])
 nero.minJetPt         = cms.double (20.)
 nero.minJetEta        = cms.double (2.5)
 nero.minJetId         = cms.string ('monojet')
@@ -21,3 +21,11 @@ nero.maxTauIso        = cms.double (5)
 nero.extendTau        = cms.bool(False)
 nero.extendMet        = cms.bool(True)
 
+
+# Local Variables:
+# mode:python
+# indent-tabs-mode:nil
+# tab-width:4
+# c-basic-offset:4
+# End:
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4

@@ -23,37 +23,37 @@ base=fROOT.Get("mmNpv_DY_pileup%d"%( int (opts.base )) )
 lumi=opts.lumi
 
 if base == None:
-	print "BASE IS NONE"
+    print "BASE IS NONE"
 
 envelope = []
 for n in opts.envelope.split(','):
-	num=int(n)
-	h = fROOT.Get("mmNpv_DY_pileup%d"%( num ) )
-	if h==None:
-		print "NUM %d IS NONE"%(num)
-	envelope.append(h)
+    num=int(n)
+    h = fROOT.Get("mmNpv_DY_pileup%d"%( num ) )
+    if h==None:
+        print "NUM %d IS NONE"%(num)
+    envelope.append(h)
 
 def PrepareCanvas(name="c"):
-	c=ROOT.TCanvas(name,name,800,800)
-	c.SetTopMargin(0.05)
-	c.SetRightMargin(0.05)
-	c.SetLeftMargin(0.15)
-	c.SetBottomMargin(0.15)
-	return c
+    c=ROOT.TCanvas(name,name,800,800)
+    c.SetTopMargin(0.05)
+    c.SetRightMargin(0.05)
+    c.SetLeftMargin(0.15)
+    c.SetBottomMargin(0.15)
+    return c
 
 def CMS():
-	ltx=ROOT.TLatex()
-	ltx.SetNDC()
-	ltx.SetTextFont(42)
-	ltx.SetTextSize(0.03)
-	ltx.SetTextAlign(31)
-	ltx.DrawLatex(.96,.96,"%.1f pb^{-1} (13TeV)"%lumi)  ## ONLY TCANVAS
-	#ltx.DrawLatex(.96,.98,"%.1f pb^{-1} (13TeV)"%lumi)
-	#ltx.SetTextAlign(13)
-	ltx.SetTextAlign(33)
-	ltx.SetTextSize(0.05)
-	ltx.DrawLatex(.90,.93,"#bf{CMS},#scale[0.75]{#it{ Preliminary}}") ##ONLY TCANVAS
-	#ltx.DrawLatex(.17,.95,"#bf{CMS},#scale[0.75]{#it{ Preliminary}}") 
+    ltx=ROOT.TLatex()
+    ltx.SetNDC()
+    ltx.SetTextFont(42)
+    ltx.SetTextSize(0.03)
+    ltx.SetTextAlign(31)
+    ltx.DrawLatex(.96,.96,"%.1f pb^{-1} (13TeV)"%lumi)  ## ONLY TCANVAS
+    #ltx.DrawLatex(.96,.98,"%.1f pb^{-1} (13TeV)"%lumi)
+    #ltx.SetTextAlign(13)
+    ltx.SetTextAlign(33)
+    ltx.SetTextSize(0.05)
+    ltx.DrawLatex(.90,.93,"#bf{CMS},#scale[0.75]{#it{ Preliminary}}") ##ONLY TCANVAS
+    #ltx.DrawLatex(.17,.95,"#bf{CMS},#scale[0.75]{#it{ Preliminary}}") 
 
 
 
@@ -67,7 +67,7 @@ integral = data.Integral()
 base.Scale(integral / base.Integral() )
 
 for mc in envelope:
-	mc.Scale( integral/mc.Integral())
+    mc.Scale( integral/mc.Integral())
 
 
 base.SetLineColor(ROOT.kBlack)
@@ -100,21 +100,21 @@ data.GetYaxis().SetTitleSize(28)
 env=base.Clone("envelope")
 env.Reset("ACE")
 for idx,mc in enumerate(envelope):
-   for i in range(0,mc.GetNbinsX()+2):
-	c= env.GetBinContent(i)
-	e= env.GetBinError(i)
+    for i in range(0,mc.GetNbinsX()+2):
+        c= env.GetBinContent(i)
+    e= env.GetBinError(i)
 
-	c2=mc.GetBinContent(i)
+    c2=mc.GetBinContent(i)
 
-	if idx!=0  : 
-		up = max(c+e,c2) 
-		down = min(c-e,c2)
-	else: ## first element just take it as is
-		up = c2
-		down = c2
+    if idx!=0  : 
+        up = max(c+e,c2) 
+        down = min(c-e,c2)
+    else: ## first element just take it as is
+        up = c2
+        down = c2
 
-	env.SetBinContent(i, (up+down)/2.0)
-	env.SetBinError(i,(up-down)/2.0)
+    env.SetBinContent(i, (up+down)/2.0)
+    env.SetBinError(i,(up-down)/2.0)
 env.SetFillColor(ROOT.kRed)
 env.SetFillStyle(3001)
 env.SetMarkerStyle(0)
@@ -152,7 +152,7 @@ pdn.SetGridy()
 
 a=base.Clone("all")
 for i in range(0,a.GetNbinsX()+2):
-	a.SetBinError(i,0)
+    a.SetBinError(i,0)
 
 data_r = data.Clone("data_r")
 data_r.Divide(a)
@@ -170,3 +170,11 @@ raw_input("ok?")
 
 c.SaveAs("mmNpv_base" + str(opts.base) + "_env" + str(opts.envelope) +".pdf")
 c.SaveAs("mmNpv_base" + str(opts.base) + "_env" + str(opts.envelope) +".png")
+
+# Local Variables:
+# mode:python
+# indent-tabs-mode:nil
+# tab-width:4
+# c-basic-offset:4
+# End:
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4

@@ -19,7 +19,7 @@ except ImportError:
             ROOTimported = True
         except ImportError:
             pass
-        
+
 
 if not ROOTimported:
     print >> sys.stderr,"could not import ROOT (pyROOT) module"
@@ -84,7 +84,7 @@ def dumpLumi(ARGV):
     # value is 1 (we assume that we're still running with python2.4
     # which does not have sets...)
     lumiSectionsFound = {}
-    
+
     for index, fname in enumerate(ARGV):
         print >> sys.stderr,"opening file",(index+1),"of",len(ARGV)
         fin = ROOT.TFile.Open(fname)
@@ -101,22 +101,22 @@ def dumpLumi(ARGV):
         num = event.GetSelectedRows()
         runs = event.GetV1()
         lumis = event.GetV2()
-        
+
         for i in range(num):
             run = int(runs[i] + 0.5)
             lumi = int(lumis[i] + 0.5)
 
             # print "run=",run,"lumi=",lumi
             lumiSectionsFound.setdefault(run,{})[lumi]=1
-            
+
         fin.Close()
 
     runLines = []
     for run in sorted(lumiSectionsFound.keys()):
         line = '"%d": ' % run
-        
+
         line += str(findConsecutiveRanges(lumiSectionsFound[run].keys()))
-        
+
         runLines.append(line)
     return runLines
 
@@ -133,22 +133,22 @@ if __name__ == "__main__" :
     parser = OptionParser(option_list=[
         ## doesn't work
         make_option("-d", "--sourcedir",
-                    action="store", type="string", dest="sourcedir",
-                    default="",
-                    help="", metavar=""
-                    ),
+            action="store", type="string", dest="sourcedir",
+            default="",
+            help="", metavar=""
+            ),
         make_option("-e", "--eos",
-                    action="store", type="string", dest="eos",
-                    default="",
-                    help="", metavar=""
-                    ),
+            action="store", type="string", dest="eos",
+            default="",
+            help="", metavar=""
+            ),
         make_option("-f", "--filelist",
-                    action="store", type="string", dest="filelist",
-                    default="",
-                    help="", metavar=""
-                    ),
+            action="store", type="string", dest="filelist",
+            default="",
+            help="", metavar=""
+            ),
         ])
-    
+
     (options, args) = parser.parse_args()
 
     ## should work but doesn't unmount 
@@ -158,16 +158,24 @@ if __name__ == "__main__" :
         for ifile in xrange(len(filelist)):
             filelist[ifile]=filelist[ifile].split("\n")[0]
     elif options.eos is not "":
-	cmd = EOS+ " find -f " + options.eos
-	outputList = check_output(cmd,shell=True)
-	fileList0 = outputList.split() ## change lines into list
-	removed = [ f for f in fileList0 if '/failed/' in f ]
-	for f in removed:
-		print>>sys.stderr, "ignoring failed file:",f
-	filelist = [ re.sub("/eos/cms","root://eoscms//",f) for f in fileList0 if '/failed/' not in f ]
-    else:
-        filelist = sys.argv[1:]
-    
+        cmd = EOS+ " find -f " + options.eos
+    outputList = check_output(cmd,shell=True)
+    fileList0 = outputList.split() ## change lines into list
+    removed = [ f for f in fileList0 if '/failed/' in f ]
+    for f in removed:
+        print>>sys.stderr, "ignoring failed file:",f
+    filelist = [ re.sub("/eos/cms","root://eoscms//",f) for f in fileList0 if '/failed/' not in f ]
+else:
+    filelist = sys.argv[1:]
+
     runLines = dumpLumi(filelist)
 
     print "{" + ", ".join(runLines) + "}"
+
+# Local Variables:
+# mode:python
+# indent-tabs-mode:nil
+# tab-width:4
+# c-basic-offset:4
+# End:
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4

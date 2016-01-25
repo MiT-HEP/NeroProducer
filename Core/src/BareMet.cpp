@@ -125,13 +125,13 @@ void BareMet::compress(){
 
     BareP4::compress();
 
-	for(int i=0;i<genP4->GetEntries();++i)
-		BareFunctions::Compress( * (TLorentzVector*) genP4->At(i)  );
+    for(int i=0;i<genP4->GetEntries();++i)
+        BareFunctions::Compress( * (TLorentzVector*) genP4->At(i)  );
 
     BareFunctions::Compress(*metPuppi);
 
-	for(int i=0;i<metPuppiSyst->GetEntries();++i)
-		BareFunctions::Compress( * (TLorentzVector*) metPuppiSyst->At(i)  );
+    for(int i=0;i<metPuppiSyst->GetEntries();++i)
+        BareFunctions::Compress( * (TLorentzVector*) metPuppiSyst->At(i)  );
 
     if ( IsExtend() ) 
     {

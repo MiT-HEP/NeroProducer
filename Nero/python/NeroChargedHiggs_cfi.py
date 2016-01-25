@@ -12,3 +12,11 @@ nero.minTauId  = cms.string ('decayModeFindingNewDMs')
 nero.maxTauIso = cms.double (-1)
 nero.extendTau = cms.bool(True)
 nero.extendMet = cms.bool(True)
+
+# Local Variables:
+# mode:python
+# indent-tabs-mode:nil
+# tab-width:4
+# c-basic-offset:4
+# End:
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4

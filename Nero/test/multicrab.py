@@ -15,28 +15,28 @@ def getOptions():
     Parse and return the arguments provided by the user.
     """
     usage = ("Usage: %prog --crabCmd CMD [--workArea WAD --crabCmdOpts OPTS]"
-             "\nThe multicrab command executes 'crab CMD OPTS' for each project directory contained in WAD"
-             "\nUse multicrab -h for help")
+            "\nThe multicrab command executes 'crab CMD OPTS' for each project directory contained in WAD"
+            "\nUse multicrab -h for help")
 
     parser = OptionParser(usage=usage)
 
     parser.add_option('-c', '--crabCmd',
-                      dest = 'crabCmd',
-                      default = '',
-                      help = "The crab command you want to execute for each task in DIR",
-                      metavar = 'CMD')
+            dest = 'crabCmd',
+            default = '',
+            help = "The crab command you want to execute for each task in DIR",
+            metavar = 'CMD')
 
     parser.add_option('-w', '--workArea',
-                      dest = 'workArea',
-                      default = '',
-                      help = "work area directory (only if CMD != 'submit')",
-                      metavar = 'WAD')
+            dest = 'workArea',
+            default = '',
+            help = "work area directory (only if CMD != 'submit')",
+            metavar = 'WAD')
 
     parser.add_option('-o', '--crabCmdOpts',
-                      dest = 'crabCmdOpts',
-                      default = '',
-                      help = "options for crab command CMD",
-                      metavar = 'OPTS')
+            dest = 'crabCmdOpts',
+            default = '',
+            help = "options for crab command CMD",
+            metavar = 'OPTS')
 
     (options, arguments) = parser.parse_args()
 
@@ -92,3 +92,11 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+# Local Variables:
+# mode:python
+# indent-tabs-mode:nil
+# tab-width:4
+# c-basic-offset:4
+# End:
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4

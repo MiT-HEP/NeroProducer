@@ -120,3 +120,11 @@ void BarePuppiFatJets::compress(){
     for(int i=0;i<subjet->GetEntries();++i)
         BareFunctions::Compress( * (TLorentzVector*) subjet->At(i)  );
 }
+
+// Local Variables:
+// mode:c++
+// indent-tabs-mode:nil
+// tab-width:4
+// c-basic-offset:4
+// End:
+// vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4

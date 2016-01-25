@@ -40,39 +40,39 @@ lastTree=""
 lastBranch= ""
 
 for line in out.split('\n'):
-	if '*********' in line : continue
-	if '.........' in line : continue
-	#if 'root [' in line : continue
+    if '*********' in line : continue
+    if '.........' in line : continue
+    #if 'root [' in line : continue
 
-	# remove all spaces and *, leave colum separator
-	line = line.replace('*','').replace(' ','')
-	## remove empty lines
-	if line == '' : continue
+    # remove all spaces and *, leave colum separator
+    line = line.replace('*','').replace(' ','')
+    ## remove empty lines
+    if line == '' : continue
 
-	print "Processing line '" + line + "'"
+    print "Processing line '" + line + "'"
 
-	if 'Tree' in line.split(':')[0]:
-		'*Tree    :all       : all                                                    *'
-		lastTree=line.split(':')[1]
-		lastBranch=""
+    if 'Tree' in line.split(':')[0]:
+        '*Tree    :all       : all                                                    *'
+        lastTree=line.split(':')[1]
+        lastBranch=""
 
-	if 'Br' in line.split(':')[0]:
-		'*Br    0 :isRealData : isRealData/I                                          *'
-		lastBranch=line.split(':')[1]
-	if 'Entries' in line.split(':')[0]:
-		'*Entries :   187542 : Total  Size=     752786 bytes  File Size  =       5882 *'
-		ntr  = int(line.split(':')[1])
-		size = line.split(':')[2] . split('=')[1].replace(' ','')
-		size = re.sub('bytes.*','',size)
-		size = int(size)
+    if 'Br' in line.split(':')[0]:
+        '*Br    0 :isRealData : isRealData/I                                          *'
+        lastBranch=line.split(':')[1]
+    if 'Entries' in line.split(':')[0]:
+        '*Entries :   187542 : Total  Size=     752786 bytes  File Size  =       5882 *'
+        ntr  = int(line.split(':')[1])
+        size = line.split(':')[2] . split('=')[1].replace(' ','')
+        size = re.sub('bytes.*','',size)
+        size = int(size)
 
-		filesize = int(line.split(':')[2].split('=')[2].replace(' ',''))
+        filesize = int(line.split(':')[2].split('=')[2].replace(' ',''))
 
-		if lastBranch=="":
-			trees[lastTree] = filesize
-			entries[lastTree] = ntr
-		else:
-			branches[ (lastTree,lastBranch ) ] = filesize
+        if lastBranch=="":
+            trees[lastTree] = filesize
+            entries[lastTree] = ntr
+        else:
+            branches[ (lastTree,lastBranch ) ] = filesize
 
 
 ROOT.gStyle.SetOptStat(0)
@@ -84,76 +84,76 @@ c.Divide(2,2)
 
 ### COMMON COLORS
 colorList=[ROOT.kGreen+2, ROOT.kRed+2, ROOT.kBlue, ROOT.kMagenta+2, ROOT.kOrange,
-		ROOT.kGreen-7, ROOT.kCyan, ROOT.kRed-7, ROOT.kBlue-7,ROOT.kMagenta,
-		ROOT.kYellow, ROOT.kViolet, ROOT.kGray, ROOT.kRed, ROOT.kCyan+2,
-		]
+        ROOT.kGreen-7, ROOT.kCyan, ROOT.kRed-7, ROOT.kBlue-7,ROOT.kMagenta,
+        ROOT.kYellow, ROOT.kViolet, ROOT.kGray, ROOT.kRed, ROOT.kCyan+2,
+        ]
 colors=array.array('i', colorList )
 
 def CreatePieTree(trees):
-	valueList=[]
-	labelList=[]
+    valueList=[]
+    labelList=[]
 
-	for idx,elem in enumerate(trees):
-		valueList.append( trees[elem] )
-		labelList.append( elem )
+    for idx,elem in enumerate(trees):
+        valueList.append( trees[elem] )
+        labelList.append( elem )
 
-	values=array.array('f', valueList)
+    values=array.array('f', valueList)
 
-	pie = ROOT.TPie("treepie","Trees", len(valueList) ,values, colors)
+    pie = ROOT.TPie("treepie","Trees", len(valueList) ,values, colors)
 
-	for entry in range(0,len( valueList) ):
-		pie.SetEntryLineColor(entry, ROOT.kBlack)
-		pie.SetEntryLineWidth(entry, ROOT.kBlack)
-		pie.SetEntryLabel(entry, labelList[entry] )
+    for entry in range(0,len( valueList) ):
+        pie.SetEntryLineColor(entry, ROOT.kBlack)
+        pie.SetEntryLineWidth(entry, ROOT.kBlack)
+        pie.SetEntryLabel(entry, labelList[entry] )
 
-	pie.SetCircle(0.5,.45,0.3)
-	return pie
+    pie.SetCircle(0.5,.45,0.3)
+    return pie
 
 def CreatePieBranch(branches, treename="all", collapse=True):
-	valueList=[]
-	labelList=[]
+    valueList=[]
+    labelList=[]
 
-	for tree, branch in branches:
-		if tree != treename : continue
+    for tree, branch in branches:
+        if tree != treename : continue
 
-		original = branch[:]
+        original = branch[:]
 
-		if collapse:
-			## collapse event info in one entry in the pie chart
-			if treename != "all" and (branch == 'runNum'  \
-				or branch =='eventNum'  \
-				or branch == 'lumiNum'  \
-				or branch == 'mcWeight' \
-				or branch == 'puTrueInt'   \
-				or branch == 'isRealData'   \
-				or branch == 'rho'   \
-				or branch == 'npv'   \
-				):
-				branch = 'info'
-			#from first capital letter
-			branch= re.sub('[A-Z].*','', branch)
-			#_*
-			branch= re.sub('_.*','', branch)
-			if 'ak8' in branch:
-				branch='fatjet'
+        if collapse:
+            ## collapse event info in one entry in the pie chart
+            if treename != "all" and (branch == 'runNum'  \
+                    or branch =='eventNum'  \
+                    or branch == 'lumiNum'  \
+                    or branch == 'mcWeight' \
+                    or branch == 'puTrueInt'   \
+                    or branch == 'isRealData'   \
+                    or branch == 'rho'   \
+                    or branch == 'npv'   \
+                    ):
+                branch = 'info'
+            #from first capital letter
+            branch= re.sub('[A-Z].*','', branch)
+            #_*
+            branch= re.sub('_.*','', branch)
+            if 'ak8' in branch:
+                branch='fatjet'
 
-		if branch in labelList:
-			idx = labelList.index( branch )
-			valueList[idx] += branches[(treename,original)]
-		else:
-			valueList.append( branches[(treename,original)] )
-			labelList.append(branch)
+        if branch in labelList:
+            idx = labelList.index( branch )
+            valueList[idx] += branches[(treename,original)]
+        else:
+            valueList.append( branches[(treename,original)] )
+            labelList.append(branch)
 
-	values = array.array('f', valueList)
-	pie = ROOT.TPie("branches_%s"%treename, treename, len(valueList) ,values, colors)
+    values = array.array('f', valueList)
+    pie = ROOT.TPie("branches_%s"%treename, treename, len(valueList) ,values, colors)
 
-	for entry in range(0,len( valueList) ):
-		pie.SetEntryLineColor(entry, ROOT.kBlack)
-		pie.SetEntryLineWidth(entry, ROOT.kBlack)
-		pie.SetEntryLabel(entry, labelList[entry] )
+    for entry in range(0,len( valueList) ):
+        pie.SetEntryLineColor(entry, ROOT.kBlack)
+        pie.SetEntryLineWidth(entry, ROOT.kBlack)
+        pie.SetEntryLabel(entry, labelList[entry] )
 
-	pie.SetCircle(0.5,.45,0.3)
-	return pie
+    pie.SetCircle(0.5,.45,0.3)
+    return pie
 
 ## TreeSize
 c.cd(1)
@@ -167,19 +167,27 @@ ltx.SetTextSize(0.03)
 ltx.SetTextAlign(12)
 
 for idx,elem in enumerate(trees):
-	ltx.DrawLatex( 0.15, 0.20 + idx*0.05 , "%s: %.3f b/e" % (elem, float(trees[elem])/float(entries[elem]) ) )
+    ltx.DrawLatex( 0.15, 0.20 + idx*0.05 , "%s: %.3f b/e" % (elem, float(trees[elem])/float(entries[elem]) ) )
 
 pies=[]
 for idx,elem in enumerate(trees):
-	c.cd(2+ idx)
-	pie=CreatePieBranch(branches,elem,True)
-	pies.append(pie) ## garbage collector
-	pie.Draw("rcs")
+    c.cd(2+ idx)
+    pie=CreatePieBranch(branches,elem,True)
+    pies.append(pie) ## garbage collector
+    pie.Draw("rcs")
 
 c.Update()
 
 if not opts.batch: raw_input("Looks ok ? ")
 
 if opts.out != "":
-	c.SaveAs(opts.out + ".png")
-	c.SaveAs(opts.out + ".pdf")
+    c.SaveAs(opts.out + ".png")
+    c.SaveAs(opts.out + ".pdf")
+
+# Local Variables:
+# mode:python
+# indent-tabs-mode:nil
+# tab-width:4
+# c-basic-offset:4
+# End:
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4

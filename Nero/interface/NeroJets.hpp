@@ -43,11 +43,11 @@ class NeroJets : virtual public NeroCollection, virtual public BareJets
         // 
         NeroPF *pf;
         NeroVertex *vtx;
-        
+
         // JES
         void InitJes(const edm::EventSetup& iSetup);
 
-// JES
+        // JES
     private:
         JetCorrectionUncertainty *jecUnc_;
         bool isJecUncSet_;

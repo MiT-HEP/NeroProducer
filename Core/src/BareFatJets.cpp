@@ -122,8 +122,8 @@ void BareFatJets::setBranchAddresses(TTree *t, std::string prefix){
 }
 void BareFatJets::compress(){
     BareP4::compress();
-	for(int i=0;i<subjet->GetEntries();++i)
-		BareFunctions::Compress( * (TLorentzVector*) subjet->At(i)  );
+    for(int i=0;i<subjet->GetEntries();++i)
+        BareFunctions::Compress( * (TLorentzVector*) subjet->At(i)  );
 }
 // Local Variables:
 // mode:c++

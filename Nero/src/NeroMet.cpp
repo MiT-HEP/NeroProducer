@@ -79,43 +79,43 @@ int NeroMet::analyze(const edm::Event& iEvent){
         sumEtRawPuppi = handle_puppiUncorr->front().sumEt();
 
         /*
-        for(Syst mysyst = (Syst)0; mysyst < MaxSyst ; mysyst = (Syst)((int)mysyst +1 ) )
+           for(Syst mysyst = (Syst)0; mysyst < MaxSyst ; mysyst = (Syst)((int)mysyst +1 ) )
+           {
+           pat::MET::METUncertainty miniAODUnc=pat::MET::METUncertaintySize;
+        // JetResUp=0, JetResDown=1, JetEnUp=2, JetEnDown=3,
+        // MuonEnUp=4, MuonEnDown=5, ElectronEnUp=6, ElectronEnDown=7,
+        // TauEnUp=8, TauEnDown=9, UnclusteredEnUp=10, UnclusteredEnDown=11,
+        // PhotonEnUp=12, PhotonEnDown=13, NoShift=14, METUncertaintySize=15,
+        // JetResUpSmear=16, JetResDownSmear=17, METFullUncertaintySize=18
+        // translate
+        switch (mysyst)
         {
-            pat::MET::METUncertainty miniAODUnc=pat::MET::METUncertaintySize;
-            // JetResUp=0, JetResDown=1, JetEnUp=2, JetEnDown=3,
-            // MuonEnUp=4, MuonEnDown=5, ElectronEnUp=6, ElectronEnDown=7,
-            // TauEnUp=8, TauEnDown=9, UnclusteredEnUp=10, UnclusteredEnDown=11,
-            // PhotonEnUp=12, PhotonEnDown=13, NoShift=14, METUncertaintySize=15,
-            // JetResUpSmear=16, JetResDownSmear=17, METFullUncertaintySize=18
-            // translate
-            switch (mysyst)
-            {
-                case  JesUp : {miniAODUnc = pat::MET::JetEnUp; break;}
-                case  JesDown : {miniAODUnc = pat::MET::JetEnDown; break;}
-                case  JerUp : {miniAODUnc = pat::MET::JetResUp; break;}
-                case  JerDown : {miniAODUnc = pat::MET::JetResDown; break;}
-                case  UnclusterUp : {miniAODUnc = pat::MET::UnclusteredEnUp; break;}
-                case  UnclusterDown : {miniAODUnc = pat::MET::UnclusteredEnDown; break;}
-                case  TauUp : {miniAODUnc = pat::MET::TauEnUp; break;}
-                case  TauDown : {miniAODUnc = pat::MET::TauEnDown; break;}
-                case  PhotonUp : {miniAODUnc = pat::MET::PhotonEnDown; break;}
-                case  PhotonDown : {miniAODUnc = pat::MET::PhotonEnDown; break;}
-                case  ElectronUp : {miniAODUnc = pat::MET::ElectronEnUp; break;}
-                case  ElectronDown : {miniAODUnc = pat::MET::ElectronEnDown; break;}
-                case  MuonUp : {miniAODUnc = pat::MET::MuonEnUp; break;}
-                case  MuonDown : {miniAODUnc = pat::MET::MuonEnDown; break;}
-                default : break;
-            }
+        case  JesUp : {miniAODUnc = pat::MET::JetEnUp; break;}
+        case  JesDown : {miniAODUnc = pat::MET::JetEnDown; break;}
+        case  JerUp : {miniAODUnc = pat::MET::JetResUp; break;}
+        case  JerDown : {miniAODUnc = pat::MET::JetResDown; break;}
+        case  UnclusterUp : {miniAODUnc = pat::MET::UnclusteredEnUp; break;}
+        case  UnclusterDown : {miniAODUnc = pat::MET::UnclusteredEnDown; break;}
+        case  TauUp : {miniAODUnc = pat::MET::TauEnUp; break;}
+        case  TauDown : {miniAODUnc = pat::MET::TauEnDown; break;}
+        case  PhotonUp : {miniAODUnc = pat::MET::PhotonEnDown; break;}
+        case  PhotonDown : {miniAODUnc = pat::MET::PhotonEnDown; break;}
+        case  ElectronUp : {miniAODUnc = pat::MET::ElectronEnUp; break;}
+        case  ElectronDown : {miniAODUnc = pat::MET::ElectronEnDown; break;}
+        case  MuonUp : {miniAODUnc = pat::MET::MuonEnUp; break;}
+        case  MuonDown : {miniAODUnc = pat::MET::MuonEnDown; break;}
+        default : break;
+        }
 
-            if (miniAODUnc == pat::MET::METUncertaintySize)
-                cout <<"[NeroMet]::[analyze]::[WARNING] unable to translate met syst,"<< int(mysyst) <<endl;
+        if (miniAODUnc == pat::MET::METUncertaintySize)
+        cout <<"[NeroMet]::[analyze]::[WARNING] unable to translate met syst,"<< int(mysyst) <<endl;
 
-            new ( (*metPuppiSyst)[ mysyst ] ) TLorentzVector( 
-                    puppi . shiftedP4( miniAODUnc).px(), 
-                    puppi . shiftedP4(miniAODUnc).py(),  
-                    puppi . shiftedP4(miniAODUnc).pz(),  
-                    puppi . shiftedP4(miniAODUnc).energy()
-                    );
+        new ( (*metPuppiSyst)[ mysyst ] ) TLorentzVector( 
+        puppi . shiftedP4( miniAODUnc).px(), 
+        puppi . shiftedP4(miniAODUnc).py(),  
+        puppi . shiftedP4(miniAODUnc).pz(),  
+        puppi . shiftedP4(miniAODUnc).energy()
+        );
         }// end syst loop
         */
 

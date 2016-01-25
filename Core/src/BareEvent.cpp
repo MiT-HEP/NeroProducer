@@ -30,7 +30,7 @@ void BareEvent::defineBranches(TTree *t){
         t->Branch("originalRun"      ,&originalRun       ,"originalRun/I");
         t->Branch("originalLumi"      ,&originalLumi       ,"originalLumi/I");
         t->Branch("originalEvent"      ,&originalEvent       ,"originalEvent/I");
-    
+
     }
 }
 

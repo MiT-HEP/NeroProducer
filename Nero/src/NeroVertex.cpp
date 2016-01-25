@@ -2,11 +2,11 @@
 #include "NeroProducer/Nero/interface/Nero.hpp"
 
 NeroVertex::NeroVertex() :
-        NeroCollection(),
-        BareVertex(){}
+    NeroCollection(),
+    BareVertex(){}
 
-NeroVertex::~NeroVertex(){
-}
+    NeroVertex::~NeroVertex(){
+    }
 
 void NeroVertex::clear(){
     BareVertex::clear();

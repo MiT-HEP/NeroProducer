@@ -42,10 +42,10 @@ class NeroMonteCarlo : virtual public NeroCollection,
         float mMinGenJetPt;
         bool mParticleGun; 
         int isRealData;
-       
+
         // ---  
         template<class T> // T is supposed to be: reco::GenParticles or Packed Gen Particles
-        unsigned  ComputeFlags( T & p ) ;
+            unsigned  ComputeFlags( T & p ) ;
 
 };
 
@@ -54,7 +54,7 @@ template<>
 unsigned NeroMonteCarlo::ComputeFlags<const pat::PackedGenParticle>(const pat::PackedGenParticle &p );
 
 // code implementation of templated functions
-template<class T>
+    template<class T>
 unsigned NeroMonteCarlo::ComputeFlags(T &p)
 { // this is called in the two loops
     unsigned flag=0;

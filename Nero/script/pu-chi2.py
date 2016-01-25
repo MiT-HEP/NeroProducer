@@ -17,19 +17,19 @@ th1d_chi2=ROOT.TH1D("chi2","chi2",(75-60)*10,60000,75000)
 data=fROOT.Get("mmNpv")
 
 for n in opts.points.split(","):
-	num = int(n)
-	mc=fROOT.Get("mmNpv_DY_pileup%d"%( num  ) )
-	if opts.scale:
-		mc.Scale(data.Integral()/mc.Integral())
+    num = int(n)
+    mc=fROOT.Get("mmNpv_DY_pileup%d"%( num  ) )
+    if opts.scale:
+        mc.Scale(data.Integral()/mc.Integral())
 
-	chiSquare=0.
-	for i in range(0,data.GetNbinsX()):
-		iBin=i+1
-		den = data.GetBinContent(iBin)
-		if den<=0 : den= 1
-		chiSquare +=  (mc.GetBinContent(iBin) - data.GetBinContent(iBin) )**2 / den
-	bin=th1d_chi2.FindBin(num)
-	th1d_chi2.SetBinContent(bin,chiSquare)
+    chiSquare=0.
+    for i in range(0,data.GetNbinsX()):
+        iBin=i+1
+        den = data.GetBinContent(iBin)
+        if den<=0 : den= 1
+        chiSquare +=  (mc.GetBinContent(iBin) - data.GetBinContent(iBin) )**2 / den
+    bin=th1d_chi2.FindBin(num)
+    th1d_chi2.SetBinContent(bin,chiSquare)
 
 
 c=ROOT.TCanvas("c","c")
@@ -42,3 +42,11 @@ if opts.scale: name+="_scaled"
 c.SaveAs(name+ ".pdf")
 c.SaveAs(name+ ".png")
 
+
+# Local Variables:
+# mode:python
+# indent-tabs-mode:nil
+# tab-width:4
+# c-basic-offset:4
+# End:
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4

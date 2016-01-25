@@ -7,17 +7,17 @@ from glob import glob
 ### CHECK THAT CMS env and it is correct
 pwd = os.environ['PWD']
 if 'CMSSW_VERSION' not in os.environ:
-	print "Do cmsenv!"
-	exit(0)
+    print "Do cmsenv!"
+    exit(0)
 version = os.environ['CMSSW_VERSION']
 ok = False
 for dir in reversed(pwd.split('/')):
-	if version == dir : 
-		ok = True
-		break
+    if version == dir : 
+        ok = True
+        break
 if not ok:
-	print "Do (redo) cmsenv (2) !"
-	exit(0)
+    print "Do (redo) cmsenv (2) !"
+    exit(0)
 
 
 config = config()
@@ -67,19 +67,19 @@ if __name__ == '__main__':
     config.General.workArea = 'NeroSubmission'
 
     def submit(config):
-	### for some reason only the first dataset is submitted correctly, work around
-	if len(sys.argv) ==1:
-		## book the command and run python
-		cmd = "python " + sys.argv[0] + " '" + config.General.requestName + "'"
-		print "calling: "+cmd
-		call(cmd,shell=True)
-		return
-	if len(sys.argv) > 1:
-		## if it is not in the request try the next
-		if sys.argv[1] !=  config.General.requestName: return
-	###
-	print "--- Submitting " + "\033[01;32m" + config.Data.inputDataset.split('/')[1] + "\033[00m"  + " ---"
-	config.Data.outputDatasetTag = config.General.requestName
+        ### for some reason only the first dataset is submitted correctly, work around
+    if len(sys.argv) ==1:
+        ## book the command and run python
+        cmd = "python " + sys.argv[0] + " '" + config.General.requestName + "'"
+        print "calling: "+cmd
+        call(cmd,shell=True)
+        return
+    if len(sys.argv) > 1:
+        ## if it is not in the request try the next
+        if sys.argv[1] !=  config.General.requestName: return
+    ###
+    print "--- Submitting " + "\033[01;32m" + config.Data.inputDataset.split('/')[1] + "\033[00m"  + " ---"
+    config.Data.outputDatasetTag = config.General.requestName
         try:
             crabCommand('submit', config = config)
         except HTTPException as hte:
@@ -88,31 +88,31 @@ if __name__ == '__main__':
             print "Failed submitting task: %s" % (cle)
 
     def setdata(value="True",is25ns=False):
-	    if value == "True":
-		    url = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions15/13TeV/"
-		    if is25ns:
-		    	#config.Data.lumiMask= url + "Cert_246908-258159_13TeV_PromptReco_Collisions15_25ns_JSON_v3.txt"
-			# GOLDEN
-			##Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON.txt
-			# SILVER
-			config.Data.lumiMask= url + "Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_Silver.txt"
-		    else:
-		    	config.Data.lumiMask= url + "Cert_246908-255031_13TeV_PromptReco_Collisions15_50ns_JSON.txt"
-		    config.Data.splitting = 'LumiBased'
-	    else:
-		    config.Data.lumiMask = None
-		    config.Data.splitting = 'FileBased'
-	    
-	    for idx,par in enumerate(config.JobType.pyCfgParams):
-		    if "isData" in par:
-			config.JobType.pyCfgParams[idx] = "isData=" + value
-		    if "is25ns" in par:
-			    if is25ns : config.JobType.pyCfgParams[idx] = "is25ns=True"
-			    else : config.JobType.pyCfgParams[idx] = "is25ns=False"
-		    if "is50ns" in par:
-			    if is25ns : config.JobType.pyCfgParams[idx] = "is50ns=False"
-			    else : config.JobType.pyCfgParams[idx] = "is50ns=True"
-			
+        if value == "True":
+            url = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions15/13TeV/"
+            if is25ns:
+                #config.Data.lumiMask= url + "Cert_246908-258159_13TeV_PromptReco_Collisions15_25ns_JSON_v3.txt"
+            # GOLDEN
+            ##Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON.txt
+            # SILVER
+            config.Data.lumiMask= url + "Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_Silver.txt"
+        else:
+            config.Data.lumiMask= url + "Cert_246908-255031_13TeV_PromptReco_Collisions15_50ns_JSON.txt"
+            config.Data.splitting = 'LumiBased'
+        else:
+            config.Data.lumiMask = None
+            config.Data.splitting = 'FileBased'
+
+        for idx,par in enumerate(config.JobType.pyCfgParams):
+            if "isData" in par:
+                config.JobType.pyCfgParams[idx] = "isData=" + value
+            if "is25ns" in par:
+                if is25ns : config.JobType.pyCfgParams[idx] = "is25ns=True"
+                else : config.JobType.pyCfgParams[idx] = "is25ns=False"
+            if "is50ns" in par:
+                if is25ns : config.JobType.pyCfgParams[idx] = "is50ns=False"
+                else : config.JobType.pyCfgParams[idx] = "is50ns=True"
+
 
     #############################################################################################
     ## From now on that's what users should modify: this is the a-la-CRAB2 configuration part. ##
@@ -150,7 +150,7 @@ if __name__ == '__main__':
     config.General.requestName = 'TTZToQQ-25ns'
     config.Data.inputDataset = '/TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
     submit(config)
-    
+
     config.General.requestName = 'ttHTobb-25ns'
     config.Data.inputDataset = '/ttHTobb_M125_13TeV_powheg_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
     submit(config)
@@ -158,69 +158,69 @@ if __name__ == '__main__':
     config.General.requestName = 'ttHToNonbb-25ns'
     config.Data.inputDataset = '/ttHToNonbb_M125_13TeV_powheg_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
     submit(config)
-    
+
     config.Data.unitsPerJob = 10
 
     config.General.requestName = 'QCD-15-30-25ns'
     config.Data.inputDataset = '/QCD_Pt_15to30_TuneCUETP8M1_13TeV_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
     submit(config)
-    
+
     config.General.requestName = 'QCD-30-50-25ns'
     config.Data.inputDataset = '/QCD_Pt_30to50_TuneCUETP8M1_13TeV_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
     submit(config)
-    
+
     config.General.requestName = 'QCD-50-80-25ns'
     config.Data.inputDataset = '/QCD_Pt_50to80_TuneCUETP8M1_13TeV_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
     submit(config)
-    
+
     config.General.requestName = 'QCD-80-120-25ns'
     config.Data.inputDataset = '/QCD_Pt_80to120_TuneCUETP8M1_13TeV_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
     submit(config)
-    
+
     config.General.requestName = 'QCD-120-170-25ns'
     config.Data.inputDataset = '/QCD_Pt_120to170_TuneCUETP8M1_13TeV_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
     submit(config)
-    
+
     config.General.requestName = 'QCD-170-300-25ns'
     config.Data.inputDataset = '/QCD_Pt_170to300_TuneCUETP8M1_13TeV_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
     submit(config)
-    
+
     config.General.requestName = 'QCD-300-470-25ns'
     config.Data.inputDataset = '/QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
     submit(config)
-    
+
     config.General.requestName = 'QCD-470-600-25ns'
     config.Data.inputDataset = '/QCD_Pt_470to600_TuneCUETP8M1_13TeV_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
     submit(config)
-    
+
     config.General.requestName = 'QCD-600-800-25ns'
     config.Data.inputDataset = '/QCD_Pt_600to800_TuneCUETP8M1_13TeV_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
     submit(config)
-    
+
     config.General.requestName = 'QCD-800-1000-25ns'
     config.Data.inputDataset = '/QCD_Pt_800to1000_TuneCUETP8M1_13TeV_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
     submit(config)
-    
+
     config.General.requestName = 'QCD-1000-1400-25ns'
     config.Data.inputDataset = '/QCD_Pt_1000to1400_TuneCUETP8M1_13TeV_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
     submit(config)
-    
+
     config.General.requestName = 'QCD-1400-1800-25ns'
     config.Data.inputDataset = '/QCD_Pt_1400to1800_TuneCUETP8M1_13TeV_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
     submit(config)
-    
+
     config.General.requestName = 'QCD-1800-2400-25ns'
     config.Data.inputDataset = '/QCD_Pt_1800to2400_TuneCUETP8M1_13TeV_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
     submit(config)
-    
+
     config.General.requestName = 'QCD-2400-3200-25ns'
     config.Data.inputDataset = '/QCD_Pt_2400to3200_TuneCUETP8M1_13TeV_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
     submit(config)
-    
+
     config.General.requestName = 'QCD-3200-Inf-25ns'
     config.Data.inputDataset = '/QCD_Pt_3200toInf_TuneCUETP8M1_13TeV_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
     submit(config)
-    
+
     ###################################################
     ########              50ns                 ########
     ###################################################
@@ -345,3 +345,11 @@ if __name__ == '__main__':
     ### config.Data.inputDataset = '/SingleElectron/Run2015D-PromptReco-v4/MINIAOD'
     ### submit(config)
 
+
+# Local Variables:
+# mode:python
+# indent-tabs-mode:nil
+# tab-width:4
+# c-basic-offset:4
+# End:
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
