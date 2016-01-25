@@ -19,13 +19,11 @@ class NeroMet : virtual public NeroCollection,
 
         // --- Handle
         edm::Handle<pat::METCollection> handle;	
-        edm::Handle<pat::METCollection> handle_noHF;
         edm::Handle<reco::PFMETCollection> handle_puppi;
         edm::Handle<reco::PFMETCollection> handle_puppiUncorr;
 
         // --- Token
         edm::EDGetTokenT<pat::METCollection> token;
-        edm::EDGetTokenT<pat::METCollection> token_noHF;
         edm::EDGetTokenT<reco::PFMETCollection> token_puppi;
         edm::EDGetTokenT<reco::PFMETCollection> token_puppiUncorr;
         //

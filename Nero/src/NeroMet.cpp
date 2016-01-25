@@ -20,9 +20,6 @@ int NeroMet::analyze(const edm::Event& iEvent){
     iEvent.getByToken(token, handle);
     if ( not handle.isValid() ) cout<<"[NeroMet]::[analyze]::[ERROR] handle is not valid"<<endl;
 
-    iEvent.getByToken(token_noHF,handle_noHF);
-    if ( not handle_noHF.isValid() ) cout<<"[NeroMet]::[analyze]::[ERROR] handle_noHF is not valid"<<endl;
-
     iEvent.getByToken(token_puppi,handle_puppi);
     if ( not handle_puppi.isValid() ) cout<<"[NeroMet]::[analyze]::[ERROR] handle_puppi is not valid"<<endl;
 
@@ -76,10 +73,6 @@ int NeroMet::analyze(const edm::Event& iEvent){
         *pfMet_e3p0 = TLorentzVector( -pfmet_3p0 );
         *metNoMu = TLorentzVector(metnomu);  // no minus
         *trackMet = TLorentzVector( -tkMet );
-
-        const pat::MET &metnohf = handle_noHF->front(); 
-        *metNoHF = TLorentzVector( metnohf.px(),metnohf.py(),metnohf.pz(),metnohf.energy());
-        sumEtRawNoHF = metnohf.uncorSumEt();
 
         auto &puppi = handle_puppi->front(); 
         *metPuppi =  TLorentzVector( puppi.px(), puppi.py(),puppi.pz(),puppi.energy() );

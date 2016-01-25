@@ -2,6 +2,7 @@ from CRABClient.UserUtilities import config, getUsernameFromSiteDB
 from subprocess import call,check_output
 
 import sys, os
+from glob import glob
 
 ### CHECK THAT CMS env and it is correct
 pwd = os.environ['PWD']

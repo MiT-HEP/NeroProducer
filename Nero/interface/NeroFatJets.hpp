@@ -26,6 +26,8 @@ class NeroFatJets : virtual public NeroCollection,
         // --- Token
         edm::EDGetTokenT<pat::JetCollection> token;
         edm::EDGetTokenT<double> rho_token;
+        edm::EDGetTokenT<reco::PFJetCollection> subjets_token;
+        edm::EDGetTokenT<reco::JetTagCollection> btags_token;
 
         // --- configuration
         float mMinPt;

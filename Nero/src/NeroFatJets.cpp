@@ -54,11 +54,7 @@ int NeroFatJets::analyze(const edm::Event& iEvent){
     if (!mRunJEC) {
         // this jet collection is straight from miniAOD - skip all the fancy stuff
 
-        edm::Handle<reco::JetTagCollection> pfBoostedDoubleSecondaryVertex;  //HBB 74X
-        iEvent.getByLabel("pfBoostedDoubleSecondaryVertexAK8BJetTags",pfBoostedDoubleSecondaryVertex); //HBB 74X
-
         if ( not handle.isValid() ) cout<<"[NeroFatJets]::[analyze]::[ERROR] handle is not valid"<<endl;
-        if ( not pfBoostedDoubleSecondaryVertex.isValid() )  cout<<"[NeroFatJets]::[analyze]::[ERROR] pfBoosted.. handle is not valid"<<endl;
 
         int ijetRef = -1;
         int nsubjet = 0;
@@ -91,7 +87,8 @@ int NeroFatJets::analyze(const edm::Event& iEvent){
             // --cout <<"Hbb tagger="<<hbb<<endl;
             // --if(hbb>10) cout<<endl;
             //float hbb =  (*pfBoostedDoubleSecondaryVertex).value(ijetRef) ;//HBB 74X
-            hbb -> push_back( (*pfBoostedDoubleSecondaryVertex).value(ijetRef) ) ;
+            //hbb -> push_back( (*pfBoostedDoubleSecondaryVertex).value(ijetRef) ) ;
+            hbb -> push_back( j.bDiscriminator("pfBoostedDoubleSecondaryVertexAK8BJetTags") ) ;
             
             unsigned int nsubjetThisJet=0;
             firstSubjet->push_back(nsubjet);
@@ -113,13 +110,14 @@ int NeroFatJets::analyze(const edm::Event& iEvent){
         TString tPrefix(cachedPrefix);
 
         edm::Handle<reco::PFJetCollection> subjets_handle;
-        edm::InputTag subjetLabel("PFJetsSoftDrop"+tPrefix,"SubJets");
-        iEvent.getByLabel(subjetLabel,subjets_handle);
+        //edm::InputTag subjetLabel("PFJetsSoftDrop"+tPrefix,"SubJets");
+        iEvent.getByToken(subjets_token,subjets_handle);
         const reco::PFJetCollection *subjetCol = subjets_handle.product();
         assert(subjets_handle.isValid());
 
         edm::Handle<reco::JetTagCollection> btags_handle;
-        iEvent.getByLabel(edm::InputTag((tPrefix+"PFCombinedInclusiveSecondaryVertexV2BJetTags").Data()),btags_handle);
+        //iEvent.getByLabel(edm::InputTag((tPrefix+"PFCombinedInclusiveSecondaryVertexV2BJetTags").Data()),btags_handle);
+        iEvent.getByToken(btags_token,btags_handle);
         assert((btags_handle.isValid()));
 
         FactorizedJetCorrector *corrector = ( iEvent.isRealData() ) ? mDataJetCorrector : mMCJetCorrector;

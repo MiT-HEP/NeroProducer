@@ -47,13 +47,22 @@ fileList = [
     #'file:/tmp/amarini/step3_0.root'
     #'/store/data/Run2015D/SinglePhoton/MINIAOD/PromptReco-v3/000/256/630/00000/BE4748B0-295F-E511-A271-02163E014402.root',
     #'/store/mc/RunIISpring15MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/50000/E4F89698-DE6E-E511-8681-0025905A60F4.root'
-    '/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v4/000/260/373/00000/50EB0717-B081-E511-B4E2-02163E014169.root', 
-    '/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v4/000/260/373/00000/58DC7348-C481-E511-8232-02163E011AC9.root',
-    '/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v4/000/260/373/00000/5E276556-C481-E511-B025-02163E014414.root',
-    '/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v4/000/260/373/00000/903B69BB-EC81-E511-B029-02163E0142F1.root',
-    '/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v4/000/260/373/00000/AE673A5A-C481-E511-AC81-02163E0136DB.root',
-    '/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v4/000/260/373/00000/BA5C1056-C481-E511-A636-02163E01182F.root',
-    '/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v4/000/260/373/00000/CCCE9F28-D481-E511-970E-02163E0141B5.root',
+    #'/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v4/000/260/373/00000/50EB0717-B081-E511-B4E2-02163E014169.root', 
+    #'/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v4/000/260/373/00000/58DC7348-C481-E511-8232-02163E011AC9.root',
+    #'/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v4/000/260/373/00000/5E276556-C481-E511-B025-02163E014414.root',
+    #'/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v4/000/260/373/00000/903B69BB-EC81-E511-B029-02163E0142F1.root',
+    #'/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v4/000/260/373/00000/AE673A5A-C481-E511-AC81-02163E0136DB.root',
+    #'/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v4/000/260/373/00000/BA5C1056-C481-E511-A636-02163E01182F.root',
+    #'/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v4/000/260/373/00000/CCCE9F28-D481-E511-970E-02163E0141B5.root',
+    #'/store/mc/RunIIFall15DR76/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/25nsFlat10to25TSG_HCALDebug_76X_mcRun2_asymptotic_v11-v1/40000/FEEBF471-F987-E511-BC13-002590D0B002.root',
+    #'/store/mc/RunIIFall15DR76/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/25nsFlat10to25TSG_HCALDebug_76X_mcRun2_asymptotic_v11-v1/40000/D0A3314C-1788-E511-9A86-002590D0B098.root'
+    '/store/mc/RunIIFall15MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/70000/FA0A72D5-C7B8-E511-8B1D-901B0E6459E0.root',
+    '/store/mc/RunIIFall15MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/70000/FA1D1BF6-C7B8-E511-AD66-901B0E6459E0.root',
+    '/store/mc/RunIIFall15MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/70000/FA7D82F5-D3B8-E511-AEB7-901B0E542804.root',
+    '/store/mc/RunIIFall15MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/70000/FA7EFFBF-D1B8-E511-AF4A-009C02AABB60.root',
+    '/store/mc/RunIIFall15MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/70000/FA8C6AD9-79BA-E511-B267-0025905B85A2.root',
+    '/store/mc/RunIIFall15MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/70000/FAB6B37C-77BA-E511-A89F-0CC47A4D76B6.root',
+    '/store/mc/RunIIFall15MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/70000/FAF5D5D7-79BA-E511-BB76-0025905B8562.root'
 ]
 
 
@@ -77,8 +86,9 @@ process.QGTagger.srcVertexCollection = cms.InputTag("offlineSlimmedPrimaryVertic
 process.QGTagger.useQualityCuts = cms.bool(False)
 ##----------------GLOBAL TAG ---------------------------
 # used by photon id and jets
-#process.load("Configuration.StandardSequences.Geometry_cff") ### VETO BY HBB 74X SEQ
+process.load("Configuration.Geometry.GeometryIdeal_cff") 
 process.load('Configuration.StandardSequences.Services_cff')
+process.load("Configuration.StandardSequences.MagneticField_cff")
 
 #mc https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions#Global_Tags_for_Run2_MC_Producti
 if (isData):
@@ -90,14 +100,10 @@ if (isData):
 else:
     process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
     if options.is25ns:
-	    #process.GlobalTag.globaltag = '74X_mcRun2_asymptotic_realisticBS_v1'
-	    #process.GlobalTag.globaltag = '74X_mcRun2_asymptotic_realisticBS_v1'
-	    process.GlobalTag.globaltag = 'MCRUN2_74_V9::All'
+	    process.GlobalTag.globaltag = '76X_mcRun2_asymptotic_v11'
 	    #process.GlobalTag.globaltag = '74X_mcRun2_asymptotic_v2'
     if options.is50ns:
-	    #process.GlobalTag.globaltag = '741_p1_mcRun2_Realistic_50ns_v0::All'
-	    process.GlobalTag.globaltag = 'MCRUN2_74_V9A::All'
-	    #process.GlobalTag.globaltag = '74X_mcRun2_startup_v2::All'
+	    process.GlobalTag.globaltag = 'MCRUN2_74_V9A::All' ## FIXME
 
 
 ######## LUMI MASK
@@ -108,45 +114,6 @@ if isData and not options.isGrid : ## don't load the lumiMaks, will be called by
     process.source.lumisToProcess = LumiList.LumiList(filename='/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_Silver.txt').getVLuminosityBlockRange()
 
 
-### HBB 74X ####
-process.load("Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cff")
-process.load("Configuration.Geometry.GeometryRecoDB_cff")
-process.load("RecoBTag.Configuration.RecoBTag_cff") # this loads all available b-taggers
-process.load("RecoBTag.SecondaryVertex.pfBoostedDoubleSecondaryVertexAK8BJetTags_cfi")
-
-process.pfImpactParameterTagInfosAK8.primaryVertex = cms.InputTag("offlineSlimmedPrimaryVertices")
-process.pfImpactParameterTagInfosAK8.candidates = cms.InputTag("packedPFCandidates")
-process.pfImpactParameterTagInfosAK8.jets = cms.InputTag("slimmedJetsAK8") 
-
-process.load("RecoBTag.SoftLepton.softPFMuonTagInfosAK8_cfi")
-process.softPFMuonsTagInfosAK8.jets=cms.InputTag("slimmedJetsAK8")
-process.softPFMuonsTagInfosAK8.muons=cms.InputTag("slimmedMuons")
-process.softPFMuonsTagInfosAK8.primaryVertex=cms.InputTag("offlineSlimmedPrimaryVertices")
-
-process.load("RecoBTag.SoftLepton.softPFElectronTagInfosAK8_cfi")
-process.softPFElectronsTagInfosAK8.jets=cms.InputTag("slimmedJetsAK8")
-process.softPFElectronsTagInfosAK8.electrons=cms.InputTag("slimmedElectrons")
-process.softPFElectronsTagInfosAK8.primaryVertex=cms.InputTag("offlineSlimmedPrimaryVertices")
-
-process.load("RecoBTag.SecondaryVertex.pfInclusiveSecondaryVertexFinderTagInfosAK8_cfi")
-process.pfInclusiveSecondaryVertexFinderTagInfosAK8.extSVCollection = cms.InputTag("slimmedSecondaryVertices")
-
-## DEBUG
-## process.output = cms.OutputModule(
-## 		   "PoolOutputModule",
-## 		         fileName = cms.untracked.string('output.root'),
-## 			 )
-## process.output_step = cms.EndPath(process.output)
-process.HBB = cms.Sequence(
-		process.pfImpactParameterTagInfosAK8 *
-		process.pfInclusiveSecondaryVertexFinderTagInfosAK8 *
-		process.softPFMuonsTagInfosAK8 *
-		process.softPFElectronsTagInfosAK8 *
-		process.pfBoostedDoubleSecondaryVertexAK8BJetTags 
-		)
-############ END HBB ####
-
-
 ## SKIM INFO
 process.load('NeroProducer.Skim.infoProducerSequence_cff')
 process.load('NeroProducer.Nero.Nero_cfi')
@@ -154,30 +121,6 @@ process.load('NeroProducer.Nero.Nero_cfi')
 #process.load('NeroProducer.Nero.NeroMonojet_cfi')
 #process.load('NeroProducer.Nero.NeroChargedHiggs_cfi')
 
-if options.is25ns:
-	replace = {'bx' : '25ns'}
-if options.is50ns:
-	replace = {'bx' : '50ns'}
-
-toProduce={}
-for obj in ['ele','pho']:
-  toProduce[obj]={}
-  if obj=='ele': directory = 'RecoEgamma.ElectronIdentification'
-  if obj=='pho': directory = 'RecoEgamma.PhotonIdentification'
-  for ID in ['veto','medium','loose','tight']:
-      if obj == 'pho' and ID == 'veto' : continue
-      if obj == 'pho' : replace['bx'] = '50ns' ##FIXME, we have only this
-
-      replace['id'] = ID
-      cmd = 'string = process.nero.' + obj + ID.title() + 'IdMap.value()'
-      exec(cmd)
-      cmd = 'process.nero.'+obj + ID.title() + 'IdMap = cms.InputTag("' + string % replace+ '")'
-      print 'executing replacement:',cmd
-      exec(cmd)
-
-      myid = (string%replace ).replace('-','_').split(':')[1]
-      myid = re.sub('_standalone.*','',myid)
-      toProduce[obj][ directory + '.Identification.' + myid + "_cff"] = 1 #remove duplicates
 
 
 #----------------------PUPPI, MET, & CORRECTIONS-------------------
@@ -212,6 +155,7 @@ if options.isData:
 else:
    connectString = cms.string('sqlite:jec/Summer15_25nsV6_MC.db')
    tagName = 'Summer15_25nsV6_MC_AK4PFPuppi'
+
 process.jec = cms.ESSource("PoolDBESSource",
       DBParameters = cms.PSet(
         messageLevel = cms.untracked.int32(0)
@@ -249,6 +193,8 @@ if isData:
 else:
   process.puppiSequence += process.ak4PuppiL1FastL2L3Chain
 
+## in case of conflict, use jec instead of GlobalTag
+process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 ### MET corrections ###
 from RecoJets.JetProducers.ak4PFJets_cfi import ak4PFJets
 process.AK4PFJetsPuppi = ak4PFJets.clone(
@@ -300,30 +246,9 @@ process.jetSequence = cms.Sequence(fatjetInitSequence*
                                     )
 
 #-----------------------ELECTRON ID-------------------------------
-from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
-# turn on VID producer, indicate data format  to be
-# DataFormat.AOD or DataFormat.MiniAOD, as appropriate 
+from NeroProducer.Nero.egammavid_cfi import *
 
-dataFormat = DataFormat.MiniAOD
-
-switchOnVIDElectronIdProducer(process, dataFormat)
-
-### # define which IDs we want to produce. it is silly to redifine them here hard coded
-### my_id_modules = [ #'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_25ns_V1_cff' ]
-### 
-### #add them to the VID producer
-### for idmod in my_id_modules:
-for idmod in toProduce['ele']:
-   print "will produce", idmod
-   setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
-### 
-### ### PHOTONS
-switchOnVIDPhotonIdProducer(process, dataFormat) ### PHOTON
-### pho_id_modules = [ #'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring15_50ns_V1_cff']
-###         'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_PHYS14_PU20bx25_V2_cff']
-### for idmod in pho_id_modules:
-for idmod in toProduce['pho']:
-      setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
+initEGammaVID(process,options)
 
 ### ##ISO
 process.load("RecoEgamma/PhotonIdentification/PhotonIDValueMapProducer_cfi")
@@ -437,7 +362,6 @@ process.p = cms.Path(
                 process.egmPhotonIDSequence *
                 process.photonIDValueMapProducer * ## ISO MAP FOR PHOTONS
                 process.electronIDValueMapProducer * ## ISO MAP FOR PHOTONS
-                process.HBB * ## HBB 74X
                 process.puppiSequence * ## does puppi, puppi met, type1 corrections
                 process.jetSequence *
             		#process.jecSequence *
