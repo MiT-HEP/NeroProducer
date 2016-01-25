@@ -82,11 +82,11 @@ void BareJets::defineBranches(TTree *t){
     t->Branch(jetName + "Flavour","vector<int>",&flavour);
 
     t->Branch(jetName + "MatchedPartonPdgId","vector<int>",&matchedPartonPdgId);
-    
+
     t->Branch(jetName + "MotherPdgId","vector<int>",&motherPdgId);
-    
+
     t->Branch(jetName + "GrMotherPdgId","vector<int>",&grMotherPdgId);
-    
+
     t->Branch(jetName + "SelBits","vector<unsigned>",&selBits);
 
     t->Branch(jetName + "Q","vector<float>",&Q);

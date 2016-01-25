@@ -6,8 +6,8 @@
 #define VERBOSE 0
 
 NeroTrigger::NeroTrigger() : 
-        NeroCollection(),
-        BareTrigger()
+    NeroCollection(),
+    BareTrigger()
 {
     leps_=NULL;
     jets_=NULL;
@@ -43,10 +43,10 @@ int NeroTrigger::analyze(const edm::Event& iEvent){
         for (int i = 0; i < ntrigs; i++) {
 
             if (VERBOSE > 2){
-            std::cout << "Trigger " << names.triggerName(i) << 
-                ", prescale " << prescale_handle->getPrescaleForIndex(i) <<
-                ": " << (handle->accept(i) ? "PASS" : "fail (or not run)") 
-                      << std::endl;
+                std::cout << "Trigger " << names.triggerName(i) << 
+                    ", prescale " << prescale_handle->getPrescaleForIndex(i) <<
+                    ": " << (handle->accept(i) ? "PASS" : "fail (or not run)") 
+                    << std::endl;
             }
             string name = names.triggerName(i);
             for(unsigned int j=0;j< triggerNames->size() ;++j) // destination loop

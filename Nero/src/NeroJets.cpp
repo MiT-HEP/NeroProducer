@@ -18,8 +18,8 @@ const reco::Candidate * getMother(const reco::Candidate * part){
 }
 
 NeroJets::NeroJets() : 
-        NeroCollection(),
-        BareJets()
+    NeroCollection(),
+    BareJets()
 {
     mMinPt = 20.;
     mMinNjets = 0;
@@ -62,8 +62,8 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
         // GET  ValueMaps
         edm::RefToBase<pat::Jet> jetRef(edm::Ref<pat::JetCollection>(handle, ijetRef) );
         float qgLikelihood = (*qg_handle)[jetRef];
-    
-    
+
+
         // Generator-level Info [Charged-H specific]
         int jetMatchedPartonPdgId_I = 0;
         int motherPdgId_I = 0;
@@ -79,7 +79,7 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
             if(!(jetGrMother == 0)){grMotherPdgId_I = jetGrMother->pdgId();}
             jetFlavour_I = j.partonFlavour();
         }
-       
+
         float charge =  0.;
         float charge_den =  0.;
         float charge_nopu = 0.;
@@ -96,9 +96,9 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
             for(size_t iVtx=0;iVtx < vtx->handle->size(); ++iVtx)
             {
 
-            if ( int(iVtx) == vtx->firstGoodVertexIdx ) continue;
+                if ( int(iVtx) == vtx->firstGoodVertexIdx ) continue;
 
-            if (cand->fromPV(iVtx)>1) isFromOtherVtx = true; // 0 noPV, 1 PVLoose, 2 PVTight
+                if (cand->fromPV(iVtx)>1) isFromOtherVtx = true; // 0 noPV, 1 PVLoose, 2 PVTight
             }
 
             if (cand->charge() !=0 ) {  
@@ -109,10 +109,10 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
             {
                 charge_nopu     += cand->charge() * ( j.px()*cand->px() + j.py()*cand->py() + j.pz()*cand->pz()  ) ;
                 charge_nopu_den +=                  ( j.px()*cand->px() + j.py()*cand->py() + j.pz()*cand->pz()  ) ;
-            
+
             }
         }
-        
+
         //JES UNCERTAINTY
         jecUnc_->setJetEta(j.eta());
         jecUnc_->setJetPt(j.pt()) ;//https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections  corrected jet pt

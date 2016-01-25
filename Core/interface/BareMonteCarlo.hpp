@@ -62,7 +62,7 @@ class BareMonteCarlo : virtual public BareP4
         float r2f2;
         float r1f5;
         float r5f5;
-    
+
         // PDF reweights
         std::vector<float> *pdfRwgt{0};
 

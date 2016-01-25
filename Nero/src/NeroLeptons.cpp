@@ -3,8 +3,8 @@
 
 // -- Electron Isolation
 NeroLeptons::NeroLeptons(): 
-        NeroCollection(),
-        BareLeptons()
+    NeroCollection(),
+    BareLeptons()
 {
     vtx_   = NULL;
     evt_   = NULL;
@@ -58,7 +58,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         float phoiso = mu.pfIsolationR04().sumPhotonEt;
         float puiso = mu.pfIsolationR04().sumPUPt;
         float totiso = chiso + TMath::Max( niso + phoiso - .5*puiso, 0. ) ;
-    
+
         if ( totiso/mu.pt() > mMaxIso_mu ) continue;
 
         myLepton l;
@@ -66,9 +66,9 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         l.iso = totiso;
         l.p4.SetPxPyPzE( mu.px(),mu.py(),mu.pz(),mu.energy());
         l.selBits =  0 ;
-            l.selBits |= unsigned(mu.isLooseMuon()) * LepLoose;
-            l.selBits |= unsigned(mu.isTightMuon( * vtx_->GetPV() ))*LepTight ;
-            l.selBits |= unsigned(mu.isMediumMuon() * LepMedium);
+        l.selBits |= unsigned(mu.isLooseMuon()) * LepLoose;
+        l.selBits |= unsigned(mu.isTightMuon( * vtx_->GetPV() ))*LepTight ;
+        l.selBits |= unsigned(mu.isMediumMuon() * LepMedium);
         l.pfPt = mu.pfP4().pt();
 
         l.chiso  = chiso;
@@ -101,7 +101,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         myLepton l;
         l.pdgId = -el.charge()*11;
 
-        
+
         // float chIso = el.chargedHadronIso();
         // float nhIso = el.neutralHadronIso();
         // float phoIso = el.photonIso();
@@ -134,15 +134,15 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 
         l.p4.SetPxPyPzE( el.px(),el.py(),el.pz(),el.energy());
         l.selBits = 0 ;
-            l.selBits |= unsigned(isPassTight)*LepTight;
-            l.selBits |= unsigned(isPassMedium) * LepMedium;
-            l.selBits |= unsigned(isPassVeto) * LepVeto;
-            l.selBits |= unsigned(isPassLoose) * LepLoose;
-            //--
-            l.selBits |= unsigned(isEB and (not isEBEEGap and not isEBEtaGap and not isEBPhiGap)  ) * LepEBEE;
-            l.selBits |= unsigned(isEE and (not isEBEEGap and not isEERingGap and not isEEDeeGap)  ) * LepEBEE;
+        l.selBits |= unsigned(isPassTight)*LepTight;
+        l.selBits |= unsigned(isPassMedium) * LepMedium;
+        l.selBits |= unsigned(isPassVeto) * LepVeto;
+        l.selBits |= unsigned(isPassLoose) * LepLoose;
+        //--
+        l.selBits |= unsigned(isEB and (not isEBEEGap and not isEBEtaGap and not isEBPhiGap)  ) * LepEBEE;
+        l.selBits |= unsigned(isEE and (not isEBEEGap and not isEERingGap and not isEEDeeGap)  ) * LepEBEE;
         l.pfPt = 0.;
-    
+
         l.chiso  = chIso;
         l.nhiso  = nhIso;
         l.phoiso = phoIso;

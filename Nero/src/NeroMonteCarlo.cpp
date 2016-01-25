@@ -5,9 +5,9 @@
 #define VERBOSE 0
 
 NeroMonteCarlo::NeroMonteCarlo() :  
-        NeroCollection(),
-        BareMonteCarlo(),
-        NeroRun()
+    NeroCollection(),
+    BareMonteCarlo(),
+    NeroRun()
 {
     mParticleGun = false;
     mMinGenParticlePt = 5.;
@@ -63,7 +63,7 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
     if (info_handle -> weights().size() > 109)
         for( int pdfw = 9 ; pdfw<109 ;++pdfw)
         {
-        pdfRwgt -> push_back( info_handle -> weights() [pdfw] );    
+            pdfRwgt -> push_back( info_handle -> weights() [pdfw] );    
         }
     // --- fill pdf Weights
     //
@@ -132,7 +132,7 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
         if ( apdg == 11 or apdg == 13 or apdg == 22  // e - mu - gamma
                 or (apdg >=12 and apdg<=16) // neutrinos
                 or apdg > 1000000  // susy neutrinos and neutralinos
-            )
+           )
         {
             new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(gen->px(), gen->py(), gen->pz(), gen->energy());
             pdgId -> push_back( pdg );
@@ -144,37 +144,37 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
             if (apdg == 22 or apdg ==11 or apdg ==13)
             {
 
-                    TLorentzVector g1(gen->px(),gen->py(),gen->pz(),gen->energy());
-                    vector< pair<float,float> > inIsoFx ; //isoFx, dR, pT
-                    for ( unsigned int j=0;j < packed_handle->size() ;++j)
+                TLorentzVector g1(gen->px(),gen->py(),gen->pz(),gen->energy());
+                vector< pair<float,float> > inIsoFx ; //isoFx, dR, pT
+                for ( unsigned int j=0;j < packed_handle->size() ;++j)
+                {
+                    if (i==j) continue;
+                    const auto gen2  = & (*packed_handle)[j];
+                    if ( gen2->pt() ==0 ) continue;
+                    if (gen2->pz() > 10e8 ) continue; // inf
+                    TLorentzVector g2(gen2->px(),gen2->py(),gen2->pz(),gen2->energy());
+                    if (g2.DeltaR(g1) <0.4){
+                        iso += g2.Pt();
+                        // isoFx containes the epsilon 
+                        inIsoFx.push_back( pair<float,float>(g2.DeltaR(g1) ,g2.Pt() ) );
+                    }
+                }
+
+                if (apdg==22){ // ONLY for photon Frixione isolation
+                    sort(inIsoFx.begin(), inIsoFx.end() );  // sort in DR, first entry
+
+                    float sumEtFx=0;
+                    for( const auto & p : inIsoFx )
                     {
-                        if (i==j) continue;
-                        const auto gen2  = & (*packed_handle)[j];
-                        if ( gen2->pt() ==0 ) continue;
-                        if (gen2->pz() > 10e8 ) continue; // inf
-                        TLorentzVector g2(gen2->px(),gen2->py(),gen2->pz(),gen2->energy());
-                        if (g2.DeltaR(g1) <0.4){
-                            iso += g2.Pt();
-                            // isoFx containes the epsilon 
-                            inIsoFx.push_back( pair<float,float>(g2.DeltaR(g1) ,g2.Pt() ) );
-                         }
+                        const float& pt= p.second ;
+                        const float& delta = p.first;
+                        sumEtFx += pt / gen->pt(); // relative iso
+                        if (delta == 0 ) continue; // guard
+                        float isoCandidate = sumEtFx * TMath::Power(  (1. - TMath::Cos(0.4) ) / (1. - TMath::Cos(delta ) ), 2) ;// n=2
+                        if (isoFx < isoCandidate) isoFx = isoCandidate;
                     }
+                }
 
-                    if (apdg==22){ // ONLY for photon Frixione isolation
-                        sort(inIsoFx.begin(), inIsoFx.end() );  // sort in DR, first entry
-
-                        float sumEtFx=0;
-                        for( const auto & p : inIsoFx )
-                        {
-                               const float& pt= p.second ;
-                               const float& delta = p.first;
-                               sumEtFx += pt / gen->pt(); // relative iso
-                               if (delta == 0 ) continue; // guard
-                               float isoCandidate = sumEtFx * TMath::Power(  (1. - TMath::Cos(0.4) ) / (1. - TMath::Cos(delta ) ), 2) ;// n=2
-                               if (isoFx < isoCandidate) isoFx = isoCandidate;
-                        }
-                    }
-            
             }
             genIso -> push_back(iso);
             genIsoFrixione -> push_back(isoFx);
@@ -182,22 +182,22 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
             //
 
             if (apdg == 11 or apdg == 13) { // only for final state muons and electrons
-                    TLorentzVector dressedLepton(gen->px(),gen->py(),gen->pz(),gen->energy());
-                    TLorentzVector lepton(dressedLepton); //original lepton for dR
-                    for ( unsigned int j=0;j < packed_handle->size() ;++j)
-                    {
-                        const auto gen2  = & (*packed_handle)[j];
-                        TLorentzVector photon(gen2->px(),gen2->py(),gen2->pz(),gen2->energy());
-                        if (i != j and abs( gen->pdgId() ) ==22  and lepton.DeltaR( photon ) <0.1 ) dressedLepton += photon;
-                    }
-                    new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector( dressedLepton );
-                    pdgId -> push_back( pdg );
-                    flags -> push_back( Dressed );
-                    genIso -> push_back (0.) ;
-                    genIsoFrixione -> push_back (0.) ;
-                    // --- end of dressing
+                TLorentzVector dressedLepton(gen->px(),gen->py(),gen->pz(),gen->energy());
+                TLorentzVector lepton(dressedLepton); //original lepton for dR
+                for ( unsigned int j=0;j < packed_handle->size() ;++j)
+                {
+                    const auto gen2  = & (*packed_handle)[j];
+                    TLorentzVector photon(gen2->px(),gen2->py(),gen2->pz(),gen2->energy());
+                    if (i != j and abs( gen->pdgId() ) ==22  and lepton.DeltaR( photon ) <0.1 ) dressedLepton += photon;
+                }
+                new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector( dressedLepton );
+                pdgId -> push_back( pdg );
+                flags -> push_back( Dressed );
+                genIso -> push_back (0.) ;
+                genIsoFrixione -> push_back (0.) ;
+                // --- end of dressing
             }
-             
+
         }
 
     } //end packed
@@ -217,7 +217,7 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
 
         unsigned flag = ComputeFlags(*gen);
 
-    
+
         if ( apdg == 15 or  // tau (15)
                 (apdg >= 23 and apdg <26 ) or   // Z(23) W(24) H(25)
                 apdg == 37 or // chHiggs: H+(37)
@@ -228,7 +228,7 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
                 or ( apdg == 11 and  ( flag &  HardProcess) )
                 or ( apdg == 13 and  ( flag &  HardProcessBeforeFSR) )
                 or ( apdg == 13 and  ( flag &  HardProcess) )
-                )
+           )
         {
             new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(gen->px(), gen->py(), gen->pz(), gen->energy());
             pdgId -> push_back( pdg );
@@ -299,7 +299,7 @@ int NeroMonteCarlo::crossSection(edm::Run const & iRun, TH1F* h)
 }
 
 // ----- TEMPLATE SPECIFICATION
-template<> 
+    template<> 
 unsigned NeroMonteCarlo::ComputeFlags<const pat::PackedGenParticle>(const pat::PackedGenParticle &p)
 {
     // some of the template calls make no sense for teh packed gen particles

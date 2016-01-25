@@ -111,8 +111,8 @@ void BareMonteCarlo::setBranchAddresses(TTree *t){
 
 void BareMonteCarlo::compress(){
     BareP4::compress();
-	for(int i=0;i<jetP4->GetEntries();++i)
-		BareFunctions::Compress( * (TLorentzVector*) jetP4->At(i)  );
+    for(int i=0;i<jetP4->GetEntries();++i)
+        BareFunctions::Compress( * (TLorentzVector*) jetP4->At(i)  );
 }
 
 // Local Variables:

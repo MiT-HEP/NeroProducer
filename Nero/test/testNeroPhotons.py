@@ -6,10 +6,10 @@ process = cms.Process("nero")
 
 options = VarParsing.VarParsing ('analysis')
 options.register('isData',
-                 False,
-                 VarParsing.VarParsing.multiplicity.singleton,
-                 VarParsing.VarParsing.varType.bool,
-                 "True if running on Data, False if running on MC")
+        False,
+        VarParsing.VarParsing.multiplicity.singleton,
+        VarParsing.VarParsing.varType.bool,
+        "True if running on Data, False if running on MC")
 
 options.register('isGrid', False, VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Set it to true if running on Grid")
 options.register('nerohead', "XXX", VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.string,"Set to the head of the repository. use check_output 'git rev-parse HEAD' in the crab py file. active only if isGrid.")
@@ -22,18 +22,18 @@ options.parseArguments()
 isData = options.isData
 
 if options.is25ns and options.is50ns : 
-	raise('cannot run both on 25 and 50ns. Pick up one')
+    raise('cannot run both on 25 and 50ns. Pick up one')
 if not options.is25ns and not options.is50ns:
-	raise('cannot run nor 25ns nor 50ns configuration. Pick up one.')
+    raise('cannot run nor 25ns nor 50ns configuration. Pick up one.')
 
 if options.is25ns:
-	print "-> Loading 25ns configuration"
+    print "-> Loading 25ns configuration"
 if options.is50ns:
-	print "-> Loading 50ns configuration"
+    print "-> Loading 50ns configuration"
 if options.isData:
-	print "-> Loading DATA configuration"
+    print "-> Loading DATA configuration"
 else:
-	print "-> Loading MC configuration"
+    print "-> Loading MC configuration"
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 # If you run over many samples and you save the log, remember to reduce
@@ -43,24 +43,24 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 fileList = [
-    #'file:/tmp/amarini/step3_0.root'
-    #'/store/data/Run2015D/SinglePhoton/MINIAOD/PromptReco-v3/000/256/630/00000/BE4748B0-295F-E511-A271-02163E014402.root',
-    '/store/mc/RunIISpring15MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/50000/E4F89698-DE6E-E511-8681-0025905A60F4.root'
-]
+        #'file:/tmp/amarini/step3_0.root'
+        #'/store/data/Run2015D/SinglePhoton/MINIAOD/PromptReco-v3/000/256/630/00000/BE4748B0-295F-E511-A271-02163E014402.root',
+        '/store/mc/RunIISpring15MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/50000/E4F89698-DE6E-E511-8681-0025905A60F4.root'
+        ]
 
 
 ### do not remove the line below!
 ###FILELIST###
 
 process.source = cms.Source("PoolSource",
-    	fileNames = cms.untracked.vstring(fileList)
-    )
+        fileNames = cms.untracked.vstring(fileList)
+        )
 
 # ---- define the output file -------------------------------------------
 process.TFileService = cms.Service("TFileService",
-			closeFileFast = cms.untracked.bool(True),
-			fileName = cms.string("NeroNtuples.root"),
-                )
+        closeFileFast = cms.untracked.bool(True),
+        fileName = cms.string("NeroNtuples.root"),
+        )
 # ------------------------QG-----------------------------------------------
 process.load('RecoJets.JetProducers.QGTagger_cfi')
 process.QGTagger.srcJets            = cms.InputTag("slimmedJets")    # Could be reco::PFJetCollection or pat::JetCollection (both AOD and miniAOD)               
@@ -75,20 +75,20 @@ process.load('Configuration.StandardSequences.Services_cff')
 if (isData):
     process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
     if options.is25ns:
-    	process.GlobalTag.globaltag = '74X_dataRun2_Prompt_v2'
+        process.GlobalTag.globaltag = '74X_dataRun2_Prompt_v2'
     if options.is50ns:
-    	process.GlobalTag.globaltag = '74X_dataRun2_Prompt_v1'
+        process.GlobalTag.globaltag = '74X_dataRun2_Prompt_v1'
 else:
     process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
     if options.is25ns:
-	    #process.GlobalTag.globaltag = '74X_mcRun2_asymptotic_realisticBS_v1'
-	    #process.GlobalTag.globaltag = '74X_mcRun2_asymptotic_realisticBS_v1'
-	    process.GlobalTag.globaltag = 'MCRUN2_74_V9::All'
-	    #process.GlobalTag.globaltag = '74X_mcRun2_asymptotic_v2'
+        #process.GlobalTag.globaltag = '74X_mcRun2_asymptotic_realisticBS_v1'
+        #process.GlobalTag.globaltag = '74X_mcRun2_asymptotic_realisticBS_v1'
+        process.GlobalTag.globaltag = 'MCRUN2_74_V9::All'
+        #process.GlobalTag.globaltag = '74X_mcRun2_asymptotic_v2'
     if options.is50ns:
-	    #process.GlobalTag.globaltag = '741_p1_mcRun2_Realistic_50ns_v0::All'
-	    process.GlobalTag.globaltag = 'MCRUN2_74_V9A::All'
-	    #process.GlobalTag.globaltag = '74X_mcRun2_startup_v2::All'
+        #process.GlobalTag.globaltag = '741_p1_mcRun2_Realistic_50ns_v0::All'
+        process.GlobalTag.globaltag = 'MCRUN2_74_V9A::All'
+        #process.GlobalTag.globaltag = '74X_mcRun2_startup_v2::All'
 
 
 ######## LUMI MASK
@@ -132,12 +132,12 @@ process.pfInclusiveSecondaryVertexFinderTagInfosAK8.extSVCollection = cms.InputT
 ## 			 )
 ## process.output_step = cms.EndPath(process.output)
 process.HBB = cms.Sequence(
-		process.pfImpactParameterTagInfosAK8 *
-		process.pfInclusiveSecondaryVertexFinderTagInfosAK8 *
-		process.softPFMuonsTagInfosAK8 *
-		process.softPFElectronsTagInfosAK8 *
-		process.pfBoostedDoubleSecondaryVertexAK8BJetTags 
-		)
+        process.pfImpactParameterTagInfosAK8 *
+        process.pfInclusiveSecondaryVertexFinderTagInfosAK8 *
+        process.softPFMuonsTagInfosAK8 *
+        process.softPFElectronsTagInfosAK8 *
+        process.pfBoostedDoubleSecondaryVertexAK8BJetTags 
+        )
 ############ END HBB ####
 
 
@@ -148,13 +148,13 @@ process.load('NeroProducer.Nero.Nero_cfi')
 #process.load('NeroProducer.Nero.NeroChargedHiggs_cfi')
 
 if options.is25ns:
-	replace = {'bx' : '25ns'}
+    replace = {'bx' : '25ns'}
 if options.is50ns:
-	replace = {'bx' : '50ns'}
+    replace = {'bx' : '50ns'}
 
 toProduce={}
 for obj in ['ele','pho']:
-  toProduce[obj]={}
+    toProduce[obj]={}
   if obj=='ele': directory = 'RecoEgamma.ElectronIdentification'
   if obj=='pho': directory = 'RecoEgamma.PhotonIdentification'
   for ID in ['veto','medium','loose','tight']:
@@ -187,7 +187,7 @@ switchOnVIDElectronIdProducer(process, dataFormat)
 ### #add them to the VID producer
 ### for idmod in my_id_modules:
 for idmod in toProduce['ele']:
-   print "will produce", idmod
+    print "will produce", idmod
    setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
 ### 
 ### ### PHOTONS
@@ -196,7 +196,7 @@ switchOnVIDPhotonIdProducer(process, dataFormat) ### PHOTON
 ###         'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_PHYS14_PU20bx25_V2_cff']
 ### for idmod in pho_id_modules:
 for idmod in toProduce['pho']:
-      setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
+    setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
 
 ### ##ISO
 process.load("RecoEgamma/PhotonIdentification/PhotonIDValueMapProducer_cfi")
@@ -276,30 +276,30 @@ process.HBHENoiseFilterResultProducer.IgnoreTS4TS5ifJetInLowBVRegion=cms.bool(Fa
 process.HBHENoiseFilterResultProducer.defaultDecision = cms.string("HBHENoiseFilterResultRun2Loose")
 
 process.ApplyBaselineHBHENoiseFilter = cms.EDFilter('BooleanFlagFilter',
-		   inputLabel = cms.InputTag('HBHENoiseFilterResultProducer','HBHENoiseFilterResult'),
-		      reverseDecision = cms.bool(False)
-		      )
+        inputLabel = cms.InputTag('HBHENoiseFilterResultProducer','HBHENoiseFilterResult'),
+        reverseDecision = cms.bool(False)
+        )
 
 process.ApplyBaselineHBHEIsoNoiseFilter = cms.EDFilter('BooleanFlagFilter',
-		   inputLabel = cms.InputTag('HBHENoiseFilterResultProducer','HBHEIsoNoiseFilterResult'),
-		      reverseDecision = cms.bool(False)
-		      )
+        inputLabel = cms.InputTag('HBHENoiseFilterResultProducer','HBHEIsoNoiseFilterResult'),
+        reverseDecision = cms.bool(False)
+        )
 
 process.hcalNoiseFilter = cms.Sequence(
-		    process.HBHENoiseFilterResultProducer* #produces HBHE baseline bools
-		    process.ApplyBaselineHBHENoiseFilter  #reject events based 
-		    #process.ApplyBaselineHBHEIsoNoiseFilter*   #reject events based  < 10e-3 mistake rate 
-		    )
+        process.HBHENoiseFilterResultProducer* #produces HBHE baseline bools
+        process.ApplyBaselineHBHENoiseFilter  #reject events based 
+        #process.ApplyBaselineHBHEIsoNoiseFilter*   #reject events based  < 10e-3 mistake rate 
+        )
 ###############################
 
 if options.isGrid:
-	process.nero.head=options.nerohead ##'git rev-parse HEAD'
-	process.nero.tag=options.nerotag ## git describe --tags
+    process.nero.head=options.nerohead ##'git rev-parse HEAD'
+    process.nero.tag=options.nerotag ## git describe --tags
 
 if options.isParticleGun:
-	process.nero.particleGun = cms.untracked.bool(True)
-	## this option is for the embedding informations
-	process.nero.extendEvent = cms.untracked.bool(False)
+    process.nero.particleGun = cms.untracked.bool(True)
+    ## this option is for the embedding informations
+    process.nero.extendEvent = cms.untracked.bool(False)
 
 #------------------------------------------------------
 ### FILTER
@@ -311,20 +311,28 @@ process.nero.minPhoN = cms.int32(0)
 
 ### 
 process.p = cms.Path(
-		process.infoProducerSequence *
-		process.doubleEGFilterSequence *
-		process.hcalNoiseFilter * 
-                process.QGTagger *
-                process.egmGsfElectronIDSequence *
-                process.egmPhotonIDSequence *
-                process.photonIDValueMapProducer * ## ISO MAP FOR PHOTONS
-                process.electronIDValueMapProducer * ## ISO MAP FOR PHOTONS
-		process.HBB * ## HBB 74X
-		#process.jecSequence *
-                process.nero
-                )
+        process.infoProducerSequence *
+        process.doubleEGFilterSequence *
+        process.hcalNoiseFilter * 
+        process.QGTagger *
+        process.egmGsfElectronIDSequence *
+        process.egmPhotonIDSequence *
+        process.photonIDValueMapProducer * ## ISO MAP FOR PHOTONS
+        process.electronIDValueMapProducer * ## ISO MAP FOR PHOTONS
+        process.HBB * ## HBB 74X
+        #process.jecSequence *
+        process.nero
+        )
 
 ## DEBUG -- dump the event content with all the value maps ..
 ## process.schedule = cms.Schedule(
 ## 		process.p,
 ## 		process.output_step)
+
+# Local Variables:
+# mode:python
+# indent-tabs-mode:nil
+# tab-width:4
+# c-basic-offset:4
+# End:
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4

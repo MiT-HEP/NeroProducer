@@ -4,42 +4,50 @@ from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 import re,os
 
 def initEGammaVID(process, options):
-	if options.is25ns:
-		replace = {'bx' : '25ns', 'vs' : 'V1'}
-	if options.is50ns:
-		replace = {'bx' : '50ns', 'vs' : 'V2'}
-	
-	toProduce={}
-	for obj in ['ele','pho']:
-	  toProduce[obj]={}
-	  if obj=='ele': directory = 'RecoEgamma.ElectronIdentification'
-	  if obj=='pho': directory = 'RecoEgamma.PhotonIdentification'
-	  for ID in ['veto','medium','loose','tight']:
-	      if obj == 'pho' and ID == 'veto' : continue
-	      if obj == 'pho' : 
-		 	replace['bx'] = '50ns' ##FIXME, we have only this
-			replace['vs'] = 'V1'
-	
-	      replace['id'] = ID
-	      cmd = 'string = process.nero.' + obj + ID.title() + 'IdMap.value()'
-	      exec(cmd)
-	      cmd = 'process.nero.'+obj + ID.title() + 'IdMap = cms.InputTag("' + string % replace+ '")'
-	      print 'executing replacement:',cmd
-	      exec(cmd)
-	
-	      myid = (string%replace ).replace('-','_').split(':')[1]
-	      myid = re.sub('_standalone.*','',myid)
-	      toProduce[obj][ directory + '.Identification.' + myid + "_cff"] = 1 #remove duplicates
-	### INIT MODULES
-	dataFormat = DataFormat.MiniAOD
-	
-	switchOnVIDElectronIdProducer(process, dataFormat)
-	### # define which IDs we want to produce. it is silly to redifine them here hard coded
-	for idmod in toProduce['ele']:
-	   print "will produce", idmod
-	   setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
-	### ### PHOTONS
-	switchOnVIDPhotonIdProducer(process, dataFormat) ### PHOTON
-	for idmod in toProduce['pho']:
-	      setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
-	
+    if options.is25ns:
+        replace = {'bx' : '25ns', 'vs' : 'V1'}
+    if options.is50ns:
+        replace = {'bx' : '50ns', 'vs' : 'V2'}
+
+    toProduce={}
+    for obj in ['ele','pho']:
+        toProduce[obj]={}
+      if obj=='ele': directory = 'RecoEgamma.ElectronIdentification'
+      if obj=='pho': directory = 'RecoEgamma.PhotonIdentification'
+      for ID in ['veto','medium','loose','tight']:
+          if obj == 'pho' and ID == 'veto' : continue
+          if obj == 'pho' : 
+              replace['bx'] = '50ns' ##FIXME, we have only this
+            replace['vs'] = 'V1'
+
+          replace['id'] = ID
+          cmd = 'string = process.nero.' + obj + ID.title() + 'IdMap.value()'
+          exec(cmd)
+          cmd = 'process.nero.'+obj + ID.title() + 'IdMap = cms.InputTag("' + string % replace+ '")'
+          print 'executing replacement:',cmd
+          exec(cmd)
+
+          myid = (string%replace ).replace('-','_').split(':')[1]
+          myid = re.sub('_standalone.*','',myid)
+          toProduce[obj][ directory + '.Identification.' + myid + "_cff"] = 1 #remove duplicates
+    ### INIT MODULES
+    dataFormat = DataFormat.MiniAOD
+
+    switchOnVIDElectronIdProducer(process, dataFormat)
+    ### # define which IDs we want to produce. it is silly to redifine them here hard coded
+    for idmod in toProduce['ele']:
+        print "will produce", idmod
+       setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
+    ### ### PHOTONS
+    switchOnVIDPhotonIdProducer(process, dataFormat) ### PHOTON
+    for idmod in toProduce['pho']:
+        setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
+
+
+# Local Variables:
+# mode:python
+# indent-tabs-mode:nil
+# tab-width:4
+# c-basic-offset:4
+# End:
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4

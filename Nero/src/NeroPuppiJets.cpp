@@ -6,8 +6,8 @@
 
 
 NeroPuppiJets::NeroPuppiJets() : 
-        NeroCollection(),
-        BarePuppiJets()
+    NeroCollection(),
+    BarePuppiJets()
 {
     mMinPt = 25.;
     mMinNjets = 0;

@@ -2,9 +2,9 @@
 #define VERBOSE 0
 
 NeroAll::NeroAll():
-        NeroCollection(),
-        BareAll(),
-        NeroLumi()
+    NeroCollection(),
+    BareAll(),
+    NeroLumi()
 {
     isSkim_=1;
     isMc_=-1;
@@ -20,7 +20,7 @@ int NeroAll::analyze(const edm::Event&iEvent)
         isMc_ = ( iEvent.isRealData() ) ? 0 : 1;
         isRealData = ( iEvent.isRealData() ) ? 1 : 0;
     }
-    
+
     if(VERBOSE>1) cout<<"[NeroAll]::[analyze]::[DEBUG] isMc_"<<isMc_<<endl;
 
     // FILL the  histograms on the fly, TODO move in the skim ?!? SKIM will still be big if this is kept.
@@ -41,7 +41,7 @@ int NeroAll::analyze(const edm::Event&iEvent)
     if (info_handle -> weights().size() > 109)
         for( int pdfw = 9 ; pdfw<109 ;++pdfw)
         {
-        hDpdfReweightSums -> Fill( pdfw -9 + .5, info_handle -> weights() [pdfw] );    
+            hDpdfReweightSums -> Fill( pdfw -9 + .5, info_handle -> weights() [pdfw] );    
         }
 
     if( isSkim() == 0) 

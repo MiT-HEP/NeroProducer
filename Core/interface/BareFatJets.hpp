@@ -19,7 +19,7 @@ class BareFatJets : virtual public BareP4
         void compress() override;
 
         std::string cachedPrefix="";
-        
+
         // -- variables
         //TClonesArray  *p4;
         vector<float> *rawPt{0};
@@ -37,7 +37,7 @@ class BareFatJets : virtual public BareP4
         vector<int>   *nSubjets{0};
         vector<int>   *firstSubjet{0};
         vector<float> *subjet_btag{0};
-    
+
         vector<float> *hbb{0};
         vector<float> *topMVA{0};
 

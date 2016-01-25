@@ -4,8 +4,8 @@
 //#define VERBOSE 2
 
 NeroPhotons::NeroPhotons() : 
-        NeroCollection(),
-        BarePhotons()
+    NeroCollection(),
+    BarePhotons()
 {
 
     mMinPt = 15;
@@ -47,9 +47,9 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
     for (auto &pho : *handle)
     {
         ++iPho;
-        #ifdef VERBOSE
+#ifdef VERBOSE
         if (VERBOSE>0) cout<<"[NeroPhotons]::[analyze]::[DEBUG] analyzing photon"<<iPho<<" pt="<<pho.pt() <<" pz"<<pho.pz() <<endl;
-        #endif
+#endif
 
         //if ( not pho.passElectronVeto ()  ) continue;
 
@@ -58,14 +58,14 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         if (fabs(pho.eta()) > mMaxEta ) continue;
         if (pho.pt() < mMinPt) continue;
 
-        #ifdef VERBOSE
+#ifdef VERBOSE
         if (VERBOSE>1) cout<<"[NeroPhotons]::[analize]::[DEBUG2] photonInfo:" <<endl
             <<" \t pho.chargedHadronIso()/pho.pt() (0.3) "<<pho.chargedHadronIso()/pho.pt() <<endl
-            <<" \t chargedHadronIso() (20) "<<pho.chargedHadronIso()<<endl
-            <<" \t r9 (0.8) "<<pho.r9()<<endl
-            <<" \t SC is non null? "<< pho.superCluster().isNonnull()<<endl
-            <<endl;
-        #endif
+                <<" \t chargedHadronIso() (20) "<<pho.chargedHadronIso()<<endl
+                <<" \t r9 (0.8) "<<pho.r9()<<endl
+                <<" \t SC is non null? "<< pho.superCluster().isNonnull()<<endl
+                <<endl;
+#endif
 
         edm::RefToBase<pat::Photon> ref ( edm::Ref< pat::PhotonCollection >(handle, iPho) ) ;
         float _chIso_ =  (*iso_ch) [ref];
@@ -101,36 +101,36 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         float _nhIsoRC_ = 0;
         float _phIsoRC_ = 0;
         float _puIsoRC_ = 0;// not fill for the moment in the FPR TODO
-        
+
         if (  pho.chargedHadronIso()< 20 )
         {
-                                        //<<" \t r9 (0.8) "<<pho.r9()<<endl
-        #ifdef VERBOSE
+            //<<" \t r9 (0.8) "<<pho.r9()<<endl
+#ifdef VERBOSE
             if (VERBOSE >0 ) cout <<"[NeroPhotons]::[analyze]::[DEBUG] FPR START"<<endl;
-        #endif
+#endif
 
-        fpr -> Config(iSetup);
-        fpr -> SetHandles(
-                pf  -> handle,
-                handle,
-                jets-> handle,
-                leps->mu_handle,
-                leps->el_handle
-                );
+            fpr -> Config(iSetup);
+            fpr -> SetHandles(
+                    pf  -> handle,
+                    handle,
+                    jets-> handle,
+                    leps->mu_handle,
+                    leps->el_handle
+                    );
 
-        PFIsolation_struct FPR_out = fpr -> PFIsolation(pho.superCluster(), edm::Ptr<reco::Vertex>(vtx->handle,vtx->firstGoodVertexIdx) );
-        _chIsoRC_ = FPR_out.chargediso_primvtx_rcone;
-        _nhIsoRC_ = FPR_out.neutraliso_rcone;
-        _phIsoRC_ = FPR_out.photoniso_rcone;
+            PFIsolation_struct FPR_out = fpr -> PFIsolation(pho.superCluster(), edm::Ptr<reco::Vertex>(vtx->handle,vtx->firstGoodVertexIdx) );
+            _chIsoRC_ = FPR_out.chargediso_primvtx_rcone;
+            _nhIsoRC_ = FPR_out.neutraliso_rcone;
+            _phIsoRC_ = FPR_out.photoniso_rcone;
 
-        #ifdef VERBOSE
+#ifdef VERBOSE
             if (VERBOSE >0 ) cout <<"[NeroPhotons]::[analyze]::[DEBUG] FPR END"<<endl;
-        #endif
+#endif
         } else {
-             _chIsoRC_ = -999.;
-             _nhIsoRC_ = -999.;
-             _phIsoRC_ = -999.;
-             _puIsoRC_ = -999.;// not fill for the moment in the FPR TODO
+            _chIsoRC_ = -999.;
+            _nhIsoRC_ = -999.;
+            _phIsoRC_ = -999.;
+            _puIsoRC_ = -999.;// not fill for the moment in the FPR TODO
         }
 
         // RC -- without FPR
@@ -189,7 +189,7 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
 
         // --     }
         // -- }
-    
+
         //FILL
         new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(pho.px(),pho.py(),pho.pz(),pho.energy());
         iso->push_back(totIso);	
@@ -207,7 +207,7 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         nhIsoRC -> push_back ( _nhIsoRC_ ) ;
         puIsoRC -> push_back ( _puIsoRC_ ) ;
     }
-   
+
     if ( int(selBits -> size()) < mMinNpho  ) return 1;
 
     return 0;
@@ -215,7 +215,7 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
 
 bool NeroPhotons::cutBasedPhotonId( const pat::Photon& pho, string type, bool withIso, bool withSieie)
 {
-// https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedPhotonIdentificationRun2#
+    // https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedPhotonIdentificationRun2#
     float hoe   = pho.hadTowOverEm();
     float sieie = pho.full5x5_sigmaIetaIeta() ;
     float chiso = pho.chargedHadronIso();
@@ -228,132 +228,132 @@ bool NeroPhotons::cutBasedPhotonId( const pat::Photon& pho, string type, bool wi
 
     // ------------ BARREL ------------
     if ( pho.isEB() )
-        {
+    {
         if (not withSieie and sieie > 0.014) return false;  // pu a very loose sieie requirement
         if (not withIso and phoiso > 10 ) return false; // put  a very loose pho-iso requirement
 
         if ( type == "loose_50ns" ) 
-            {
-                if (hoe >= 0.0559  ) return false;
-                if (sieie >= 0.010 and withSieie  ) return false;
-                if ( chiso - cutBasedPhotonIdEffArea(pho,"ch_50ns") * rho >= 2.51 ) return false;// 
-                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_50ns")*rho >= 21.11 + 0.0065*pho.pt() ) return false;// 
-                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_50ns") *rho >= 3.70 + 0.0032*pho.pt() ) return false ;//  2.09 + 0.0032*pho_pt    1.60 + 0.0032*pho_pt 
+        {
+            if (hoe >= 0.0559  ) return false;
+            if (sieie >= 0.010 and withSieie  ) return false;
+            if ( chiso - cutBasedPhotonIdEffArea(pho,"ch_50ns") * rho >= 2.51 ) return false;// 
+            if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_50ns")*rho >= 21.11 + 0.0065*pho.pt() ) return false;// 
+            if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_50ns") *rho >= 3.70 + 0.0032*pho.pt() ) return false ;//  2.09 + 0.0032*pho_pt    1.60 + 0.0032*pho_pt 
 
-                return true;
-            }
+            return true;
+        }
         if ( type == "medium_50ns" )
-            {
-                if (hoe >= 0.0138 ) return false;
-                if (sieie >= 0.010 and withSieie ) return false;
-                if (chiso -  cutBasedPhotonIdEffArea(pho,"ch_50ns")*rho >=2.23 ) return false;
-                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_50ns")*rho >= 8.85 + 0.0065*pho.pt() ) return false;
-                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_50ns") *rho >= 2.09 + 0.0032*pho.pt() ) return false ; 
-                return true;
-            }
+        {
+            if (hoe >= 0.0138 ) return false;
+            if (sieie >= 0.010 and withSieie ) return false;
+            if (chiso -  cutBasedPhotonIdEffArea(pho,"ch_50ns")*rho >=2.23 ) return false;
+            if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_50ns")*rho >= 8.85 + 0.0065*pho.pt() ) return false;
+            if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_50ns") *rho >= 2.09 + 0.0032*pho.pt() ) return false ; 
+            return true;
+        }
         if ( type == "tight_50ns" )
-            {
-                if (hoe >= 0.0099 ) return false;
-                if (sieie >= 0.0099 and withSieie ) return false;
-                if ( chiso - cutBasedPhotonIdEffArea(pho,"ch_50ns") * rho >= 1.96 ) return false;
-                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_50ns")*rho >= 4.18 + 0.0065*pho.pt() ) return false;
-                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_50ns") *rho >= 1.60 + 0.0032*pho.pt() ) return false ;
-                return true;
-            }
+        {
+            if (hoe >= 0.0099 ) return false;
+            if (sieie >= 0.0099 and withSieie ) return false;
+            if ( chiso - cutBasedPhotonIdEffArea(pho,"ch_50ns") * rho >= 1.96 ) return false;
+            if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_50ns")*rho >= 4.18 + 0.0065*pho.pt() ) return false;
+            if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_50ns") *rho >= 1.60 + 0.0032*pho.pt() ) return false ;
+            return true;
+        }
         // ---------------- 25ns ---------------
         if ( type == "loose_25ns" ) 
-            {
-                if (hoe >= 0.553   ) return false;
-                if (sieie >= 0.0099  and withSieie  ) return false;
-                if ( chiso - cutBasedPhotonIdEffArea(pho,"ch_25ns") * rho >= 2.49  ) return false;// 
-                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_25ns")*rho >= 15.43 + 0.007*pho.pt() ) return false;// 
-                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_25ns") *rho >= 9.42 + 0.0033*pho.pt() ) return false ;//
+        {
+            if (hoe >= 0.553   ) return false;
+            if (sieie >= 0.0099  and withSieie  ) return false;
+            if ( chiso - cutBasedPhotonIdEffArea(pho,"ch_25ns") * rho >= 2.49  ) return false;// 
+            if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_25ns")*rho >= 15.43 + 0.007*pho.pt() ) return false;// 
+            if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_25ns") *rho >= 9.42 + 0.0033*pho.pt() ) return false ;//
 
-                return true;
-            }
-        if ( type == "medium_25ns" )
-            {
-                if (hoe >= 0.058  ) return false;
-                if (sieie >= 0.0099  and withSieie ) return false;
-                if (chiso -  cutBasedPhotonIdEffArea(pho,"ch_25ns")*rho >= 1.91 ) return false;
-                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_25ns")*rho >= 4.66 + 0.007*pho.pt() ) return false;
-                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_25ns") *rho >= 4.29 + 0.0033*pho.pt() ) return false ; 
-                return true;
-            }
-        if ( type == "tight_25ns" )
-            {
-                if (hoe >= 0.0019 ) return false;
-                if (sieie >= 0.0099 and withSieie ) return false;
-                if ( chiso - cutBasedPhotonIdEffArea(pho,"ch_25ns") * rho >= 1.61 ) return false;
-                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_25ns")*rho >= 3.98 + 0.007*pho.pt() ) return false;
-                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_25ns") *rho >= 3.01 + 0.0033*pho.pt() ) return false ;
-                return true;
-            }
+            return true;
         }
+        if ( type == "medium_25ns" )
+        {
+            if (hoe >= 0.058  ) return false;
+            if (sieie >= 0.0099  and withSieie ) return false;
+            if (chiso -  cutBasedPhotonIdEffArea(pho,"ch_25ns")*rho >= 1.91 ) return false;
+            if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_25ns")*rho >= 4.66 + 0.007*pho.pt() ) return false;
+            if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_25ns") *rho >= 4.29 + 0.0033*pho.pt() ) return false ; 
+            return true;
+        }
+        if ( type == "tight_25ns" )
+        {
+            if (hoe >= 0.0019 ) return false;
+            if (sieie >= 0.0099 and withSieie ) return false;
+            if ( chiso - cutBasedPhotonIdEffArea(pho,"ch_25ns") * rho >= 1.61 ) return false;
+            if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_25ns")*rho >= 3.98 + 0.007*pho.pt() ) return false;
+            if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_25ns") *rho >= 3.01 + 0.0033*pho.pt() ) return false ;
+            return true;
+        }
+    }
     // ------------ ENDCAP ------------
     else if (pho.isEE()){
         if (not withSieie and sieie > 0.035) return false;  // pu a very loose sieie requirement
         if (not withIso and phoiso > 20 ) return false; // put  a very loose pho-iso requirement
         // ---------------- 50ns --------------- 
         if ( type == "loose_50ns" ) 
-            {
-                if (hoe >= 0.049  ) return false;
-                if (sieie >= 0.0321 and withSieie  ) return false;
-                if ( chiso - cutBasedPhotonIdEffArea(pho,"ch_50ns") * rho >= 0.98 ) return false;// 
-                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_50ns")*rho >= 23.67 + 0.0116*pho.pt() ) return false;// 
-                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_50ns") *rho >= 6.57 + 0.0095 *pho.pt() ) return false ;//  2.09 + 0.0032*pho_pt    1.60 + 0.0032*pho_pt 
+        {
+            if (hoe >= 0.049  ) return false;
+            if (sieie >= 0.0321 and withSieie  ) return false;
+            if ( chiso - cutBasedPhotonIdEffArea(pho,"ch_50ns") * rho >= 0.98 ) return false;// 
+            if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_50ns")*rho >= 23.67 + 0.0116*pho.pt() ) return false;// 
+            if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_50ns") *rho >= 6.57 + 0.0095 *pho.pt() ) return false ;//  2.09 + 0.0032*pho_pt    1.60 + 0.0032*pho_pt 
 
-                return true;
-            }
+            return true;
+        }
         if ( type == "medium_50ns" )
-            {
-                if (hoe >= 0.016 ) return false;
-                if (sieie >= 0.0275 and withSieie ) return false;
-                if (chiso -  cutBasedPhotonIdEffArea(pho,"ch_50ns")*rho >= 0.89 ) return false;
-                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_50ns")*rho >= 14.48 + 0.0116*pho.pt() ) return false;
-                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_50ns") *rho >= 2.88 + 0.0095*pho.pt() ) return false ; 
-                return true;
-            }
+        {
+            if (hoe >= 0.016 ) return false;
+            if (sieie >= 0.0275 and withSieie ) return false;
+            if (chiso -  cutBasedPhotonIdEffArea(pho,"ch_50ns")*rho >= 0.89 ) return false;
+            if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_50ns")*rho >= 14.48 + 0.0116*pho.pt() ) return false;
+            if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_50ns") *rho >= 2.88 + 0.0095*pho.pt() ) return false ; 
+            return true;
+        }
         if ( type == "tight_50ns" )
-            {
-                if (hoe >= 0.016  ) return false;
-                if (sieie >= 0.0275 and withSieie ) return false;
-                if ( chiso - cutBasedPhotonIdEffArea(pho,"ch_50ns") * rho >= .67 ) return false;
-                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_50ns")*rho >= 2.95 + 0.0116*pho.pt() ) return false;
-                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_50ns") *rho >= 1.56 + 0.0095*pho.pt() ) return false ;
-                return true;
-            }
+        {
+            if (hoe >= 0.016  ) return false;
+            if (sieie >= 0.0275 and withSieie ) return false;
+            if ( chiso - cutBasedPhotonIdEffArea(pho,"ch_50ns") * rho >= .67 ) return false;
+            if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_50ns")*rho >= 2.95 + 0.0116*pho.pt() ) return false;
+            if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_50ns") *rho >= 1.56 + 0.0095*pho.pt() ) return false ;
+            return true;
+        }
         // ---------------- 25ns ---------------  TODO
         if ( type == "loose_25ns" ) 
-            {
-                if (hoe >= 0.062    ) return false;
-                if (sieie >=    0.0284   and withSieie  ) return false;
-                if ( chiso - cutBasedPhotonIdEffArea(pho,"ch_25ns") * rho >= 1.04   ) return false;// 
-                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_25ns")*rho >= 19.71 + 0.0129*pho.pt() ) return false;// 
-                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_25ns") *rho >= 11.88 + 0.0108*pho.pt() ) return false ;//
+        {
+            if (hoe >= 0.062    ) return false;
+            if (sieie >=    0.0284   and withSieie  ) return false;
+            if ( chiso - cutBasedPhotonIdEffArea(pho,"ch_25ns") * rho >= 1.04   ) return false;// 
+            if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_25ns")*rho >= 19.71 + 0.0129*pho.pt() ) return false;// 
+            if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_25ns") *rho >= 11.88 + 0.0108*pho.pt() ) return false ;//
 
-                return true;
-            }
-        if ( type == "medium_25ns" )
-            {
-                if (hoe >= 0.020  ) return false;
-                if (sieie >= 0.0268   and withSieie ) return false;
-                if (chiso -  cutBasedPhotonIdEffArea(pho,"ch_25ns")*rho >= 0.82  ) return false;
-                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_25ns")*rho >= 14.65 + 0.0129*pho.pt() ) return false;
-                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_25ns") *rho >= 4.06 + 0.0108*pho.pt() ) return false ; 
-                return true;
-            }
-        if ( type == "tight_25ns" )
-            {
-                if (hoe >= 0.016  ) return false;
-                if (sieie >= 0.0263  and withSieie ) return false;
-                if ( chiso - cutBasedPhotonIdEffArea(pho,"ch_25ns") * rho >= 0.69  ) return false;
-                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_25ns")*rho >= 4.52+ 0.0129*pho.pt() ) return false;
-                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_25ns") *rho >= 3.61 + 0.0108*pho.pt() ) return false ;
-                return true;
-            }
-
+            return true;
         }
+        if ( type == "medium_25ns" )
+        {
+            if (hoe >= 0.020  ) return false;
+            if (sieie >= 0.0268   and withSieie ) return false;
+            if (chiso -  cutBasedPhotonIdEffArea(pho,"ch_25ns")*rho >= 0.82  ) return false;
+            if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_25ns")*rho >= 14.65 + 0.0129*pho.pt() ) return false;
+            if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_25ns") *rho >= 4.06 + 0.0108*pho.pt() ) return false ; 
+            return true;
+        }
+        if ( type == "tight_25ns" )
+        {
+            if (hoe >= 0.016  ) return false;
+            if (sieie >= 0.0263  and withSieie ) return false;
+            if ( chiso - cutBasedPhotonIdEffArea(pho,"ch_25ns") * rho >= 0.69  ) return false;
+            if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_25ns")*rho >= 4.52+ 0.0129*pho.pt() ) return false;
+            if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_25ns") *rho >= 3.61 + 0.0108*pho.pt() ) return false ;
+            return true;
+        }
+
+    }
     return false;
 
 }
@@ -362,67 +362,67 @@ float NeroPhotons::cutBasedPhotonIdEffArea( const pat::Photon & pho,string type)
     float aeta = fabs( pho.eta() ) ;
     // --------------- 50 ns ----------------
     if (type == "ch_50ns")
-        {
+    {
         if (aeta < 1.0   ) return 0.0064 ;
         if (aeta < 1.479 ) return 0.0055 ;
         if (aeta < 2.0   ) return 0.0055 ;
         if (aeta < 2.2   ) return 0.0049 ;
         if (aeta < 2.3   ) return 0.0047 ;
         if (aeta < 2.4   ) return 0.0037 ;
-                           return 0.0017 ;
-        }
+        return 0.0017 ;
+    }
     if (type == "nh_50ns")
-        {
+    {
         if (aeta < 1.0   ) return  0.0129;
         if (aeta < 1.479 ) return  0.0245;
         if (aeta < 2.0   ) return  0.0125;
         if (aeta < 2.2   ) return  0.0022;
         if (aeta < 2.3   ) return  0.0039;
         if (aeta < 2.4   ) return  0.0033;
-                           return  0.1147;
-        }
+        return  0.1147;
+    }
     if (type == "pho_50ns")
-        {
+    {
         if (aeta < 1.0   ) return  0.1020;
         if (aeta < 1.479 ) return  0.0889;
         if (aeta < 2.0   ) return  0.0423;
         if (aeta < 2.2   ) return  0.0441;
         if (aeta < 2.3   ) return  0.0559;
         if (aeta < 2.4   ) return  0.0653;
-                           return  0.0862;
-        }
+        return  0.0862;
+    }
     // --------------- 25 ns ----------------
     if (type == "ch_25ns")
-        {
+    {
         if (aeta < 1.0   ) return 0.0080;
         if (aeta < 1.479 ) return 0.0079;
         if (aeta < 2.0   ) return 0.0080;
         if (aeta < 2.2   ) return 0.0048;
         if (aeta < 2.3   ) return 0.0029;
         if (aeta < 2.4   ) return 0.0036;
-                           return 0.0016;
-        }
+        return 0.0016;
+    }
     if (type == "nh_25ns")
-        {
+    {
         if (aeta < 1.0   ) return 0.0126 ;
         if (aeta < 1.479 ) return 0.0237 ;
         if (aeta < 2.0   ) return 0      ;
         if (aeta < 2.2   ) return 0      ;
         if (aeta < 2.3   ) return 0      ;
         if (aeta < 2.4   ) return 0      ;
-                           return 0.0769 ;
-        }
+        return 0.0769 ;
+    }
     if (type == "pho_25ns")
-        {
+    {
         if (aeta < 1.0   ) return 0.0982;
         if (aeta < 1.479 ) return 0.0857;
         if (aeta < 2.0   ) return 0.0484;
         if (aeta < 2.2   ) return 0.0668;
         if (aeta < 2.3   ) return 0.0868;
         if (aeta < 2.4   ) return 0.0982;
-                           return 0.1337;
-        }
-    
+        return 0.1337;
+    }
+
     return -999.;
 }
 
