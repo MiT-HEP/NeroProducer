@@ -1,7 +1,8 @@
 #! /usr/bin/env python
 # Synchronized to MonoJet analysis on 25/01/2016 
 # https://twiki.cern.ch/twiki/bin/view/CMS/Monojet?rev=54
-#
+# Input dataset: /TTbarDMJets_pseudoscalar_Mchi-1_Mphi-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM
+
 import os, re, array, ROOT
 import sys
 from optparse import OptionParser
