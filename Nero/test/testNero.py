@@ -44,16 +44,10 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 fileList = [
-    #'file:/tmp/amarini/step3_0.root'
-    #'/store/data/Run2015D/SinglePhoton/MINIAOD/PromptReco-v3/000/256/630/00000/BE4748B0-295F-E511-A271-02163E014402.root',
-    #'/store/mc/RunIISpring15MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/50000/E4F89698-DE6E-E511-8681-0025905A60F4.root'
-    '/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v4/000/260/373/00000/50EB0717-B081-E511-B4E2-02163E014169.root', 
-    '/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v4/000/260/373/00000/58DC7348-C481-E511-8232-02163E011AC9.root',
-    '/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v4/000/260/373/00000/5E276556-C481-E511-B025-02163E014414.root',
-    '/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v4/000/260/373/00000/903B69BB-EC81-E511-B029-02163E0142F1.root',
-    '/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v4/000/260/373/00000/AE673A5A-C481-E511-AC81-02163E0136DB.root',
-    '/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v4/000/260/373/00000/BA5C1056-C481-E511-A636-02163E01182F.root',
-    '/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v4/000/260/373/00000/CCCE9F28-D481-E511-970E-02163E0141B5.root',
+	# '/store/mc/RunIISpring15MiniAODv2/TTbarDMJets_pseudoscalar_Mchi-1_Mphi-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/10000/1486FE25-A16D-E511-93F2-001EC9ADE672.root',
+	# '/store/mc/RunIISpring15MiniAODv2/TTbarDMJets_pseudoscalar_Mchi-1_Mphi-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/10000/B0DBDF7A-A16D-E511-AFCB-001EC9ADE690.root'
+	'file:1486FE25-A16D-E511-93F2-001EC9ADE672.root',
+	'file:B0DBDF7A-A16D-E511-AFCB-001EC9ADE690.root'
 ]
 
 
@@ -62,6 +56,7 @@ fileList = [
 ###FILELIST###
 
 process.source = cms.Source("PoolSource",
+	skipEvents = cms.untracked.uint32(0),
     	fileNames = cms.untracked.vstring(fileList)
     )
 
@@ -428,9 +423,12 @@ if options.isParticleGun:
 	## this option is for the embedding informations
 	process.nero.extendEvent = cms.untracked.bool(False)
 
+process.load('NeroProducer.Skim.MonoJetFilterSequence_cff')
+
 #------------------------------------------------------
 process.p = cms.Path(
 		process.infoProducerSequence *
+#		process.MonoJetFilter *
 #		process.hcalNoiseFilter * 
                 process.QGTagger *
                 process.egmGsfElectronIDSequence *
