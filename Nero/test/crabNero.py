@@ -7,17 +7,17 @@ from glob import glob
 ### CHECK THAT CMS env and it is correct
 pwd = os.environ['PWD']
 if 'CMSSW_VERSION' not in os.environ:
-	print "Do cmsenv!"
-	exit(0)
+    print "Do cmsenv!"
+    exit(0)
 version = os.environ['CMSSW_VERSION']
 ok = False
 for dir in reversed(pwd.split('/')):
-	if version == dir : 
-		ok = True
-		break
+    if version == dir : 
+        ok = True
+        break
 if not ok:
-	print "Do (redo) cmsenv (2) !"
-	exit(0)
+    print "Do (redo) cmsenv (2) !"
+    exit(0)
 
 
 config = config()
@@ -67,51 +67,52 @@ if __name__ == '__main__':
     config.General.workArea = 'NeroSubmission'
 
     def submit(config):
-	### for some reason only the first dataset is submitted correctly, work around
-	if len(sys.argv) ==1:
-		## book the command and run python
-		cmd = "python " + sys.argv[0] + " '" + config.General.requestName + "'"
-		print "calling: "+cmd
-		call(cmd,shell=True)
-		return
-	if len(sys.argv) > 1:
-		## if it is not in the request try the next
-		if sys.argv[1] !=  config.General.requestName: return
-	###
-	print "--- Submitting " + "\033[01;32m" + config.Data.inputDataset.split('/')[1] + "\033[00m"  + " ---"
-	config.Data.outputDatasetTag = config.General.requestName
-        try:
-            crabCommand('submit', config = config)
-        except HTTPException as hte:
-            print "Failed submitting task: %s" % (hte.headers)
-        except ClientException as cle:
-            print "Failed submitting task: %s" % (cle)
+        ### for some reason only the first dataset is submitted correctly, work around
+        if len(sys.argv) ==1:
+            ## book the command and run python
+            cmd = "python " + sys.argv[0] + " '" + config.General.requestName + "'"
+            print "calling: "+cmd
+            call(cmd,shell=True)
+            return
+        if len(sys.argv) > 1:
+            ## if it is not in the request try the next
+            if sys.argv[1] !=  config.General.requestName: return
+            ###
+            print "--- Submitting " + "\033[01;32m" + config.Data.inputDataset.split('/')[1] + "\033[00m"  + " ---"
+            config.Data.outputDatasetTag = config.General.requestName
+            try:
+                crabCommand('submit', config = config)
+            except HTTPException as hte:
+                print "Failed submitting task: %s" % (hte.headers)
+            except ClientException as cle:
+                print "Failed submitting task: %s" % (cle)
 
     def setdata(value="True",is25ns=False):
-	    if value == "True":
-		    url = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions15/13TeV/"
-		    if is25ns:
-		    	#config.Data.lumiMask= url + "Cert_246908-258159_13TeV_PromptReco_Collisions15_25ns_JSON_v3.txt"
-			# GOLDEN
-			##Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON.txt
-			# SILVER
-            config.Data.lumiMask = url + "Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_Silver_v2.txt"
-		    else:
-		    	config.Data.lumiMask= url + "Cert_246908-255031_13TeV_PromptReco_Collisions15_50ns_JSON.txt"
-		    config.Data.splitting = 'LumiBased'
-	    else:
-		    config.Data.lumiMask = None
-		    config.Data.splitting = 'FileBased'
-	    
-	    for idx,par in enumerate(config.JobType.pyCfgParams):
-		    if "isData" in par:
-			config.JobType.pyCfgParams[idx] = "isData=" + value
-		    if "is25ns" in par:
-			    if is25ns : config.JobType.pyCfgParams[idx] = "is25ns=True"
-			    else : config.JobType.pyCfgParams[idx] = "is25ns=False"
-		    if "is50ns" in par:
-			    if is25ns : config.JobType.pyCfgParams[idx] = "is50ns=False"
-			    else : config.JobType.pyCfgParams[idx] = "is50ns=True"
+        if value == "True":
+            url = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions15/13TeV/"
+            if is25ns:
+                #config.Data.lumiMask= url + "Cert_246908-258159_13TeV_PromptReco_Collisions15_25ns_JSON_v3.txt"
+                # GOLDEN
+                ##Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt
+                # SILVER
+                config.Data.lumiMask = url + "Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_Silver_v2.txt"
+            else:
+                config.Data.lumiMask= url + "Cert_246908-255031_13TeV_PromptReco_Collisions15_50ns_JSON.txt"
+            config.Data.splitting = 'LumiBased'
+        else:
+            config.Data.lumiMask = None
+            config.Data.splitting = 'FileBased'
+
+        for idx,par in enumerate(config.JobType.pyCfgParams):
+            if "isData" in par:
+                config.JobType.pyCfgParams[idx] = "isData=" + value
+            if "is25ns" in par:
+                if is25ns : config.JobType.pyCfgParams[idx] = "is25ns=True"
+                else : config.JobType.pyCfgParams[idx] = "is25ns=False"
+            if "is50ns" in par:
+                if is25ns : config.JobType.pyCfgParams[idx] = "is50ns=False"
+                else : config.JobType.pyCfgParams[idx] = "is50ns=True"
+        return 
 			
 
     #############################################################################################
@@ -120,7 +121,6 @@ if __name__ == '__main__':
 
     ###################################################
     setdata("False",is25ns=True)
-    config.Data.unitsPerJob = 30
     ###################################################
 
     #config.General.requestName = 'WZ-25ns'
@@ -131,10 +131,12 @@ if __name__ == '__main__':
     #config.Data.inputDataset = '/ZZ_TuneCUETP8M1_13TeV-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
     #submit(config)
 
+    config.Data.unitsPerJob = 5
     config.General.requestName = 'DY-amcatnlo'
     config.Data.inputDataset= '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_HCALDebug_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'
     submit(config)
 
+    config.Data.unitsPerJob = 20
     config.General.requestName = 'TTJets-madgraph'
     config.Data.inputDataset= '/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'
     submit(config)
