@@ -21,7 +21,7 @@ NeroJets::NeroJets() :
         NeroCollection(),
         BareJets()
 {
-    mMinPt = 20.;
+    mMinPt = 15.;
     mMinNjets = 0;
     mMinEta = 2.5;
     mMinId = "loose";
