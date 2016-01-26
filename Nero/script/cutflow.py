@@ -1,5 +1,7 @@
 #! /usr/bin/env python
-
+# Synchronized to MonoJet analysis on 25/01/2016 
+# https://twiki.cern.ch/twiki/bin/view/CMS/Monojet?rev=54
+#
 import os, re, array, ROOT
 import sys
 from optparse import OptionParser
@@ -80,7 +82,6 @@ def isLooseElectron(tree,i):
     print "lepP4[i].Pt(): %0.4f" % tree.lepP4[i].Pt()
   relIso = tree.lepIso[i]/tree.lepP4[i].Pt()
   if abs(tree.lepP4[i].Eta()) > 1.479:
-  # if (tree.lepSelBits[i] & 32768) != 32768:
     # endcap
     if relIso > 0.144: 
       if options.debug: print "failed loose electron iso endcap"
@@ -140,11 +141,9 @@ def isGoodJet(tree,i):
 
 def isBJet(tree,i):
   if tree.jetP4[i].Pt()<15 or abs(tree.jetP4[i].Eta()) > 2.5: return False
-  # if (tree.jetSelBits[i] & 16) != 16: return False
+  if (tree.jetSelBits[i] & 8) != 8: return False
   if tree.jetPuId[i] <= -0.63: return False
   if tree.jetBdiscr[i] <= 0.89: return False
-  # if (tree.
-  #   return False
   return True
 
 def getNBJets(tree):
@@ -155,11 +154,50 @@ def getNBJets(tree):
       nSelected+=1
   return nSelected
 
+def isGoodLooseJet(tree,i):
+  if tree.jetP4[i].Pt()<30 or abs(tree.jetP4[i].Eta()) > 2.5: return False
+  if (tree.jetSelBits[i] & 8) != 8: return False
+  if tree.jetPuId[i] <= -0.63: return False
+  return True
+  
+def findLeadingJet(tree):
+  for i in range(tree.jetP4.GetEntriesFast()):
+    if not isGoodLooseJet(tree,i): continue
+    if tree.jetP4[i].Pt()>100: 
+      return i
+    else:
+      return None
+  return None
+
+def isCleanJet(tree,i):
+  if (tree.jetSelBits[i] & 1024) != 1024: return False
+  return True
+
+def deltaPhi(phi1,phi2):
+  return acos(cos(phi2-phi1))
+
+
+def passedDPhi(tree):
+  nGoodJets = 0
+  matched = False
+  for i in range(tree.jetP4.GetEntriesFast()):
+    if tree.jetP4[i].Pt()>30 and abs(tree.jetP4[i].Eta()) < 2.5 and \
+          (tree.jetSelBits[i] & 8) == 8: 
+      nGoodJets += 1 
+      if nGoodJets > 4: break
+      if deltaPhi(tree.jetP4[i].Phi(),tree.metP4[0].Phi())<0.5: 
+        matched = True
+  if matched: 
+    return False
+  else:
+    return True
+
 # ===========================================================================
 
 #initialize 
 n_jet=0; n_met=0; n_njet=0; n_nlep=0; n_ntau=0; n_npho=0; n_dphi=0;n_2ndjet=0;
 n_nbjet=0
+n_cleanjet = 0
 
 # Check the number of entries in the tree
 n_entries = input_tree.GetEntriesFast()
@@ -173,18 +211,8 @@ print 'INFO - Number of entries to be processed: ' + str(n_entries)
 
 # Loop over the entries
 for ientry in range(0,n_entries):
-  # if ientry!=104: continue
-  # Grab the n'th entry
   input_tree.GetEntry(ientry)
 
-  #print deltaPhi(input_tree.jetP4[0].Phi(),input_tree.jetP4[1].Phi() )
-  #print 'INFO ------------------------ Event '+str(ientry)+' ------------------------ '
-
-  dphi = -10000.
-
-  #  if(input_tree.metP4[0].Energy() > 200 ):  
-  #  n_met += 1
-  # if getNLooseLeptons(input_tree)>0:
   if getNLooseLeptons(input_tree)==0:
     if options.debug: print "%d (%d) \t Event: %d" % (ientry,n_nlep,input_tree.eventNum)
     n_nlep += 1
@@ -194,41 +222,24 @@ for ientry in range(0,n_entries):
         n_npho += 1
         if getNBJets(input_tree)==0:
           n_nbjet += 1
-
-  # Broken
-  # if(input_tree.jetP4.GetEntriesFast() > 1 and input_tree.jetP4[0].Pt() > 110 and input_tree.jetMonojetId[0] and input_tree.jetMonojetIdLoose[1]) : # and input_tree.jetPuId() > -0.62) : 
-  #   dphi = deltaPhi( input_tree.jetP4[0].Phi(),input_tree.jetP4[1].Phi() )
-  # else:
-  #    if (input_tree.jetP4.GetEntriesFast() < 2):
-  #      dphi= -99.999
-  #    else:
-  #      dphi = -10000.
-
-  # if (input_tree.jetP4.GetEntriesFast() > 0 and input_tree.jetP4[0].Pt() > 110 and input_tree.jetMonojetId[0]):
-  #   n_jet += 1
-  #   if (input_tree.jetP4.GetEntriesFast() == 1 or (input_tree.jetP4.GetEntriesFast() > 1 and input_tree.jetMonojetIdLoose[1])):
-  #     n_2ndjet += 1
-  #     if( fabs(dphi) < 2.5  or dphi == -99.999 ):
-  #       n_dphi += 1
-  #       if(input_tree.metP4[0].Energy() > 200 ):  
-  #         n_met += 1
-  #         if(input_tree.jetP4.GetEntriesFast() < 3): 
-  #           n_njet += 1
-  #           if(input_tree.lepP4.GetEntriesFast() < 1): 
-  #             n_nlep += 1
-  #               if(input_tree.photonP4.GetEntriesFast() < 1):
-  #                 n_npho += 1
+          if input_tree.metP4[0].Pt() > 200:  
+            n_met += 1
+            leading_jet = findLeadingJet(input_tree)
+            if leading_jet != None:
+              n_jet += 1
+              if isCleanJet(input_tree,leading_jet):
+                n_cleanjet += 1
+                if passedDPhi(input_tree):
+                  n_dphi += 1
 
 print 'INFO - Cut Flow Chart: '
-print 'INFO - FULL     '+ str(input_all.GetEntries() )
-print 'INFO - GoodVtx  '+ str(n_entries)  ,; PrintCompare(n_entries,50492)
-print 'INFO - NLep Cut '+ str(n_nlep)     ,; PrintCompare(n_nlep,33610)
-print 'INFO - NTau Cut '+ str(n_ntau)     ,; PrintCompare(n_ntau,27598)
-print 'INFO - NPho Cut '+ str(n_npho)     ,; PrintCompare(n_npho,26806)
-print 'INFO - NBJet Cut '+ str(n_nbjet)   ,; PrintCompare(n_nbjet,5180)
-
-print 'INFO - Jet Cut  '+ str(n_jet)      ,; PrintCompare(n_jet,1995)
-print 'INFO - 2_j Cut  '+ str(n_2ndjet)   ,; PrintCompare(n_2ndjet,1990)
-print 'INFO - Phi Cut  '+ str(n_dphi)     ,; PrintCompare(n_dphi,1727)
-print 'INFO - Met Cut  '+ str(n_met)      ,; PrintCompare(n_met,996)
-print 'INFO - NJet Cut '+ str(n_njet)     ,; PrintCompare(n_njet,644)
+print 'INFO - FULL         '+ str(input_all.GetEntries() )
+print 'INFO - GoodVtx      '+ str(n_entries)  ,; PrintCompare(n_entries,50492)
+print 'INFO - NLep Cut     '+ str(n_nlep)     ,; PrintCompare(n_nlep,33610)
+print 'INFO - NTau Cut     '+ str(n_ntau)     ,; PrintCompare(n_ntau,27598)
+print 'INFO - NPho Cut     '+ str(n_npho)     ,; PrintCompare(n_npho,26806)
+print 'INFO - NBJet Cut    '+ str(n_nbjet)    ,; PrintCompare(n_nbjet,5167)
+print 'INFO - Met Cut      '+ str(n_met)      ,; PrintCompare(n_met,1461)
+print 'INFO - Leading Jet  '+ str(n_jet)      ,; PrintCompare(n_jet,1318)
+print 'INFO - Jet Cleaning '+ str(n_cleanjet) ,; PrintCompare(n_cleanjet,1303)
+print 'INFO - Phi Cut      '+ str(n_dphi)     ,; PrintCompare(n_dphi,1044)
