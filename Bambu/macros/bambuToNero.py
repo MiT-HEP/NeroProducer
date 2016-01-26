@@ -653,7 +653,7 @@ neroMod.AddFiller(mithep.nero.FatJetsFiller(mithep.nero.BaseFiller.kAK8Jets,
 
 neroMod.AddFiller(mithep.nero.FatJetsFiller(mithep.nero.BaseFiller.kCA15Jets,
     FatJetsName = ca15JetExtender.GetOutputName(),
-    MJId = True
+    MJIdOn = True
 ))
 
 neroMod.AddFiller(mithep.nero.FatJetsFiller(mithep.nero.BaseFiller.kAK8PuppiJets,
@@ -662,7 +662,7 @@ neroMod.AddFiller(mithep.nero.FatJetsFiller(mithep.nero.BaseFiller.kAK8PuppiJets
 
 neroMod.AddFiller(mithep.nero.FatJetsFiller(mithep.nero.BaseFiller.kCA15PuppiJets,
     FatJetsName = ca15PuppiJetExtender.GetOutputName(),
-    MJId = True
+    MJIdOn = True
 ))
 
 metFiller = mithep.nero.MetFiller(
@@ -675,7 +675,7 @@ metFiller = mithep.nero.MetFiller(
     MuonsName = tightMuons.GetOutputName()
 )
 neroMod.AddFiller(metFiller)
-neroMod.SetPrintLevel(1)
+neroMod.SetPrintLevel(0)
 
 neroMod.AddFiller(mithep.nero.PhotonsFiller(
     PhotonsName = baselinePhotons.GetOutputName(),
