@@ -18,7 +18,7 @@ mithep::nero::JetsFiller::defineBranches(TTree* _tree)
     out_.cachedPrefix="";
     break;
   case BaseFiller::kPuppiJets:
-    out_.cachedPrefix="";
+    out_.cachedPrefix="puppi";
     break;
   default:
     break;
