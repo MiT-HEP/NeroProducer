@@ -11,20 +11,22 @@ NtuplE fRamewOrk
 - [Skim](#user-content-skim)
 
 ## Directories
-* Core -> ROOT/C++ structure of the ntuples
-* Nero -> CMSSW plugins and MiniAOD code
+* Core -> ROOT/C++ structure of the ntuples.
+* Nero -> CMSSW plugins and MiniAOD code.
 * Skim -> Skimmer for the MiniAOD. 
-* Bambu -> Code to produce from Bambu (_TODO_)
+* Bambu -> Code to produce from Bambu. 
 
 ## Nero
-The Nero directory contains the ntuple producer. It is designed to run on MiniAOD within the CMSSW framework.
+The Nero directory contains the ntuple producer. 
+It is designed to run on MiniAOD within the CMSSW framework.
 
 
 ### CMSSW compile
-* Notice that cmssw should be init when the src directory is empty
+* Notice that cmssw should be init when the src directory is empty.
+Currently the supported version are CMSSW\_7\_4\_15\_patch1 (checking out the branch 74X) and CMSSW\_7\_6\_3\_patch2 (master).
 ```
-cmsrel CMSSW_7_4_5
-cd CMSSW_7_4_5/src
+cmsrel CMSSW_7_6_3_patch2
+cd CMSSW_7_6_3_patch2/src
 cmsenv
 wget --no-check-certificate 'https://raw.githubusercontent.com/MiT-HEP/NeroProducer/master/Nero/script/setup.sh' -O /tmp/$USER/setup.sh
 source /tmp/$USER/setup.sh
@@ -42,7 +44,7 @@ scram b -j 16
 ```
 
 ### How to Run
-If running on data, set the isData flag to True, else False
+If running on data, set the isData flag to True, else False.
 ```
 cd NeroProducer/Nero/test
 cmsRun testNero.py isData=True
@@ -86,8 +88,13 @@ python crabNero.py
 ```
 python multicrab.py  -c status -w NeroSubmission
 ```
+or 
+```
+crab status NeroSubmission/mydir
+```
 
-### Core
+## Core
+Core can be either compiled within CMSSW or standalone.
 * Compile
 ```
 cd NeroProducer/Core
@@ -129,3 +136,6 @@ edit crabCfg.py to use _test/runSkim.py_
 ```
 crab submit
 ```
+
+
+
