@@ -644,7 +644,8 @@ neroMod.AddFiller(mithep.nero.LeptonsFiller(
     VerticesName = goodPVFilterMod.GetOutputName(),
     PFCandsName = mithep.Names.gkPFCandidatesBrn,
     NoPUPFCandsName = separatePileUpMod.GetPFNoPileUpName(),
-    PUPFCandsName = separatePileUpMod.GetPFPileUpName()
+    PUPFCandsName = separatePileUpMod.GetPFPileUpName(),
+    ElectronMVAType = 'IDEGamma2015NonTrig25ns'
 ))
 
 neroMod.AddFiller(mithep.nero.FatJetsFiller(mithep.nero.BaseFiller.kAK8Jets,
