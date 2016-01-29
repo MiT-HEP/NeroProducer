@@ -189,7 +189,7 @@ def TryPullReq(sha, origin):
 		cmd = "cd %s/%s/src && %s &&" %(tmpdir,CMSSW,cmsenv)
 		cmd += "cd NeroProducer/Nero/test && "
 		#cmd += "sed -i'' 's:###FILELIST###:"+flStr+":g' " + "testNero.py"
-		cmd += "sed -i'' 's:###FILELIST###:"+flStr+"\n###FILELIST###:g' " + "testNero.py"
+		cmd += "sed -i'' 's:###FILELIST###:"+flStr+"\\n###FILELIST###:g' " + "testNero.py"
 		call(cmd,shell=True)
 
 	if maxEvtStr != "":

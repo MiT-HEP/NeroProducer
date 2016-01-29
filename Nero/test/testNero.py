@@ -207,10 +207,10 @@ process.puppiSequence += process.pfMETPuppi
 ### set up JEC ###
 cmssw_base = os.environ['CMSSW_BASE']
 if options.isData:
-   connectString = cms.string('sqlite:////'+cmssw_base+'/src/NeroProducer/Nero/test/jec/Summer15_25nsV6_DATA.db')
+   connectString = cms.string('sqlite:jec/Summer15_25nsV6_DATA.db')
    tagName = 'Summer15_25nsV6_DATA_AK4PFPuppi'
 else:
-   connectString = cms.string('sqlite:////'+cmssw_base+'/src/NeroProducer/Nero/test/jec/Summer15_25nsV6_MC.db')
+   connectString = cms.string('sqlite:jec/Summer15_25nsV6_MC.db')
    tagName = 'Summer15_25nsV6_MC_AK4PFPuppi'
 process.jec = cms.ESSource("PoolDBESSource",
       DBParameters = cms.PSet(
