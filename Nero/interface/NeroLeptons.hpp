@@ -19,7 +19,7 @@ class NeroLeptons : virtual public NeroCollection,
         //
         class myLepton{
             public:
-                myLepton(){ chiso=-999; nhiso=-999; phoiso=-999; puiso=-999;}
+                myLepton(){ chiso=-999; nhiso=-999; phoiso=-999; puiso=-999;mva = -999;}
                 float iso;
                 TLorentzVector p4;
                 unsigned selBits;
@@ -30,6 +30,8 @@ class NeroLeptons : virtual public NeroCollection,
                 float nhiso;
                 float phoiso;
                 float puiso;
+
+                float mva;
         };
 
         // to be setted by the vertex
@@ -46,6 +48,7 @@ class NeroLeptons : virtual public NeroCollection,
         edm::EDGetTokenT<edm::ValueMap<bool> > 	el_looseid_token;
         edm::EDGetTokenT<edm::ValueMap<bool> > 	el_mediumid_token;
         edm::EDGetTokenT<edm::ValueMap<bool> > 	el_tightid_token;
+        edm::EDGetTokenT<edm::ValueMap<float> > el_mva_token;
 
         //edm::EDGetTokenT<edm::ValueMap<float> > 	el_iso_ch_token;
         //edm::EDGetTokenT<edm::ValueMap<float> > 	el_iso_nh_token;
@@ -58,6 +61,7 @@ class NeroLeptons : virtual public NeroCollection,
         edm::Handle<edm::ValueMap<bool> > el_loose_id;
         edm::Handle<edm::ValueMap<bool> > el_medium_id;
         edm::Handle<edm::ValueMap<bool> > el_tight_id;
+        edm::Handle<edm::ValueMap<float> > el_mva;
 
         //edm::Handle<edm::ValueMap<float> > el_iso_ch;
         //edm::Handle<edm::ValueMap<float> > el_iso_nh;
