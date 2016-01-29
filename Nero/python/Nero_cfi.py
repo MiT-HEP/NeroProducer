@@ -131,7 +131,7 @@ nero = cms.EDAnalyzer("Nero",
 
     minMuPt   = cms.double (10.),
     minMuEta  = cms.double (2.4),
-    maxMuIso  = cms.double (0.2),
+    maxMuIso  = cms.double (-1),
    
     minLepN   = cms.int32 (0),
     matchLep  = cms.bool (True),
