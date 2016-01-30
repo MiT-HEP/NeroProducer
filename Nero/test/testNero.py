@@ -364,8 +364,8 @@ process.p = cms.Path(
                 process.egmPhotonIDSequence *
                 process.photonIDValueMapProducer * ## ISO MAP FOR PHOTONS
                 process.electronIDValueMapProducer * ## ISO MAP FOR PHOTONS
-                process.puppiSequence * ## does puppi, puppi met, type1 corrections
-                process.jetSequence *
+                #process.puppiSequence * ## does puppi, puppi met, type1 corrections
+                #process.jetSequence *
                 #process.jecSequence *
                 process.nero
                 )

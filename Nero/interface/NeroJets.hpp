@@ -14,7 +14,6 @@
 #include "JetMETCorrections/Objects/interface/JetCorrector.h"
 //  ----
 
-
 class NeroJets : virtual public NeroCollection, virtual public BareJets
 {
     public:
