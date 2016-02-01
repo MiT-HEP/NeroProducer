@@ -17,8 +17,12 @@ namespace mithep {
       };
 
     public:
-      LeptonsFiller() {}
-      ~LeptonsFiller() {}
+      LeptonsFiller() {
+        ElectronDiscriminator = new ElectronIDMVA();
+      }
+      ~LeptonsFiller() {
+        delete ElectronDiscriminator; 
+      }
 
       BareCollection* getObject() override { return &out_; }
       BaseFiller::Collection collection() const override { return BaseFiller::kLeptons; }
@@ -78,8 +82,7 @@ namespace mithep {
       TString puPFCandsName_ = "PFPileup";
       Bool_t useMVA = kTRUE;
       Bool_t savePassing_[nLeptons][32]{};
-      ElectronIDMVA *ElectronDiscriminator = new ElectronIDMVA();
-
+      ElectronIDMVA *ElectronDiscriminator;
       BareEvent* event_;
 
       ClassDef(LeptonsFiller, 0)
