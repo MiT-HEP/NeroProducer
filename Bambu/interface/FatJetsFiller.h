@@ -32,6 +32,7 @@ namespace mithep {
       void SetFatJetsName(char const* _name) { fatJetsName_ = _name; }
 
       void SetMVAOn(bool b) { MVAOn = b; }
+      void SetMJIdOn(bool b) { applyMJId=b; }
 
     private:
       BareFatJets out_{};
@@ -40,7 +41,8 @@ namespace mithep {
 
       TString fatJetsName_ = "AKt8PFJetsCHS";
       
-      bool MVAOn;
+      bool applyMJId=false;      
+      bool MVAOn=false;
       NeuralNet *topANN;
       float nn_mSD;
       float nn_QGTag;

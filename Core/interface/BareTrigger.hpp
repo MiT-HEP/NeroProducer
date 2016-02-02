@@ -25,11 +25,12 @@ class BareTrigger: virtual public BareCollection
         // new'ed in the constructor
         vector<string> *triggerNames;
 
-        vector<int>  *triggerLeps{0};
+        vector<int>  *triggerLeps{0}; // TODO: int->unsigned, break back compatibility
         vector<int>  *triggerJets{0};
         vector<int>  *triggerTaus{0};
         vector<int>  *triggerPhotons{0};
 
+        vector<unsigned>  *triggerNoneTaus{0};
 };
 
 #endif

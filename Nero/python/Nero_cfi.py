@@ -18,11 +18,14 @@ nero = cms.EDAnalyzer("Nero",
     photons = cms.InputTag("slimmedPhotons"),
     jets = cms.InputTag("slimmedJets"),
     puppijets = cms.InputTag("slimmedJetsPuppi"),
-    fatjets = cms.InputTag("slimmedJetsAK8"),
-    puppifatjets = cms.InputTag("slimmedJetsAK8"),
+    chsAK8 = cms.InputTag("slimmedJetsAK8"),
+    puppiAK8 = cms.InputTag("packedPatJetsPFAK8Puppi"),
+    chsCA15 = cms.InputTag("packedPatJetsPFCA15CHS"),
+    puppiCA15 = cms.InputTag("packedPatJetsPFCA15Puppi"),
     mets = cms.InputTag("slimmedMETs"),
     metsNoHF = cms.InputTag("slimmedMETsNoHF"),
-    metsPuppi = cms.InputTag("slimmedMETsPuppi"),
+    metsPuppi = cms.InputTag("type1PuppiMET"),
+    metsPuppiUncorrected = cms.InputTag("pfMETPuppi"),
     pfCands = cms.InputTag("packedPFCandidates"),
 
 
@@ -92,14 +95,35 @@ nero = cms.EDAnalyzer("Nero",
     minPuppiJetPt  = cms.double (25.),
     minPuppiJetEta = cms.double (4.7),
     minPuppiJetN   = cms.int32  (0),
-    minPuppiJetId  = cms.string ('all'),
+    minPuppiJetId  = cms.string ('loose'),
+    
+    ## CHS AK8
+    minAK8CHSPt  = cms.double (100.),
+    minAK8CHSEta = cms.double (4.7),
+    minAK8CHSN   = cms.int32  (0),
+    minAK8CHSId  = cms.string ('loose'),
+    AK8CHSName   = cms.string ('AK8CHS'),
 
-    ## PUPPI FAT
-    minPuppiFatJetPt  = cms.double (100.),
-    minPuppiFatJetEta = cms.double (4.7),
-    minPuppiFatJetN   = cms.int32  (0),
-    minPuppiFatJetId  = cms.string ('none'),
-    useFatJetCA15     = cms.bool   (False),
+    ## Puppi AK8
+    minAK8PuppiPt  = cms.double (100.),
+    minAK8PuppiEta = cms.double (4.7),
+    minAK8PuppiN   = cms.int32  (0),
+    minAK8PuppiId  = cms.string ('loose'),
+    AK8PuppiName   = cms.string ('AK8Puppi'),
+
+    ## CHS CA15
+    minCA15CHSPt  = cms.double (100.),
+    minCA15CHSEta = cms.double (4.7),
+    minCA15CHSN   = cms.int32  (0),
+    minCA15CHSId  = cms.string ('loose'),
+    CA15CHSName   = cms.string ('CA15CHS'),
+
+    ## PUPPI CA15
+    minCA15PuppiPt  = cms.double (100.),
+    minCA15PuppiEta = cms.double (4.7),
+    minCA15PuppiN   = cms.int32  (0),
+    minCA15PuppiId  = cms.string ('loose'),
+    CA15PuppiName   = cms.string ('CA15Puppi'),
 
     minElePt  = cms.double (10.),
     minEleEta = cms.double (2.5),
@@ -107,7 +131,7 @@ nero = cms.EDAnalyzer("Nero",
 
     minMuPt   = cms.double (10.),
     minMuEta  = cms.double (2.4),
-    maxMuIso  = cms.double (0.2),
+    maxMuIso  = cms.double (-1),
    
     minLepN   = cms.int32 (0),
     matchLep  = cms.bool (True),
@@ -127,7 +151,7 @@ nero = cms.EDAnalyzer("Nero",
     particleGun = cms.untracked.bool(False),
                       
     minPhoPt  = cms.double (15.),
-    maxPhoEta = cms.double (2.5),
+    minPhoEta = cms.double (2.5),
     minPhoN   = cms.int32  (0),
     maxPhoIso = cms.double (-1.),
     matchPho  = cms.bool (False),

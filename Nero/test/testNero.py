@@ -1,6 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 import FWCore.ParameterSet.VarParsing as VarParsing
 import re
+import os
 
 process = cms.Process("nero")
 
@@ -49,6 +50,7 @@ fileList = [
 ]
 
 
+
 ### do not remove the line below!
 ###FILELIST###
 
@@ -95,11 +97,8 @@ else:
 if isData and not options.isGrid : ## don't load the lumiMaks, will be called by crab
     #pass
     import FWCore.PythonUtilities.LumiList as LumiList
-    ## GoldenJsn
-    #process.source.lumisToProcess = LumiList.LumiList(filename='/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt').getVLuminosityBlockRange()
-    # DCS only
-    #process.source.lumisToProcess = LumiList.LumiList(filename='/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/DCSOnly/json_DCSONLY_Run2015B.txt').getVLuminosityBlockRange()
-    process.source.lumisToProcess = LumiList.LumiList(filename='/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Cert_246908-258159_13TeV_PromptReco_Collisions15_25ns_JSON_v3.txt').getVLuminosityBlockRange()
+    ## SILVER
+    process.source.lumisToProcess = LumiList.LumiList(filename='/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_Silver.txt').getVLuminosityBlockRange()
 
 
 ### HBB 74X ####
@@ -159,203 +158,139 @@ for obj in ['ele','pho']:
   if obj=='ele': directory = 'RecoEgamma.ElectronIdentification'
   if obj=='pho': directory = 'RecoEgamma.PhotonIdentification'
   for ID in ['veto','medium','loose','tight']:
-	if obj == 'pho' and ID == 'veto' : continue
-	if obj == 'pho' : replace['bx'] = '50ns' ##FIXME, we have only this
+      if obj == 'pho' and ID == 'veto' : continue
+      if obj == 'pho' : replace['bx'] = '50ns' ##FIXME, we have only this
 
-	replace['id'] = ID
-	cmd = 'string = process.nero.' + obj + ID.title() + 'IdMap.value()'
-	exec(cmd)
-	cmd = 'process.nero.'+obj + ID.title() + 'IdMap = cms.InputTag("' + string % replace+ '")'
-	print 'executing replacement:',cmd
-	exec(cmd)
+      replace['id'] = ID
+      cmd = 'string = process.nero.' + obj + ID.title() + 'IdMap.value()'
+      exec(cmd)
+      cmd = 'process.nero.'+obj + ID.title() + 'IdMap = cms.InputTag("' + string % replace+ '")'
+      print 'executing replacement:',cmd
+      exec(cmd)
 
-	myid = (string%replace ).replace('-','_').split(':')[1]
-	myid = re.sub('_standalone.*','',myid)
-	toProduce[obj][ directory + '.Identification.' + myid + "_cff"] = 1 #remove duplicates
+      myid = (string%replace ).replace('-','_').split(':')[1]
+      myid = re.sub('_standalone.*','',myid)
+      toProduce[obj][ directory + '.Identification.' + myid + "_cff"] = 1 #remove duplicates
 
-#-----------------------FAT JET CLUSTERING-----------------------
 
-useCA15 = process.nero.useFatJetCA15
+#----------------------PUPPI, MET, & CORRECTIONS-------------------
+process.puppiSequence = cms.Sequence()
+### puppi ###
+process.load('CommonTools.PileupAlgos.Puppi_cff')
+process.puppi.candName = cms.InputTag('packedPFCandidates')
+process.puppi.vertexName = cms.InputTag('offlineSlimmedPrimaryVertices')
+process.pfCandNoLep = cms.EDFilter("CandPtrSelector", src = cms.InputTag("packedPFCandidates"), cut = cms.string("abs(pdgId) != 13 && abs(pdgId) != 11 && abs(pdgId) != 15"))
+process.pfCandLep   = cms.EDFilter("CandPtrSelector", src = cms.InputTag("packedPFCandidates"), cut = cms.string("abs(pdgId) == 13 || abs(pdgId) == 11 || abs(pdgId) == 15"))
+process.puppinolep = process.puppi.clone()
+process.puppinolep.candName = 'pfCandNoLep'
+process.puppiSequence += process.puppi
+process.puppiSequence += process.pfCandNoLep
+process.puppiSequence += process.pfCandLep
+process.puppiSequence += process.puppinolep
 
-process.jetSequence = cms.Sequence()
-if useCA15:
-  from RecoJets.JetProducers.ak4PFJets_cfi import ak4PFJets
-  from RecoJets.JetProducers.ak4PFJetsPuppi_cfi import ak4PFJetsPuppi
-  from RecoJets.JetProducers.ak4GenJets_cfi import ak4GenJets
-  from PhysicsTools.PatAlgos.tools.pfTools import *
-  from RecoJets.JetProducers.nJettinessAdder_cfi import Njettiness
+### MET ###
+process.load('RecoMET.METProducers.PFMET_cfi')
+process.puppiForMET = cms.EDProducer("CandViewMerger",src = cms.VInputTag( 'puppinolep','pfCandLep'))
+process.puppiSequence += process.puppiForMET
+process.pfMETPuppi = process.pfMet.clone();
+process.pfMETPuppi.src = cms.InputTag('puppiForMET')
+process.pfMETPuppi.calculateSignificance = False
+process.puppiSequence += process.pfMETPuppi
 
-  adaptPVs(process, pvCollection=cms.InputTag('offlineSlimmedPrimaryVertices'))
+### set up JEC ###
+cmssw_base = os.environ['CMSSW_BASE']
+if options.isData:
+   connectString = cms.string('sqlite:jec/Summer15_25nsV6_DATA.db')
+   tagName = 'Summer15_25nsV6_DATA_AK4PFPuppi'
+else:
+   connectString = cms.string('sqlite:jec/Summer15_25nsV6_MC.db')
+   tagName = 'Summer15_25nsV6_MC_AK4PFPuppi'
+process.jec = cms.ESSource("PoolDBESSource",
+      DBParameters = cms.PSet(
+        messageLevel = cms.untracked.int32(0)
+      ),
+      timetype = cms.string('runnumber'),
+      toGet = cms.VPSet(
+      cms.PSet(
+            record = cms.string('JetCorrectionsRecord'),
+            tag    = cms.string('JetCorrectorParametersCollection_%s'%tagName),
+            label  = cms.untracked.string('AK4PFPuppi')
+      ),
+     ), 
+     connect = connectString
+)
+process.load('JetMETCorrections.Configuration.JetCorrectorsAllAlgos_cff')
+puppilabel='PFPuppi'
+process.ak4PuppiL1FastjetCorrector  = process.ak4PFCHSL1FastjetCorrector.clone (algorithm   = cms.string('AK4'+puppilabel))
+process.ak4PuppiL2RelativeCorrector = process.ak4PFCHSL2RelativeCorrector.clone(algorithm   = cms.string('AK4'+puppilabel))
+process.ak4PuppiL3AbsoluteCorrector = process.ak4PFCHSL3AbsoluteCorrector.clone(algorithm   = cms.string('AK4'+puppilabel))
+process.ak4PuppiResidualCorrector   = process.ak4PFCHSResidualCorrector.clone  (algorithm   = cms.string('AK4'+puppilabel))
+process.ak4PuppiL1FastL2L3Corrector = process.ak4PFL1FastL2L3Corrector.clone(
+        correctors = cms.VInputTag("ak4PuppiL1FastjetCorrector", "ak4PuppiL2RelativeCorrector", "ak4PuppiL3AbsoluteCorrector")
+)
+process.ak4PuppiL1FastL2L3ResidualCorrector = process.ak4PFL1FastL2L3Corrector.clone(
+        correctors = cms.VInputTag("ak4PuppiL1FastjetCorrector", "ak4PuppiL2RelativeCorrector", "ak4PuppiL3AbsoluteCorrector",'ak4PuppiResidualCorrector')
+)
+process.ak4PuppiL1FastL2L3Chain = cms.Sequence(
+        process.ak4PuppiL1FastjetCorrector * process.ak4PuppiL2RelativeCorrector * process.ak4PuppiL3AbsoluteCorrector * process.ak4PuppiL1FastL2L3Corrector
+)
+process.ak4PuppiL1FastL2L3ResidualChain = cms.Sequence(
+        process.ak4PuppiL1FastjetCorrector * process.ak4PuppiL2RelativeCorrector * process.ak4PuppiL3AbsoluteCorrector * process.ak4PuppiResidualCorrector * process.ak4PuppiL1FastL2L3ResidualCorrector
+)
+if isData:
+  process.puppiSequence += process.ak4PuppiL1FastL2L3ResidualChain
+else:
+  process.puppiSequence += process.ak4PuppiL1FastL2L3Chain
 
-  algoLabel = 'CA'
-  jetAlgo = 'CambridgeAachen'
+### MET corrections ###
+from RecoJets.JetProducers.ak4PFJets_cfi import ak4PFJets
+process.AK4PFJetsPuppi = ak4PFJets.clone(
+        src          = cms.InputTag('puppinolep'),
+        jetAlgorithm = cms.string("AntiKt"),
+        rParam       = cms.double(0.4),
+        jetPtMin     = cms.double(20)
+)
 
-  ### puppi ###
-  process.load('CommonTools.PileupAlgos.Puppi_cff')
-  process.puppi.candName = cms.InputTag('packedPFCandidates')
-  process.puppi.vertexName = cms.InputTag('offlineSlimmedPrimaryVertices')
-  process.jetSequence += process.puppi
+process.puppiSequence += process.AK4PFJetsPuppi
+process.puppiMETCorr = cms.EDProducer("PFJetMETcorrInputProducer",
+    src = cms.InputTag('AK4PFJetsPuppi'),
+    offsetCorrLabel = cms.InputTag("ak4PuppiL1FastjetCorrector"),
+    jetCorrLabel = cms.InputTag("ak4PuppiL1FastL2L3Corrector"),
+    jetCorrLabelRes = cms.InputTag("ak4PuppiL1FastL2L3ResidualCorrector"),
+    jetCorrEtaMax = cms.double(9.9),
+    type1JetPtThreshold = cms.double(15.0),
+    skipEM = cms.bool(True),
+    skipEMfractionThreshold = cms.double(0.90),
+    skipMuons = cms.bool(True),
+    skipMuonSelection = cms.string("isGlobalMuon | isStandAloneMuon")
+)
+if isData:
+  process.puppiMETCorr.jetCorrLabel = cms.InputTag("ak4PuppiL1FastL2L3ResidualCorrector")
+process.puppiSequence += process.puppiMETCorr
 
-  ### jet clustering ### 
-  # set up puppi jets
-  process.packedGenParticlesForJetsNoNu = cms.EDFilter(
-    "CandPtrSelector", 
-    src = cms.InputTag("packedGenParticles"), 
-    cut = cms.string("abs(pdgId) != 12 && abs(pdgId) != 14 && abs(pdgId) != 16")
-  )
-  process.ca15GenJetsNoNu = ak4GenJets.clone(
-    jetAlgorithm = cms.string('CambridgeAachen'),
-    rParam = cms.double(1.5),
-    src = cms.InputTag("packedGenParticlesForJetsNoNu")
-  )
-  process.ca15PFJetsPuppi = ak4PFJetsPuppi.clone(
-    jetAlgorithm = cms.string('CambridgeAachen'),
-    rParam = cms.double(1.5),
-    src = cms.InputTag('puppi'),
-    jetPtMin = cms.double(250),
-    doAreaFastjet = cms.bool(True)
-  )
-  # set up soft drop (for subjets and mass)
-  process.ca15GenJetsNoNuSD = process.ca15GenJetsNoNu.clone(
-    useSoftDrop = cms.bool(True),
-    R0 = cms.double(1.5),
-    zcut = cms.double(0.2),
-    beta = cms.double(1.0),
-    writeCompound = cms.bool(True),
-    jetCollInstanceName=cms.string("SubJets")
-  )
-  process.ca15PFJetsPuppiSD = process.ca15PFJetsPuppi.clone(
-    useSoftDrop = cms.bool(True),
-    R0 = cms.double(1.5),
-    zcut = cms.double(0.2),
-    beta = cms.double(1.0),
-    writeCompound = cms.bool(True),
-    jetCollInstanceName=cms.string("SubJets")
-  )
-  process.jetSequence += process.packedGenParticlesForJetsNoNu
-  process.jetSequence += process.ca15GenJetsNoNu
-  process.jetSequence += process.ca15GenJetsNoNuSD
-  process.jetSequence += process.ca15PFJetsPuppi
-  process.jetSequence += process.ca15PFJetsPuppiSD
+process.type1PuppiMET = cms.EDProducer("CorrectedPFMETProducer",
+    src = cms.InputTag('pfMETPuppi'),
+    applyType0Corrections = cms.bool(False),
+    applyType1Corrections = cms.bool(True),
+    srcCorrections = cms.VInputTag(
+      cms.InputTag('puppiMETCorr','type1')
+    ),
+    applyType2Corrections = cms.bool(False)
+)
+process.puppiSequence += process.type1PuppiMET
 
-  ### get out soft drop kinematics ###
-  process.SoftDrop15 = cms.EDProducer('RecoJetDeltaRValueMapProducer',
-      src = cms.InputTag('ca15PFJetsPuppi'),
-      matched = cms.InputTag('ca15PFJetsPuppiSD'),
-      distMax = cms.double(1.5),
-      values = cms.vstring('mass'),
-      valueLabels = cms.vstring('Mass'),
-      lazyParser = cms.bool(True)
-  )
-  process.jetSequence += process.SoftDrop15
+#------------------------FATJETS--------------------------------
 
-  ### and finally, N-subjettiness ###
-  process.Njettiness15 = Njettiness.clone(
-      src = cms.InputTag('ca15PFJetsPuppi'),
-      R0 = cms.double(1.5),
-      Njets = cms.vuint32(1,2,3,4)
-  )
-  process.jetSequence += process.Njettiness15
-
-  bTagInfos = ['pfImpactParameterTagInfos',
-               'pfSecondaryVertexTagInfos',
-               'pfInclusiveSecondaryVertexFinderTagInfos'
-              ]
-  bTagDiscriminators = ['pfCombinedInclusiveSecondaryVertexV2BJetTags']
-
-  ### add jet collections ###
-  addJetCollection(
-      process,
-      labelName='PuppiJetsCA15',
-      jetSource=cms.InputTag('ca15PFJetsPuppi'),
-      algo=algoLabel,           # needed for jet flavor clustering
-      rParam=1.5, # needed for jet flavor clustering
-      pfCandidates = cms.InputTag('puppi'),
-      pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
-      svSource = cms.InputTag('slimmedSecondaryVertices'),
-      muSource = cms.InputTag('slimmedMuons'),
-      elSource = cms.InputTag('slimmedElectrons'),
-      btagInfos = bTagInfos,
-      btagDiscriminators = ['None'],
-      genJetCollection = cms.InputTag('ca15GenJetsNoNu'),
-      genParticles = cms.InputTag('prunedGenParticles'),
-      getJetMCFlavour=False,
-  )
-  addJetCollection(
-      process,
-      labelName='SoftDropPuppiJetsCA15',
-      jetSource=cms.InputTag('ca15PFJetsPuppiSD'),
-      algo=algoLabel,
-      rParam=1.5,
-      btagInfos = ['None'],
-      btagDiscriminators = ['None'],
-      genJetCollection=cms.InputTag('ca15GenJetsNoNu'),
-      genParticles=cms.InputTag('prunedGenParticles'),
-      getJetMCFlavour=False,
-  )
-  addJetCollection(
-      process,
-      labelName='SoftDropPuppiSubJetsCA15',
-      jetSource=cms.InputTag('ca15PFJetsPuppiSD','SubJets'),
-      algo=algoLabel,
-      rParam=1.5,
-      pfCandidates = cms.InputTag('puppi'),
-      pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
-      svSource = cms.InputTag('slimmedSecondaryVertices'),
-      muSource = cms.InputTag('slimmedMuons'),
-      elSource = cms.InputTag('slimmedElectrons'),
-      btagInfos = bTagInfos,
-      btagDiscriminators = bTagDiscriminators,
-      genJetCollection=cms.InputTag('ca15GenJetsNoNuSD','SubJets'),
-      genParticles=cms.InputTag('prunedGenParticles'),
-      explicitJTA=True,
-      svClustering=True,
-      fatJets=cms.InputTag('ca15PFJetsPuppi'),
-      groomedFatJets=cms.InputTag('ca15PFJetsPuppiSD'),
-      runIVF=False,
-      getJetMCFlavour=False,
-  )
-
-  process.jetSequence += process.patJetPartonMatchPuppiJetsCA15
-  process.jetSequence += process.patJetGenJetMatchPuppiJetsCA15
-  process.jetSequence += process.patJetsPuppiJetsCA15
-  process.jetSequence += process.selectedPatJetsPuppiJetsCA15
-
-  process.jetSequence += process.patJetPartonMatchSoftDropPuppiJetsCA15
-  process.jetSequence += process.patJetGenJetMatchSoftDropPuppiJetsCA15
-  process.jetSequence += process.patJetsSoftDropPuppiJetsCA15
-  process.jetSequence += process.selectedPatJetsSoftDropPuppiJetsCA15
-
-  process.jetSequence += process.patJetPartonMatchSoftDropPuppiSubJetsCA15
-  process.jetSequence += process.patJetGenJetMatchSoftDropPuppiSubJetsCA15
-  process.jetSequence += process.pfImpactParameterTagInfosSoftDropPuppiSubJetsCA15
-  process.jetSequence += process.pfInclusiveSecondaryVertexFinderTagInfosSoftDropPuppiSubJetsCA15
-  process.jetSequence += process.pfCombinedInclusiveSecondaryVertexV2BJetTagsSoftDropPuppiSubJetsCA15
-  process.jetSequence += process.patJetsSoftDropPuppiSubJetsCA15
-  process.jetSequence += process.selectedPatJetsSoftDropPuppiSubJetsCA15
-
-  ### link groomed fatjets with subjets ###
-  process.CA15SoftDropPuppiJetsMerged = cms.EDProducer('BoostedJetMerger',
-      jetSrc=cms.InputTag('selectedPatJetsSoftDropPuppiJetsCA15'),
-      subjetSrc=cms.InputTag('selectedPatJetsSoftDropPuppiSubJetsCA15'),
-  )
-  process.jetSequence += process.CA15SoftDropPuppiJetsMerged
-
-  ### pack fat jets with subjets ###
-  process.CA15PuppiJetsPacked = cms.EDProducer('JetSubstructurePacker',
-      jetSrc = cms.InputTag('selectedPatJetsPuppiJetsCA15'),
-      distMax = cms.double(1.5),
-      algoTags = cms.VInputTag(),
-      algoLabels = cms.vstring(),
-      fixDaughters = cms.bool(False)
-  )
-  process.CA15PuppiJetsPacked.algoTags.append(cms.InputTag('CA15SoftDropPuppiJetsMerged'))
-  process.CA15PuppiJetsPacked.algoLabels.append('SoftDrop')
-  process.jetSequence += process.CA15PuppiJetsPacked
-
-  process.patJetsPuppiJetsCA15.userData.userFloats.src += ['SoftDrop15:Mass']
-  process.patJetsPuppiJetsCA15.userData.userFloats.src += ['Njettiness15:tau1','Njettiness15:tau2','Njettiness15:tau3','Njettiness15:tau4']
-
+from NeroProducer.Nero.makeFatJets_cff import *
+fatjetInitSequence = initFatJets(process,isData)
+ak8PuppiSequence = makeFatJets(process,isData=isData,pfCandidates='puppiForMET',algoLabel='AK',jetRadius=0.8)
+ca15CHSSequence = makeFatJets(process,isData=isData,pfCandidates='pfCHS',algoLabel='CA',jetRadius=1.5)
+ca15PuppiSequence = makeFatJets(process,isData=isData,pfCandidates='puppiForMET',algoLabel='CA',jetRadius=1.5)
+process.jetSequence = cms.Sequence(fatjetInitSequence*
+                                     ak8PuppiSequence*
+                                     ca15CHSSequence*
+                                     ca15PuppiSequence
+                                    )
 
 #-----------------------ELECTRON ID-------------------------------
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
@@ -495,9 +430,10 @@ process.p = cms.Path(
                 process.egmPhotonIDSequence *
                 process.photonIDValueMapProducer * ## ISO MAP FOR PHOTONS
                 process.electronIDValueMapProducer * ## ISO MAP FOR PHOTONS
-		process.HBB * ## HBB 74X
-                process.jetSequence*
-		#process.jecSequence *
+                process.HBB * ## HBB 74X
+                process.puppiSequence * ## does puppi, puppi met, type1 corrections
+                process.jetSequence *
+            		#process.jecSequence *
                 process.nero
                 )
 

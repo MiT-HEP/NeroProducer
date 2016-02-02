@@ -11,6 +11,7 @@ parser = OptionParser(usage = "usage");
 parser.add_option("-y","--yes",dest="yes",type="int",help="Should I assume yes as an answer. [0-3],0 = ask, 1= almost always, 3= yes (dangerous).",default=0);
 parser.add_option("-t","--token",dest="token",type="string",help="token [Default=%default]",default="");
 parser.add_option("-f","--token-file",dest="tokenfile",type="string",help="tokenfile [Default=%default]",default=os.environ["HOME"]+"/.ssh/id_status_token");
+parser.add_option("-o","--override",dest="override",type="string",help="setup file to be parser instead of the PR one [Default=%default]",default="");
 
 (opts,args) = parser.parse_args()
 
@@ -71,9 +72,15 @@ def TryPullReq(sha, origin):
 	dep ="rm %s/setup.sh ; wget --no-check-certificate 'https://raw.githubusercontent.com/%s/%s/Nero/script/setup.sh' -O %s/setup.sh"% (tmpdir,origin,sha,tmpdir)
 	print "Calling",dep ##DEBUG
 	call (dep,shell=True)
+	if opts.override != "":
+		print cyan+"-> Replace setup.sh"+white
+		cmd = "cp -v %s %s/setup.sh"%(opts.override,tmpdir)
+		call(cmd,shell=True)
 	setup =open("%s/setup.sh"%tmpdir)
 	dangerous = re.compile('[$`;!]')
 	options=""
+	flStr=""
+	maxEvtStr=""
 	for line in setup:
 		if '[CMSSW]' in line and not dangerous.search(line): 
 			# line is of the form # [CMSSW] CMSSW_release
@@ -87,6 +94,22 @@ def TryPullReq(sha, origin):
 			for i in range(0,len(parts)-1):
 				if parts[i] == '[Options]':
 					options = " ".join(parts[i+1:])
+
+		if '[fileList]' in line and not dangerous.search(line):
+			parts = line.split()
+			for i in range(0, len(parts) -1 ) :
+				if parts[i] == "[fileList]":
+					inStr=parts[i+1]
+			fl = [ '"' + f + '"' for f in inStr.split(',') ]
+			flStr = "fileList = [ "+ ','.join(fl) + "]";
+			#replace
+			#cmd = "sed -i'' 's:###FILELIST###:"+flStr+":g' " + pset 
+			#call(cmd,shell=True)
+		if '[MaxEvents]' in line and not dangerous.search(line):
+			parts = line.split()
+			for i in range(0, len(parts) -1 ) :
+				if parts[i] == "[MaxEvents]":
+					maxEvtStr=parts[i+1]
 
 		l = line.split('#')[0]
 		l = re.sub('\n','',l)
@@ -159,6 +182,25 @@ def TryPullReq(sha, origin):
 		print "\t'"+cmd+"'"
 		return 4
 	
+	print cyan+"-> Replacing"+white
+	if flStr != "":
+		#replace
+		print ' * str=' + '"'+ flStr + '"'
+		cmd = "cd %s/%s/src && %s &&" %(tmpdir,CMSSW,cmsenv)
+		cmd += "cd NeroProducer/Nero/test && "
+		#cmd += "sed -i'' 's:###FILELIST###:"+flStr+":g' " + "testNero.py"
+		cmd += "sed -i'' 's:###FILELIST###:"+flStr+"\\n###FILELIST###:g' " + "testNero.py"
+		call(cmd,shell=True)
+
+	if maxEvtStr != "":
+		#replace
+		print ' * str=' + '"'+ maxEvtStr + '"'
+		rplStr="process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(%s) )"%maxEvtStr
+		cmd = "cd %s/%s/src && %s &&" %(tmpdir,CMSSW,cmsenv)
+		cmd += "cd NeroProducer/Nero/test && "
+		cmd += "sed -i'' 's:###FILELIST###:"+rplStr+":g' " + "testNero.py"
+		call(cmd,shell=True)
+
 	print cyan+"-> Test"+white
 	cmd = "cd %s/%s/src && %s &&" %(tmpdir,CMSSW,cmsenv)
 	cmd += "cd NeroProducer/Nero/test && "
@@ -265,14 +307,22 @@ if __name__ == "__main__":
 		if 'build' in available and ('success' not in available['build'] and 'pending' not in available['build']): 
 			print "PR:" +dict[id]["title"]+ " already checked:"
 			print "\t* build: " + available['build'] 
-			continue
+			if opts.yes<1:
+				print 
+				ans=raw_input("Do you want to re-test Pull Req. " +id+": "+ dict[id]['title'] + "? [y/n]" )
+				if ans.lower() != "y"  and ans.lower() != "yes" :  continue;
+			else: continue
 
 		## if failed to run, continue
 		if 'run' in available and 'success' not in available['run']:
 			print "PR:" +dict[id]["title"]+ " already checked:"
 			if 'build' in available: print "\t* build: " + available['build'] 
 			print "\t* run: " + available['run'] 
-			continue
+			if opts.yes<1:
+				print 
+				ans=raw_input("Do you want to re-test Pull Req. " +id+": "+ dict[id]['title'] + "? [y/n]" )
+				if ans.lower() != "y"  and ans.lower() != "yes" :  continue;
+			else: continue
 
 		## if failed to core, continue
 		if 'core' in available and 'success' not in available['core']: 
@@ -280,7 +330,11 @@ if __name__ == "__main__":
 			if 'build' in available: print "\t* build: " + available['build'] 
 			if 'run' in available: print "\t* run: " + available['run'] 
 			print "\t* core: " + available['core'] 
-			continue
+			if opts.yes<1:
+				print 
+				ans=raw_input("Do you want to re-test Pull Req. " +id+": "+ dict[id]['title'] + "? [y/n]" )
+				if ans.lower() != "y"  and ans.lower() != "yes" :  continue;
+			else: continue
 
 		if opts.yes<1:
 			ans=raw_input("Do you want to test Pull Req. " +id+": "+ dict[id]['title'] + "? [y/n]" )

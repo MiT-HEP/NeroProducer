@@ -46,10 +46,20 @@ int NeroTaus::analyze(const edm::Event & iEvent)
         unsigned bits = 0;
         bits |= bool(tau.tauID("decayModeFindingNewDMs") ) * TauDecayModeFindingNewDMs;
         bits |= bool(tau.tauID("decayModeFinding") ) * TauDecayModeFinding;
-        bits |= bool(tau.tauID("againstElectronLooseMVA5") )* AgainstEleLoose  ;
+        bits |= bool(tau.tauID("againstElectronLooseMVA5") )* AgainstEleLoose  ; // FIXME 76 MVA 6
         bits |= bool(tau.tauID("againstElectronMediumMVA5"))* AgainstEleMedium ;
         bits |= bool(tau.tauID("againstMuonLoose3"))        * AgainstMuLoose   ;
         bits |= bool(tau.tauID("againstMuonTight3"))        * AgainstMuTight   ;
+        // old id the following only in 76 FIXME
+        //bits |= bool(tau.tauID("byLooseIsolationMVArun2v1DBoldDMwLT")) * byLooseIsolationMVArun2v1DBoldDMwLT;
+        //bits |= bool(tau.tauID("byMediumIsolationMVArun2v1DBoldDMwLT")) * byMediumIsolationMVArun2v1DBoldDMwLT;
+        //bits |= bool(tau.tauID("byTightIsolationMVArun2v1DBoldDMwLT")) * byTightIsolationMVArun2v1DBoldDMwLT;
+        //bits |= bool(tau.tauID("byVTightIsolationMVArun2v1DBoldDMwLT")) * byVTightIsolationMVArun2v1DBoldDMwLT;
+        //// new id
+        //bits |= bool(tau.tauID("byLooseIsolationMVArun2v1DBnewDMwLT")) * byLooseIsolationMVArun2v1DBnewDMwLT;
+        //bits |= bool(tau.tauID("byMediumIsolationMVArun2v1DBnewDMwLT")) * byMediumIsolationMVArun2v1DBnewDMwLT;
+        //bits |= bool(tau.tauID("byTightIsolationMVArun2v1DBnewDMwLT")) * byTightIsolationMVArun2v1DBnewDMwLT;
+        //bits |= bool(tau.tauID("byVTightIsolationMVArun2v1DBnewDMwLT")) * byVTightIsolationMVArun2v1DBnewDMwLT;
         selBits -> push_back(bits);
         Q -> push_back( tau.charge() );
         M -> push_back( tau.mass() );
@@ -59,6 +69,7 @@ int NeroTaus::analyze(const edm::Event & iEvent)
             chargedIsoPtSum  -> push_back( tau.tauID("chargedIsoPtSum") );
             neutralIsoPtSum  -> push_back( tau.tauID("neutralIsoPtSum") );
             isoDeltaBetaCorr -> push_back( tau.tauID("byCombinedIsolationDeltaBetaCorrRaw3Hits"));
+            isoPileupWeightedRaw -> push_back( tau.tauID("byPileupWeightedIsolationRaw3Hits"));
 
         }
 

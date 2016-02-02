@@ -33,15 +33,16 @@ config.JobType.pyCfgParams=['isGrid=True','isData=False','is25ns=True','is50ns=F
 
 # request shipping of the JEC V4 -- local
 #config.JobType.inputFiles=['jec/Summer15_50nsV4_DATA.db','jec/Summer15_50nsV4_MC.db']
+config.JobType.inputFiles=['jec']
 
 ### DATA configuration
-config.Data.inputDataset = '/HplusToTauNu-M500/amarini-amarini_PrivateMC_HPlusToTauNu_June2015-16aa19d591b8b49c55c4508e7a7c9233/USER'
+config.Data.inputDataset = '/TTbarDMJets_pseudoscalar_Mchi-1_Mphi-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'
 #config.Data.inputDBS = 'phys03'
 config.Data.inputDBS = 'global'
 config.Data.ignoreLocality = True
 
 config.Data.splitting = 'FileBased'
-config.Data.unitsPerJob = 10
+config.Data.unitsPerJob = 20
 config.Data.totalUnits = -1
 
 tag = check_output("git describe --tags | cut -d'-' -f 1 | tr -d '\n' ",shell=True)
