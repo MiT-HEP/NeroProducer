@@ -121,10 +121,6 @@ if __name__ == '__main__':
     setdata("False",is25ns=True)
     config.Data.unitsPerJob = 20
     ###################################################
-
-    config.General.requestName = 'QCD-3200-Inf-25ns'
-    config.Data.inputDataset = '/QCD_Pt_3200toInf_TuneCUETP8M1_13TeV_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
-    submit(config)
     
     config.General.requestName = 'DMV_NNPDF30_Axial_Mphi-2000_Mchi-1_gSM-1p0_gDM-1p0_13TeV-powheg+RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1'
     config.Data.inputDataset = '/DMV_NNPDF30_Axial_Mphi-2000_Mchi-1_gSM-1p0_gDM-1p0_13TeV-powheg/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'
