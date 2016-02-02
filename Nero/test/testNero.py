@@ -287,10 +287,10 @@ ak8PuppiSequence = makeFatJets(process,isData=isData,pfCandidates='puppiForMET',
 ca15CHSSequence = makeFatJets(process,isData=isData,pfCandidates='pfCHS',algoLabel='CA',jetRadius=1.5)
 ca15PuppiSequence = makeFatJets(process,isData=isData,pfCandidates='puppiForMET',algoLabel='CA',jetRadius=1.5)
 process.jetSequence = cms.Sequence(fatjetInitSequence*
-                                     ak8PuppiSequence*
-                                     ca15CHSSequence*
-                                     ca15PuppiSequence
-                                    )
+                                   ak8PuppiSequence
+#                                   ca15CHSSequence*
+#                                   ca15PuppiSequence
+                                   )
 
 #-----------------------ELECTRON ID-------------------------------
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
@@ -324,71 +324,70 @@ process.load("RecoEgamma/ElectronIdentification/ElectronIDValueMapProducer_cfi")
 
 ############################### JEC #####################
 #### Load from a sqlite db, if not read from the global tag
-## process.load("CondCore.DBCommon.CondDBCommon_cfi")
-## from CondCore.DBCommon.CondDBSetup_cfi import *
-## 
-## if options.isData:
-## 	if options.is25ns:
-## 		connectString = cms.string('sqlite:jec/Summer15_25nsV2_DATA.db')
-## 		tagName = 'Summer15_25nsV2_DATA_AK4PFchs'
-## 	if options.is50ns:
-## 		connectString = cms.string('sqlite:jec/Summer15_50nsV5_DATA.db')
-## 		tagName = 'Summer15_50nsV5_DATA_AK5PFchs'
-## else:
-## 	if options.is25ns:
-## 		connectString = cms.string('sqlite:jec/Summer15_25nsV2_MC.db')
-## 		tagName = 'Summer15_25nsV2_MC_AK5PFchs'
-## 	if options.is50ns:
-## 		connectString = cms.string('sqlite:jec/Summer15_50nsV5_MC.db')
-## 		tagName = 'Summer15_50nsV5_MC_AK5PFchs'
-## 
-## process.jec = cms.ESSource("PoolDBESSource",
-##       DBParameters = cms.PSet(
-##         messageLevel = cms.untracked.int32(0)
-##         ),
-##       timetype = cms.string('runnumber'),
-##       toGet = cms.VPSet(
-##       cms.PSet(
-##             record = cms.string('JetCorrectionsRecord'),
-##             tag    = cms.string('JetCorrectorParametersCollection_%s'%tagName),
-##             label  = cms.untracked.string('AK4PFchs')
-##             ),
-##       ## here you add as many jet types as you need
-##       ## note that the tag name is specific for the particular sqlite file 
-##       ), 
-##       connect = connectString
-##      # uncomment above tag lines and this comment to use MC JEC
-## )
-## ## add an es_prefer statement to resolve a possible conflict from simultaneous connection to a global tag
-## process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
+process.load("CondCore.DBCommon.CondDBCommon_cfi")
+from CondCore.DBCommon.CondDBSetup_cfi import *
+
+if options.isData:
+	if options.is25ns:
+		connectString = cms.string('sqlite:jec/Summer15_25nsV6_DATA.db')
+		tagName = 'Summer15_25nsV6_DATA_AK4PFchs'
+	if options.is50ns:
+		connectString = cms.string('sqlite:jec/Summer15_50nsV5_DATA.db')
+		tagName = 'Summer15_50nsV5_DATA_AK4PFchs'
+else:
+	if options.is25ns:
+		connectString = cms.string('sqlite:jec/Summer15_25nsV6_MC.db')
+		tagName = 'Summer15_25nsV6_MC_AK4PFchs'
+	if options.is50ns:
+		connectString = cms.string('sqlite:jec/Summer15_50nsV5_MC.db')
+		tagName = 'Summer15_50nsV5_MC_AK4PFchs'
+
+process.jec = cms.ESSource("PoolDBESSource",
+      DBParameters = cms.PSet(
+        messageLevel = cms.untracked.int32(0)
+        ),
+      timetype = cms.string('runnumber'),
+      toGet = cms.VPSet(
+      cms.PSet(
+            record = cms.string('JetCorrectionsRecord'),
+            tag    = cms.string('JetCorrectorParametersCollection_%s'%tagName),
+            label  = cms.untracked.string('AK4PFchs')
+            ),
+      ## here you add as many jet types as you need
+      ## note that the tag name is specific for the particular sqlite file 
+      ), 
+      connect = connectString
+     # uncomment above tag lines and this comment to use MC JEC
+)
+## add an es_prefer statement to resolve a possible conflict from simultaneous connection to a global tag
+process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 
 ################ end sqlite connection
 #### BEGIN RECOMPUTE JEC ###
-#from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetCorrFactorsUpdated
-#from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetsUpdated
-## process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
-## 
-## jecLevels= ['L1FastJet',  'L2Relative', 'L3Absolute']
-## 
-## if options.isData:
-## 	print "NO L2L3 Residual Applied so far. FIXME"
-## 	#jecLevels.append( 'L2L3Residuals')
-## 
-## process.patJetCorrFactorsReapplyJEC = process.patJetCorrFactorsUpdated.clone(
-## 		  src = cms.InputTag("slimmedJets"),
-## 		  levels = jecLevels,
-## 		  payload = 'AK4PFchs' ) # 
-## 
-## process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
-## process.patJetsReapplyJEC = process.patJetsUpdated.clone(
-## 		  jetSource = cms.InputTag("slimmedJets"),
-## 		  jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
-## 		  )
-## 
-## process.jecSequence = cms.Sequence( 
-## 		process.patJetCorrFactorsReapplyJEC + 
-## 		process. patJetsReapplyJEC 
-## 		)
+from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetCorrFactorsUpdated
+from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetsUpdated
+process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
+
+jecLevels= ['L1FastJet',  'L2Relative', 'L3Absolute']
+
+if options.isData:
+	jecLevels.append( 'L2L3Residuals')
+
+process.patJetCorrFactorsReapplyJEC = process.patJetCorrFactorsUpdated.clone(
+		  src = cms.InputTag("slimmedJets"),
+		  levels = jecLevels,
+		  payload = 'AK4PFchs' )
+
+process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
+process.patJetsReapplyJEC = process.patJetsUpdated.clone(
+		  jetSource = cms.InputTag("slimmedJets"),
+		  jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
+		  )
+
+process.jecSequence = cms.Sequence( 
+		process.patJetCorrFactorsReapplyJEC + 
+		process. patJetsReapplyJEC 
+		)
 ##___________________________HCAL_Noise_Filter________________________________||
 process.load('CommonTools.RecoAlgos.HBHENoiseFilterResultProducer_cfi')
 process.HBHENoiseFilterResultProducer.minZeros = cms.int32(99999)
