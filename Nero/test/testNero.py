@@ -376,7 +376,6 @@ process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
 jecLevels= ['L1FastJet',  'L2Relative', 'L3Absolute']
 
 if options.isData:
-        print 'No L2L3Residuals. Fix some time'
 	jecLevels.append( 'L2L3Residual')
 
 process.patJetCorrFactorsReapplyJEC = process.patJetCorrFactorsUpdated.clone(
