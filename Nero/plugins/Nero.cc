@@ -132,28 +132,28 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     puppiAK8 -> jetRadius = 0.8;
     obj.push_back(puppiAK8);
 
-    NeroFatJets *chsCA15 = new NeroFatJets();
-    chsCA15 -> mRunJEC = true; // these jets are already corrected in MiniAOD
-    chsCA15 -> mOnlyMc = onlyMc;
-    chsCA15 -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("chsCA15"));
-    chsCA15 -> rho_token = evt->rho_token;
-    chsCA15 -> mMinPt = iConfig.getParameter<double>("minCA15CHSPt");
-    chsCA15 -> mMaxEta = iConfig.getParameter<double>("minCA15CHSEta");
-    chsCA15 -> mMinId = iConfig.getParameter<string>("minCA15CHSId");
-    chsCA15 -> cachedPrefix = iConfig.getParameter<string>("CA15CHSName");
-    chsCA15 -> jetRadius = 1.5;
-    obj.push_back(chsCA15);
+    // NeroFatJets *chsCA15 = new NeroFatJets();
+    // chsCA15 -> mRunJEC = true; // these jets are already corrected in MiniAOD
+    // chsCA15 -> mOnlyMc = onlyMc;
+    // chsCA15 -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("chsCA15"));
+    // chsCA15 -> rho_token = evt->rho_token;
+    // chsCA15 -> mMinPt = iConfig.getParameter<double>("minCA15CHSPt");
+    // chsCA15 -> mMaxEta = iConfig.getParameter<double>("minCA15CHSEta");
+    // chsCA15 -> mMinId = iConfig.getParameter<string>("minCA15CHSId");
+    // chsCA15 -> cachedPrefix = iConfig.getParameter<string>("CA15CHSName");
+    // chsCA15 -> jetRadius = 1.5;
+    // obj.push_back(chsCA15);
 
-    NeroPuppiFatJets *puppiCA15= new NeroPuppiFatJets();
-    puppiCA15 -> mOnlyMc = onlyMc;
-    puppiCA15 -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("puppiCA15"));
-    puppiCA15 -> rho_token = evt->rho_token;
-    puppiCA15 -> mMinPt = iConfig.getParameter<double>("minCA15PuppiPt");
-    puppiCA15 -> mMaxEta = iConfig.getParameter<double>("minCA15PuppiEta");
-    puppiCA15 -> mMinId = iConfig.getParameter<string>("minCA15PuppiId");
-    puppiCA15 -> cachedPrefix = iConfig.getParameter<string>("CA15PuppiName");
-    puppiCA15 -> jetRadius = 1.5;
-    obj.push_back(puppiCA15);
+    // NeroPuppiFatJets *puppiCA15= new NeroPuppiFatJets();
+    // puppiCA15 -> mOnlyMc = onlyMc;
+    // puppiCA15 -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("puppiCA15"));
+    // puppiCA15 -> rho_token = evt->rho_token;
+    // puppiCA15 -> mMinPt = iConfig.getParameter<double>("minCA15PuppiPt");
+    // puppiCA15 -> mMaxEta = iConfig.getParameter<double>("minCA15PuppiEta");
+    // puppiCA15 -> mMinId = iConfig.getParameter<string>("minCA15PuppiId");
+    // puppiCA15 -> cachedPrefix = iConfig.getParameter<string>("CA15PuppiName");
+    // puppiCA15 -> jetRadius = 1.5;
+    // obj.push_back(puppiCA15);
 
     // --- 
     NeroTaus *taus = new NeroTaus();

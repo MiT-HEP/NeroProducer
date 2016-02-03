@@ -43,11 +43,16 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 10
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
-fileList = [
-    #'file:/tmp/amarini/step3_0.root'
-        '/store/data/Run2015D/MET/MINIAOD/05Oct2015-v1/30000/2A4C3292-B46F-E511-BAD2-0025905A60C6.root'
-#    '/store/mc/RunIISpring15MiniAODv2/TTbarDMJets_pseudoscalar_Mchi-1_Mphi-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/10000/1486FE25-A16D-E511-93F2-001EC9ADE672.root'
-]
+fileList = []
+
+if isData:
+        fileList = [
+                '/store/data/Run2015D/MET/MINIAOD/05Oct2015-v1/30000/2A4C3292-B46F-E511-BAD2-0025905A60C6.root'
+                ]
+else:
+        fileList = [
+                '/store/mc/RunIISpring15MiniAODv2/TTbarDMJets_pseudoscalar_Mchi-1_Mphi-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/10000/1486FE25-A16D-E511-93F2-001EC9ADE672.root'
+                ]
 
 
 
@@ -342,7 +347,7 @@ else:
 		connectString = cms.string('sqlite:jec/Summer15_50nsV5_MC.db')
 		tagName = 'Summer15_50nsV5_MC_AK4PFchs'
 
-process.jec = cms.ESSource("PoolDBESSource",
+process.myJec = cms.ESSource("PoolDBESSource",
       DBParameters = cms.PSet(
         messageLevel = cms.untracked.int32(0)
         ),
@@ -360,10 +365,11 @@ process.jec = cms.ESSource("PoolDBESSource",
      # uncomment above tag lines and this comment to use MC JEC
 )
 ## add an es_prefer statement to resolve a possible conflict from simultaneous connection to a global tag
-process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
+process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','myJec')
 
-################ end sqlite connection
-#### BEGIN RECOMPUTE JEC ###
+################# end sqlite connection
+##### BEGIN RECOMPUTE JEC ###
+>>>>>>> 45d533e50936f358530e901cc48fa377cfe8633b
 from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetCorrFactorsUpdated
 from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetsUpdated
 process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
@@ -371,7 +377,7 @@ process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
 jecLevels= ['L1FastJet',  'L2Relative', 'L3Absolute']
 
 if options.isData:
-	jecLevels.append( 'L2L3Residuals')
+	jecLevels.append( 'L2L3Residual')
 
 process.patJetCorrFactorsReapplyJEC = process.patJetCorrFactorsUpdated.clone(
 		  src = cms.InputTag("slimmedJets"),
@@ -384,7 +390,7 @@ process.patJetsReapplyJEC = process.patJetsUpdated.clone(
 		  jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
 		  )
 
-process.jecSequence = cms.Sequence( 
+process.myJecSequence = cms.Sequence( 
 		process.patJetCorrFactorsReapplyJEC + 
 		process. patJetsReapplyJEC 
 		)
@@ -423,7 +429,7 @@ if options.isParticleGun:
 #------------------------------------------------------
 process.p = cms.Path(
 		process.infoProducerSequence *
-		process.hcalNoiseFilter * 
+#		process.hcalNoiseFilter * 
                 process.QGTagger *
                 process.egmGsfElectronIDSequence *
                 process.egmPhotonIDSequence *
@@ -432,7 +438,7 @@ process.p = cms.Path(
                 process.HBB * ## HBB 74X
                 process.puppiSequence * ## does puppi, puppi met, type1 corrections
                 process.jetSequence *
-            		#process.jecSequence *
+                process.myJecSequence *
                 process.nero
                 )
 

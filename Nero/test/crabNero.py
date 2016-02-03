@@ -24,7 +24,7 @@ config = config()
 config.General.requestName = 'Nero_request_XXX'
 config.General.workArea = 'crab_projects'
 config.General.transferOutputs = True
-config.General.transferLogs = False
+config.General.transferLogs = True
 
 ## JobType
 config.JobType.pluginName = 'Analysis'
@@ -52,7 +52,7 @@ config.Data.publication = False
 config.Data.outputDatasetTag ='NeroNtuples'
 
 config.Site.storageSite = 'T2_CH_CERN'
-#config.Site.blacklist = [ 'T2_US_Florida','T2_US_Vanderbilt']
+config.Site.blacklist = [ 'T2_US_Purdue','T2_ES_IFCA','T2_EE_Estonia','T2_IT_Pisa' ]
 
 
 if __name__ == '__main__':
@@ -119,7 +119,7 @@ if __name__ == '__main__':
 
     ###################################################
     setdata("False",is25ns=True)
-    config.Data.unitsPerJob = 20
+    config.Data.unitsPerJob = 7
     ###################################################
     
     config.General.requestName = 'DMV_NNPDF30_Axial_Mphi-2000_Mchi'
@@ -343,7 +343,7 @@ if __name__ == '__main__':
     ###################################################
     setdata("True",is25ns=True)
     ###################################################
-    config.Data.unitsPerJob = 150
+    config.Data.unitsPerJob = 50
 
     config.General.requestName = 'SingleMuon-Run2015D-v1'
     config.Data.inputDataset = '/SingleMuon/Run2015D-05Oct2015-v1/MINIAOD'
