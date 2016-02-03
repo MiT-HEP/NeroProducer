@@ -292,9 +292,9 @@ ak8PuppiSequence = makeFatJets(process,isData=isData,pfCandidates='puppiForMET',
 ca15CHSSequence = makeFatJets(process,isData=isData,pfCandidates='pfCHS',algoLabel='CA',jetRadius=1.5)
 ca15PuppiSequence = makeFatJets(process,isData=isData,pfCandidates='puppiForMET',algoLabel='CA',jetRadius=1.5)
 process.jetSequence = cms.Sequence(fatjetInitSequence*
-                                     ak8PuppiSequence*
-                                     ca15CHSSequence*
-                                     ca15PuppiSequence
+                                     ak8PuppiSequence
+#                                     ca15CHSSequence*
+#                                     ca15PuppiSequence
                                     )
 
 #-----------------------ELECTRON ID-------------------------------
@@ -334,15 +334,15 @@ from CondCore.DBCommon.CondDBSetup_cfi import *
 
 if options.isData:
 	if options.is25ns:
-		connectString = cms.string('sqlite:jec/Summer15_25nsV6_DATA.db')
-		tagName = 'Summer15_25nsV6_DATA_AK4PFchs'
+		connectString = cms.string('sqlite:jec/Summer15_25nsV2_DATA.db')
+		tagName = 'Summer15_25nsV2_DATA_AK4PFchs'
 	if options.is50ns:
 		connectString = cms.string('sqlite:jec/Summer15_50nsV5_DATA.db')
 		tagName = 'Summer15_50nsV5_DATA_AK5PFchs'
 else:
 	if options.is25ns:
-		connectString = cms.string('sqlite:jec/Summer15_25nsV6_MC.db')
-		tagName = 'Summer15_25nsV6_MC_AK4PFchs'
+		connectString = cms.string('sqlite:jec/Summer15_25nsV2_MC.db')
+		tagName = 'Summer15_25nsV2_MC_AK4PFchs'
 	if options.is50ns:
 		connectString = cms.string('sqlite:jec/Summer15_50nsV5_MC.db')
 		tagName = 'Summer15_50nsV5_MC_AK5PFchs'
