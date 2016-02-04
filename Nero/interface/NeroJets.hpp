@@ -6,6 +6,7 @@
 #include "NeroProducer/Nero/interface/NeroPF.hpp"
 #include "NeroProducer/Nero/interface/NeroVertex.hpp"
 
+#include "DataFormats/PatCandidates/interface/JetCorrFactors.h"
 
 // --- JEC UNCERTAINTY ---
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
@@ -28,17 +29,20 @@ class NeroJets : virtual public NeroCollection, virtual public BareJets
         static bool JetId(const pat::Jet &, string id);
         // --- Handle
         edm::Handle<pat::JetCollection> handle;	
-        edm::Handle<edm::ValueMap<float>> qg_handle;
-
+        edm::Handle<edm::ValueMap<float> > qg_handle;
+        edm::Handle<edm::ValueMap<pat::JetCorrFactors> > jec_handle;
+    
         // --- Token
         edm::EDGetTokenT<pat::JetCollection> token;
         edm::EDGetTokenT<edm::ValueMap<float> > qg_token;
+        edm::EDGetTokenT<edm::ValueMap<pat::JetCorrFactors> > jec_token;
 
         // --- configuration
         float mMinPt;
         int   mMinNjets;
         float mMinEta;
         string mMinId;
+        bool mApplyJEC;
 
         // 
         NeroPF *pf;
