@@ -1,5 +1,7 @@
 #include "NeroProducer/Nero/interface/NeroLeptons.hpp"
 #include "NeroProducer/Nero/interface/Nero.hpp"
+#include "NeroProducer/Core/interface/BareFunctions.hpp"
+#include <time.h>
 
 // -- Electron Isolation
 NeroLeptons::NeroLeptons(): 
@@ -19,10 +21,14 @@ NeroLeptons::NeroLeptons():
 
     mMinNleptons = 0;    
 
+    rnd_ = new TRandom3( (unsigned)time(NULL) ) ;
 }
 
 NeroLeptons::~NeroLeptons(){
+    delete EleCorr; 
+    delete rnd_; 
 }
+
 
 int NeroLeptons::analyze(const edm::Event & iEvent)
 {
@@ -101,7 +107,6 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         myLepton l;
         l.pdgId = -el.charge()*11;
 
-        
         // float chIso = el.chargedHadronIso();
         // float nhIso = el.neutralHadronIso();
         // float phoIso = el.photonIso();
@@ -133,6 +138,24 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         l.iso = chIso + TMath::Max( nhIso + phoIso - evt_->rho * ea , 0. ) ; 
 
         l.p4.SetPxPyPzE( el.px(),el.py(),el.pz(),el.energy());
+        float smear = 0.0, scale = 1.0;
+        float aeta = std::abs(el.eta());
+        float et = el.energy()/cosh(aeta);
+
+        if (iEvent.isRealData() )
+        {
+                
+                scale = EleCorr->ScaleCorrection(iEvent.id().run(), el.isEB(), el.r9(), aeta, et);
+                l.p4 *= scale;
+        }
+        else
+        {
+                 smear = EleCorr->getSmearingSigma(iEvent.id().run(), el.energy(), el.isEB(), el.r9(), aeta);  
+                 float corr = 1.0  + smear * rnd_->Gaus(0,1);
+                 l.p4 *= corr;
+        
+        }
+
         l.selBits = 0 ;
             l.selBits |= unsigned(isPassTight)*LepTight;
             l.selBits |= unsigned(isPassMedium) * LepMedium;
@@ -141,7 +164,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
             //--
             l.selBits |= unsigned(isEB and (not isEBEEGap and not isEBEtaGap and not isEBPhiGap)  ) * LepEBEE;
             l.selBits |= unsigned(isEE and (not isEBEEGap and not isEERingGap and not isEEDeeGap)  ) * LepEBEE;
-        l.pfPt = 0.;
+        l.pfPt = el.pt();
     
         l.chiso  = chIso;
         l.nhiso  = nhIso;

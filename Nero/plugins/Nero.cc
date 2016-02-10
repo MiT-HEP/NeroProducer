@@ -204,6 +204,11 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     leps -> mMinNleptons = iConfig.getParameter<int>("minLepN");
     leps -> SetMatch( iConfig.getParameter<bool>("matchLep") );
 
+    // eventually configure
+    leps -> EleCorr = new EnergyScaleCorrection_class("EgammaAnalysis/ElectronTools/data/76X_16DecRereco_2015");
+        leps->EleCorr -> doSmearings= true;
+        leps->EleCorr -> doScale= true;
+
     obj. push_back(leps);
 
     //--
