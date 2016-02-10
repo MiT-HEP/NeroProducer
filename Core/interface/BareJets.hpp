@@ -35,6 +35,7 @@ class BareJets : virtual public BareP4
         // -- variables
         //TClonesArray  *p4{0};
         vector<float> *rawPt{0};
+        vector<float> *refPt{0}; // Reference jet pt as it's stored in the input data
         vector<float> *bDiscr{0};
         vector<float> *bDiscrLegacy{0};
         vector<float> *puId{0};
