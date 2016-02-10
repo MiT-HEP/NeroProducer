@@ -243,6 +243,9 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     phos -> vtx = vtx;
     phos -> leps = leps;
     phos -> fpr = new SuperClusterFootprintRemovalMiniAOD( consumesCollector() );
+    phos -> PhoCorr = new EnergyScaleCorrection_class("EgammaAnalysis/ElectronTools/data/76X_16DecRereco_2015");
+        phos->PhoCorr -> doSmearings= true;
+        phos->PhoCorr -> doScale= true;
     obj.push_back(phos);
 
     NeroMonteCarlo *mc = new NeroMonteCarlo();
