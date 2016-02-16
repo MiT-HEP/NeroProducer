@@ -84,12 +84,14 @@ nero = cms.EDAnalyzer("Nero",
 
     extendMet = cms.bool(True),
                       
-    minJetPt  = cms.double (20.),
-    minJetEta = cms.double (4.7),
-    minJetN   = cms.int32  (0),
-    minJetId  = cms.string ('loose'),
-    matchJet  = cms.bool (True),
-    matchJetDr = cms.double(0.3),
+    minJetPt       = cms.double   (20.),
+    minJetEta      = cms.double   (4.7),
+    minJetN        = cms.int32    (0),
+    minJetId       = cms.string   ('loose'),
+    matchJet       = cms.bool     (True),
+    matchJetDr     = cms.double   (0.3),
+    jetCorrFactors = cms.InputTag (""),
+    applyJEC       = cms.bool     (True),
 
     ## PUPPI
     minPuppiJetPt  = cms.double (25.),

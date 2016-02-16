@@ -25,6 +25,7 @@ NeroJets::NeroJets() :
     mMinNjets = 0;
     mMinEta = 2.5;
     mMinId = "loose";
+    mApplyJEC = false;
     pf = NULL;
     // JES
     isJecUncSet_= false;
@@ -40,6 +41,10 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
     // maybe handle should be taken before
     iEvent.getByToken(token, handle);
     iEvent.getByToken(qg_token,qg_handle);
+    if (mApplyJEC) {
+        iEvent.getByToken(jec_token,jec_handle);
+        if ( not jec_handle.isValid() ) cout<<"[NeroJets]::[analyze]::[ERROR] jec_handle is not valid"<<endl;
+    }
 
     if ( not handle.isValid() ) cout<<"[NeroJets]::[analyze]::[ERROR] handle is not valid"<<endl;
     if ( not qg_handle.isValid() ) cout<<"[NeroJets]::[analyze]::[ERROR] qg_handle is not valid"<<endl;
@@ -120,7 +125,16 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
 
 
         // Fill output object	
-        new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(j.px(), j.py(), j.pz(), j.energy());
+        pat::Jet aJet(j);
+        refPt  -> push_back (aJet.pt());
+        if (mApplyJEC){
+            // Undo previous jet energy corrections
+            aJet.setP4(aJet.correctedP4(0));
+            aJet.setP4(aJet.p4()*(*jec_handle)[jetRef].correction((*jec_handle)[jetRef].numberOfCorrectionLevels()-1));
+            (*jec_handle)[jetRef].print();
+        }
+        
+        new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(aJet.px(), aJet.py(), aJet.pz(), aJet.energy());
         rawPt  -> push_back (j.pt()*j.jecFactor("Uncorrected"));
         puId   -> push_back (j.userFloat("pileupJetId:fullDiscriminant") );
         bDiscr -> push_back( j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") );

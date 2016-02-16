@@ -84,14 +84,17 @@ Nero::Nero(const edm::ParameterSet& iConfig)
 
 
     //now do what ever initialization is needed
+    // 
     NeroJets *jets = new NeroJets();
     jets -> mOnlyMc = onlyMc;
     jets -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("jets"));
-    jets -> qg_token = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "qgLikelihood"));
+    jets -> jec_token = consumes<edm::ValueMap<pat::JetCorrFactors> >(iConfig.getParameter<edm::InputTag>("jetCorrFactors"));
+    jets -> qg_token = consumes<edm::ValueMap<float> >(edm::InputTag("QGTagger", "qgLikelihood"));
     jets -> mMinPt = iConfig.getParameter<double>("minJetPt");
     jets -> mMinNjets = iConfig.getParameter<int>("minJetN");
     jets -> mMinEta = iConfig.getParameter<double>("minJetEta");
     jets -> mMinId = iConfig.getParameter<string>("minJetId");
+    jets -> mApplyJEC = iConfig.getParameter<bool>("applyJEC");
     jets -> SetMatch( iConfig.getParameter<bool>("matchJet") );
     jets -> pf = pf;
     jets -> vtx = vtx;
