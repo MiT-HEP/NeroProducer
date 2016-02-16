@@ -224,6 +224,7 @@ process.jec = cms.ESSource("PoolDBESSource",
      ), 
      connect = connectString
 )
+
 process.load('JetMETCorrections.Configuration.JetCorrectorsAllAlgos_cff')
 puppilabel='PFPuppi'
 process.ak4PuppiL1FastjetCorrector  = process.ak4PFCHSL1FastjetCorrector.clone (algorithm   = cms.string('AK4'+puppilabel))
@@ -242,6 +243,7 @@ process.ak4PuppiL1FastL2L3Chain = cms.Sequence(
 process.ak4PuppiL1FastL2L3ResidualChain = cms.Sequence(
         process.ak4PuppiL1FastjetCorrector * process.ak4PuppiL2RelativeCorrector * process.ak4PuppiL3AbsoluteCorrector * process.ak4PuppiResidualCorrector * process.ak4PuppiL1FastL2L3ResidualCorrector
 )
+
 if isData:
   process.puppiSequence += process.ak4PuppiL1FastL2L3ResidualChain
 else:
@@ -334,18 +336,18 @@ from CondCore.DBCommon.CondDBSetup_cfi import *
 
 if options.isData:
 	if options.is25ns:
-		connectString = cms.string('sqlite:jec/Summer15_25nsV2_DATA.db')
-		tagName = 'Summer15_25nsV2_DATA_AK4PFchs'
+		connectString = cms.string('sqlite:jec/Summer15_25nsV6_DATA.db')
+		tagName = 'Summer15_25nsV6_DATA_AK4PFchs'
 	if options.is50ns:
 		connectString = cms.string('sqlite:jec/Summer15_50nsV5_DATA.db')
-		tagName = 'Summer15_50nsV5_DATA_AK5PFchs'
+		tagName = 'Summer15_50nsV5_DATA_AK4PFchs'
 else:
 	if options.is25ns:
-		connectString = cms.string('sqlite:jec/Summer15_25nsV2_MC.db')
-		tagName = 'Summer15_25nsV2_MC_AK4PFchs'
+		connectString = cms.string('sqlite:jec/Summer15_25nsV6_MC.db')
+		tagName = 'Summer15_25nsV6_MC_AK4PFchs'
 	if options.is50ns:
 		connectString = cms.string('sqlite:jec/Summer15_50nsV5_MC.db')
-		tagName = 'Summer15_50nsV5_MC_AK5PFchs'
+		tagName = 'Summer15_50nsV5_MC_AK4PFchs'
 
 process.myJec = cms.ESSource("PoolDBESSource",
       DBParameters = cms.PSet(
@@ -362,8 +364,9 @@ process.myJec = cms.ESSource("PoolDBESSource",
       ## note that the tag name is specific for the particular sqlite file 
       ), 
       connect = connectString
-     # uncomment above tag lines and this comment to use MC JEC
+      # uncomment above tag lines and this comment to use MC JEC
 )
+
 ## add an es_prefer statement to resolve a possible conflict from simultaneous connection to a global tag
 process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','myJec')
 
@@ -379,20 +382,22 @@ if options.isData:
 	jecLevels.append( 'L2L3Residual')
 
 process.patJetCorrFactorsReapplyJEC = process.patJetCorrFactorsUpdated.clone(
-		  src = cms.InputTag("slimmedJets"),
-		  levels = jecLevels,
-		  payload = 'AK4PFchs' ) # 
+        src = cms.InputTag("slimmedJets"),
+        levels = jecLevels,
+        payload = 'AK4PFchs'
+        )
 
 process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
 process.patJetsReapplyJEC = process.patJetsUpdated.clone(
-		  jetSource = cms.InputTag("slimmedJets"),
-		  jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
-		  )
+        jetSource = cms.InputTag("slimmedJets"),
+        jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
+        )
 
 process.myJecSequence = cms.Sequence( 
-		process.patJetCorrFactorsReapplyJEC + 
-		process. patJetsReapplyJEC 
-		)
+        process.patJetCorrFactorsReapplyJEC + 
+        process. patJetsReapplyJEC 
+        )
+
 ##___________________________HCAL_Noise_Filter________________________________||
 process.load('CommonTools.RecoAlgos.HBHENoiseFilterResultProducer_cfi')
 process.HBHENoiseFilterResultProducer.minZeros = cms.int32(99999)
@@ -429,6 +434,7 @@ if options.isParticleGun:
 process.p = cms.Path(
 		process.infoProducerSequence *
 #		process.hcalNoiseFilter * 
+                process.myJecSequence *
                 process.QGTagger *
                 process.egmGsfElectronIDSequence *
                 process.egmPhotonIDSequence *
@@ -437,7 +443,6 @@ process.p = cms.Path(
                 process.HBB * ## HBB 74X
                 process.puppiSequence * ## does puppi, puppi met, type1 corrections
                 process.jetSequence *
-                process.myJecSequence *
                 process.nero
                 )
 
