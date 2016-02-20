@@ -683,7 +683,8 @@ neroMod.AddFiller(mithep.nero.PhotonsFiller(
     MediumIdName = photonMediumId.GetOutputName(),
     TightIdName = photonTightId.GetOutputName(),
     HighPtIdName = photonHighPtId.GetOutputName(),
-    VerticesName = goodPVFilterMod.GetOutputName()
+    VerticesName = goodPVFilterMod.GetOutputName(),
+    IsoType = mithep.PhotonTools.kSpring15MediumIso # can be any of loose, medium, or tight
 ))
 
 neroMod.AddFiller(mithep.nero.AllFiller())

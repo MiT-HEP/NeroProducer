@@ -4,6 +4,8 @@
 #include "NeroProducer/Bambu/interface/BaseFiller.h"
 #include "NeroProducer/Core/interface/BarePhotons.hpp"
 
+#include "MitPhysics/Utils/interface/PhotonTools.h"
+
 namespace mithep {
   namespace nero {
 
@@ -26,6 +28,7 @@ namespace mithep {
       void SetHighPtIdName(char const* _name) { highPtIdName_ = _name; }
       void SetPFCandsName(char const* _name) { pfCandsName_ = _name; }
       void SetVerticesName(char const* _name) { verticesName_ = _name; }
+      void SetIsoType(UInt_t _type) { isoType_ = _type; }
 
     private:
       BarePhotons out_{};
@@ -38,6 +41,7 @@ namespace mithep {
       TString highPtIdName_ = "PhotonsHighPtId";
       TString pfCandsName_ = "PFCandidates";
       TString verticesName_ = "PrimaryVertexes";
+      UInt_t isoType_ = mithep::PhotonTools::kIsoUndef;
 
       Float_t const* rho_ = 0;
 
