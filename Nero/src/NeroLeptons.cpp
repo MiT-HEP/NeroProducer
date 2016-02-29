@@ -61,7 +61,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         float puiso = mu.pfIsolationR04().sumPUPt;
         float totiso = chiso + TMath::Max( niso + phoiso - .5*puiso, 0. ) ;
     
-        if ( totiso/mu.pt() > mMaxIso_mu ) continue;
+        if ( mMaxIso_mu > 0 and totiso/mu.pt() > mMaxIso_mu ) continue;
 
         myLepton l;
         l.pdgId = -mu.charge()*13;
