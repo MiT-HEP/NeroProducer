@@ -65,12 +65,11 @@ fileList = [
         '/store/mc/RunIIFall15MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/70000/FAF5D5D7-79BA-E511-BB76-0025905B8562.root'
         ]
 
-
-
 ### do not remove the line below!
 ###FILELIST###
 
 process.source = cms.Source("PoolSource",
+	skipEvents = cms.untracked.uint32(0),
     	fileNames = cms.untracked.vstring(fileList)
         )
 
@@ -355,9 +354,12 @@ if options.isParticleGun:
 	## this option is for the embedding informations
 	process.nero.extendEvent = cms.untracked.bool(False)
 
+process.load('NeroProducer.Skim.MonoJetFilterSequence_cff')
+
 #------------------------------------------------------
 process.p = cms.Path(
                 process.infoProducerSequence *
+                #process.MonoJetFilter *
                 #process.hcalNoiseFilter * 
                 process.QGTagger *
                 process.egmGsfElectronIDSequence *
