@@ -32,7 +32,10 @@ def initEGammaVID(process, options):
 	      toProduce[obj][ directory + '.Identification.' + myid + "_cff"] = 1 #remove duplicates
 	### INIT MODULES
 	dataFormat = DataFormat.MiniAOD
-	
+
+	## add the NonTrigValueMap
+	toProduce['ele']["RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring15_25ns_nonTrig_V1_cff"] = 1
+
 	switchOnVIDElectronIdProducer(process, dataFormat)
 	### # define which IDs we want to produce. it is silly to redifine them here hard coded
 	for idmod in toProduce['ele']:

@@ -644,7 +644,8 @@ neroMod.AddFiller(mithep.nero.LeptonsFiller(
     VerticesName = goodPVFilterMod.GetOutputName(),
     PFCandsName = mithep.Names.gkPFCandidatesBrn,
     NoPUPFCandsName = separatePileUpMod.GetPFNoPileUpName(),
-    PUPFCandsName = separatePileUpMod.GetPFPileUpName()
+    PUPFCandsName = separatePileUpMod.GetPFPileUpName(),
+    ElectronMVAType = 'IDEGamma2015NonTrig25ns'
 ))
 
 neroMod.AddFiller(mithep.nero.FatJetsFiller(mithep.nero.BaseFiller.kAK8Jets,
@@ -701,7 +702,8 @@ triggers = [
     (['PFMET170_%sCleaned' % c for c in ['JetId', 'HBHE', 'Noise']], []),
     ('PFMET170', []),
     ('Ele23_WPLoose_Gsf' if analysis.isRealData else 'Ele22_eta2p1_WP75_Gsf', ['hltEle23WPLooseGsfTrackIsoFilter' if analysis.isRealData else 'hltSingleEle22WP75GsfTrackIsoFilter']),
-    ('Ele27_WPLoose_Gsf' if analysis.isRealData else 'Ele27_WP85_Gsf', ['hltEle27WPLooseGsfTrackIsoFilter' if analysis.isRealData else 'hltL1EG25Ele27WP85GsfTrackIsoFilter']), # filter only matches data
+    ('Ele27_WPLoose_Gsf' if analysis.isRealData else 'Ele27_WP85_Gsf', ['hltEle27noerWPLooseGsfTrackIsoFilter' if analysis.isRealData else 'hltL1EG25Ele27WP85GsfTrackIsoFilter']), # filter only matches data
+    ('Ele22_eta2p1_WPLoose_Gsf', ['hltSingleEle22WPLooseGsfTrackIsoFilter']),
     ('Ele12_CaloIdL_TrackIdL_IsoVL', ['hltEle12CaloIdLTrackIdLIsoVLTrackIsoFilter']),
     ('Ele17_CaloIdL_TrackIdL_IsoVL', ['hltEle17CaloIdLTrackIdLIsoVLTrackIsoFilter']),
     ('IsoMu20', ['hltL3crIsoL1sMu16L1f0L2f10QL3f20QL3trkIsoFiltered0p09']),

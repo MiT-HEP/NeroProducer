@@ -39,6 +39,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
     iEvent.getByToken(el_tightid_token,el_tight_id);
     iEvent.getByToken(el_vetoid_token,el_veto_id);
     iEvent.getByToken(el_looseid_token,el_loose_id);
+    iEvent.getByToken(el_mva_token,el_mva);
 
     if ( not mu_handle.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] mu_handle is not valid"<<endl;
     if ( not el_handle.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_handle is not valid"<<endl;
@@ -46,6 +47,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
     if ( not el_tight_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_tight_id is not valid"<<endl;
     if ( not el_veto_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_veto_id is not valid"<<endl;
     if ( not el_loose_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_loose_id is not valid"<<endl;
+    if ( not el_mva.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_mva is not valid"<<endl;
 
     vector<myLepton> leptons;
 
@@ -101,6 +103,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         myLepton l;
         l.pdgId = -el.charge()*11;
 
+        l.mva = (*el_mva)[ref];
         
         // float chIso = el.chargedHadronIso();
         // float nhIso = el.neutralHadronIso();
@@ -164,6 +167,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         iso     -> push_back(l.iso);
         selBits -> push_back(l.selBits);
         pdgId   -> push_back(l.pdgId);
+        mva     -> push_back(l.mva);
         lepPfPt -> push_back(l.pfPt);
 
         chIso	-> push_back(l.chiso);

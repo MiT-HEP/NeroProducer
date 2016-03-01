@@ -4,6 +4,7 @@
 #include "NeroProducer/Bambu/interface/BaseFiller.h"
 #include "NeroProducer/Core/interface/BareEvent.hpp"
 #include "NeroProducer/Core/interface/BareLeptons.hpp"
+#include "MitPhysics/Utils/interface/ElectronIDMVA.h"
 
 namespace mithep {
   namespace nero {
@@ -16,8 +17,12 @@ namespace mithep {
       };
 
     public:
-      LeptonsFiller() {}
-      ~LeptonsFiller() {}
+      LeptonsFiller() {
+        ElectronDiscriminator = new ElectronIDMVA();
+      }
+      ~LeptonsFiller() {
+        delete ElectronDiscriminator; 
+      }
 
       BareCollection* getObject() override { return &out_; }
       BaseFiller::Collection collection() const override { return BaseFiller::kLeptons; }
@@ -57,6 +62,7 @@ namespace mithep {
       void SetPFCandsName(char const* _name) { pfCandsName_ = _name; }
       void SetNoPUPFCandsName(char const* _name) { nopuPFCandsName_ = _name; }
       void SetPUPFCandsName(char const* _name) { puPFCandsName_ = _name; }
+      void SetElectronMVAType(char const* _type) { electronMVAType_ = _type; }
 
       char const* GetMuonIdName(UInt_t _bit) { return idName_[kMu][_bit]; }
       char const* GetElectronIdName(UInt_t _bit) { return idName_[kEl][_bit]; }
@@ -67,14 +73,16 @@ namespace mithep {
 
       TString electronsName_ = "Electrons";
       TString muonsName_ = "Muons";
+      TString electronMVAType_ = "IDEGamma2015Trig25ns";
+      //TString electronMVAType_ = "IDEGamma2015NonTrig25ns";
       TString idName_[nLeptons][32]{};
       TString verticesName_ = "PrimaryVertexes";
       TString pfCandsName_ = "PFCandidates";
       TString nopuPFCandsName_ = "PFNoPileup";
       TString puPFCandsName_ = "PFPileup";
-
+      Bool_t useMVA = kTRUE;
       Bool_t savePassing_[nLeptons][32]{};
-
+      ElectronIDMVA *ElectronDiscriminator;
       BareEvent* event_;
 
       ClassDef(LeptonsFiller, 0)

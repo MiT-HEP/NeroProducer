@@ -8,6 +8,7 @@
 
 #include "MitPhysics/Utils/interface/IsolationTools.h"
 #include "MitPhysics/Utils/interface/ElectronTools.h"
+#include "MitPhysics/Utils/interface/ElectronIDMVA.h"
 #include "MitPhysics/Mods/interface/IdMod.h"
 
 #include "TTree.h"
@@ -51,6 +52,25 @@ mithep::nero::LeptonsFiller::initialize()
   }
   selBitsTree->Write();
   delete selBitsTree;
+
+  std::vector<std::string> weights_files;
+  if(electronMVAType_ == "IDEGamma2015Trig25ns") {
+    weights_files.push_back("/home/dhsu/EIDMVA_weights/EIDmva_EB1_10_oldTrigSpring15_25ns_data_1_VarD_TMVA412_Sig6BkgAll_MG_noSpec_BDT.weights.xml");
+    weights_files.push_back("/home/dhsu/EIDMVA_weights/EIDmva_EB2_10_oldTrigSpring15_25ns_data_1_VarD_TMVA412_Sig6BkgAll_MG_noSpec_BDT.weights.xml");
+    weights_files.push_back("/home/dhsu/EIDMVA_weights/EIDmva_EE_10_oldTrigSpring15_25ns_data_1_VarD_TMVA412_Sig6BkgAll_MG_noSpec_BDT.weights.xml");
+    ElectronDiscriminator->Initialize("Spring2015Trig25ns", ElectronIDMVA::kIDEGamma2015Trig25ns, kTRUE, weights_files);
+  } else if(electronMVAType_ == "IDEGamma2015NonTrig25ns") {
+    weights_files.push_back("/home/dhsu/EIDMVA_weights/EIDmva_EB1_5_oldNonTrigSpring15_ConvVarCwoBoolean_TMVA412_FullStatLowPt_PairNegWeightsGlobal_BDT.weights.xml");
+    weights_files.push_back("/home/dhsu/EIDMVA_weights/EIDmva_EB2_5_oldNonTrigSpring15_ConvVarCwoBoolean_TMVA412_FullStatLowPt_PairNegWeightsGlobal_BDT.weights.xml");
+    weights_files.push_back("/home/dhsu/EIDMVA_weights/EIDmva_EE_5_oldNonTrigSpring15_ConvVarCwoBoolean_TMVA412_FullStatLowPt_PairNegWeightsGlobal_BDT.weights.xml");
+    weights_files.push_back("/home/dhsu/EIDMVA_weights/EIDmva_EB1_10_oldNonTrigSpring15_ConvVarCwoBoolean_TMVA412_FullStatLowPt_PairNegWeightsGlobal_BDT.weights.xml");
+    weights_files.push_back("/home/dhsu/EIDMVA_weights/EIDmva_EB2_10_oldNonTrigSpring15_ConvVarCwoBoolean_TMVA412_FullStatLowPt_PairNegWeightsGlobal_BDT.weights.xml");
+    weights_files.push_back("/home/dhsu/EIDMVA_weights/EIDmva_EE_10_oldNonTrigSpring15_ConvVarCwoBoolean_TMVA412_FullStatLowPt_PairNegWeightsGlobal_BDT.weights.xml"); 
+    ElectronDiscriminator->Initialize("Spring2015NonTrig25ns", ElectronIDMVA::kIDEGamma2015NonTrig25ns, kTRUE, weights_files);
+  } else {
+    useMVA = kFALSE;
+  }
+
 }
 
 void
@@ -108,6 +128,8 @@ mithep::nero::LeptonsFiller::fill()
       if (iSel != 32) {
         newP4(out_, *ele);
 
+        double mva(-1);
+        if(useMVA==kTRUE) mva=ElectronDiscriminator->MVAValue(ele, vertices->At(0), kFALSE);
         double chIso(ele->PFChargedHadronIso());
         double nhIso(ele->PFNeutralHadronIso());
         double phoIso(ele->PFPhotonIso());
@@ -125,6 +147,7 @@ mithep::nero::LeptonsFiller::fill()
         out_.selBits->push_back(selBits);
 
         out_.lepPfPt->push_back(0.);
+        out_.mva->push_back(mva);
         out_.chIso->push_back(chIso);
         out_.nhIso->push_back(nhIso);
         out_.phoIso->push_back(phoIso);
@@ -168,6 +191,7 @@ mithep::nero::LeptonsFiller::fill()
           out_.lepPfPt->push_back(0.);
 
         // TODO
+        out_.mva->push_back(0);
         out_.chIso->push_back(isoArr[0]);
         out_.nhIso->push_back(isoArr[1]);
         out_.phoIso->push_back(isoArr[2]);
