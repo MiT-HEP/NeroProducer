@@ -26,7 +26,7 @@ if opts.batch:
 
 
 #version="v1.1.2"
-version="v1.2"
+version="v1.3.1"
 
 disks={}
 xsections={}
@@ -37,9 +37,10 @@ lumi=opts.lumi ## pb
 fileLimit=-1
 
 #book=['DY','WZ','ZZ','WW','WJets','TTJets'] ## WJets is very big with low eff for double muon
-book=['DY','TTJets','WJets','WW','WZ','ZZ'] ## WJets is very big with low eff for double muon
-#book=['DY','WZ','ZZ','WW','TTJets']
-datasets=['SingleMuon','SingleElectron','Tau']
+#book=['DY','TTJets','WJets','WW','WZ','ZZ'] ## WJets is very big with low eff for double muon
+book=['DY','WZ','ZZ','WW','TTJets']
+#datasets=['SingleMuon','SingleElectron','Tau']
+datasets=['SingleMuon']
 ##configure
 if True:
 	#### Asympt 50 ns v2
@@ -106,29 +107,23 @@ if opts.json != "":
 
 # get PU Target
 puFile = ROOT.TFile.Open(opts.pileup)
+doPileup=True
 if puFile == None:
-	print "-> ERROR: Pileup File does not exists"
+	print "-> ERROR: Pileup File does not exists. Not Reweighting"
+	doPileup=False
 #puTarget=ROOT.TH1D("pu","pu",100,0,50) # rho
-puTarget=puFile.Get("pileup")
-if puTarget == None:
-	print "-> ERROR: pileup file does not contains a pileup histo"
+if doPileup:
+	puTarget=puFile.Get("pileup")
+	if puTarget == None:
+		print "-> ERROR: pileup file does not contains a pileup histo"
+		print "-> NOT REWEIGHTING"
+		doPileup=False
 
 print "->Getting pu for data" ## TODO, for puTrueInt, this is meaningless
-pu['data'] = puTarget.Clone("puData")
+if doPileup:
+	pu['data'] = puTarget.Clone("puData")
 
-puTarget.Reset("ACE")
-
-### GET MetPhi Corrections
-## metFile = ROOT.TFile.Open("MetPhi.root")
-## metCorrect={}
-## metCorrect['x_data'] =metFile.Get("fx_data")
-## metCorrect['y_data'] =metFile.Get("fy_data")
-## metCorrect['x_mc'] =metFile.Get("fx_mc")
-## metCorrect['y_mc'] =metFile.Get("fy_mc")
-## 
-## if metCorrect['x_data'] == None or metCorrect['y_data'] == None or metCorrect['x_mc'] == None or metCorrect['y_mc'] == None:
-## 	print "Error no MET PHI CORRECTIONS"
-## 	exit(0)
+	puTarget.Reset("ACE")
 
 ## compute nevents
 print "-> compute nevents and pileup histo for mc"
@@ -154,17 +149,14 @@ for mc in book:
 	stdout += " "+str(n) +" files added"
 	print "\r"+stdout,
 	sys.stdout.flush()
-	t.SetBranchStatus("*",0)
-	t.SetBranchStatus("mcWeight",1)
-	t.SetBranchStatus("puTrue*",1)
 	sumW_histo = ROOT.TH1D("sumWH","histo",1,0,2)
 	t.Draw("1>>sumWH","mcWeight" )
 	nevents[mc]= sumW_histo.GetBinContent(1)
-	print "\r" + stdout, " pu ",
-	pu[mc] = puTarget.Clone("pu_"+mc)
-	pu[mc + '_reweight'] = puTarget.Clone("pu_"+mc + "_reweight") ## try to get the true reweight distribution
-	#te.Draw("rho>>pu_"+mc,"lepP4[1].Pt()>20","goff")
-	t.Draw("puTrueInt>>pu_"+mc,"","goff")
+	if doPileup:
+		print "\r" + stdout, " pu ",
+		pu[mc] = puTarget.Clone("pu_"+mc)
+		pu[mc + '_reweight'] = puTarget.Clone("pu_"+mc + "_reweight") ## try to get the true reweight distribution
+		t.Draw("puTrueInt>>pu_"+mc,"","goff")
 	print "DONE"
 
 
@@ -385,25 +377,26 @@ ttLeadPt["data"] =ROOT.TH1D("ttLeadPt","ttLeadPt;p_{T}^{#tau 1} [GeV]; Events",1
 
 ## normalize pu
 print "-> normalizing pu: "
-for what in book + ['data']:
-	print what,
-	if pu[what].Integral():
-		pu[what].Scale( 1./ pu[what].Integral() ) 
+if doPileup:
+   for what in book + ['data']:
+          print what,
+          if pu[what].Integral():
+          	pu[what].Scale( 1./ pu[what].Integral() ) 
 
-for what in book:
-	print "Rescaling ", what, "to preserve lumi"
-	s=0.
-	for i in range (0, pu[what].GetNbinsX() ):
-		c=pu[what].GetBinCenter(i+1)
-		num = pu['data'].GetBinContent( pu['data'].FindBin(c) ) 
-		den = pu[what].GetBinContent(i+1)
+   for what in book:
+   	print "Rescaling ", what, "to preserve lumi"
+   	s=0.
+   	for i in range (0, pu[what].GetNbinsX() ):
+   		c=pu[what].GetBinCenter(i+1)
+   		num = pu['data'].GetBinContent( pu['data'].FindBin(c) ) 
+   		den = pu[what].GetBinContent(i+1)
                 if den==0:
-                        print "\n EVENT WITH NULL PU REWEIGHT", c
-                        num=0
-                        den=1
-		s += (num/den)  * den
-	print "-> Scale =", 1./s
-	pu[what].Scale(1./s)
+                           print "\n EVENT WITH NULL PU REWEIGHT", c
+                           num=0
+                           den=1
+   		s += (num/den)  * den
+   	print "-> Scale =", 1./s
+   	pu[what].Scale(1./s)
 
 print "DONE"
 
@@ -501,21 +494,16 @@ for mc in book:
 			if leadJetPt<5 : 
 				leadJetIdx = i
 				leadJetPt = t.jetP4[i].Pt()
-
-		den= pu[mc].GetBinContent(pu[mc].FindBin(puTrueInt)) 
-		num= pu[ 'data' ].GetBinContent(pu['data'].FindBin(puTrueInt))
-		if den==0: 
-			print "\n EVENT WITH NULL PU REWEIGHT", t.eventNum
-			num=0
-			den=1
-		puReweight = float(num)/float(den )
-		w*=puReweight
-		pu[ mc + "_reweight" ] . Fill( puTrueInt, w ) 
-		#print "PU REWEIGHT DEBUG for,",t.puTrueInt,"=",puReweight, "(num=",num,"den=",den,")"
-		#px = t.metPuppi.Px() - metCorrect['x_mc'].Eval( t.npv)
-		#py = t.metPuppi.Py() -metCorrect['y_mc'].Eval(t.npv)
-		#metCorr = ROOT.TLorentzVector()
-		#metCorr.SetPxPyPzE(px,py,0 ,ROOT.TMath.Sqrt(px*px+py*py))
+		if doPileup:
+			den= pu[mc].GetBinContent(pu[mc].FindBin(puTrueInt)) 
+			num= pu[ 'data' ].GetBinContent(pu['data'].FindBin(puTrueInt))
+			if den==0: 
+				print "\n EVENT WITH NULL PU REWEIGHT", t.eventNum
+				num=0
+				den=1
+			puReweight = float(num)/float(den )
+			w*=puReweight
+			pu[ mc + "_reweight" ] . Fill( puTrueInt, w ) 
 		metCorr = t.metPuppi
 		
 		## MM
@@ -771,8 +759,11 @@ for c in canvas:
 		dict[histo].Write()
 	f.Close()
 
-f= ROOT.TFile.Open(opts.plotdir + "/pu.root", "RECREATE" )
-f.cd()
-for h in pu:
-	pu[h].Write()
+if doPileup:
+   f= ROOT.TFile.Open(opts.plotdir + "/pu.root", "RECREATE" )
+   f.cd()
+   for h in pu:
+        pu[h].Write()
+
+print "--- END ---"
 
