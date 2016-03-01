@@ -6,6 +6,10 @@
 #include "NeroProducer/Nero/interface/NeroVertex.hpp"
 #include "NeroProducer/Nero/interface/NeroEvent.hpp"
 
+// Electron corrector
+#include "EgammaAnalysis/ElectronTools/interface/EnergyScaleCorrection_class.hh"
+
+#include "TRandom3.h"
 
 class NeroLeptons : virtual public NeroCollection,
     virtual public BareLeptons
@@ -77,6 +81,11 @@ class NeroLeptons : virtual public NeroCollection,
         float mMaxIso_mu;
 
         int mMinNleptons;
+
+        // --- EGTools
+        EnergyScaleCorrection_class *EleCorr{0};
+
+        TRandom3 *rnd_{0};
 };
 
 

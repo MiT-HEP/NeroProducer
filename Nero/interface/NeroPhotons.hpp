@@ -10,6 +10,10 @@
 #include "NeroProducer/Nero/interface/NeroLeptons.hpp"
 #include "NeroProducer/Nero/interface/SuperClusterFootprintRemovalMiniAOD.h"
 
+// Electron corrector
+#include "EgammaAnalysis/ElectronTools/interface/EnergyScaleCorrection_class.hh"
+#include "TRandom3.h"
+
 
 class NeroPhotons : virtual public NeroCollection,
     virtual public BarePhotons
@@ -65,6 +69,10 @@ class NeroPhotons : virtual public NeroCollection,
         bool cutBasedPhotonId( const pat::Photon& pho, string type="loose_50ns", bool withIso = true , bool withSieie=true);
 
         float cutBasedPhotonIdEffArea( const pat::Photon&pho, string type="ch_50ns");
+
+        // --- EGTools
+        EnergyScaleCorrection_class *PhoCorr{0};
+        TRandom3 *rnd_{0};
 
 };
 
