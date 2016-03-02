@@ -246,6 +246,10 @@ process.jetSequence = cms.Sequence(fatjetInitSequence*
                     ca15PuppiSequence
                     )
 
+process.reclusterSequence = cms.Sequence()
+if process.nero.doReclustering: ## use python to figure it out
+    process.reclusterSequence += process.puppiSequence 
+    process.reclusterSequence += process.jetSequence 
 #-----------------------ELECTRON ID-------------------------------
 from NeroProducer.Nero.egammavid_cfi import *
 
@@ -366,8 +370,9 @@ process.p = cms.Path(
                 process.egmPhotonIDSequence *
                 process.photonIDValueMapProducer * ## ISO MAP FOR PHOTONS
                 process.electronIDValueMapProducer * ## ISO MAP FOR PHOTONS
-                process.puppiSequence * ## does puppi, puppi met, type1 corrections
-                process.jetSequence *
+                #process.puppiSequence * ## does puppi, puppi met, type1 corrections
+                #process.jetSequence *
+                process.reclusterSequence * ##  includes puppi and jets if recluster options is on
                 #process.jecSequence *
                 process.nero
                 )
