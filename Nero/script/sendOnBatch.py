@@ -137,11 +137,13 @@ def PrintSummary(dir, doPrint=True):
                 print " Done: " + green  + "%3d"%len(done) + " / " + str(tot) + white + " : " + PrintLine(done) ### + ",".join(done) + "|" 
                 print " -------------------------------------"
 
-        return ( done, run, fail)
+        return ( done, run, fail, pend)
 
 if opts.status:
-	PrintSummary(opts.dir)
-	exit(0)
+	done, run, fail, pend = PrintSummary(opts.dir)
+	if len(run + fail + pend) ==0 and len(done) >0 :
+		exit(0)
+	else: exit(1)
 
 EOS = "/afs/cern.ch/project/eos/installation/0.3.84-aquamarine/bin/eos.select"
 
