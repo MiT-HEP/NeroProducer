@@ -14,7 +14,7 @@ function check_and_resubmit {
 		[ $exit -eq 0 ]	|| python sendOnBatch.py --only-submit -j fail -d $dir -q $QUEUE 2>&1 >/dev/null
 		[ $exit -eq 0 ] || { ALLOK=1 ; }
 	done
-	return ALLOK
+	return $ALLOK
 }
 
 function batchjobs {
