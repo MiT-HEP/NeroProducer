@@ -154,8 +154,8 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         }
         else
         {
-                 /// @todo Fixme. I don't know what's really needed here, just getting to compile --Dan
-                 smear = EleCorr->getSmearingSigma((int) iEvent.id().run(), el.isEB(), el.r9(), aeta, el.energy(), EnergyScaleCorrection_class::kNone);
+                 // the kNone refers to systematcis changes
+                 smear = EleCorr->getSmearingSigma((int) iEvent.id().run(), el.isEB(), el.r9(), aeta, el.energy(), 0.,0.);
                  float corr = 1.0  + smear * rnd_->Gaus(0,1);
                  l.p4 *= corr;
         
