@@ -79,6 +79,31 @@ process.TFileService = cms.Service("TFileService",
         fileName = cms.string("NeroNtuples.root"),
         )
 # ------------------------QG-----------------------------------------------
+qgDatabaseVersion = '76X'
+
+# to use the database, see https://twiki.cern.ch/twiki/bin/view/CMS/QuarkGluonLikelihood
+#connect = cms.string('frontier://FrontierProd/CMS_COND_PAT_000'),
+#for type in ['AK4PFchs','AK4PFchs_antib']:
+#  QGPoolDBESSource.toGet.extend(cms.VPSet(cms.PSet(
+#    record = cms.string('QGLikelihoodRcd'),
+#    tag    = cms.string('QGLikelihoodObject_'+qgDatabaseVersion+'_'+type),
+#    label  = cms.untracked.string('QGL_'+type)
+#  )))
+
+from CondCore.DBCommon.CondDBSetup_cfi import *
+QGPoolDBESSource = cms.ESSource("PoolDBESSource",
+      CondDBSetup,
+      toGet = cms.VPSet(
+        cms.PSet(
+            record = cms.string('QGLikelihoodRcd'),
+            tag    = cms.string('QGLikelihoodObject_'+qgDatabaseVersion+'_AK4PFchs'),
+            label  = cms.untracked.string('QGL_AK4PFchs')
+        ),
+      ),
+      connect = cms.string('sqlite:qg/QGL_'+qgDatabaseVersion+'.db')
+)
+
+
 process.load('RecoJets.JetProducers.QGTagger_cfi')
 process.QGTagger.srcJets             = cms.InputTag("slimmedJets")    # Could be reco::PFJetCollection or pat::JetCollection (both AOD and miniAOD)               
 process.QGTagger.srcVertexCollection = cms.InputTag("offlineSlimmedPrimaryVertices")

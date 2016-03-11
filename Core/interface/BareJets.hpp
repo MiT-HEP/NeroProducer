@@ -49,6 +49,11 @@ class BareJets : virtual public BareP4
         vector<float> *Q{0};
         vector<float> *QnoPU{0};
 
+        // QGL variables
+        vector<int>   *qglMult{0};
+        vector<float> *qglPtD{0};
+        vector<float> *qglAxis2{0};
+
 };
 
 #endif
