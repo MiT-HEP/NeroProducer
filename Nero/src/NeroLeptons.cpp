@@ -154,7 +154,8 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         }
         else
         {
-                 smear = EleCorr->getSmearingSigma(iEvent.id().run(), el.energy(), el.isEB(), el.r9(), aeta);  
+                 // the kNone refers to systematcis changes
+                 smear = EleCorr->getSmearingSigma((int) iEvent.id().run(), el.isEB(), el.r9(), aeta, el.energy(), 0.,0.);
                  float corr = 1.0  + smear * rnd_->Gaus(0,1);
                  l.p4 *= corr;
         

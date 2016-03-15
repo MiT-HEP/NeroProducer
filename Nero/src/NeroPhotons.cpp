@@ -209,7 +209,8 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         }
         else
         {
-                 smear = PhoCorr->getSmearingSigma(iEvent.id().run(), pho.energy(), pho.isEB(), pho.r9(), aeta);  
+                 // the  kNone refers to syst changes
+                 smear = PhoCorr->getSmearingSigma((int) iEvent.id().run(), pho.isEB(), pho.r9(), aeta, pho.energy(), 0,0);  
                  float corr = 1.0  + smear * rnd_->Gaus(0,1);
                  phoP4 *= corr;
         
