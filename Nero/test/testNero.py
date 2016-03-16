@@ -91,7 +91,7 @@ qgDatabaseVersion = '76X'
 #  )))
 
 from CondCore.DBCommon.CondDBSetup_cfi import *
-QGPoolDBESSource = cms.ESSource("PoolDBESSource",
+process.QGPoolDBESSource = cms.ESSource("PoolDBESSource",
       CondDBSetup,
       toGet = cms.VPSet(
         cms.PSet(
@@ -102,6 +102,7 @@ QGPoolDBESSource = cms.ESSource("PoolDBESSource",
       ),
       connect = cms.string('sqlite:qg/QGL_'+qgDatabaseVersion+'.db')
 )
+process.es_prefer_qg = cms.ESPrefer('PoolDBESSource','QGPoolDBESSource')
 
 
 process.load('RecoJets.JetProducers.QGTagger_cfi')
