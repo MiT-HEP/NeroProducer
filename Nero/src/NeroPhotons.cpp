@@ -1,5 +1,6 @@
 #include "NeroProducer/Nero/interface/NeroPhotons.hpp"
 #include "NeroProducer/Nero/interface/Nero.hpp"
+#include <time.h>
 
 //#define VERBOSE 2
 
@@ -14,9 +15,12 @@ NeroPhotons::NeroPhotons() :
     mMaxEta = 2.5;
 
     pf = NULL;
+    rnd_ = new TRandom3( (unsigned)time(NULL) ) ;
 }
 
 NeroPhotons::~NeroPhotons(){
+    delete PhoCorr; 
+    delete rnd_; 
 }
 
 
@@ -191,7 +195,29 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         // -- }
     
         //FILL
-        new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(pho.px(),pho.py(),pho.pz(),pho.energy());
+        TLorentzVector phoP4=TLorentzVector(pho.px(),pho.py(),pho.pz(),pho.energy());
+
+        float smear = 0.0, scale = 1.0;
+        float aeta = std::abs(pho.eta());
+        float et = pho.energy()/cosh(aeta);
+
+        if (iEvent.isRealData() )
+        {
+                
+                scale = PhoCorr->ScaleCorrection(iEvent.id().run(), pho.isEB(), pho.r9(), aeta, et);
+                phoP4 *= scale;
+        }
+        else
+        {
+                 // the  kNone refers to syst changes
+                 smear = PhoCorr->getSmearingSigma((int) iEvent.id().run(), pho.isEB(), pho.r9(), aeta, pho.energy(), 0,0);  
+                 float corr = 1.0  + smear * rnd_->Gaus(0,1);
+                 phoP4 *= corr;
+        
+        }
+
+        //
+        new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(phoP4);
         iso->push_back(totIso);	
         sieie -> push_back( pho. full5x5_sigmaIetaIeta() );
 

@@ -18,13 +18,18 @@ nero = cms.EDAnalyzer("Nero",
     photons = cms.InputTag("slimmedPhotons"),
     jets = cms.InputTag("slimmedJets"),
     puppijets = cms.InputTag("slimmedJetsPuppi"),
+    ############### RECLUSTERED JETS and MET
+    doReclustering = cms.bool(False),
+
     chsAK8 = cms.InputTag("slimmedJetsAK8"),
     puppiAK8 = cms.InputTag("packedPatJetsPFAK8Puppi"),
     chsCA15 = cms.InputTag("packedPatJetsPFCA15CHS"),
     puppiCA15 = cms.InputTag("packedPatJetsPFCA15Puppi"),
+
     mets = cms.InputTag("slimmedMETs"),
-    metsPuppi = cms.InputTag("type1PuppiMET"),
-    metsPuppiUncorrected = cms.InputTag("pfMETPuppi"),
+    metsPuppi = cms.InputTag("slimmedMETsPuppi"),
+    #metsPuppi = cms.InputTag("type1PuppiMET"),  ## RECLUSTERING
+    #metsPuppiUncorrected = cms.InputTag("pfMETPuppi"), ## RECLUSTERING
     pfCands = cms.InputTag("packedPFCandidates"),
 
 
@@ -40,6 +45,7 @@ nero = cms.EDAnalyzer("Nero",
     eleLooseIdMap  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-%(bx)s-%(vs)s-standalone-loose"),
     eleMediumIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-%(bx)s-%(vs)s-standalone-medium"),
     eleTightIdMap  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-%(bx)s-%(vs)s-standalone-tight"),
+    eleMvaMap = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values"),
     phoLooseIdMap  = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-%(bx)s-%(vs)s-standalone-loose"),
     phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-%(bx)s-%(vs)s-standalone-medium"),
     phoTightIdMap  = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-%(bx)s-%(vs)s-standalone-tight"),
