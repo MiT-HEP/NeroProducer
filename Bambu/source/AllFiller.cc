@@ -14,7 +14,7 @@ void
 mithep::nero::AllFiller::setCrossRef(BaseFiller* _fillers[])
 {
   if (_fillers[kMonteCarlo])
-    pdfReweightId_ = &static_cast<MonteCarloFiller*>(_fillers[kMonteCarlo])->getPdfReweightId();
+    pdfReweightIndices_ = &static_cast<MonteCarloFiller*>(_fillers[kMonteCarlo])->getPdfReweightIndices();
 }
 
 void
@@ -35,7 +35,7 @@ mithep::nero::AllFiller::finalize()
 void
 mithep::nero::AllFiller::begin()
 {
-  if (pdfReweightId_) { // MonteCarloFiller is set up
+  if (pdfReweightIndices_) { // MonteCarloFiller is set up
     if (!scaleReweightSums_) {
       scaleReweightSums_ = new TH1D("scaleReweightSums", "", 6, 0., 6.);
       scaleReweightSums_->Sumw2();
@@ -45,9 +45,9 @@ mithep::nero::AllFiller::begin()
     }
   
     // AllFiller::begin is called after MonteCarloFiller::begin
-    if (!pdfReweightSums_ && pdfReweightId_->size() != 0) {
+    if (!pdfReweightSums_ && pdfReweightIndices_->size() != 0) {
       outputFile_->cd();
-      pdfReweightSums_ = new TH1D("pdfReweightSums", "", pdfReweightId_->size(), 0., pdfReweightId_->size());
+      pdfReweightSums_ = new TH1D("pdfReweightSums", "", pdfReweightIndices_->size(), 0., pdfReweightIndices_->size());
       pdfReweightSums_->Sumw2();
     }
   }
@@ -98,7 +98,7 @@ mithep::nero::AllFiller::fill()
 
     out_.mcWeight = mcInfo->Weight();
 
-    if (pdfReweightId_) {
+    if (pdfReweightIndices_) {
       if (mcInfo->NReweightScaleFactors() > 8) {
         int iBin = 0;
         for (int iF : {1, 2, 3, 4, 6, 8})
@@ -106,10 +106,10 @@ mithep::nero::AllFiller::fill()
       }
 
       if (pdfReweightSums_) {
-        for (unsigned iP(0); iP != pdfReweightId_->size(); ++iP) {
-          unsigned id(pdfReweightId_->at(iP));
-          if (id < mcInfo->NReweightScaleFactors())
-            pdfReweightSums_->Fill(iP + 0.5, mcInfo->ReweightScaleFactor(id));
+        for (unsigned iP(0); iP != pdfReweightIndices_->size(); ++iP) {
+          unsigned idx(pdfReweightIndices_->at(iP));
+          if (idx < mcInfo->NReweightScaleFactors())
+            pdfReweightSums_->Fill(iP + 0.5, mcInfo->ReweightScaleFactor(idx));
         }
       }
     }

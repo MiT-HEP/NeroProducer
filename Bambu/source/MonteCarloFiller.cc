@@ -39,40 +39,48 @@ mithep::nero::MonteCarloFiller::begin()
     // we don't need this info any more
     pdfReweightGroupNames_.clear();
 
-    outputFile_->cd();
-    auto* namesTree = new TTree("pdfReweight", "PDF set names");
-    char weightDef[256];
-    namesTree->Branch("weightDef", weightDef, "weightDef/C");
-
     for (unsigned gid : pdfReweightGroupIds_) {
       for (unsigned iC = 0; iC != mcRunInfo->NWeights(); ++iC) {
         if (mcRunInfo->WeightGroup(iC) != gid)
           continue;
 
-        pdfReweightId_.push_back(mcRunInfo->WeightPositionInEvent(iC));
-
-        strcpy(weightDef, mcRunInfo->WeightDefinition(iC));
-        namesTree->Fill();
+        pdfReweightIndices_.push_back(mcRunInfo->WeightPositionInEvent(iC));
       }
     }
 
     // we don't need this info any more
     pdfReweightGroupIds_.clear();
+  }
+
+  // now all information is projected down to reweight indices
+  if (pdfReweightIndices_.size() != 0) {
+    // store the name of the reweight factor in a tree
+    outputFile_->cd();
+    auto* namesTree = new TTree("pdfReweight", "PDF set names");
+    char weightDef[256];
+    namesTree->Branch("weightDef", weightDef, "weightDef/C");
+
+    unsigned maxIdx(0);
+    for (unsigned idx : pdfReweightIndices_) {
+      if (idx > maxIdx)
+        maxIdx = idx;
+
+      for (unsigned iC = 0; iC != mcRunInfo->NWeights(); ++iC) {
+        // if position matches idx
+        if (idx == mcRunInfo->WeightPositionInEvent(iC)) {
+          strcpy(weightDef, mcRunInfo->WeightDefinition(iC));
+          namesTree->Fill();
+          break;
+        }
+      }
+    }
+
+    if (mcRunInfo->NWeights() <= maxIdx)
+      std::cerr << "Current file has fewer PDF reweight ids than is expected!!";
 
     outputFile_->cd();
     namesTree->Write();
     delete namesTree;
-  }
-
-  if (pdfReweightId_.size() != 0) {
-    unsigned maxId(0);
-    for (unsigned id : pdfReweightId_) {
-      if (id > maxId)
-        maxId = id;
-    }
-
-    if (mcRunInfo->NWeights() <= maxId)
-      std::cerr << "Current file has fewer PDF reweight ids than is expected!!";
   }
 }
 
@@ -102,9 +110,9 @@ mithep::nero::MonteCarloFiller::fill()
     out_.r5f1 = mcEventInfo->ReweightScaleFactor(6);
     out_.r5f5 = mcEventInfo->ReweightScaleFactor(8);
   }
-  for (unsigned id : pdfReweightId_) {
-    if (id < mcEventInfo->NReweightScaleFactors())
-      out_.pdfRwgt->push_back(mcEventInfo->ReweightScaleFactor(id));
+  for (unsigned idx : pdfReweightIndices_) {
+    if (idx < mcEventInfo->NReweightScaleFactors())
+      out_.pdfRwgt->push_back(mcEventInfo->ReweightScaleFactor(idx));
   }
 
   auto* puInfo = getSource<mithep::PileupInfoCol>("PileupInfo");

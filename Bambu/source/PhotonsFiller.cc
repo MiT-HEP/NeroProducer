@@ -53,7 +53,7 @@ mithep::nero::PhotonsFiller::fill()
     double phIso(0.);
 
     IsolationTools::PFEGIsoFootprintRemoved(&photon, pv, pfCands, 0.3, chIso, nhIso, phIso);
-    PhotonTools::IsoRhoCorrection(&photon, isoType_, *rho_, chIso, nhIso, phIso);
+    PhotonTools::IsoRhoCorrection(&photon, PhotonTools::EPhIsoType(isoType_), *rho_, chIso, nhIso, phIso);
 
     double iso(chIso + nhIso + phIso);
     if (maxIso_ > 0. && iso > maxIso_)
