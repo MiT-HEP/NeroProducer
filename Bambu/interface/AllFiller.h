@@ -29,7 +29,7 @@ namespace mithep {
       BareAll out_{};
 
       EventHeaderCol const* skippedEvents_ = 0;
-      std::vector<unsigned> const* pdfReweightId_ = 0;
+      std::vector<unsigned> const* pdfReweightIndices_ = 0;
       TH1D* scaleReweightSums_ = 0;
       TH1D* pdfReweightSums_ = 0;
 

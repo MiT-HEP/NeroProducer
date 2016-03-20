@@ -8,9 +8,13 @@ import os
 
 mitdata = os.environ['MIT_DATA']
 
+try:
+    bx = analysis.custom['bx']
+except KeyError:
+    bx = '25ns'
+
 def switchBX(case25, case50):
-    global analysis
-    return case25 if analysis.custom['bx'] == '25ns' else case50
+    return case25 if bx == '25ns' else case50
 
 jecVersion = switchBX('25nsV6', '50nsV5')
 
@@ -617,7 +621,7 @@ neroMod.AddFiller(mithep.nero.TausFiller(
 ))
 
 # "True" -> passing lepton is saved
-neroMod.AddFiller(mithep.nero.LeptonsFiller(
+leptonsFiller = mithep.nero.LeptonsFiller(
     MuonsName = veryLooseMuons.GetOutputName(),
     BaselineMuonIdName = (muonBaselineId.GetOutputName(), True),
     VetoMuonIdName = (muonBaselineId.GetOutputName(), True),
@@ -644,9 +648,28 @@ neroMod.AddFiller(mithep.nero.LeptonsFiller(
     VerticesName = goodPVFilterMod.GetOutputName(),
     PFCandsName = mithep.Names.gkPFCandidatesBrn,
     NoPUPFCandsName = separatePileUpMod.GetPFNoPileUpName(),
-    PUPFCandsName = separatePileUpMod.GetPFPileUpName(),
-    ElectronMVAType = 'IDEGamma2015NonTrig25ns'
-))
+    PUPFCandsName = separatePileUpMod.GetPFPileUpName()
+)
+
+#emva = mithep.ElectronIDMVA.kIDEGamma2015NonTrig25ns
+emva = 0
+
+if emva == mithep.ElectronIDMVA.kIDEGamma2015Trig25ns:
+    leptonsFiller.SetElectronMVA('IDEGamma2015Trig25ns', emva)
+    leptonsFiller.AddElectronMVAWeights(mitdata + '/ElectronMVAWeights/EIDmva_EB1_10_oldTrigSpring15_25ns_data_1_VarD_TMVA412_Sig6BkgAll_MG_noSpec_BDT.weights.xml')
+    leptonsFiller.AddElectronMVAWeights(mitdata + '/ElectronMVAWeights/EIDmva_EB2_10_oldTrigSpring15_25ns_data_1_VarD_TMVA412_Sig6BkgAll_MG_noSpec_BDT.weights.xml')
+    leptonsFiller.AddElectronMVAWeights(mitdata + '/ElectronMVAWeights/EIDmva_EE_10_oldTrigSpring15_25ns_data_1_VarD_TMVA412_Sig6BkgAll_MG_noSpec_BDT.weights.xml')
+
+elif emva == mithep.ElectronIDMVA.kIDEGamma2015NonTrig25ns:
+    leptonsFiller.SetElectronMVA('IDEGamma2015NonTrig25ns', emva)
+    leptonsFiller.AddElectronMVAWeights(mitdata + '/ElectronMVAWeights/EIDmva_EB1_5_oldNonTrigSpring15_ConvVarCwoBoolean_TMVA412_FullStatLowPt_PairNegWeightsGlobal_BDT.weights.xml');
+    leptonsFiller.AddElectronMVAWeights(mitdata + '/ElectronMVAWeights/EIDmva_EB2_5_oldNonTrigSpring15_ConvVarCwoBoolean_TMVA412_FullStatLowPt_PairNegWeightsGlobal_BDT.weights.xml');
+    leptonsFiller.AddElectronMVAWeights(mitdata + '/ElectronMVAWeights/EIDmva_EE_5_oldNonTrigSpring15_ConvVarCwoBoolean_TMVA412_FullStatLowPt_PairNegWeightsGlobal_BDT.weights.xml');
+    leptonsFiller.AddElectronMVAWeights(mitdata + '/ElectronMVAWeights/EIDmva_EB1_10_oldNonTrigSpring15_ConvVarCwoBoolean_TMVA412_FullStatLowPt_PairNegWeightsGlobal_BDT.weights.xml');
+    leptonsFiller.AddElectronMVAWeights(mitdata + '/ElectronMVAWeights/EIDmva_EB2_10_oldNonTrigSpring15_ConvVarCwoBoolean_TMVA412_FullStatLowPt_PairNegWeightsGlobal_BDT.weights.xml');
+    leptonsFiller.AddElectronMVAWeights(mitdata + '/ElectronMVAWeights/EIDmva_EE_10_oldNonTrigSpring15_ConvVarCwoBoolean_TMVA412_FullStatLowPt_PairNegWeightsGlobal_BDT.weights.xml'); 
+
+neroMod.AddFiller(leptonsFiller)
 
 neroMod.AddFiller(mithep.nero.FatJetsFiller(mithep.nero.BaseFiller.kAK8Jets,
     FatJetsName = ak8JetExtender.GetOutputName()
@@ -684,7 +707,8 @@ neroMod.AddFiller(mithep.nero.PhotonsFiller(
     MediumIdName = photonMediumId.GetOutputName(),
     TightIdName = photonTightId.GetOutputName(),
     HighPtIdName = photonHighPtId.GetOutputName(),
-    VerticesName = goodPVFilterMod.GetOutputName()
+    VerticesName = goodPVFilterMod.GetOutputName(),
+    IsoType = mithep.PhotonTools.kSpring15MediumIso # can be any of loose, medium, or tight
 ))
 
 neroMod.AddFiller(mithep.nero.AllFiller())
@@ -692,13 +716,15 @@ neroMod.AddFiller(mithep.nero.AllFiller())
 triggerFiller = mithep.nero.TriggerFiller()
 neroMod.AddFiller(triggerFiller)
 
+neroMod.SetPrintLevel(3)
+
 ################
 ### TRIGGERS ###
 ################
 
 triggers = [
-    (['PFMETNoMu90_%sCleaned_PFMHTNoMu90_IDTight' % c for c in ['JetId', 'HBHE', 'Noise']] if analysis.isRealData and analysis.custom['bx'] == '25ns' else 'PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight', []),
-    (['PFMETNoMu120_%sCleaned_PFMHTNoMu120_IDTight' % c for c in ['JetId', 'HBHE', 'Noise']] if analysis.isRealData and analysis.custom['bx'] == '25ns' else 'PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight', []),
+    (['PFMETNoMu90_%sCleaned_PFMHTNoMu90_IDTight' % c for c in ['JetId', 'HBHE', 'Noise']] if analysis.isRealData and bx == '25ns' else 'PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight', []),
+    (['PFMETNoMu120_%sCleaned_PFMHTNoMu120_IDTight' % c for c in ['JetId', 'HBHE', 'Noise']] if analysis.isRealData and bx == '25ns' else 'PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight', []),
     (['PFMET170_%sCleaned' % c for c in ['JetId', 'HBHE', 'Noise']], []),
     ('PFMET170', []),
     ('Ele23_WPLoose_Gsf' if analysis.isRealData else 'Ele22_eta2p1_WP75_Gsf', ['hltEle23WPLooseGsfTrackIsoFilter' if analysis.isRealData else 'hltSingleEle22WP75GsfTrackIsoFilter']),
@@ -819,10 +845,23 @@ postskimSequence = Chain([
 
 if analysis.isRealData:
     badEventsFilterMod = mithep.BadEventsFilterMod('BadEventsFilterMod',
-        EEBadScFilter = True,
-        HBHENoiseFilter = True,
-        FillHist = True
+        FillHist = True,
+        TaggingMode = False # filter out events
     )
+    badEventsFilterMod.SetFilter('HBHENoiseFilter')
+    badEventsFilterMod.SetFilter('EEBadScFilter')
+    if int(analysis.book.split('/')[2]) < 43: # e.g. t2mit/filefi/042
+        badEventsFilterMod.AddEventList('CSCTightHaloFilter', mitdata + '/eventlist/csc2015_Dec01.txt')
+        badEventsFilterMod.AddEventList('EEBadScFilter', mitdata + '/eventlist/ecalscn1043093_Dec01.txt')
+        badEventsFilterMod.AddEventList('CHTrackResolutionFilter', mitdata + '/eventlist/badResolutionTrack_Jan13.txt')
+        badEventsFilterMod.AddEventList('MuBadTrackFilter', mitdata + '/eventlist/muonBadTrack_Jan13.txt')
+        badEventsFilterMod.AddEventList('HBHENoiseIsoFilter', mitdata + '/eventlist/hbheiso_Jan13.txt')
+
+    else:
+        badEventsFilterMod.SetFilter('CSCTightHaloFilter')
+        badEventsFilterMod.SetFilter('CHTrackResolutionFilter')
+        badEventsFilterMod.SetFilter('MuBadTrackFilter')
+        badEventsFilterMod.SetFilter('HBHENoiseIsoFilter')
 
     hltMod = mithep.HLTMod(
         ExportTrigObjects = False
@@ -876,8 +915,8 @@ else:
         elif analysis.custom['pdfrwgt'] == 'mg5_74':
             mcFiller.AddPdfReweightGroupName('NNPDF30_lo_as_0130.LHgrid')
         elif analysis.custom['pdfrwgt'] == 'pwhg_74':
-            for rid in range(9, 111):
-                mcFiller.AddPdfReweightId(rid) # 9-108: 260000 family, 109: 265000, 110: 266000
+            for idx in range(9, 111):
+                mcFiller.AddPdfReweightIndex(idx) # 9-108: 260000 family, 109: 265000, 110: 266000
         else:
             print 'Unrecognized pdfrwgt option', analysis.custom['pdfrwgt']
             sys.exit(1)

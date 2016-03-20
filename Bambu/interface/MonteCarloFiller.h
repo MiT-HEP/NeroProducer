@@ -26,12 +26,12 @@ namespace mithep {
       void SetGenJetsName(char const* _name) { genJetsName_ = _name; }
       void AddPdfReweightGroupName(char const* _name) { pdfReweightGroupNames_.push_back(_name); }
       void AddPdfReweightGroupId(UInt_t _id) { pdfReweightGroupIds_.push_back(_id); }
-      void AddPdfReweightId(UInt_t _id) { pdfReweightId_.push_back(_id); }
+      void AddPdfReweightIndex(UInt_t _idx) { pdfReweightIndices_.push_back(_idx); }
       void SetMinParticlePt(Double_t _min) { minParticlePt_ = _min; }
       void SetMinGenJetPt(Double_t _min) { minGenJetPt_ = _min; }
 
       // used by AllFiller
-      std::vector<unsigned> const& getPdfReweightId() { return pdfReweightId_; }
+      std::vector<unsigned> const& getPdfReweightIndices() { return pdfReweightIndices_; }
 
     private:
       BareMonteCarlo out_{};
@@ -45,7 +45,7 @@ namespace mithep {
       Double_t minParticlePt_ = 0.;
       Double_t minGenJetPt_ = 0.;
 
-      std::vector<UInt_t> pdfReweightId_;
+      std::vector<UInt_t> pdfReweightIndices_;
 
       ClassDef(MonteCarloFiller, 0)
     };

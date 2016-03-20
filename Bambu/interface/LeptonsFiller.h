@@ -4,7 +4,12 @@
 #include "NeroProducer/Bambu/interface/BaseFiller.h"
 #include "NeroProducer/Core/interface/BareEvent.hpp"
 #include "NeroProducer/Core/interface/BareLeptons.hpp"
+
 #include "MitPhysics/Utils/interface/ElectronIDMVA.h"
+
+#include <utility>
+#include <vector>
+#include <string>
 
 namespace mithep {
   namespace nero {
@@ -17,18 +22,15 @@ namespace mithep {
       };
 
     public:
-      LeptonsFiller() {
-        ElectronDiscriminator = new ElectronIDMVA();
-      }
-      ~LeptonsFiller() {
-        delete ElectronDiscriminator; 
-      }
+      LeptonsFiller() {}
+      ~LeptonsFiller() {}
 
       BareCollection* getObject() override { return &out_; }
       BaseFiller::Collection collection() const override { return BaseFiller::kLeptons; }
       void setCrossRef(BaseFiller* _fillers[]);
 
       void initialize() override;
+      void finalize() override;
       void fill() override;
 
       void SetElectronsName(char const* _name) { electronsName_ = _name; }
@@ -62,7 +64,8 @@ namespace mithep {
       void SetPFCandsName(char const* _name) { pfCandsName_ = _name; }
       void SetNoPUPFCandsName(char const* _name) { nopuPFCandsName_ = _name; }
       void SetPUPFCandsName(char const* _name) { puPFCandsName_ = _name; }
-      void SetElectronMVAType(char const* _type) { electronMVAType_ = _type; }
+      void SetElectronMVA(char const* _methodName, UInt_t _type) { electronMVAConfig_.first = _methodName; electronMVAConfig_.second = _type; }
+      void AddElectronMVAWeights(char const* _path) { electronMVAWeights_.push_back(_path); }
 
       char const* GetMuonIdName(UInt_t _bit) { return idName_[kMu][_bit]; }
       char const* GetElectronIdName(UInt_t _bit) { return idName_[kEl][_bit]; }
@@ -73,17 +76,17 @@ namespace mithep {
 
       TString electronsName_ = "Electrons";
       TString muonsName_ = "Muons";
-      TString electronMVAType_ = "IDEGamma2015Trig25ns";
-      //TString electronMVAType_ = "IDEGamma2015NonTrig25ns";
       TString idName_[nLeptons][32]{};
       TString verticesName_ = "PrimaryVertexes";
       TString pfCandsName_ = "PFCandidates";
       TString nopuPFCandsName_ = "PFNoPileup";
       TString puPFCandsName_ = "PFPileup";
-      Bool_t useMVA = kTRUE;
       Bool_t savePassing_[nLeptons][32]{};
-      ElectronIDMVA *ElectronDiscriminator;
-      BareEvent* event_;
+      // method name, MVA type (enum)
+      std::pair<std::string, UInt_t> electronMVAConfig_{"", ElectronIDMVA::kUninitialized};
+      std::vector<std::string> electronMVAWeights_{};
+      ElectronIDMVA* electronDiscriminator_{0};
+      BareEvent* event_{0};
 
       ClassDef(LeptonsFiller, 0)
     };

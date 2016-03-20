@@ -8,7 +8,6 @@
 
 #include "MitPhysics/Utils/interface/IsolationTools.h"
 #include "MitPhysics/Utils/interface/ElectronTools.h"
-#include "MitPhysics/Utils/interface/ElectronIDMVA.h"
 #include "MitPhysics/Mods/interface/IdMod.h"
 
 #include "TTree.h"
@@ -53,24 +52,17 @@ mithep::nero::LeptonsFiller::initialize()
   selBitsTree->Write();
   delete selBitsTree;
 
-  std::vector<std::string> weights_files;
-  if(electronMVAType_ == "IDEGamma2015Trig25ns") {
-    weights_files.push_back("/home/dhsu/EIDMVA_weights/EIDmva_EB1_10_oldTrigSpring15_25ns_data_1_VarD_TMVA412_Sig6BkgAll_MG_noSpec_BDT.weights.xml");
-    weights_files.push_back("/home/dhsu/EIDMVA_weights/EIDmva_EB2_10_oldTrigSpring15_25ns_data_1_VarD_TMVA412_Sig6BkgAll_MG_noSpec_BDT.weights.xml");
-    weights_files.push_back("/home/dhsu/EIDMVA_weights/EIDmva_EE_10_oldTrigSpring15_25ns_data_1_VarD_TMVA412_Sig6BkgAll_MG_noSpec_BDT.weights.xml");
-    ElectronDiscriminator->Initialize("Spring2015Trig25ns", ElectronIDMVA::kIDEGamma2015Trig25ns, kTRUE, weights_files);
-  } else if(electronMVAType_ == "IDEGamma2015NonTrig25ns") {
-    weights_files.push_back("/home/dhsu/EIDMVA_weights/EIDmva_EB1_5_oldNonTrigSpring15_ConvVarCwoBoolean_TMVA412_FullStatLowPt_PairNegWeightsGlobal_BDT.weights.xml");
-    weights_files.push_back("/home/dhsu/EIDMVA_weights/EIDmva_EB2_5_oldNonTrigSpring15_ConvVarCwoBoolean_TMVA412_FullStatLowPt_PairNegWeightsGlobal_BDT.weights.xml");
-    weights_files.push_back("/home/dhsu/EIDMVA_weights/EIDmva_EE_5_oldNonTrigSpring15_ConvVarCwoBoolean_TMVA412_FullStatLowPt_PairNegWeightsGlobal_BDT.weights.xml");
-    weights_files.push_back("/home/dhsu/EIDMVA_weights/EIDmva_EB1_10_oldNonTrigSpring15_ConvVarCwoBoolean_TMVA412_FullStatLowPt_PairNegWeightsGlobal_BDT.weights.xml");
-    weights_files.push_back("/home/dhsu/EIDMVA_weights/EIDmva_EB2_10_oldNonTrigSpring15_ConvVarCwoBoolean_TMVA412_FullStatLowPt_PairNegWeightsGlobal_BDT.weights.xml");
-    weights_files.push_back("/home/dhsu/EIDMVA_weights/EIDmva_EE_10_oldNonTrigSpring15_ConvVarCwoBoolean_TMVA412_FullStatLowPt_PairNegWeightsGlobal_BDT.weights.xml"); 
-    ElectronDiscriminator->Initialize("Spring2015NonTrig25ns", ElectronIDMVA::kIDEGamma2015NonTrig25ns, kTRUE, weights_files);
-  } else {
-    useMVA = kFALSE;
+  if (electronMVAConfig_.second != ElectronIDMVA::kUninitialized) {
+    electronDiscriminator_ = new ElectronIDMVA();
+    electronDiscriminator_->Initialize(electronMVAConfig_.first, ElectronIDMVA::MVAType(electronMVAConfig_.second), true, electronMVAWeights_);
   }
+}
 
+void
+  mithep::nero::LeptonsFiller::finalize()
+{
+  delete electronDiscriminator_;
+  electronDiscriminator_ = 0;
 }
 
 void
@@ -128,16 +120,20 @@ mithep::nero::LeptonsFiller::fill()
       if (iSel != 32) {
         newP4(out_, *ele);
 
-        double mva(-1);
-        if(useMVA==kTRUE) mva=ElectronDiscriminator->MVAValue(ele, vertices->At(0), kFALSE);
+        double mva(-1.);
+        if (electronDiscriminator_)
+          mva = electronDiscriminator_->MVAValue(ele, vertices->At(0), kFALSE);
+
         double chIso(ele->PFChargedHadronIso());
         double nhIso(ele->PFNeutralHadronIso());
         double phoIso(ele->PFPhotonIso());
         // dZ cut at 10000. -> vertex information is not used
         double puIso(IsolationTools::PFElectronIsolation(ele, puPFCands, vertices->At(0), 10000., 0., 0.3, 0., mithep::PFCandidate::eHadron));
 
+        // iso type here is used only to determine the effective area and can be any 2015 flag
+        double combIso(ElectronTools::CombinedIsoRhoCorr(ElectronTools::kSummer15LooseIso, chIso, nhIso + phoIso, event_->rho, ele->SCluster()->Eta()));
+
         out_.pdgId->push_back(-11 * ele->Charge());
-        out_.iso->push_back(IsolationTools::PFEleCombinedIsolationRhoCorr(ele, event_->rho, ElectronTools::kEleEASummer15));
 
         unsigned selBits(0);
         for (iSel = 0; iSel != 32; ++iSel) {
@@ -152,6 +148,7 @@ mithep::nero::LeptonsFiller::fill()
         out_.nhIso->push_back(nhIso);
         out_.phoIso->push_back(phoIso);
         out_.puIso->push_back(puIso);
+        out_.iso->push_back(combIso);
       }
       ++iE;
     }
