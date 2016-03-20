@@ -621,7 +621,7 @@ neroMod.AddFiller(mithep.nero.TausFiller(
 ))
 
 # "True" -> passing lepton is saved
-neroMod.AddFiller(mithep.nero.LeptonsFiller(
+leptonsFiller = mithep.nero.LeptonsFiller(
     MuonsName = veryLooseMuons.GetOutputName(),
     BaselineMuonIdName = (muonBaselineId.GetOutputName(), True),
     VetoMuonIdName = (muonBaselineId.GetOutputName(), True),
@@ -648,9 +648,28 @@ neroMod.AddFiller(mithep.nero.LeptonsFiller(
     VerticesName = goodPVFilterMod.GetOutputName(),
     PFCandsName = mithep.Names.gkPFCandidatesBrn,
     NoPUPFCandsName = separatePileUpMod.GetPFNoPileUpName(),
-    PUPFCandsName = separatePileUpMod.GetPFPileUpName(),
-    ElectronMVAType = 'IDEGamma2015NonTrig25ns'
-))
+    PUPFCandsName = separatePileUpMod.GetPFPileUpName()
+)
+
+#emva = mithep.ElectronIDMVA.kIDEGamma2015NonTrig25ns
+emva = 0
+
+if emva == mithep.ElectronIDMVA.kIDEGamma2015Trig25ns:
+    leptonsFiller.SetElectronMVA('IDEGamma2015Trig25ns', emva)
+    leptonsFiller.AddElectronMVAWeights(mitdata + '/ElectronMVAWeights/EIDmva_EB1_10_oldTrigSpring15_25ns_data_1_VarD_TMVA412_Sig6BkgAll_MG_noSpec_BDT.weights.xml')
+    leptonsFiller.AddElectronMVAWeights(mitdata + '/ElectronMVAWeights/EIDmva_EB2_10_oldTrigSpring15_25ns_data_1_VarD_TMVA412_Sig6BkgAll_MG_noSpec_BDT.weights.xml')
+    leptonsFiller.AddElectronMVAWeights(mitdata + '/ElectronMVAWeights/EIDmva_EE_10_oldTrigSpring15_25ns_data_1_VarD_TMVA412_Sig6BkgAll_MG_noSpec_BDT.weights.xml')
+
+elif emva == mithep.ElectronIDMVA.kIDEGamma2015NonTrig25ns:
+    leptonsFiller.SetElectronMVA('IDEGamma2015NonTrig25ns', emva)
+    leptonsFiller.AddElectronMVAWeights(mitdata + '/ElectronMVAWeights/EIDmva_EB1_5_oldNonTrigSpring15_ConvVarCwoBoolean_TMVA412_FullStatLowPt_PairNegWeightsGlobal_BDT.weights.xml');
+    leptonsFiller.AddElectronMVAWeights(mitdata + '/ElectronMVAWeights/EIDmva_EB2_5_oldNonTrigSpring15_ConvVarCwoBoolean_TMVA412_FullStatLowPt_PairNegWeightsGlobal_BDT.weights.xml');
+    leptonsFiller.AddElectronMVAWeights(mitdata + '/ElectronMVAWeights/EIDmva_EE_5_oldNonTrigSpring15_ConvVarCwoBoolean_TMVA412_FullStatLowPt_PairNegWeightsGlobal_BDT.weights.xml');
+    leptonsFiller.AddElectronMVAWeights(mitdata + '/ElectronMVAWeights/EIDmva_EB1_10_oldNonTrigSpring15_ConvVarCwoBoolean_TMVA412_FullStatLowPt_PairNegWeightsGlobal_BDT.weights.xml');
+    leptonsFiller.AddElectronMVAWeights(mitdata + '/ElectronMVAWeights/EIDmva_EB2_10_oldNonTrigSpring15_ConvVarCwoBoolean_TMVA412_FullStatLowPt_PairNegWeightsGlobal_BDT.weights.xml');
+    leptonsFiller.AddElectronMVAWeights(mitdata + '/ElectronMVAWeights/EIDmva_EE_10_oldNonTrigSpring15_ConvVarCwoBoolean_TMVA412_FullStatLowPt_PairNegWeightsGlobal_BDT.weights.xml'); 
+
+neroMod.AddFiller(leptonsFiller)
 
 neroMod.AddFiller(mithep.nero.FatJetsFiller(mithep.nero.BaseFiller.kAK8Jets,
     FatJetsName = ak8JetExtender.GetOutputName()
@@ -696,6 +715,8 @@ neroMod.AddFiller(mithep.nero.AllFiller())
 
 triggerFiller = mithep.nero.TriggerFiller()
 neroMod.AddFiller(triggerFiller)
+
+neroMod.SetPrintLevel(3)
 
 ################
 ### TRIGGERS ###
@@ -894,8 +915,8 @@ else:
         elif analysis.custom['pdfrwgt'] == 'mg5_74':
             mcFiller.AddPdfReweightGroupName('NNPDF30_lo_as_0130.LHgrid')
         elif analysis.custom['pdfrwgt'] == 'pwhg_74':
-            for rid in range(9, 111):
-                mcFiller.AddPdfReweightId(rid) # 9-108: 260000 family, 109: 265000, 110: 266000
+            for idx in range(9, 111):
+                mcFiller.AddPdfReweightIndex(idx) # 9-108: 260000 family, 109: 265000, 110: 266000
         else:
             print 'Unrecognized pdfrwgt option', analysis.custom['pdfrwgt']
             sys.exit(1)
