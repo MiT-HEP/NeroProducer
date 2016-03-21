@@ -118,7 +118,7 @@ if __name__ == '__main__':
 
     ###################################################
     setdata("False",is25ns=True)
-    config.Data.unitsPerJob = 5
+    config.Data.unitsPerJob = 3
     ###################################################
     
     config.General.requestName = 'DMV_NNPDF30_Axial_Mphi-2000_Mchi'
@@ -347,42 +347,78 @@ if __name__ == '__main__':
 
     config.General.requestName = 'JHUGen_ScalarWH_1000_100'
     config.Data.inputDataset  = '/JHUGen_ScalarWH_1000_100/dmytro-RunIISpring15DR74-1456349432-b67560f4b241138a80b43305410d39d2/USER'
-    submit(config)
+#    submit(config)
 
     config.General.requestName = 'JHUGen_ScalarWH_100_1'
     config.Data.inputDataset  = '/JHUGen_ScalarWH_100_1/dmytro-RunIISpring15DR74-1456349467-b67560f4b241138a80b43305410d39d2/USER'
-    submit(config)
+#    submit(config)
 
     config.General.requestName = 'JHUGen_ScalarWH_100_50'
     config.Data.inputDataset  = '/JHUGen_ScalarWH_100_50/dmytro-RunIISpring15DR74-1456349509-b67560f4b241138a80b43305410d39d2/USER'
-    submit(config)
+#    submit(config)
 
     config.General.requestName = 'JHUGen_ScalarWH_10_1'
     config.Data.inputDataset  = '/JHUGen_ScalarWH_10_1/dmytro-RunIISpring15DR74-1456349556-b67560f4b241138a80b43305410d39d2/USER'
-    submit(config)
+#    submit(config)
 
     config.General.requestName = 'JHUGen_ScalarWH_200_10'
     config.Data.inputDataset  = '/JHUGen_ScalarWH_200_10/dmytro-RunIISpring15DR74-1456349689-b67560f4b241138a80b43305410d39d2/USER'
-    submit(config)
+#    submit(config)
 
     config.General.requestName = 'JHUGen_ScalarWH_200_100'
     config.Data.inputDataset  = '/JHUGen_ScalarWH_200_100/dmytro-RunIISpring15DR74-1456349610-b67560f4b241138a80b43305410d39d2/USER'
-    submit(config)
+#    submit(config)
 
     config.General.requestName = 'JHUGen_ScalarWH_300_10'
     config.Data.inputDataset  = '/JHUGen_ScalarWH_300_10/dmytro-RunIISpring15DR74-1456349872-b67560f4b241138a80b43305410d39d2/USER'
-    submit(config)
+#    submit(config)
 
     config.General.requestName = 'JHUGen_ScalarWH_300_150'
     config.Data.inputDataset  = '/JHUGen_ScalarWH_300_150/dmytro-RunIISpring15DR74-1456349887-b67560f4b241138a80b43305410d39d2/USER'
-    submit(config)
+#    submit(config)
 
     config.General.requestName = 'JHUGen_ScalarWH_500_10'
     config.Data.inputDataset  = '/JHUGen_ScalarWH_500_10/dmytro-RunIISpring15DR74-1456349912-b67560f4b241138a80b43305410d39d2/USER'
-    submit(config)
+#    submit(config)
 
     config.General.requestName = 'JHUGen_ScalarZH_1000_100'
     config.Data.inputDataset  = '/JHUGen_ScalarZH_1000_100/dmytro-RunIISpring15DR74-1456349968-b67560f4b241138a80b43305410d39d2/USER'
+#    submit(config)
+
+    config.General.requestName = 'JHUGen_ScalarZH_100_1'
+    config.Data.inputDataset  = '/JHUGen_ScalarZH_100_1_v2/dmytro-RunIISpring15DR74-1456427077-b67560f4b241138a80b43305410d39d2/USER'
+    submit(config)
+
+    config.General.requestName = 'JHUGen_ScalarZH_100_10'
+    config.Data.inputDataset  = '/JHUGen_ScalarZH_100_10/dmytro-RunIISpring15DR74-1456349978-b67560f4b241138a80b43305410d39d2/USER'
+    submit(config)
+
+    config.General.requestName = 'JHUGen_ScalarZH_100_50'
+    config.Data.inputDataset  = '/JHUGen_ScalarZH_100_50/dmytro-RunIISpring15DR74-1456350002-b67560f4b241138a80b43305410d39d2/USER'
+    submit(config)
+
+    config.General.requestName = 'JHUGen_ScalarZH_10_1'
+    config.Data.inputDataset  = '/JHUGen_ScalarZH_10_1/dmytro-RunIISpring15DR74-1456350014-b67560f4b241138a80b43305410d39d2/USER'
+    submit(config)
+
+    config.General.requestName = 'JHUGen_ScalarZH_200_10'
+    config.Data.inputDataset  = '/JHUGen_ScalarZH_200_10_v2/dmytro-RunIISpring15DR74-1456427100-b67560f4b241138a80b43305410d39d2/USER'
+    submit(config)
+
+    config.General.requestName = 'JHUGen_ScalarZH_200_100'
+    config.Data.inputDataset  = '/JHUGen_ScalarZH_200_100_v2/dmytro-RunIISpring15DR74-1456427114-b67560f4b241138a80b43305410d39d2/USER'
+    submit(config)
+
+    config.General.requestName = 'JHUGen_ScalarZH_300_10'
+    config.Data.inputDataset  = '/JHUGen_ScalarZH_300_10/dmytro-RunIISpring15DR74-1456350049-b67560f4b241138a80b43305410d39d2/USER'
+    submit(config)
+
+    config.General.requestName = 'JHUGen_ScalarZH_300_150'
+    config.Data.inputDataset  = '/JHUGen_ScalarZH_300_150/dmytro-RunIISpring15DR74-1456350062-b67560f4b241138a80b43305410d39d2/USER'
+    submit(config)
+
+    config.General.requestName = 'JHUGen_ScalarZH_500_10'
+    config.Data.inputDataset  = '/JHUGen_ScalarZH_500_10/dmytro-RunIISpring15DR74-1456350079-b67560f4b241138a80b43305410d39d2/USER'
     submit(config)
 
 

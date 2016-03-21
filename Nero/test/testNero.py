@@ -47,12 +47,14 @@ fileList = []
 
 if isData:
     fileList = [
-        '/store/data/Run2015D/MET/MINIAOD/05Oct2015-v1/30000/2A4C3292-B46F-E511-BAD2-0025905A60C6.root'
+#        '/store/data/Run2015D/MET/MINIAOD/05Oct2015-v1/30000/2A4C3292-B46F-E511-BAD2-0025905A60C6.root'
+        '/store/data/Run2015D/MET/MINIAOD/PromptReco-v4/000/259/810/00000/DC35E3E2-297B-E511-B0E5-02163E011E2B.root'
         ]
 else:
     fileList = [
+        '/store/mc/RunIISpring15MiniAODv2/TTbarDMJets_pseudoscalar_Mchi-1_Mphi-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/10000/B0DBDF7A-A16D-E511-AFCB-001EC9ADE690.root'
 #        '/store/mc/RunIISpring15MiniAODv2/TTbarDMJets_pseudoscalar_Mchi-1_Mphi-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/10000/1486FE25-A16D-E511-93F2-001EC9ADE672.root',
-        'file:/afs/cern.ch/user/d/dmytro/public/forDan/xAODSIM2.root',
+#        'file:/afs/cern.ch/user/d/dmytro/public/forDan/xAODSIM2.root',
 #        '/store/user/dmytro/JHUGen_Higgs_ZH_125_10/RunIISpring15DR74-1455780262/160218_072430/0000/xAODSIM_101.root',
         ]
 
@@ -211,7 +213,7 @@ if options.isData: era = "Summer15_25nsV6_DATA"
 # Setup the payload source
 process.jec = cms.ESSource("PoolDBESSource",
       DBParameters = cms.PSet(
-	messageLevel = cms.untracked.int32(0)
+        messageLevel = cms.untracked.int32(0)
       ),
       timetype = cms.string('runnumber'),
       connect = cms.string('sqlite:jec/'+era+'.db'),
@@ -225,6 +227,16 @@ process.jec = cms.ESSource("PoolDBESSource",
 			record = cms.string('JetCorrectionsRecord'),
 			tag    = cms.string('JetCorrectorParametersCollection_'+era+'_AK4PFPuppi'),
 			label  = cms.untracked.string('AK4PFPuppi')
+			),
+		cms.PSet(
+			record = cms.string('JetCorrectionsRecord'),
+			tag    = cms.string('JetCorrectorParametersCollection_'+era+'_AK8PFchs'),
+			label  = cms.untracked.string('AK8PFchs')
+			),
+		cms.PSet(
+			record = cms.string('JetCorrectionsRecord'),
+			tag    = cms.string('JetCorrectorParametersCollection_'+era+'_AK8PFPuppi'),
+			label  = cms.untracked.string('AK8PFPuppi')
 			),
 		)
 )
