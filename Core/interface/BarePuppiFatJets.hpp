@@ -45,4 +45,7 @@ class BarePuppiFatJets : virtual public BareP4
 
 };
 
+BAREREGISTER(BarePuppiFatJets);
+
+
 #endif

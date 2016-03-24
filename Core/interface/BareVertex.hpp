@@ -18,6 +18,8 @@ class BareVertex : virtual public BareCollection
         int npv;
 
 };
+
+BAREREGISTER(BareVertex);
 #endif
 // Local Variables:
 // mode:c++

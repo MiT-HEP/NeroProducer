@@ -65,12 +65,11 @@ fileList = [
         '/store/mc/RunIIFall15MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/70000/FAF5D5D7-79BA-E511-BB76-0025905B8562.root'
         ]
 
-
-
 ### do not remove the line below!
 ###FILELIST###
 
 process.source = cms.Source("PoolSource",
+	skipEvents = cms.untracked.uint32(0),
     	fileNames = cms.untracked.vstring(fileList)
         )
 
@@ -80,6 +79,32 @@ process.TFileService = cms.Service("TFileService",
         fileName = cms.string("NeroNtuples.root"),
         )
 # ------------------------QG-----------------------------------------------
+qgDatabaseVersion = '76X'
+
+# to use the database, see https://twiki.cern.ch/twiki/bin/view/CMS/QuarkGluonLikelihood
+#connect = cms.string('frontier://FrontierProd/CMS_COND_PAT_000'),
+#for type in ['AK4PFchs','AK4PFchs_antib']:
+#  QGPoolDBESSource.toGet.extend(cms.VPSet(cms.PSet(
+#    record = cms.string('QGLikelihoodRcd'),
+#    tag    = cms.string('QGLikelihoodObject_'+qgDatabaseVersion+'_'+type),
+#    label  = cms.untracked.string('QGL_'+type)
+#  )))
+
+from CondCore.DBCommon.CondDBSetup_cfi import *
+process.QGPoolDBESSource = cms.ESSource("PoolDBESSource",
+      CondDBSetup,
+      toGet = cms.VPSet(
+        cms.PSet(
+            record = cms.string('QGLikelihoodRcd'),
+            tag    = cms.string('QGLikelihoodObject_'+qgDatabaseVersion+'_AK4PFchs'),
+            label  = cms.untracked.string('QGL_AK4PFchs')
+        ),
+      ),
+      connect = cms.string('sqlite:qg/QGL_'+qgDatabaseVersion+'.db')
+)
+process.es_prefer_qg = cms.ESPrefer('PoolDBESSource','QGPoolDBESSource')
+
+
 process.load('RecoJets.JetProducers.QGTagger_cfi')
 process.QGTagger.srcJets             = cms.InputTag("slimmedJets")    # Could be reco::PFJetCollection or pat::JetCollection (both AOD and miniAOD)               
 process.QGTagger.srcVertexCollection = cms.InputTag("offlineSlimmedPrimaryVertices")
@@ -247,6 +272,10 @@ process.jetSequence = cms.Sequence(fatjetInitSequence*
                     ca15PuppiSequence
                     )
 
+process.reclusterSequence = cms.Sequence()
+if process.nero.doReclustering: ## use python to figure it out
+    process.reclusterSequence += process.puppiSequence 
+    process.reclusterSequence += process.jetSequence 
 #-----------------------ELECTRON ID-------------------------------
 from NeroProducer.Nero.egammavid_cfi import *
 
@@ -355,9 +384,12 @@ if options.isParticleGun:
 	## this option is for the embedding informations
 	process.nero.extendEvent = cms.untracked.bool(False)
 
+process.load('NeroProducer.Skim.MonoJetFilterSequence_cff')
+
 #------------------------------------------------------
 process.p = cms.Path(
                 process.infoProducerSequence *
+                #process.MonoJetFilter *
                 #process.hcalNoiseFilter * 
                 process.QGTagger *
                 process.egmGsfElectronIDSequence *
@@ -366,6 +398,7 @@ process.p = cms.Path(
                 process.electronIDValueMapProducer * ## ISO MAP FOR PHOTONS
                 #process.puppiSequence * ## does puppi, puppi met, type1 corrections
                 #process.jetSequence *
+                process.reclusterSequence * ##  includes puppi and jets if recluster options is on
                 #process.jecSequence *
                 process.nero
                 )

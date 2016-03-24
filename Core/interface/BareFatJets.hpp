@@ -43,6 +43,8 @@ class BareFatJets : virtual public BareP4
 
 };
 
+BAREREGISTER(BareFatJets);
+
 #endif
 // Local Variables:
 // mode:c++

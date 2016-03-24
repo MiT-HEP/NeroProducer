@@ -4,8 +4,6 @@
 #include "NeroProducer/Nero/interface/NeroCollection.hpp"
 #include "NeroProducer/Core/interface/BareMet.hpp"
 #include "NeroProducer/Nero/interface/NeroPF.hpp"
-#include "DataFormats/METReco/interface/PFMET.h"
-#include "DataFormats/METReco/interface/PFMETCollection.h"
 
 
 class NeroMet : virtual public NeroCollection,

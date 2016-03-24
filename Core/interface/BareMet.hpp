@@ -48,6 +48,8 @@ class BareMet : virtual public BareP4
         float rawMet_Pt;
         float rawMet_Phi;
 };
+
+BAREREGISTER(BareMet);
 #endif
 // Local Variables:
 // mode:c++

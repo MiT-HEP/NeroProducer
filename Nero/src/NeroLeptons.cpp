@@ -1,5 +1,7 @@
 #include "NeroProducer/Nero/interface/NeroLeptons.hpp"
 #include "NeroProducer/Nero/interface/Nero.hpp"
+#include "NeroProducer/Core/interface/BareFunctions.hpp"
+#include <time.h>
 
 // -- Electron Isolation
 NeroLeptons::NeroLeptons(): 
@@ -19,10 +21,14 @@ NeroLeptons::NeroLeptons():
 
     mMinNleptons = 0;    
 
+    rnd_ = new TRandom3( (unsigned)time(NULL) ) ;
 }
 
 NeroLeptons::~NeroLeptons(){
+    delete EleCorr; 
+    delete rnd_; 
 }
+
 
 int NeroLeptons::analyze(const edm::Event & iEvent)
 {
@@ -39,6 +45,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
     iEvent.getByToken(el_tightid_token,el_tight_id);
     iEvent.getByToken(el_vetoid_token,el_veto_id);
     iEvent.getByToken(el_looseid_token,el_loose_id);
+    iEvent.getByToken(el_mva_token,el_mva);
 
     if ( not mu_handle.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] mu_handle is not valid"<<endl;
     if ( not el_handle.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_handle is not valid"<<endl;
@@ -46,6 +53,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
     if ( not el_tight_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_tight_id is not valid"<<endl;
     if ( not el_veto_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_veto_id is not valid"<<endl;
     if ( not el_loose_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_loose_id is not valid"<<endl;
+    if ( not el_mva.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_mva is not valid"<<endl;
 
     vector<myLepton> leptons;
 
@@ -59,7 +67,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         float puiso = mu.pfIsolationR04().sumPUPt;
         float totiso = chiso + TMath::Max( niso + phoiso - .5*puiso, 0. ) ;
     
-        if ( totiso/mu.pt() > mMaxIso_mu ) continue;
+        if ( mMaxIso_mu > 0 and totiso/mu.pt() > mMaxIso_mu ) continue;
 
         myLepton l;
         l.pdgId = -mu.charge()*13;
@@ -101,6 +109,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         myLepton l;
         l.pdgId = -el.charge()*11;
 
+        l.mva = (*el_mva)[ref];
         
         // float chIso = el.chargedHadronIso();
         // float nhIso = el.neutralHadronIso();
@@ -133,6 +142,25 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         l.iso = chIso + TMath::Max( nhIso + phoIso - evt_->rho * ea , 0. ) ; 
 
         l.p4.SetPxPyPzE( el.px(),el.py(),el.pz(),el.energy());
+        float smear = 0.0, scale = 1.0;
+        float aeta = std::abs(el.eta());
+        float et = el.energy()/cosh(aeta);
+
+        if (iEvent.isRealData() )
+        {
+                
+                scale = EleCorr->ScaleCorrection(iEvent.id().run(), el.isEB(), el.r9(), aeta, et);
+                l.p4 *= scale;
+        }
+        else
+        {
+                 // the kNone refers to systematcis changes
+                 smear = EleCorr->getSmearingSigma((int) iEvent.id().run(), el.isEB(), el.r9(), aeta, el.energy(), 0.,0.);
+                 float corr = 1.0  + smear * rnd_->Gaus(0,1);
+                 l.p4 *= corr;
+        
+        }
+
         l.selBits = 0 ;
             l.selBits |= unsigned(isPassTight)*LepTight;
             l.selBits |= unsigned(isPassMedium) * LepMedium;
@@ -141,7 +169,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
             //--
             l.selBits |= unsigned(isEB and (not isEBEEGap and not isEBEtaGap and not isEBPhiGap)  ) * LepEBEE;
             l.selBits |= unsigned(isEE and (not isEBEEGap and not isEERingGap and not isEEDeeGap)  ) * LepEBEE;
-        l.pfPt = 0.;
+        l.pfPt = el.pt();
     
         l.chiso  = chIso;
         l.nhiso  = nhIso;
@@ -164,6 +192,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         iso     -> push_back(l.iso);
         selBits -> push_back(l.selBits);
         pdgId   -> push_back(l.pdgId);
+        mva     -> push_back(l.mva);
         lepPfPt -> push_back(l.pfPt);
 
         chIso	-> push_back(l.chiso);

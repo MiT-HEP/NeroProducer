@@ -20,7 +20,7 @@ function CMSSW_7_4_15 {
 }
 
 function CMSSW_7_6_3_patch2 {
-	true
+	git cms-merge-topic matteosan1:smearer_76X
 }
 
 # expected default

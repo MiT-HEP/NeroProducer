@@ -137,11 +137,13 @@ def PrintSummary(dir, doPrint=True):
                 print " Done: " + green  + "%3d"%len(done) + " / " + str(tot) + white + " : " + PrintLine(done) ### + ",".join(done) + "|" 
                 print " -------------------------------------"
 
-        return ( done, run, fail)
+        return ( done, run, fail, pend)
 
 if opts.status:
-	PrintSummary(opts.dir)
-	exit(0)
+	done, run, fail, pend = PrintSummary(opts.dir)
+	if len(run + fail + pend) ==0 and len(done) >0 :
+		exit(0)
+	else: exit(1)
 
 EOS = "/afs/cern.ch/project/eos/installation/0.3.84-aquamarine/bin/eos.select"
 
@@ -278,6 +280,7 @@ for idx0,fl in enumerate(fileChunks):
 	testDir = re.sub('/[^/]*.py', '', opts.input)
 	if testDir[0] != "/" : testDir = os.environ['PWD'] +"/"+ testDir
 	print >> sh, 'cp -va %s/jec ./'%testDir
+	print >> sh, 'cp -va %s/qg ./'%testDir
 	print >> sh, "cmsRun " + os.environ['PWD'] + "/" + opts.dir + "/" + psetFileName, #+ " 2>&1 > log_%d.log"%idx
 	if opts.is25ns: print >>sh," is25ns=True is50ns=False",
 	else : print >>sh," is25ns=False is50ns=True",

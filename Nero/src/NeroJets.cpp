@@ -37,12 +37,17 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
 
     if ( mOnlyMc  ) return 0;
 
+
     // maybe handle should be taken before
     iEvent.getByToken(token, handle);
     iEvent.getByToken(qg_token,qg_handle);
 
     if ( not handle.isValid() ) cout<<"[NeroJets]::[analyze]::[ERROR] handle is not valid"<<endl;
     if ( not qg_handle.isValid() ) cout<<"[NeroJets]::[analyze]::[ERROR] qg_handle is not valid"<<endl;
+
+    iEvent.getByToken(qg_token_Mult,qg_handle_Mult);
+    iEvent.getByToken(qg_token_Axis2,qg_handle_Axis2);
+    iEvent.getByToken(qg_token_PtD,qg_handle_PtD);
 
     // -- need to init JES here, where there is the iSetup
     InitJes(iSetup);
@@ -126,6 +131,11 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
         bDiscr -> push_back( j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") );
         bDiscrLegacy -> push_back( j.bDiscriminator("combinedSecondaryVertexBJetTags") );
         qgl     -> push_back( qgLikelihood );
+        // if the token was not valid, this will simply not be filled
+        if (qg_handle_Mult.isValid()) qglMult->push_back(  (*qg_handle_Mult)[jetRef] );
+        if (qg_handle_PtD.isValid()) qglPtD->push_back(  (*qg_handle_PtD)[jetRef] );
+        if (qg_handle_Axis2.isValid()) qglAxis2->push_back(  (*qg_handle_Axis2)[jetRef] );
+
         flavour -> push_back( jetFlavour_I );
         matchedPartonPdgId -> push_back( jetMatchedPartonPdgId_I );
         motherPdgId -> push_back( motherPdgId_I );

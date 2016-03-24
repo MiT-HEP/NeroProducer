@@ -1,8 +1,9 @@
 from optparse import OptionParser
 
 parser = OptionParser(usage="usage")
-parser.add_option("-f","--file",type="string",help="Input File",default="plotPu2/mmNpv.root")
-parser.add_option("","--points",type="string",help="point numbers comma separated",default="65000,67000,68000,69000,69200,69300,69400,69500,69600,69800,70000,71000,73000")
+parser.add_option("-f","--file",type="string",help="Input File",default="plot/mmNpv.root")
+#parser.add_option("","--points",type="string",help="point numbers comma separated",default="65000,67000,68000,69000,69200,69300,69400,69500,69600,69800,70000,71000,73000")
+parser.add_option("","--points",type="string",help="point numbers comma separated",default="78000,77000,76000,75000,74000,73000,72000,71000,70800,70600,70400,70200,70000,69800,69600,69400,69200,69000,68000,67000,66000,65000,64000,63000")
 parser.add_option("-s","--scale",action='store_true',help="Scale default=%default",default=False)
 opts,args= parser.parse_args()
 
