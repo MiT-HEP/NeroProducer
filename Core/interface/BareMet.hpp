@@ -49,7 +49,6 @@ class BareMet : virtual public BareP4
         float rawMet_Phi;
 };
 
-BAREREGISTER(BareMet);
 #endif
 // Local Variables:
 // mode:c++

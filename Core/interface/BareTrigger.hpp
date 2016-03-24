@@ -33,7 +33,6 @@ class BareTrigger: virtual public BareCollection
         vector<unsigned>  *triggerNoneTaus{0};
 };
 
-BAREREGISTER(BareTrigger);
 
 #endif
 // Local Variables:

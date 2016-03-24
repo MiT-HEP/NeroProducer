@@ -143,6 +143,8 @@ void BareMet::compress(){
 
 }
 
+BAREREGISTER(BareMet);
+
 // Local Variables:
 // mode:c++
 // indent-tabs-mode:nil

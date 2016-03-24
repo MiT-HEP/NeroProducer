@@ -72,7 +72,6 @@ class BareMonteCarlo : virtual public BareP4
 
 };
 
-BAREREGISTER(BareMonteCarlo);
 #endif
 // Local Variables:
 // mode:c++

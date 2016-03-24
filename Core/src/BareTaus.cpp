@@ -86,6 +86,7 @@ void BareTaus::setBranchAddresses(TTree *t){
         BareFunctions::SetBranchAddress(t,"tauIsoPileupWeightedRaw",&isoPileupWeightedRaw);
     }
 }
+BAREREGISTER(BareTaus);
 // Local Variables:
 // mode:c++
 // indent-tabs-mode:nil

@@ -82,6 +82,8 @@ void BareLeptons::setBranchAddresses(TTree*t){
     BareFunctions::SetBranchAddress(t,"lepPuIso",&puIso);
 }
 
+BAREREGISTER(BareLeptons);
+
 // Local Variables:
 // mode:c++
 // indent-tabs-mode:nil

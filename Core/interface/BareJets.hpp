@@ -56,7 +56,6 @@ class BareJets : virtual public BareP4
 
 };
 
-BAREREGISTER(BareJets);
 
 
 #endif

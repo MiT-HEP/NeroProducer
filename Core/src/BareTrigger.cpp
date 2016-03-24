@@ -72,6 +72,8 @@ void BareTrigger::setBranchAddresses(TTree*t)
     BareFunctions::SetBranchAddress(t,"triggerNoneTaus", &triggerNoneTaus);
 }
 
+BAREREGISTER(BareTrigger);
+
 // Local Variables:
 // mode:c++
 // indent-tabs-mode:nil

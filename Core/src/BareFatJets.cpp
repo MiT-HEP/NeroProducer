@@ -125,6 +125,8 @@ void BareFatJets::compress(){
 	for(int i=0;i<subjet->GetEntries();++i)
 		BareFunctions::Compress( * (TLorentzVector*) subjet->At(i)  );
 }
+
+BAREREGISTER(BareFatJets);
 // Local Variables:
 // mode:c++
 // indent-tabs-mode:nil

@@ -21,6 +21,8 @@ void BareVertex::setBranchAddresses(TTree *t){
     BareFunctions::SetBranchAddress(t,"npv"     ,&npv );
 }
 
+BAREREGISTER(BareVertex);
+
 // Local Variables:
 // mode:c++
 // indent-tabs-mode:nil

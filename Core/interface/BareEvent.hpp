@@ -29,7 +29,6 @@ class BareEvent : virtual public BareCollection
         int originalEvent;
 };
 
-BAREREGISTER(BareEvent);
 
 #endif
 // Local Variables:

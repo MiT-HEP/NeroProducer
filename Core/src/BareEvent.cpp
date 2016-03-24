@@ -50,6 +50,8 @@ void BareEvent::setBranchAddresses(TTree *t){
     }
 }
 
+BAREREGISTER(BareEvent);
+
 // Local Variables:
 // mode:c++
 // indent-tabs-mode:nil

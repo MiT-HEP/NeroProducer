@@ -51,7 +51,6 @@ class BareLeptons : virtual public BareP4
         vector<float>    *puIso{0};
 };
 
-BAREREGISTER(BareLeptons);
 
 #endif
 // Local Variables:

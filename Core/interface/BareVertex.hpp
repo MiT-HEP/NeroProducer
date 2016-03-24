@@ -19,7 +19,6 @@ class BareVertex : virtual public BareCollection
 
 };
 
-BAREREGISTER(BareVertex);
 #endif
 // Local Variables:
 // mode:c++

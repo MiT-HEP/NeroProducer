@@ -58,7 +58,6 @@ class BareTaus : virtual public BareP4
         vector<float>   *isoPileupWeightedRaw{0};//byPileupWeightedIsolationRaw3Hits{0};
 };
 
-BAREREGISTER(BareTaus);
 
 #endif
 
