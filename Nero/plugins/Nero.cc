@@ -114,8 +114,9 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     
     //--
     NeroFatJets *chsAK8 = new NeroFatJets();
-    chsAK8 -> mRunJEC = false; // these jets are already corrected in MiniAOD
+    chsAK8 -> mRunJEC = iConfig.getParameter<bool>("applyJECAK8CHS");
     chsAK8 -> mOnlyMc = onlyMc;
+    chsAK8 -> rho_token = evt->rho_token;
     chsAK8 -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("chsAK8"));
     chsAK8 -> mMinPt = iConfig.getParameter<double>("minAK8CHSPt");
     chsAK8 -> mMaxEta = iConfig.getParameter<double>("minAK8CHSEta");

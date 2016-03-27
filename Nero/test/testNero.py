@@ -263,7 +263,6 @@ process.jecSequence = cms.Sequence(
 process.nero.jetCorrFactors = cms.InputTag("neroJetCorrFactorsAK4PFchs")
 process.nero.applyJEC = cms.bool(True)
 
-
 # Here be JEC dragons
 process.load('JetMETCorrections.Configuration.JetCorrectorsAllAlgos_cff')
 puppilabel='PFPuppi'

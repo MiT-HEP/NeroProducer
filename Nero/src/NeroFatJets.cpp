@@ -107,20 +107,17 @@ int NeroFatJets::analyze(const edm::Event& iEvent){
         }
     } else {
         // this collection was reclustered and needs a different interface
-        
+
         iEvent.getByToken(rho_token,rho_handle);
         
         TString tPrefix(cachedPrefix);
 
-        edm::Handle<reco::PFJetCollection> subjets_handle;
-        edm::InputTag subjetLabel("PFJetsSoftDrop"+tPrefix,"SubJets");
-        iEvent.getByLabel(subjetLabel,subjets_handle);
-        const reco::PFJetCollection *subjetCol = subjets_handle.product();
-        assert(subjets_handle.isValid());
+        edm::Handle<vector<pat::Jet>> subjets_handle;
+        edm::InputTag subjetLabel("slimmedJetsAK8PFCHSSoftDropPacked","SubJets");
 
-        edm::Handle<reco::JetTagCollection> btags_handle;
-        iEvent.getByLabel(edm::InputTag((tPrefix+"PFCombinedInclusiveSecondaryVertexV2BJetTags").Data()),btags_handle);
-        assert((btags_handle.isValid()));
+        iEvent.getByLabel(subjetLabel,subjets_handle);
+        const vector<pat::Jet> *subjetCol = subjets_handle.product();
+        assert(subjets_handle.isValid());
 
         FactorizedJetCorrector *corrector = ( iEvent.isRealData() ) ? mDataJetCorrector : mMCJetCorrector;
 
@@ -165,15 +162,14 @@ int NeroFatJets::analyze(const edm::Event& iEvent){
               unsigned int nsubjetThisJet=0;
               firstSubjet->push_back(nsubjet);
 
-              for (reco::PFJetCollection::const_iterator i = subjetCol->begin(); i!=subjetCol->end(); ++i) {
+              for (vector<pat::Jet>::const_iterator i = subjetCol->begin(); i!=subjetCol->end(); ++i) {
                 if (reco::deltaR(i->eta(),i->phi(),j.eta(),j.phi())>jetRadius) continue;
                 nsubjetThisJet++;
                
                 new ( (*subjet)[nsubjet]) TLorentzVector(i->px(), i->py(), i->pz(), i->energy());
                 nsubjet++;
 
-                reco::JetBaseRef sjBaseRef(reco::PFJetRef(subjets_handle,i-subjetCol->begin()));
-                subjet_btag->push_back((float)(*(btags_handle.product()))[sjBaseRef]);
+                subjet_btag->push_back(j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
               }
 
               nSubjets->push_back(nsubjetThisJet);

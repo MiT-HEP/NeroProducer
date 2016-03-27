@@ -105,6 +105,7 @@ nero = cms.EDAnalyzer("Nero",
     minAK8CHSN   = cms.int32  (0),
     minAK8CHSId  = cms.string ('loose'),
     AK8CHSName   = cms.string ('AK8CHS'),
+    applyJECAK8CHS = cms.bool (True),
 
     ## Puppi AK8
     minAK8PuppiPt  = cms.double (100.),

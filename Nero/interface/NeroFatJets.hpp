@@ -30,7 +30,7 @@ class NeroFatJets : virtual public NeroCollection,
         // --- configuration
         float mMinPt;
         float mMaxEta;
-        bool mRunJEC=false;
+        bool mRunJEC;
         string mMinId;
         float jetRadius; // used for subjet matching
         FactorizedJetCorrector *mMCJetCorrector;   // needed for reclustered jets
