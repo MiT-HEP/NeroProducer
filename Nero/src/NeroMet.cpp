@@ -38,7 +38,18 @@ int NeroMet::analyze(const edm::Event& iEvent){
 
 
     // FILL
-    new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector( met.px(),met.py(),met.pz(),met.energy()  );
+    if (jets->mApplyJEC) {
+        TLorentzVector metHolder(met.px(),met.py(),met.pz(),met.energy());
+        TLorentzVector *jetVec;
+        for (UInt_t iJet = 0; iJet != jets->refPt->size(); ++iJet) {
+            jetVec = (TLorentzVector*) jets->p4->At(iJet);
+            metHolder += (1 - ((*jets->refPt)[iJet]/jetVec->Pt())) * (*jetVec);
+        }
+        new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(metHolder);
+    }
+    else {
+        new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector( met.px(),met.py(),met.pz(),met.energy()  );
+    }
 
     sumEtRaw = met.uncorSumEt();
 

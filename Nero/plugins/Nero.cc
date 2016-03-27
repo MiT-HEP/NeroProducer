@@ -211,6 +211,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     met -> token_puppiUncorr = consumes<reco::PFMETCollection>(iConfig.getParameter<edm::InputTag>("metsPuppiUncorrected"));
     met -> pf = pf;
     met -> SetExtend (iConfig.getParameter<bool>("extendMet"));
+    met -> jets = jets;
     obj.push_back(met);
 
 

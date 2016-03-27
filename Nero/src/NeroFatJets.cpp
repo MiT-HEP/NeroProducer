@@ -149,16 +149,16 @@ int NeroFatJets::analyze(const edm::Event& iEvent){
                 jecFactor = corrector->getCorrection();
               }
 
-              if (j.pt() * jecFactor("Uncorrected")*jecFactor < mMinPt)  continue;
-              rawPt -> push_back (j.pt() * jecFactor("Uncorrected"));
-              new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(j.px()*jecFactor * jecFactor("Uncorrected"), j.py()*jecFactor * jecFactor("Uncorrected"), 
-                                                                j.pz()*jecFactor * jecFactor("Uncorrected"), j.energy()*jecFactor * jecFactor("Uncorrected"));
+              if (j.pt() * j.jecFactor("Uncorrected")*jecFactor < mMinPt)  continue;
+              rawPt -> push_back (j.pt() * j.jecFactor("Uncorrected"));
+              new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(j.px()*jecFactor * j.jecFactor("Uncorrected"), j.py()*jecFactor * j.jecFactor("Uncorrected"), 
+                                                                j.pz()*jecFactor * j.jecFactor("Uncorrected"), j.energy()*jecFactor * j.jecFactor("Uncorrected"));
 
               tau1 -> push_back(j.userFloat(tPrefix+"Njettiness:tau1"));
               tau2 -> push_back(j.userFloat(tPrefix+"Njettiness:tau2"));
               tau3 -> push_back(j.userFloat(tPrefix+"Njettiness:tau3"));
       
-              softdropMass->push_back(j.userFloat(tPrefix+"SDKinematics:Mass")*jecFactor);
+              softdropMass->push_back(j.userFloat(tPrefix+"SDKinematics:Mass")*jecFactor * j.jecFactor("Uncorrected"));
         
               unsigned int nsubjetThisJet=0;
               firstSubjet->push_back(nsubjet);

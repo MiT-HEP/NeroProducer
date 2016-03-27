@@ -4,6 +4,7 @@
 #include "NeroProducer/Nero/interface/NeroCollection.hpp"
 #include "NeroProducer/Core/interface/BareMet.hpp"
 #include "NeroProducer/Nero/interface/NeroPF.hpp"
+#include "NeroProducer/Nero/interface/NeroJets.hpp"
 #include "DataFormats/METReco/interface/PFMET.h"
 #include "DataFormats/METReco/interface/PFMETCollection.h"
 
@@ -30,6 +31,7 @@ class NeroMet : virtual public NeroCollection,
         edm::EDGetTokenT<reco::PFMETCollection> token_puppiUncorr;
         //
         NeroPF * pf;
+        NeroJets * jets;
 
 };
 
