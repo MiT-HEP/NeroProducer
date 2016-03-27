@@ -139,7 +139,7 @@ int NeroFatJets::analyze(const edm::Event& iEvent){
 
               double jecFactor=0;
               if (fabs(j.eta())<5.191) {
-                corrector->setJetPt(j.pt());
+                corrector->setJetPt(j.pt() * j.jecFactor("Uncorrected"));
                 corrector->setJetEta(j.eta());
                 corrector->setJetPhi(j.phi());
                 corrector->setJetE(j.energy());
@@ -149,9 +149,10 @@ int NeroFatJets::analyze(const edm::Event& iEvent){
                 jecFactor = corrector->getCorrection();
               }
 
-              if (j.pt()*jecFactor < mMinPt)  continue;
-              rawPt -> push_back (j.pt());
-              new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(j.px()*jecFactor, j.py()*jecFactor, j.pz()*jecFactor, j.energy()*jecFactor);
+              if (j.pt() * jecFactor("Uncorrected")*jecFactor < mMinPt)  continue;
+              rawPt -> push_back (j.pt() * jecFactor("Uncorrected"));
+              new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(j.px()*jecFactor * jecFactor("Uncorrected"), j.py()*jecFactor * jecFactor("Uncorrected"), 
+                                                                j.pz()*jecFactor * jecFactor("Uncorrected"), j.energy()*jecFactor * jecFactor("Uncorrected"));
 
               tau1 -> push_back(j.userFloat(tPrefix+"Njettiness:tau1"));
               tau2 -> push_back(j.userFloat(tPrefix+"Njettiness:tau2"));
