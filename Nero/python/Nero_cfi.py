@@ -114,6 +114,9 @@ nero = cms.EDAnalyzer("Nero",
     minAK8PuppiId  = cms.string ('loose'),
     AK8PuppiName   = cms.string ('AK8Puppi'),
 
+    ## All CA15
+    doCA15        = cms.bool   (False),
+
     ## CHS CA15
     minCA15CHSPt  = cms.double (100.),
     minCA15CHSEta = cms.double (4.7),
