@@ -56,6 +56,8 @@ class BareJets : virtual public BareP4
 
 };
 
+
+
 #endif
 
 // Local Variables:

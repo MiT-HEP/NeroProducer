@@ -45,4 +45,6 @@ class BarePuppiFatJets : virtual public BareP4
 
 };
 
+
+
 #endif

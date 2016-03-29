@@ -26,6 +26,7 @@ class BareAll : virtual public BareCollection
 
 };
 
+
 #endif
 // Local Variables:
 // mode:c++

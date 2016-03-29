@@ -120,3 +120,4 @@ void BarePuppiFatJets::compress(){
     for(int i=0;i<subjet->GetEntries();++i)
         BareFunctions::Compress( * (TLorentzVector*) subjet->At(i)  );
 }
+BAREREGISTER(BarePuppiFatJets);

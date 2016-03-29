@@ -51,6 +51,8 @@ void BarePuppiJets::setBranchAddresses(TTree* t, std::string prefix)
 
 }
 
+BAREREGISTER(BarePuppiJets);
+
 // Local Variables:
 // mode:c++
 // indent-tabs-mode:nil

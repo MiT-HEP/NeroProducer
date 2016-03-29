@@ -71,6 +71,7 @@ class BareMonteCarlo : virtual public BareP4
         std::vector<float> *genIsoFrixione{0};
 
 };
+
 #endif
 // Local Variables:
 // mode:c++

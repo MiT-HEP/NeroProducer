@@ -39,6 +39,7 @@ class BarePuppiJets : virtual public BareP4
         vector<float> *Q{0};
 };
 
+
 #endif
 // Local Variables:
 // mode:c++

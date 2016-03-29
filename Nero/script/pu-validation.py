@@ -24,7 +24,7 @@ if opts.batch:
 	ROOT.gROOT.SetBatch()
 
 
-version="v1.1.2"
+version="v1.3.1"
 
 disks={}
 xsections={}
@@ -46,9 +46,10 @@ if True:
 	### 50ns v1
 	disks['WW']=base+'WW_TuneCUETP8M1_13TeV-pythia8/'
 	disks['WJets']=base+'WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/'
-	disks['TTJets']=base+'TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/'
+	#disks['TTJets']=base+'TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/'
+	disks['TTJets']=base+'TT_TuneCUETP8M1_13TeV-amcatnlo-pythia8/'
 	### DATA -- promptReco
-	base='/store/user/amarini/Nero/' + version + "/data/"
+	base='/store/user/amarini/Nero/' + version + "/"
 	disks['SingleMuon']=base+'SingleMuon'
 	disks['SingleElectron']=base+'SingleElectron'
 	disks['SinglePhoton']=base+'SinglePhoton'
@@ -109,9 +110,10 @@ puFiles={}
 #puFiles[84] = ROOT.TFile.Open("script/MyDataPileupHistogram_84mb.root")
 
 #for num in [69,68,67,66,64,65,70,71,72,73,74,75,76,84]:
-for num in [ 65000 , 67000 , 68000 , 69000, 69200, 69300, 69400, 69500, 69600, 69800, 70000, 71000, 73000  ]:
+#for num in [ 65000 , 67000 , 68000 , 69000, 69200, 69300, 69400, 69500, 69600, 69800, 70000, 71000, 73000  ]:
+for num in[ 78000,77000,76000,75000,74000,73000,72000,71000,70800,70600,70400,70200,70000,69800,69600,69400,69200,69000,68000,67000,66000,65000,64000,63000 ]:
 #for num in [ 65000 , 67000 , 68000 , 68600, 68800, 69000, 69200, 69300, 69400, 69500, 69600, 69800, 70000, 71000, 73000  ]:
-	puFiles[num] = ROOT.TFile.Open(opts.pileupdir + "/MyDataPileupHistogram_%dmb.root"%num)
+	puFiles[num] = ROOT.TFile.Open(opts.pileupdir + "/NewPileupHistogram_%dnb.root"%num)
 
 for num in puFiles :
 	print "getting pileup,",num

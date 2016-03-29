@@ -29,6 +29,7 @@ class BareEvent : virtual public BareCollection
         int originalEvent;
 };
 
+
 #endif
 // Local Variables:
 // mode:c++

@@ -137,6 +137,8 @@ void BareJets::setBranchAddresses(TTree* t, std::string prefix)
     BareFunctions::SetBranchAddress(t,jetName + "QnoPU",&QnoPU);
 
 }
+
+BAREREGISTER(BareJets);
 // Local Variables:
 // mode:c++
 // indent-tabs-mode:nil
