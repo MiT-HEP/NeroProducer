@@ -97,6 +97,11 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     jets -> pf = pf;
     jets -> vtx = vtx;
     jets -> cachedPrefix = "";
+
+    jets -> qg_token_Mult = consumes<edm::ValueMap<int>>(edm::InputTag("QGTagger", "mult"));
+    jets -> qg_token_PtD = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "ptD"));
+    jets -> qg_token_Axis2 = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "axis2"));
+
     obj.push_back(jets);
 
     NeroPuppiJets *puppijets = new NeroPuppiJets();
