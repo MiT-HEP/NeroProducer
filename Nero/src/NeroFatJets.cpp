@@ -107,20 +107,17 @@ int NeroFatJets::analyze(const edm::Event& iEvent){
         }
     } else {
         // this collection was reclustered and needs a different interface
-        
+
         iEvent.getByToken(rho_token,rho_handle);
         
         TString tPrefix(cachedPrefix);
 
-        edm::Handle<reco::PFJetCollection> subjets_handle;
-        edm::InputTag subjetLabel("PFJetsSoftDrop"+tPrefix,"SubJets");
-        iEvent.getByLabel(subjetLabel,subjets_handle);
-        const reco::PFJetCollection *subjetCol = subjets_handle.product();
-        assert(subjets_handle.isValid());
+        edm::Handle<vector<pat::Jet>> subjets_handle;
+        edm::InputTag subjetLabel("slimmedJetsAK8PFCHSSoftDropPacked","SubJets");
 
-        edm::Handle<reco::JetTagCollection> btags_handle;
-        iEvent.getByLabel(edm::InputTag((tPrefix+"PFCombinedInclusiveSecondaryVertexV2BJetTags").Data()),btags_handle);
-        assert((btags_handle.isValid()));
+        iEvent.getByLabel(subjetLabel,subjets_handle);
+        const vector<pat::Jet> *subjetCol = subjets_handle.product();
+        assert(subjets_handle.isValid());
 
         FactorizedJetCorrector *corrector = ( iEvent.isRealData() ) ? mDataJetCorrector : mMCJetCorrector;
 
@@ -142,7 +139,7 @@ int NeroFatJets::analyze(const edm::Event& iEvent){
 
               double jecFactor=0;
               if (fabs(j.eta())<5.191) {
-                corrector->setJetPt(j.pt());
+                corrector->setJetPt(j.pt() * j.jecFactor("Uncorrected"));
                 corrector->setJetEta(j.eta());
                 corrector->setJetPhi(j.phi());
                 corrector->setJetE(j.energy());
@@ -152,28 +149,28 @@ int NeroFatJets::analyze(const edm::Event& iEvent){
                 jecFactor = corrector->getCorrection();
               }
 
-              if (j.pt()*jecFactor < mMinPt)  continue;
-              rawPt -> push_back (j.pt());
-              new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(j.px()*jecFactor, j.py()*jecFactor, j.pz()*jecFactor, j.energy()*jecFactor);
+              if (j.pt() * j.jecFactor("Uncorrected")*jecFactor < mMinPt)  continue;
+              rawPt -> push_back (j.pt() * j.jecFactor("Uncorrected"));
+              new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(j.px()*jecFactor * j.jecFactor("Uncorrected"), j.py()*jecFactor * j.jecFactor("Uncorrected"), 
+                                                                j.pz()*jecFactor * j.jecFactor("Uncorrected"), j.energy()*jecFactor * j.jecFactor("Uncorrected"));
 
               tau1 -> push_back(j.userFloat(tPrefix+"Njettiness:tau1"));
               tau2 -> push_back(j.userFloat(tPrefix+"Njettiness:tau2"));
               tau3 -> push_back(j.userFloat(tPrefix+"Njettiness:tau3"));
       
-              softdropMass->push_back(j.userFloat(tPrefix+"SDKinematics:Mass")*jecFactor);
+              softdropMass->push_back(j.userFloat(tPrefix+"SDKinematics:Mass")*jecFactor * j.jecFactor("Uncorrected"));
         
               unsigned int nsubjetThisJet=0;
               firstSubjet->push_back(nsubjet);
 
-              for (reco::PFJetCollection::const_iterator i = subjetCol->begin(); i!=subjetCol->end(); ++i) {
+              for (vector<pat::Jet>::const_iterator i = subjetCol->begin(); i!=subjetCol->end(); ++i) {
                 if (reco::deltaR(i->eta(),i->phi(),j.eta(),j.phi())>jetRadius) continue;
                 nsubjetThisJet++;
                
                 new ( (*subjet)[nsubjet]) TLorentzVector(i->px(), i->py(), i->pz(), i->energy());
                 nsubjet++;
 
-                reco::JetBaseRef sjBaseRef(reco::PFJetRef(subjets_handle,i-subjetCol->begin()));
-                subjet_btag->push_back((float)(*(btags_handle.product()))[sjBaseRef]);
+                subjet_btag->push_back(j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
               }
 
               nSubjets->push_back(nsubjetThisJet);

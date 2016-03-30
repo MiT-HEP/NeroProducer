@@ -36,13 +36,13 @@ config.JobType.pyCfgParams=['isGrid=True','isData=False','is25ns=True','is50ns=F
 config.JobType.inputFiles=['jec']
 
 ### DATA configuration
-config.Data.inputDataset = '/HplusToTauNu-M500/amarini-amarini_PrivateMC_HPlusToTauNu_June2015-16aa19d591b8b49c55c4508e7a7c9233/USER'
-#config.Data.inputDBS = 'phys03'
-config.Data.inputDBS = 'global'
+config.Data.inputDataset = '/TTbarDMJets_pseudoscalar_Mchi-1_Mphi-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+config.Data.inputDBS = 'phys03'
+#config.Data.inputDBS = 'global'
 config.Data.ignoreLocality = True
 
 config.Data.splitting = 'FileBased'
-config.Data.unitsPerJob = 10
+config.Data.unitsPerJob = 20
 config.Data.totalUnits = -1
 
 tag = check_output("git describe --tags | cut -d'-' -f 1 | tr -d '\n' ",shell=True)
@@ -52,8 +52,7 @@ config.Data.publication = False
 config.Data.outputDatasetTag ='NeroNtuples'
 
 config.Site.storageSite = 'T2_CH_CERN'
-#config.Site.blacklist = [ 'T2_US_Florida','T2_US_Vanderbilt']
-
+config.Site.blacklist = [ 'T2_US_Purdue','T2_ES_IFCA','T2_EE_Estonia','T2_IT_Pisa','T3_US_UCR','T1_US_FNAL']
 
 if __name__ == '__main__':
 
@@ -119,228 +118,345 @@ if __name__ == '__main__':
 
     ###################################################
     setdata("False",is25ns=True)
-    config.Data.unitsPerJob = 30
+    config.Data.unitsPerJob = 3
     ###################################################
-
-    config.General.requestName = 'WZ-25ns'
-    config.Data.inputDataset = '/WZ_TuneCUETP8M1_13TeV-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
-    submit(config)
-
-    config.General.requestName = 'ZZ-25ns'
-    config.Data.inputDataset = '/ZZ_TuneCUETP8M1_13TeV-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
-    submit(config)
-
-    config.General.requestName = 'DY-25ns'
-    config.Data.inputDataset= '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
-    submit(config)
-
-    config.General.requestName = 'TT-25ns'
-    config.Data.inputDataset= '/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
-    submit(config)
-
-    config.General.requestName = 'WJets-25ns'
-    config.Data.inputDataset= '/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
-    submit(config)
-
-    config.General.requestName = 'WW-25ns'
-    config.Data.inputDataset= '/WW_TuneCUETP8M1_13TeV-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
-    submit(config)
-
-    config.General.requestName = 'TTZToQQ-25ns'
-    config.Data.inputDataset = '/TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
-    submit(config)
     
-    config.General.requestName = 'ttHTobb-25ns'
-    config.Data.inputDataset = '/ttHTobb_M125_13TeV_powheg_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+    config.General.requestName = 'DMV_NNPDF30_Axial_Mphi-2000_Mchi'
+    config.Data.inputDataset  = '/DMV_NNPDF30_Axial_Mphi-2000_Mchi-1_gSM-1p0_gDM-1p0_13TeV-powheg/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'DYJetsToLL_M-50_HT-100to200'
+    config.Data.inputDataset  = '/DYJetsToLL_M-50_HT-100to200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-Asympt25ns_74X_mcRun2_asymptotic_v2_ext1-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'DYJetsToLL_M-50_HT-200to400'
+    config.Data.inputDataset  = '/DYJetsToLL_M-50_HT-200to400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-Asympt25ns_74X_mcRun2_asymptotic_v2_ext1-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'DYJetsToLL_M-50_HT-400to600'
+    config.Data.inputDataset  = '/DYJetsToLL_M-50_HT-400to600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-Asympt25ns_74X_mcRun2_asymptotic_v2_ext1-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'DYJetsToLL_M-50_HT-600toInf'
+    config.Data.inputDataset  = '/DYJetsToLL_M-50_HT-600toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-Asympt25ns_74X_mcRun2_asymptotic_v2_ext1-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'GJets_HT-40To100'
+    config.Data.inputDataset  = '/GJets_HT-40To100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'GJets_HT-100To200'
+    config.Data.inputDataset  = '/GJets_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'GJets_HT-200To400'
+    config.Data.inputDataset  = '/GJets_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'GJets_HT-400To600'
+    config.Data.inputDataset  = '/GJets_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'GJets_HT-600ToInf'
+    config.Data.inputDataset  = '/GJets_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'GluGlu_HToInvisible_M110_13TeV'
+    config.Data.inputDataset  = '/GluGlu_HToInvisible_M110_13TeV_powheg_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'GluGlu_HToInvisible_M125_13TeV'
+    config.Data.inputDataset  = '/GluGlu_HToInvisible_M125_13TeV_powheg_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'GluGlu_HToInvisible_M150_13TeV'
+    config.Data.inputDataset  = '/GluGlu_HToInvisible_M150_13TeV_powheg_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'GluGlu_HToInvisible_M200_13TeV'
+    config.Data.inputDataset  = '/GluGlu_HToInvisible_M200_13TeV_powheg_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'GluGlu_HToInvisible_M300_13TeV'
+    config.Data.inputDataset  = '/GluGlu_HToInvisible_M300_13TeV_powheg_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'GluGlu_HToInvisible_M400_13TeV'
+    config.Data.inputDataset  = '/GluGlu_HToInvisible_M400_13TeV_powheg_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'GluGlu_HToInvisible_M500_13TeV'
+    config.Data.inputDataset  = '/GluGlu_HToInvisible_M500_13TeV_powheg_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'GluGlu_HToInvisible_M600_13TeV'
+    config.Data.inputDataset  = '/GluGlu_HToInvisible_M600_13TeV_powheg_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'QCD_HT100to200_TuneCUETP8M1_13TeV'
+    config.Data.inputDataset  = '/QCD_HT100to200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'QCD_HT200to300_TuneCUETP8M1_13TeV'
+    config.Data.inputDataset  = '/QCD_HT200to300_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'QCD_HT300to500_TuneCUETP8M1_13TeV'
+    config.Data.inputDataset  = '/QCD_HT300to500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'QCD_HT500to700_TuneCUETP8M1_13TeV'
+    config.Data.inputDataset  = '/QCD_HT500to700_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'QCD_HT700to1000_TuneCUETP8M1_13TeV'
+    config.Data.inputDataset  = '/QCD_HT700to1000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'QCD_HT1000to1500_TuneCUETP8M1_13TeV'
+    config.Data.inputDataset  = '/QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'QCD_HT1500to2000_TuneCUETP8M1_13TeV'
+    config.Data.inputDataset  = '/QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'QCD_HT2000toInf_TuneCUETP8M1_13TeV'
+    config.Data.inputDataset  = '/QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'ST_s-channel_4f_leptonDecays_13TeV'
+    config.Data.inputDataset  = '/ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'ST_t-channel_4f_leptonDecays_13TeV'
+    config.Data.inputDataset  = '/ST_t-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'ST_t-channel_5f_leptonDecays_13TeV'
+    config.Data.inputDataset  = '/ST_t-channel_5f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'ST_t-channel_antitop_4f_leptonDecays_13TeV'
+    config.Data.inputDataset  = '/ST_t-channel_antitop_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'ST_t-channel_top_4f_leptonDecays_13TeV'
+    config.Data.inputDataset  = '/ST_t-channel_top_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'ST_tW_antitop_5f_inclusiveDecays_13TeV'
+    config.Data.inputDataset  = '/ST_tW_antitop_5f_inclusiveDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'ST_tW_top_5f_inclusiveDecays_13TeV'
+    config.Data.inputDataset  = '/ST_tW_top_5f_inclusiveDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'TTJets'
+    config.Data.inputDataset  = '/TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v3/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'TTbarDMJets_pseudoscalar_Mchi'
+    config.Data.inputDataset  = '/TTbarDMJets_pseudoscalar_Mchi-1_Mphi-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'VBF_HToInvisible_M110_13TeV'
+    config.Data.inputDataset  = '/VBF_HToInvisible_M110_13TeV_powheg_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'VBF_HToInvisible_M125_13TeV'
+    config.Data.inputDataset  = '/VBF_HToInvisible_M125_13TeV_powheg_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'VBF_HToInvisible_M150_13TeV'
+    config.Data.inputDataset  = '/VBF_HToInvisible_M150_13TeV_powheg_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'VBF_HToInvisible_M200_13TeV'
+    config.Data.inputDataset  = '/VBF_HToInvisible_M200_13TeV_powheg_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'VBF_HToInvisible_M300_13TeV'
+    config.Data.inputDataset  = '/VBF_HToInvisible_M300_13TeV_powheg_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'VBF_HToInvisible_M400_13TeV'
+    config.Data.inputDataset  = '/VBF_HToInvisible_M400_13TeV_powheg_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'VBF_HToInvisible_M500_13TeV'
+    config.Data.inputDataset  = '/VBF_HToInvisible_M500_13TeV_powheg_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'VBF_HToInvisible_M600_13TeV'
+    config.Data.inputDataset  = '/VBF_HToInvisible_M600_13TeV_powheg_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'WJetsToLNu_HT-100To200'
+    config.Data.inputDataset  = '/WJetsToLNu_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'WJetsToLNu_HT-200To400'
+    config.Data.inputDataset  = '/WJetsToLNu_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'WJetsToLNu_HT-400To600'
+    config.Data.inputDataset  = '/WJetsToLNu_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'WJetsToLNu_HT-600ToInf'
+    config.Data.inputDataset  = '/WJetsToLNu_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'WW'
+    config.Data.inputDataset  = '/WW_TuneCUETP8M1_13TeV-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'WZ'
+    config.Data.inputDataset  = '/WZ_TuneCUETP8M1_13TeV-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'ZZ'
+    config.Data.inputDataset  = '/ZZ_TuneCUETP8M1_13TeV-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'ZJetsToNuNu_HT-100To200_13TeV'
+    config.Data.inputDataset  = '/ZJetsToNuNu_HT-100To200_13TeV-madgraph/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'ZJetsToNuNu_HT-200To400_13TeV'
+    config.Data.inputDataset  = '/ZJetsToNuNu_HT-200To400_13TeV-madgraph/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'ZJetsToNuNu_HT-400To600_13TeV'
+    config.Data.inputDataset  = '/ZJetsToNuNu_HT-400To600_13TeV-madgraph/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'ZJetsToNuNu_HT-600ToInf_13TeV'
+    config.Data.inputDataset  = '/ZJetsToNuNu_HT-600ToInf_13TeV-madgraph/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+#    submit(config)
+
+    config.General.requestName = 'JHUGen_Higgs_ZH_125_10'
+    config.Data.inputDataset  = '/JHUGen_Higgs_ZH_125_10/dmytro-RunIISpring15DR74-1455908429-b67560f4b241138a80b43305410d39d2/USER'
+#    submit(config)
+
+    config.General.requestName = 'JHUGen_Higgs_WH_125_10'
+    config.Data.inputDataset  = '/JHUGen_Higgs_WH_125_10/dmytro-RunIISpring15DR74-1455908454-b67560f4b241138a80b43305410d39d2/USER'
+#    submit(config)
+
+    config.General.requestName = 'JHUGen_ScalarWH_1000_100'
+    config.Data.inputDataset  = '/JHUGen_ScalarWH_1000_100/dmytro-RunIISpring15DR74-1456349432-b67560f4b241138a80b43305410d39d2/USER'
+#    submit(config)
+
+    config.General.requestName = 'JHUGen_ScalarWH_100_1'
+    config.Data.inputDataset  = '/JHUGen_ScalarWH_100_1/dmytro-RunIISpring15DR74-1456349467-b67560f4b241138a80b43305410d39d2/USER'
+#    submit(config)
+
+    config.General.requestName = 'JHUGen_ScalarWH_100_50'
+    config.Data.inputDataset  = '/JHUGen_ScalarWH_100_50/dmytro-RunIISpring15DR74-1456349509-b67560f4b241138a80b43305410d39d2/USER'
+#    submit(config)
+
+    config.General.requestName = 'JHUGen_ScalarWH_10_1'
+    config.Data.inputDataset  = '/JHUGen_ScalarWH_10_1/dmytro-RunIISpring15DR74-1456349556-b67560f4b241138a80b43305410d39d2/USER'
+#    submit(config)
+
+    config.General.requestName = 'JHUGen_ScalarWH_200_10'
+    config.Data.inputDataset  = '/JHUGen_ScalarWH_200_10/dmytro-RunIISpring15DR74-1456349689-b67560f4b241138a80b43305410d39d2/USER'
+#    submit(config)
+
+    config.General.requestName = 'JHUGen_ScalarWH_200_100'
+    config.Data.inputDataset  = '/JHUGen_ScalarWH_200_100/dmytro-RunIISpring15DR74-1456349610-b67560f4b241138a80b43305410d39d2/USER'
+#    submit(config)
+
+    config.General.requestName = 'JHUGen_ScalarWH_300_10'
+    config.Data.inputDataset  = '/JHUGen_ScalarWH_300_10/dmytro-RunIISpring15DR74-1456349872-b67560f4b241138a80b43305410d39d2/USER'
+#    submit(config)
+
+    config.General.requestName = 'JHUGen_ScalarWH_300_150'
+    config.Data.inputDataset  = '/JHUGen_ScalarWH_300_150/dmytro-RunIISpring15DR74-1456349887-b67560f4b241138a80b43305410d39d2/USER'
+#    submit(config)
+
+    config.General.requestName = 'JHUGen_ScalarWH_500_10'
+    config.Data.inputDataset  = '/JHUGen_ScalarWH_500_10/dmytro-RunIISpring15DR74-1456349912-b67560f4b241138a80b43305410d39d2/USER'
+#    submit(config)
+
+    config.General.requestName = 'JHUGen_ScalarZH_1000_100'
+    config.Data.inputDataset  = '/JHUGen_ScalarZH_1000_100/dmytro-RunIISpring15DR74-1456349968-b67560f4b241138a80b43305410d39d2/USER'
+#    submit(config)
+
+    config.General.requestName = 'JHUGen_ScalarZH_100_1'
+    config.Data.inputDataset  = '/JHUGen_ScalarZH_100_1_v2/dmytro-RunIISpring15DR74-1456427077-b67560f4b241138a80b43305410d39d2/USER'
     submit(config)
 
-    config.General.requestName = 'ttHToNonbb-25ns'
-    config.Data.inputDataset = '/ttHToNonbb_M125_13TeV_powheg_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+    config.General.requestName = 'JHUGen_ScalarZH_100_10'
+    config.Data.inputDataset  = '/JHUGen_ScalarZH_100_10/dmytro-RunIISpring15DR74-1456349978-b67560f4b241138a80b43305410d39d2/USER'
     submit(config)
-    
-    config.Data.unitsPerJob = 10
 
-    config.General.requestName = 'QCD-15-30-25ns'
-    config.Data.inputDataset = '/QCD_Pt_15to30_TuneCUETP8M1_13TeV_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+    config.General.requestName = 'JHUGen_ScalarZH_100_50'
+    config.Data.inputDataset  = '/JHUGen_ScalarZH_100_50/dmytro-RunIISpring15DR74-1456350002-b67560f4b241138a80b43305410d39d2/USER'
     submit(config)
-    
-    config.General.requestName = 'QCD-30-50-25ns'
-    config.Data.inputDataset = '/QCD_Pt_30to50_TuneCUETP8M1_13TeV_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+
+    config.General.requestName = 'JHUGen_ScalarZH_10_1'
+    config.Data.inputDataset  = '/JHUGen_ScalarZH_10_1/dmytro-RunIISpring15DR74-1456350014-b67560f4b241138a80b43305410d39d2/USER'
     submit(config)
-    
-    config.General.requestName = 'QCD-50-80-25ns'
-    config.Data.inputDataset = '/QCD_Pt_50to80_TuneCUETP8M1_13TeV_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+
+    config.General.requestName = 'JHUGen_ScalarZH_200_10'
+    config.Data.inputDataset  = '/JHUGen_ScalarZH_200_10_v2/dmytro-RunIISpring15DR74-1456427100-b67560f4b241138a80b43305410d39d2/USER'
     submit(config)
-    
-    config.General.requestName = 'QCD-80-120-25ns'
-    config.Data.inputDataset = '/QCD_Pt_80to120_TuneCUETP8M1_13TeV_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+
+    config.General.requestName = 'JHUGen_ScalarZH_200_100'
+    config.Data.inputDataset  = '/JHUGen_ScalarZH_200_100_v2/dmytro-RunIISpring15DR74-1456427114-b67560f4b241138a80b43305410d39d2/USER'
     submit(config)
-    
-    config.General.requestName = 'QCD-120-170-25ns'
-    config.Data.inputDataset = '/QCD_Pt_120to170_TuneCUETP8M1_13TeV_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+
+    config.General.requestName = 'JHUGen_ScalarZH_300_10'
+    config.Data.inputDataset  = '/JHUGen_ScalarZH_300_10/dmytro-RunIISpring15DR74-1456350049-b67560f4b241138a80b43305410d39d2/USER'
     submit(config)
-    
-    config.General.requestName = 'QCD-170-300-25ns'
-    config.Data.inputDataset = '/QCD_Pt_170to300_TuneCUETP8M1_13TeV_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+
+    config.General.requestName = 'JHUGen_ScalarZH_300_150'
+    config.Data.inputDataset  = '/JHUGen_ScalarZH_300_150/dmytro-RunIISpring15DR74-1456350062-b67560f4b241138a80b43305410d39d2/USER'
     submit(config)
-    
-    config.General.requestName = 'QCD-300-470-25ns'
-    config.Data.inputDataset = '/QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
+
+    config.General.requestName = 'JHUGen_ScalarZH_500_10'
+    config.Data.inputDataset  = '/JHUGen_ScalarZH_500_10/dmytro-RunIISpring15DR74-1456350079-b67560f4b241138a80b43305410d39d2/USER'
     submit(config)
-    
-    config.General.requestName = 'QCD-470-600-25ns'
-    config.Data.inputDataset = '/QCD_Pt_470to600_TuneCUETP8M1_13TeV_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
-    submit(config)
-    
-    config.General.requestName = 'QCD-600-800-25ns'
-    config.Data.inputDataset = '/QCD_Pt_600to800_TuneCUETP8M1_13TeV_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
-    submit(config)
-    
-    config.General.requestName = 'QCD-800-1000-25ns'
-    config.Data.inputDataset = '/QCD_Pt_800to1000_TuneCUETP8M1_13TeV_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
-    submit(config)
-    
-    config.General.requestName = 'QCD-1000-1400-25ns'
-    config.Data.inputDataset = '/QCD_Pt_1000to1400_TuneCUETP8M1_13TeV_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
-    submit(config)
-    
-    config.General.requestName = 'QCD-1400-1800-25ns'
-    config.Data.inputDataset = '/QCD_Pt_1400to1800_TuneCUETP8M1_13TeV_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
-    submit(config)
-    
-    config.General.requestName = 'QCD-1800-2400-25ns'
-    config.Data.inputDataset = '/QCD_Pt_1800to2400_TuneCUETP8M1_13TeV_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
-    submit(config)
-    
-    config.General.requestName = 'QCD-2400-3200-25ns'
-    config.Data.inputDataset = '/QCD_Pt_2400to3200_TuneCUETP8M1_13TeV_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
-    submit(config)
-    
-    config.General.requestName = 'QCD-3200-Inf-25ns'
-    config.Data.inputDataset = '/QCD_Pt_3200toInf_TuneCUETP8M1_13TeV_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'
-    submit(config)
-    
-    ###################################################
-    ########              50ns                 ########
-    ###################################################
-    setdata("True",is25ns=False)
-    ###################################################
 
-    #config.General.requestName = 'MET-50ns'
-    #config.Data.inputDataset = '/MET/Run2015B-17Jul2015-v1/MINIAOD'
-    #submit(config)
-
-    #config.General.requestName = 'MET-50ns-PromptReco'
-    #config.Data.inputDataset = '/MET/Run2015B-PromptReco-v1/MINIAOD'
-    #submit(config)
-
-    #config.General.requestName = 'Tau-50ns'
-    #config.Data.inputDataset = '/Tau/Run2015B-17Jul2015-v1/MINIAOD'
-    #submit(config)
-
-    #config.General.requestName = 'Tau-50ns-PromptReco'
-    #config.Data.inputDataset = '/Tau/Run2015B-PromptReco-v1/MINIAOD'
-    #submit(config)
-
-    #config.General.requestName = 'SingleMuon-50ns'
-    #config.Data.inputDataset = '/SingleMuon/Run2015B-17Jul2015-v1/MINIAOD'
-    #submit(config)
-
-    #config.General.requestName = 'SingleMuon-50ns-PromptReco'
-    #config.Data.inputDataset = '/SingleMuon/Run2015B-PromptReco-v1/MINIAOD'
-    #submit(config)
-
-    #config.General.requestName = 'SingleElectron-50ns'
-    #config.Data.inputDataset = '/SingleElectron/Run2015B-17Jul2015-v1/MINIAOD'
-    #submit(config)
-
-    #config.General.requestName = 'SingleElectron-50ns-PrompReco'
-    #config.Data.inputDataset = '/SingleElectron/Run2015B-PromptReco-v1/MINIAOD'
-    #submit(config)
-
-    #config.General.requestName = 'SinglePhoton-50ns'
-    #config.Data.inputDataset = '/SinglePhoton/Run2015B-17Jul2015-v1/MINIAOD'
-    #submit(config)
-
-    #config.General.requestName = 'SinglePhoton-50ns-PromptReco'
-    #config.Data.inputDataset = '/SinglePhoton/Run2015B-PromptReco-v1/MINIAOD'
-    #submit(config)
-
-    ###################################################
-    setdata("False",is25ns=False)
-    ###################################################
-    #config.General.requestName = 'DY-50ns'
-    #config.Data.inputDataset = '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v2/MINIAODSIM'
-    #submit(config)
-
-    #config.General.requestName = 'TT-50ns'
-    #config.Data.inputDataset = '/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1/MINIAODSIM'
-    #submit(config)
-
-    #config.General.requestName = 'WZ-50ns'
-    #config.Data.inputDataset = '/WZ_TuneCUETP8M1_13TeV-pythia8/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v2/MINIAODSIM'
-    #submit(config)
-
-    #config.General.requestName = 'ZZ-50ns'
-    #config.Data.inputDataset = '/ZZ_TuneCUETP8M1_13TeV-pythia8/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v2/MINIAODSIM'
-    #submit(config)
-
-    #config.General.requestName = 'WJets-50ns'
-    #config.Data.inputDataset = '/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1/MINIAODSIM'
-    #submit(config)
-
-    #config.General.requestName = 'WW-50ns'
-    #config.Data.inputDataset = '/WW_TuneCUETP8M1_13TeV-pythia8/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1/MINIAODSIM'
-    #submit(config)
 
     ###################################################
     ########              25ns                 ########
     ###################################################
     setdata("True",is25ns=True)
     ###################################################
-    config.Data.unitsPerJob = 150
+    config.Data.unitsPerJob = 40
 
-    config.General.requestName = 'DoubleEG_Run2015D-04Dec2015-v1'
-    config.Data.inputDataset = '/DoubleEG/Run2015D-04Dec2015-v1/MINIAOD'
-    submit(config)
+    config.General.requestName = 'SingleMuon-Run2015D-v1'
+    config.Data.inputDataset = '/SingleMuon/Run2015D-05Oct2015-v1/MINIAOD'
+#    submit(config)
 
-    config.General.requestName = 'SingleElectron_Run2015D-04Dec2015-v1'
-    config.Data.inputDataset = '/SingleElectron/Run2015D-04Dec2015-v1/MINIAOD'
-    submit(config)
+    config.General.requestName = 'SingleMuon-Run2015D-v4'
+    config.Data.inputDataset = '/SingleMuon/Run2015D-PromptReco-v4/MINIAOD'
+#    submit(config)
 
-    ### config.General.requestName = 'MET-Run2015D-05Oct2015'
-    ### config.Data.inputDataset = '/MET/Run2015D-05Oct2015-v1/MINIAOD'
-    ### submit(config)
+    config.General.requestName = 'SingleElectron-Run2015D-v1'
+    config.Data.inputDataset = '/SingleElectron/Run2015D-05Oct2015-v1/MINIAOD'
+#    submit(config)
 
-    ### config.General.requestName = 'Tau-Run2015D-05Oct2015'
-    ### config.Data.inputDataset = '/Tau/Run2015D-05Oct2015-v1/MINIAOD'
-    ### submit(config)
+    config.General.requestName = 'SingleElectron-Run2015D-v4'
+    config.Data.inputDataset = '/SingleElectron/Run2015D-PromptReco-v4/MINIAOD'
+#    submit(config)
 
-    ### config.General.requestName = 'SingleMuon-Run2015D-05Oct2015'
-    ### config.Data.inputDataset = '/SingleMuon/Run2015D-05Oct2015-v1/MINIAOD'
-    ### submit(config)
+    config.General.requestName = 'SinglePhoton-Run2015D-v1'
+    config.Data.inputDataset = '/SinglePhoton/Run2015D-05Oct2015-v1/MINIAOD'
+#    submit(config)
 
-    ### config.General.requestName = 'SingleElectron-Run2015D-05Oct2015'
-    ### config.Data.inputDataset = '/SingleElectron/Run2015D-05Oct2015-v1/MINIAOD'
-    ### submit(config)
+    config.General.requestName = 'SinglePhoton-Run2015D-v4'
+    config.Data.inputDataset = '/SinglePhoton/Run2015D-PromptReco-v4/MINIAOD'
+#    submit(config)
 
-    ### #config.General.requestName = 'SinglePhoton-25ns-PromptReco'
-    ### #config.Data.inputDataset = '/SinglePhoton/Run2015C-PromptReco-v1/MINIAOD'
-    ### #submit(config)
+    config.General.requestName = 'MET-Run2015D-v1'
+    config.Data.inputDataset = '/MET/Run2015D-05Oct2015-v1/MINIAOD'
+#    submit(config)
 
-    ### config.General.requestName = 'MET-Run2015D-PrompRecov4'
-    ### config.Data.inputDataset = '/MET/Run2015D-PromptReco-v4/MINIAOD'
-    ### submit(config)
-
-    ### config.General.requestName = 'Tau-Run2015D-PromptRecov4'
-    ### config.Data.inputDataset = '/Tau/Run2015D-PromptReco-v4/MINIAOD'
-    ### submit(config)
-
-    ### config.General.requestName = 'SingleMuon-Run2015D-PromptRecov4'
-    ### config.Data.inputDataset = '/SingleMuon/Run2015D-PromptReco-v4/MINIAOD'
-    ### submit(config)
-
-    ### config.General.requestName = 'SingleElectron-Run2015D-PromptRecov4'
-    ### config.Data.inputDataset = '/SingleElectron/Run2015D-PromptReco-v4/MINIAOD'
-    ### submit(config)
-
+    config.General.requestName = 'MET-Run2015D-v4'
+    config.Data.inputDataset = '/MET/Run2015D-PromptReco-v4/MINIAOD'
+#    submit(config)
