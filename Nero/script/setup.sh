@@ -23,7 +23,7 @@ function CMSSW_7_6_3_patch2 {
 	git cms-merge-topic matteosan1:smearer_76X
 }
 
-function CMSSW_8_0_3_patch3 {
+function CMSSW_8_0_3_patch1 {
 	git cms-merge-topic matteosan1:smearer_76X
 }
 
