@@ -29,7 +29,7 @@ cmsrel CMSSW_7_6_3_patch2
 cd CMSSW_7_6_3_patch2/src
 cmsenv
 wget --no-check-certificate 'https://raw.githubusercontent.com/MiT-HEP/NeroProducer/master/Nero/script/setup.sh' -O /tmp/$USER/setup.sh
-source /tmp/$USER/setup.sh
+source /tmp/$USER/setup.sh $CMSSW_VERSION
 ```
 * Clone the git repository and compile it
 ```
