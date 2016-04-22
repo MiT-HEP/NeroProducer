@@ -119,21 +119,20 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 if (isData):
     if options.is25ns:
-        process.GlobalTag.globaltag = '76X_dataRun2_v15'
+        process.GlobalTag.globaltag = '76X_dataRun2_16Dec2015_v0'
     if options.is50ns:
         process.GlobalTag.globaltag = '74X_dataRun2_Prompt_v1'
         print "FIX GLOBAL TAG"
 else:
     #process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
     if options.is25ns:
-        process.GlobalTag.globaltag = '76X_mcRun2_asymptotic_v12'
-        #process.GlobalTag.globaltag = '74X_mcRun2_asymptotic_v2'
+        process.GlobalTag.globaltag = '76X_mcRun2_asymptotic_RunIIFall15DR76_v1'
     if options.is50ns:
         process.GlobalTag.globaltag = 'MCRUN2_74_V9A::All' ## FIXME
         print "FIX GLOBAL TAG"
 
 ######## LUMI MASK
-if isData and not options.isGrid : ## don't load the lumiMaks, will be called by crab
+if isData and not options.isGrid : ## dont load the lumiMaks, will be called by crab
     #pass
     import FWCore.PythonUtilities.LumiList as LumiList
     ## SILVER
