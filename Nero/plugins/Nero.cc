@@ -64,6 +64,8 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     evt -> mOnlyMc = onlyMc;
     evt -> rho_token = consumes<double>(iConfig.getParameter<edm::InputTag>("rho"));
     evt -> SetExtend ( iConfig.getUntrackedParameter<bool>("extendEvent",false) );
+    evt -> filter_token = consumes<edm::TriggerResults>(iConfig.getParameter < edm::InputTag > ("metFilterToken"));
+    *(evt -> metfilterNames) = iConfig.getParameter < std::vector<std::string> > ("metfilterNames");
 
     if ( evt -> IsExtend() )
         {

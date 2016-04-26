@@ -22,6 +22,48 @@ int NeroEvent::analyze(const edm::Event& iEvent){
 
     rho 	   =  *rho_handle;
 
+    // Implement MET Filters
+    if (isRealData) {
+        
+        edm::Handle < edm::TriggerResults > metFiltersResults;
+        iEvent.getByToken(filter_token, metFiltersResults);
+        const edm::TriggerNames &names = iEvent.triggerNames(*metFiltersResults);
+
+        if ( metFiltersResults.isValid() and not metFiltersResults.failedToGet() ) {
+
+            std::auto_ptr<std::vector<bool> > metFilters(new std::vector<bool>() );
+            std::auto_ptr<bool> passesMETFilters(new bool(true));
+            
+            for ( unsigned int i = 0; i < names.size(); ++i) {            
+                if ( std::find( metfilterNames->begin(), metfilterNames->end(), names.triggerName(i) ) != metfilterNames->end() ) {
+                    
+                    *passesMETFilters = *passesMETFilters && metFiltersResults->accept( i );
+                    metFilters->push_back( metFiltersResults->accept( i ) );
+                    std::cout << "MetFilter : " << names.triggerName(i) << " is registered " << metFiltersResults->accept(i) << std::endl;
+                    
+                }
+            }
+
+
+            unsigned int filter=0;
+
+            filter |= ((*passesMETFilters) * FullRecommendation);
+            filter |= ((*metFilters)[0] * HBHENoiseFilter) ;
+            filter |= ((*metFilters)[1] * HBHENoiseIsoFilter) ;
+            filter |= ((*metFilters)[2] * CSCTightHalo2015Filter) ;
+            filter |= ((*metFilters)[3] * EcalDeadCellTriggerPrimitiveFilter) ;
+            filter |= ((*metFilters)[4] * goodVertices) ;
+            filter |= ((*metFilters)[5] * eeBadScFilter) ;
+
+            selBits = filter;                
+
+            metFilters->clear();            
+        }
+
+    }
+
+
+
     if (IsExtend() ) {
 
         iEvent.getByToken( originalRun_token , originalRun_handle); 

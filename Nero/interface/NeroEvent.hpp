@@ -29,7 +29,8 @@ class NeroEvent : virtual public NeroCollection, virtual public BareEvent
         edm::EDGetTokenT<unsigned int>  originalLumi_token;
         edm::EDGetTokenT<unsigned int>  originalEvent_token;
 
-
+       // --- met filters
+       edm::EDGetTokenT<edm::TriggerResults> filter_token;
 };
 
 

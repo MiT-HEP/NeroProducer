@@ -6,6 +6,17 @@
 class BareEvent : virtual public BareCollection
 {
     public:
+    
+        enum Selection {
+            FullRecommendation     = 1UL << 0,
+            HBHENoiseFilter        = 2UL << 0,
+            HBHENoiseIsoFilter     = 3UL << 0,
+            CSCTightHalo2015Filter = 4UL << 0,
+            EcalDeadCellTriggerPrimitiveFilter = 5UL << 0,
+            goodVertices           = 6UL << 0,
+            eeBadScFilter          = 7UL << 0
+        };
+
         BareEvent();
         ~BareEvent();
         void clear() override;
@@ -27,6 +38,10 @@ class BareEvent : virtual public BareCollection
         int originalRun;
         int originalLumi;
         int originalEvent;
+    
+        vector<string> *metfilterNames;
+        unsigned selBits{0};
+
 };
 
 
