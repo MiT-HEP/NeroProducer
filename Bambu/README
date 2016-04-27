@@ -1,0 +1,44 @@
+==============================
++  Bambu interface for Nero  +
+==============================
+
+-------------------------------------------------
+1. Installation
+-------------------------------------------------
+
+This subpackage will not be compiled automatically by scram. After checking the package out, you have to do
+
+$ cd $CMSSW_BASE/src/NeroProducer/Bambu
+$ make
+
+The command above compiles the source codes and creates a dictionary for CLING (and PyROOT) for NeroMod and the various tree fillers. Everything is packed up into a library libMitNero.so, which gets placed in $CMSSW_BASE/lib/$SCRAM_ARCH.
+
+-------------------------------------------------
+2. Configuring the job & running on a single file
+-------------------------------------------------
+
+See bambuToNero.py for an example. Each object (BareCollection) has a filler of its own that needs to be configured and passed to NeroMod.
+
+Running on a single file can be done with the usual command:
+
+$ cd $CMSSW_BASE/src/MitAna/bin
+$ ./analysis.py $CMSSW_BASE/src/NeroProucer/Bambu/macros/bambuToNero.py --file=your_bambu_file.root
+
+The command above will produce an ntuples file file nero.root in the current directory. (add --output=histograms.root to get the histogram outputs from other Bambu modules)
+
+* bambuToNero.py has some awkward copy-pasting of module configurations. This will be fixed in the near future
+
+-------------------------------------------------
+3. Running on condor over datasets
+-------------------------------------------------
+
+Because the module creates a non-standard output (usual Bambu jobs have a single output), a custom condor submission template is needed. To submit jobs on condor,
+
+$ cd $CMSSW_BASE/src/MitAna/bin
+$ ./runOnDatasets.py --name=neroprod --book=t2mit/filefi/041 --dataset=your_dataset --analysis=$CMSSW_BASE/src/NeroProducer/Bambu/macros/bambuToNero.py --condor-template=$CMSSW_BASE/src/NeroProducer/Bambu/config/condor_template.jdl
+
+If you wish to stage out your output to e.g. hscratch, directly specify the directory in the condor_template.jdl as
+
+transfer_output_remaps = "nero.root = /mnt/hscratch/your_name/{task}/{book}/{dataset}/nero_{fileset}.root"
+
+The strings like {fileset} will be replaced by the submission script automatically.
