@@ -1,10 +1,22 @@
 #include "NeroProducer/Nero/interface/NeroEvent.hpp"
 #include "NeroProducer/Nero/interface/Nero.hpp"
 
+//#define VERBOSE 1
+#ifdef VERBOSE
+    #include "NeroProducer/Core/interface/BareFunctions.hpp"
+#endif
+
 NeroEvent::NeroEvent():
-        NeroCollection(),
-        BareEvent()
+    NeroCollection(),
+    BareEvent()
 {
+    metNameToBit["FullRecommendation"] = FullRecommendation;
+    metNameToBit["Flag_HBHENoiseFilter"] = HBHENoiseFilter;
+    metNameToBit["Flag_HBHENoiseIsoFilter"] = HBHENoiseIsoFilter;
+    metNameToBit["Flag_CSCTightHalo2015Filter"] = CSCTightHalo2015Filter;
+    metNameToBit["Flag_EcalDeadCellTriggerPrimitiveFilter"] = EcalDeadCellTriggerPrimitiveFilter;
+    metNameToBit["Flag_goodVertices"] = goodVertices;
+    metNameToBit["Flag_eeBadScFilter" ] = eeBadScFilter;
 }
 
 NeroEvent::~NeroEvent(){
@@ -24,57 +36,53 @@ int NeroEvent::analyze(const edm::Event& iEvent){
 
     // Implement MET Filters
     if (isRealData) {
-        
+
         edm::Handle < edm::TriggerResults > metFiltersResults;
         iEvent.getByToken(filter_token, metFiltersResults);
         const edm::TriggerNames &names = iEvent.triggerNames(*metFiltersResults);
 
+        unsigned int filter=0;
+
         if ( metFiltersResults.isValid() and not metFiltersResults.failedToGet() ) {
 
-            std::auto_ptr<std::vector<bool> > metFilters(new std::vector<bool>() );
+            //std::auto_ptr<std::vector<bool> > metFilters(new std::vector<bool>() );
             std::auto_ptr<bool> passesMETFilters(new bool(true));
-            
+
             for ( unsigned int i = 0; i < names.size(); ++i) {            
                 if ( std::find( metfilterNames->begin(), metfilterNames->end(), names.triggerName(i) ) != metfilterNames->end() ) {
-                    
+
                     *passesMETFilters = *passesMETFilters && metFiltersResults->accept( i );
-                    metFilters->push_back( metFiltersResults->accept( i ) );
-                    std::cout << "MetFilter : " << names.triggerName(i) << " is registered " << metFiltersResults->accept(i) << std::endl;
-                    
+                    //metFilters->push_back( metFiltersResults->accept( i ) );
+                    unsigned bitflag = Unknown;
+                    const auto& it = metNameToBit.find(names.triggerName(i) );
+                    if ( it != metNameToBit.end()) bitflag = it->second;
+                    else { 
+                        std::cout<<"[NeroEvent]::[analyze]::[ERROR] trigger Name in cfg "<< names.triggerName(i) <<" has no selection bit associated. Will not be saved"<<std::endl;
+                    }
+                    filter |= metFiltersResults->accept(i) * bitflag;
+
+                    #ifdef VERBOSE
+                        if(VERBOSE>0)std::cout << "MetFilter : " << names.triggerName(i) << " is registered " << metFiltersResults->accept(i) << std::endl;
+                    #endif
+
                 }
             }
 
 
-            unsigned int filter=0;
 
             filter |= ((*passesMETFilters) * FullRecommendation);
-            filter |= ((*metFilters)[0] * HBHENoiseFilter) ;
-            filter |= ((*metFilters)[1] * HBHENoiseIsoFilter) ;
-            filter |= ((*metFilters)[2] * CSCTightHalo2015Filter) ;
-            filter |= ((*metFilters)[3] * EcalDeadCellTriggerPrimitiveFilter) ;
-            filter |= ((*metFilters)[4] * goodVertices) ;
-            filter |= ((*metFilters)[5] * eeBadScFilter) ;
 
             selBits = filter;                
 
-            metFilters->clear();            
+            #ifdef VERBOSE
+                if(VERBOSE>0)cout << "SelBits is:"<<selBits<<": "<<BareFunctions::printBinary(selBits)<<endl;
+            #endif
+
         }
 
-    }
+    } //end isRealData
 
 
-
-    if (IsExtend() ) {
-
-        iEvent.getByToken( originalRun_token , originalRun_handle); 
-        iEvent.getByToken( originalLumi_token , originalLumi_handle); 
-        iEvent.getByToken( originalEvent_token , originalEvent_handle); 
-
-        // -- these are under the 'isValid' condition, so program will not crash if not present
-        if( originalRun_handle.isValid() ) originalRun = *originalRun_handle;
-        if( originalLumi_handle.isValid()) originalLumi = *originalLumi_handle;
-        if( originalEvent_handle.isValid()) originalEvent = *originalEvent_handle;
-    }
     return 0;
 }
 

@@ -9,12 +9,13 @@ class BareEvent : virtual public BareCollection
     
         enum Selection {
             FullRecommendation     = 1UL << 0,
-            HBHENoiseFilter        = 2UL << 0,
-            HBHENoiseIsoFilter     = 3UL << 0,
-            CSCTightHalo2015Filter = 4UL << 0,
-            EcalDeadCellTriggerPrimitiveFilter = 5UL << 0,
-            goodVertices           = 6UL << 0,
-            eeBadScFilter          = 7UL << 0
+            HBHENoiseFilter        = 1UL << 1,
+            HBHENoiseIsoFilter     = 1UL << 2,
+            CSCTightHalo2015Filter = 1UL << 3,
+            EcalDeadCellTriggerPrimitiveFilter = 1UL << 4,
+            goodVertices           = 1UL << 5,
+            eeBadScFilter          = 1UL << 6,
+            Unknown                = 1UL << 31 // if matching do not work, put it here, but keep the full correct
         };
 
         BareEvent();

@@ -4,6 +4,8 @@
 #include "TTree.h"
 #include "TLorentzVector.h"
 #include "TClonesArray.h"
+#include <bitset>
+#include <string>
 
 namespace BareFunctions{
     // Compress to float precision, 
@@ -32,6 +34,11 @@ namespace BareFunctions{
 
     //template specification for TClonesArray
     template<> void New<TClonesArray>(TClonesArray* &x);
+
+    template<typename T>
+    std::string printBinary(const T& x){ std::bitset<sizeof(T)*8> b(x); return b.to_string() ; }
+
+    inline bool pass(unsigned sel, unsigned mask){ return !(~sel & mask); }
 
 }; // end namespace
 #endif
