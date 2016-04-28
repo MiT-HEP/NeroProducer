@@ -110,35 +110,6 @@ process.load('NeroProducer.Nero.Nero_cfi')
 #process.load('NeroProducer.Nero.NeroChargedHiggs_cfi')
 
 
-# ------------------------QG-----------------------------------------------
-qgDatabaseVersion = '76X'
-
-# to use the database, see https://twiki.cern.ch/twiki/bin/view/CMS/QuarkGluonLikelihood
-#connect = cms.string('frontier://FrontierProd/CMS_COND_PAT_000'),
-#for type in ['AK4PFchs','AK4PFchs_antib']:
-#  QGPoolDBESSource.toGet.extend(cms.VPSet(cms.PSet(
-#    record = cms.string('QGLikelihoodRcd'),
-#    tag    = cms.string('QGLikelihoodObject_'+qgDatabaseVersion+'_'+type),
-#    label  = cms.untracked.string('QGL_'+type)
-#  )))
-
-process.QGPoolDBESSource = cms.ESSource("PoolDBESSource",
-      CondDBSetup,
-      toGet = cms.VPSet(
-        cms.PSet(
-            record = cms.string('QGLikelihoodRcd'),
-            tag    = cms.string('QGLikelihoodObject_'+qgDatabaseVersion+'_AK4PFchs'),
-            label  = cms.untracked.string('QGL_AK4PFchs')
-        ),
-      ),
-      connect = cms.string('sqlite:qg/QGL_'+qgDatabaseVersion+'.db')
-)
-process.es_prefer_qg = cms.ESPrefer('PoolDBESSource','QGPoolDBESSource')
-
-process.load('RecoJets.JetProducers.QGTagger_cfi')
-process.QGTagger.srcJets             = process.nero.jets   # Could be reco::PFJetCollection or pat::JetCollection (both AOD and miniAOD)               
-process.QGTagger.srcVertexCollection = process.nero.vertices
-process.QGTagger.useQualityCuts = cms.bool(False)
 
 # ------------------- JER -----------------
 if options.isData:
@@ -343,53 +314,56 @@ process.load("RecoEgamma/ElectronIdentification/ElectronIDValueMapProducer_cfi")
 ## process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 
 ################ end sqlite connection
-#### BEGIN RECOMPUTE JEC ###
-#from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetCorrFactorsUpdated
-#from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetsUpdated
-## process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
-## 
-## jecLevels= ['L1FastJet',  'L2Relative', 'L3Absolute']
-## 
-## if options.isData:
-## 	print "NO L2L3 Residual Applied so far. FIXME"
-## 	#jecLevels.append( 'L2L3Residuals')
-## 
-## process.patJetCorrFactorsReapplyJEC = process.patJetCorrFactorsUpdated.clone(
-## 		  src = cms.InputTag("slimmedJets"),
-## 		  levels = jecLevels,
-## 		  payload = 'AK4PFchs' ) # 
-## 
-## process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
-## process.patJetsReapplyJEC = process.patJetsUpdated.clone(
-## 		  jetSource = cms.InputTag("slimmedJets"),
-## 		  jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
-## 		  )
-## 
-## process.jecSequence = cms.Sequence( 
-## 		process.patJetCorrFactorsReapplyJEC + 
-## 		process. patJetsReapplyJEC 
-## 		)
-##___________________________HCAL_Noise_Filter________________________________||
-process.load('CommonTools.RecoAlgos.HBHENoiseFilterResultProducer_cfi')
-process.HBHENoiseFilterResultProducer.minZeros = cms.int32(99999)
-process.HBHENoiseFilterResultProducer.IgnoreTS4TS5ifJetInLowBVRegion=cms.bool(False) 
-process.HBHENoiseFilterResultProducer.defaultDecision = cms.string("HBHENoiseFilterResultRun2Loose")
+#### RECOMPUTE JEC From GT ###
+from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 
-process.ApplyBaselineHBHENoiseFilter = cms.EDFilter('BooleanFlagFilter',
-        inputLabel = cms.InputTag('HBHENoiseFilterResultProducer','HBHENoiseFilterResult'),
-        reverseDecision = cms.bool(False)
-        )
+jecLevels= ['L1FastJet',  'L2Relative', 'L3Absolute']
+if options.isData:
+	jecLevels.append( 'L2L3Residuals')
 
-process.ApplyBaselineHBHEIsoNoiseFilter = cms.EDFilter('BooleanFlagFilter',
-        inputLabel = cms.InputTag('HBHENoiseFilterResultProducer','HBHEIsoNoiseFilterResult'),
-        reverseDecision = cms.bool(False)
-        )
+updateJetCollection(
+   process,
+   #jetSource = cms.InputTag('slimmedJets'),
+   jetSource = process.nero.jets,
+   labelName = 'UpdatedJEC',
+   jetCorrections = ('AK4PFchs', cms.vstring(jecLevels), 'None')  # Do not forget 'L2L3Residual' on data!
+)
+print "-> Updating the jets collection to run on to 'updatedPatJetsUpdatedJEC' with the new jec in the GT"
+process.nero.jets=cms.InputTag('updatedPatJetsUpdatedJEC')
+process.jecSequence = cms.Sequence( process.patJetCorrFactorsUpdatedJEC* process.updatedPatJetsUpdatedJEC )
+#process.jecSequence = cms.Sequence( )
 
-process.hcalNoiseFilter = cms.Sequence(
-        process.HBHENoiseFilterResultProducer* #produces HBHE baseline bools
-        process.ApplyBaselineHBHENoiseFilter  #reject events based 
-        #process.ApplyBaselineHBHEIsoNoiseFilter*   #reject events based  < 10e-3 mistake rate 
-        )
+# ------------------------QG-----------------------------------------------
+# after jec, because need to be run on the corrected (latest) jet collection
+qgDatabaseVersion = '76X'
+
+# to use the database, see https://twiki.cern.ch/twiki/bin/view/CMS/QuarkGluonLikelihood
+#connect = cms.string('frontier://FrontierProd/CMS_COND_PAT_000'),
+#for type in ['AK4PFchs','AK4PFchs_antib']:
+#  QGPoolDBESSource.toGet.extend(cms.VPSet(cms.PSet(
+#    record = cms.string('QGLikelihoodRcd'),
+#    tag    = cms.string('QGLikelihoodObject_'+qgDatabaseVersion+'_'+type),
+#    label  = cms.untracked.string('QGL_'+type)
+#  )))
+
+process.QGPoolDBESSource = cms.ESSource("PoolDBESSource",
+      CondDBSetup,
+      toGet = cms.VPSet(
+        cms.PSet(
+            record = cms.string('QGLikelihoodRcd'),
+            tag    = cms.string('QGLikelihoodObject_'+qgDatabaseVersion+'_AK4PFchs'),
+            label  = cms.untracked.string('QGL_AK4PFchs')
+        ),
+      ),
+      connect = cms.string('sqlite:qg/QGL_'+qgDatabaseVersion+'.db')
+)
+process.es_prefer_qg = cms.ESPrefer('PoolDBESSource','QGPoolDBESSource')
+
+process.load('RecoJets.JetProducers.QGTagger_cfi')
+process.QGTagger.srcJets             = process.nero.jets   # Could be reco::PFJetCollection or pat::JetCollection (both AOD and miniAOD)               
+process.QGTagger.srcVertexCollection = process.nero.vertices
+process.QGTagger.useQualityCuts = cms.bool(False)
+
 ###############################
 
 if options.isGrid:
@@ -403,24 +377,32 @@ if options.isParticleGun:
 
 process.load('NeroProducer.Skim.MonoJetFilterSequence_cff')
 
+##DEBUG
+##print "Process=",process, process.__dict__.keys()
 #------------------------------------------------------
 process.p = cms.Path(
                 process.infoProducerSequence *
                 #process.MonoJetFilter *
                 #process.hcalNoiseFilter * 
-                process.QGTagger *
                 process.egmGsfElectronIDSequence *
                 process.egmPhotonIDSequence *
                 process.photonIDValueMapProducer * ## ISO MAP FOR PHOTONS
-                process.electronIDValueMapProducer * ## ISO MAP FOR PHOTONS
+                process.electronIDValueMapProducer *  ## ISO MAP FOR PHOTONS
                 #process.puppiSequence * ## does puppi, puppi met, type1 corrections
                 #process.jetSequence *
                 #process.reclusterSequence * ##  includes puppi and jets if recluster options is on
-                #process.jecSequence *
+                process.jecSequence  *
+                process.QGTagger * ## after jec, because it will produce the new jet collection
                 process.nero
                 )
 
 ## DEBUG -- dump the event content with all the value maps ..
+## process.output = cms.OutputModule(
+##                 "PoolOutputModule",
+##                       fileName = cms.untracked.string('output.root'),
+##                       )
+## process.output_step = cms.EndPath(process.output)
+## 
 ## process.schedule = cms.Schedule(
 ## 		process.p,
 ## 		process.output_step)
