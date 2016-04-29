@@ -13,6 +13,7 @@ BareTaus::~BareTaus(){
     BareFunctions::Delete(neutralIsoPtSum);
     BareFunctions::Delete(isoDeltaBetaCorr);
     BareFunctions::Delete(isoPileupWeightedRaw);
+    BareFunctions::Delete(isoMva);
 }
 
 void BareTaus::init(){
@@ -30,6 +31,7 @@ void BareTaus::init(){
         BareFunctions::New(neutralIsoPtSum);
         BareFunctions::New(isoDeltaBetaCorr);
         BareFunctions::New(isoPileupWeightedRaw);
+        BareFunctions::New(isoMva);
     }
 }
 
@@ -45,6 +47,7 @@ void BareTaus::clear(){
         neutralIsoPtSum->clear() ;
         isoDeltaBetaCorr->clear();
         isoPileupWeightedRaw->clear();
+        isoMva->clear();
     }
 }
 
@@ -65,6 +68,7 @@ void BareTaus::defineBranches(TTree *t){
         t->Branch("tauNeutralIsoPtSum","vector<float>",&neutralIsoPtSum);
         t->Branch("tauIsoDeltaBetaCorr","vector<float>",&isoDeltaBetaCorr);
         t->Branch("tauIsoPileupWeightedRaw","vector<float>",&isoPileupWeightedRaw);
+        t->Branch("tauIsoMva","vector<float>",&isoMva);
     }
 
 }
@@ -84,6 +88,7 @@ void BareTaus::setBranchAddresses(TTree *t){
         BareFunctions::SetBranchAddress(t,"tauNeutralIsoPtSum",&neutralIsoPtSum);
         BareFunctions::SetBranchAddress(t,"tauIsoDeltaBetaCorr",&isoDeltaBetaCorr);
         BareFunctions::SetBranchAddress(t,"tauIsoPileupWeightedRaw",&isoPileupWeightedRaw);
+        BareFunctions::SetBranchAddress(t,"tauIsoMva"	,&isoMva);
     }
 }
 BAREREGISTER(BareTaus);
