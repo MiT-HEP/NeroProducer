@@ -29,6 +29,11 @@ class BareTaus : virtual public BareP4
             byTightIsolationMVArun2v1DBnewDMwLT = 1UL <<18, 
             byVTightIsolationMVArun2v1DBnewDMwLT= 1UL <<19,
 
+            // --- DB ISO  WP 
+            byLooseCombinedIsolationDeltaBetaCorr3Hits  = 1UL <<20,
+            byMediumCombinedIsolationDeltaBetaCorr3Hits  = 1UL <<21,
+            byTightCombinedIsolationDeltaBetaCorr3Hits  = 1UL <<22,
+
         };
 
         BareTaus();
