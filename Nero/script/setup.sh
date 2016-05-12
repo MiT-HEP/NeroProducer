@@ -23,7 +23,8 @@ function CMSSW_7_6_4 {
 	git remote add blinkseb https://github.com/blinkseb/cmssw.git
 	git fetch blinkseb
 	git cherry-pick 4cca4688ae368bbbef2102e9bdc5bb00f6df959e
-	git clone git@github.com:zdemirag/NeroProducer.git ## TO REMOVE
+	git cms-merge-topic amarini:topic_met
+	#git clone git@github.com:zdemirag/NeroProducer.git ## TO REMOVE
 }
 
 [ "X$1" == "X" ] && $1=$CMSSW_VERSION
