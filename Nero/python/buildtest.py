@@ -180,7 +180,14 @@ def TryPullReq(sha, origin):
 	cmd = "cd %s/%s/src && %s &&" %(tmpdir,CMSSW,cmsenv)
 	cmd += "scram b -j 16 2>&1 | tee %s "%  (os.environ["HOME"]+"/www/%s/"%(repo.split('/')[1]) + sha + "/build.txt")
 	cmd += "; EXIT=${PIPESTATUS[0]};  echo \"<-> EXIT STATUS is ${EXIT}\" ; exit $EXIT ; "
-	status = call( cmd ,shell=True)
+
+	ntry=0
+	status = -1
+	#try to build 3 times. gmake crashes sometimes
+	while status != 0 or ntry <3: 
+		status = call( cmd ,shell=True)
+		ntry += 1
+
 	if status >0 : 
 		print red +"ERROR: "+white + "unable to build"
 		print "\t'"+cmd+"'"
