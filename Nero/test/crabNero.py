@@ -94,7 +94,9 @@ if __name__ == '__main__':
                 # GOLDEN
                 ##Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt
                 # SILVER
-                config.Data.lumiMask = url + "Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_Silver_v2.txt"
+                #config.Data.lumiMask = url + "Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_Silver_v2.txt"
+                ## SILVER REPROCESSING
+                config.Data.lumiMask = url + "Reprocessing/Cert_13TeV_16Dec2015ReReco_Collisions15_25ns_JSON_Silver_v2.txt"
             else:
                 config.Data.lumiMask= url + "Cert_246908-255031_13TeV_PromptReco_Collisions15_50ns_JSON.txt"
             config.Data.splitting = 'LumiBased'
