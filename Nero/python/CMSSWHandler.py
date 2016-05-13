@@ -2,17 +2,6 @@ import os,sys
 import re
 from subprocess import call,check_output
 
-def multiple(func,ntries=3):
-    def multiple_decorator(func):
-        def wrapper(*args, **kwargs):
-            ntry = 1
-            status =-1
-            while ntry <= ntries and status !=0:
-                print "* try ",ntry
-                status = func(*args, **kwargs)
-            return status
-        return wrapper
-    return multiple_decorator
 
 class CMSSWHandler:
     ''' Handle for a CMSSW Area '''
@@ -33,6 +22,7 @@ class CMSSWHandler:
         self.verbose = True
         self.error = 0 ## last error, if != 0
         self.debug = True
+        self.ntries = 3
     
     def _remove(self):
         if self.debug: print "* Removing CMSSW"
@@ -52,11 +42,11 @@ class CMSSWHandler:
         self.error=call(cmd,shell=True)
         return self
 
-    @multiple
     def _build(self):
-        if self.debug: print "* Calling a build"
         cmd = self._cd + self._cmsenv
         cmd += "scram b -j 16"
+
+        if self.debug: print "* Calling a build with cmd '"+ cmd + "'"
 
         return call(cmd,shell=True)
 
@@ -76,7 +66,7 @@ class CMSSWHandler:
         ## init cmssw
         cmd = self._cd + self._cmsenv
         if self.debug: cmd += " pwd && git config -l  && "
-        cmd += " git cms-init ."
+        cmd += " git cms-init "
         if self.debug: print "     with  cmd '"+cmd +"'"
         self.error = call(cmd,shell=True)
         if self.error !=0 : return self
@@ -93,20 +83,28 @@ class CMSSWHandler:
             self.error = call( cmd, shell=True)
         return self
 
-    def callSetup(self,setup="./Nero/script/setup.sh",args="$CMSSW_VERSION",sha=""):
-        if self.verbose: print self.cyan+"-> Call setup script"+self.white + setup + " " + args + " @" + sha
+    def callSetup(self,setup="./Nero/script/setup.sh",args="",sha=""):
+        if self.verbose: print self.cyan+"-> Call setup script: "+self.white + setup + " " + args + " @" + sha
         cmd = self._cd + self._cmsenv
         cmd += "cd " + self._repomain + " &&"
         cmd += "chmod u+x " + setup + " && "
         if sha != "":
             cmd +=  "git checkout " + sha + " && "
         cmd += setup + " " + args
+
+        if self.debug : print "* with cmd '" +cmd +"'"
+
         self.error = call(cmd, shell=True)
         return self
 
     def build(self):
         if self.verbose: print self.cyan+"-> Build" 
-        self.error = self._build()
+        self.error=-1
+        ntry=1
+        while self.error !=0 and ntry <= self.ntries:
+            if self.debug: print "* try",ntry,"of",self.ntries
+            self.error = self._build()
+            ntry+=1
         return self
 
     def testPR(self,origin,sha):
