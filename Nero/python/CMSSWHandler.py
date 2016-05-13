@@ -98,7 +98,7 @@ class CMSSWHandler:
         return self
 
     def build(self):
-        if self.verbose: print self.cyan+"-> Build" 
+        if self.verbose: print self.cyan+"-> Build"  + self.white
         self.error=-1
         ntry=1
         while self.error !=0 and ntry <= self.ntries:

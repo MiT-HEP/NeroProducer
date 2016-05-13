@@ -39,7 +39,7 @@ else:
 	print "* " + handler.green + "OK" + handler.white
 
 print handler.cyan + "-> SET UP" + handler.white
-handler.callSetup()
+handler.callSetup("./Nero/script/setup.sh",opts.version,opts.tag)
 if not handler.success() :
 	print "* " + handler.red + "ERROR" + handler.white
 	exit(0)
