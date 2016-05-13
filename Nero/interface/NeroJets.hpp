@@ -5,6 +5,7 @@
 #include "NeroProducer/Core/interface/BareJets.hpp"
 #include "NeroProducer/Nero/interface/NeroPF.hpp"
 #include "NeroProducer/Nero/interface/NeroVertex.hpp"
+#include "NeroProducer/Nero/interface/NeroEvent.hpp"
 
 
 // --- JEC UNCERTAINTY ---
@@ -13,6 +14,7 @@
 #include "JetMETCorrections/Objects/interface/JetCorrectionsRecord.h"
 #include "JetMETCorrections/Objects/interface/JetCorrector.h"
 //  ----
+#include "TRandom3.h"
 
 class NeroJets : virtual public NeroCollection, virtual public BareJets
 {
@@ -50,14 +52,18 @@ class NeroJets : virtual public NeroCollection, virtual public BareJets
         // 
         NeroPF *pf;
         NeroVertex *vtx;
+        NeroEvent *evt;
         
         // JES
         void InitJes(const edm::EventSetup& iSetup);
 
-// JES
     private:
+        // JES
         JetCorrectionUncertainty *jecUnc_;
         bool isJecUncSet_;
+
+        //JER 
+        TRandom3*rnd_{0};
 };
 
 

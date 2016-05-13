@@ -64,13 +64,9 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     evt -> mOnlyMc = onlyMc;
     evt -> rho_token = consumes<double>(iConfig.getParameter<edm::InputTag>("rho"));
     evt -> SetExtend ( iConfig.getUntrackedParameter<bool>("extendEvent",false) );
+    evt -> filter_token = consumes<edm::TriggerResults>(iConfig.getParameter < edm::InputTag > ("metFilterToken"));
+    *(evt -> metfilterNames) = iConfig.getParameter < std::vector<std::string> > ("metfilterNames");
 
-    if ( evt -> IsExtend() )
-        {
-        evt -> originalRun_token   = consumes<unsigned int>(edm::InputTag("InfoProducer","originalRun")   ); 
-        evt -> originalLumi_token  = consumes<unsigned int>(edm::InputTag("InfoProducer","originalLumi")  ); 
-        evt -> originalEvent_token = consumes<unsigned int>(edm::InputTag("InfoProducer","originalEvent") ); 
-        }
     obj.push_back(evt);
 
     // -- Before Leptons (mu uses Vtx)
@@ -97,6 +93,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     jets -> SetMatch( iConfig.getParameter<bool>("matchJet") );
     jets -> pf = pf;
     jets -> vtx = vtx;
+    jets -> evt = evt;
     jets -> cachedPrefix = "";
 
     jets -> qg_token_Mult = consumes<edm::ValueMap<int>>(edm::InputTag("QGTagger", "mult"));

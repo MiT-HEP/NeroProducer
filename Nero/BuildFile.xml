@@ -34,6 +34,8 @@
 <use name="MagneticField/Engine"/>
 <!-- JES UNC -->
 <use name="JetMETCorrections/Objects"/>
+<!-- JER UNC -->
+<use name="JetMETCorrections/Modules"/>
 <!-- EGamma -->
 <use name="EgammaAnalysis/ElectronTools"/>
 <!--  -->

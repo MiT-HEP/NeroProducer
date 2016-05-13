@@ -12,6 +12,7 @@ BareMet::~BareMet(){
     BareFunctions::Delete(metNoMu);
     BareFunctions::Delete(metPuppi);
     BareFunctions::Delete(metPuppiSyst);
+    BareFunctions::Delete(metSyst);
     BareFunctions::Delete(metNoHF);
     BareFunctions::Delete(pfMet_e3p0);
     BareFunctions::Delete(trackMet);
@@ -25,6 +26,7 @@ void BareMet::init(){
     BareFunctions::New(genP4);
     BareFunctions::New(metPuppi);
     BareFunctions::New(metPuppiSyst);
+    BareFunctions::New(metSyst);
 
     if ( IsExtend() )
     {
@@ -44,6 +46,7 @@ void BareMet::clear(){
     genP4 -> Clear();
     *metPuppi *= 0;
     metPuppiSyst->Clear();
+    metSyst->Clear();
 
     if (extend_)
     {
@@ -72,6 +75,7 @@ void BareMet::defineBranches(TTree *t){
     //
     t->Branch("metPuppi","TLorentzVector",&metPuppi);
     t->Branch("metPuppiSyst","TClonesArray",&metPuppiSyst,128000,0);
+    t->Branch("metSyst","TClonesArray",&metSyst,128000,0);
     t->Branch("metSumEtRawPuppi",&sumEtRawPuppi,"metSumEtRawPuppi/F");
 
     if ( IsExtend() )
@@ -103,6 +107,7 @@ void BareMet::setBranchAddresses(TTree *t){
     BareFunctions::SetBranchAddress(t,"metP4_GEN"	, &genP4 );
     BareFunctions::SetBranchAddress(t,"metPuppi", &metPuppi);
     BareFunctions::SetBranchAddress(t,"metPuppiSyst", &metPuppiSyst);
+    BareFunctions::SetBranchAddress(t,"metSyst", &metSyst);
     BareFunctions::SetBranchAddress(t,"metSumEtRawPuppi",&sumEtRawPuppi);
 
     if ( IsExtend() ) 
@@ -132,6 +137,9 @@ void BareMet::compress(){
 
 	for(int i=0;i<metPuppiSyst->GetEntries();++i)
 		BareFunctions::Compress( * (TLorentzVector*) metPuppiSyst->At(i)  );
+
+	for(int i=0;i<metSyst->GetEntries();++i)
+		BareFunctions::Compress( * (TLorentzVector*) metSyst->At(i)  );
 
     if ( IsExtend() ) 
     {

@@ -25,8 +25,8 @@ It is designed to run on MiniAOD within the CMSSW framework.
 * Notice that cmssw should be init when the src directory is empty.
 Currently the supported version are CMSSW\_7\_4\_15\_patch1 (checking out the branch 74X) and CMSSW\_7\_6\_3\_patch2 (master).
 ```
-cmsrel CMSSW_7_6_3_patch2
-cd CMSSW_7_6_3_patch2/src
+cmsrel CMSSW_7_6_4
+cd CMSSW_7_6_4/src
 cmsenv
 wget --no-check-certificate 'https://raw.githubusercontent.com/MiT-HEP/NeroProducer/master/Nero/script/setup.sh' -O /tmp/$USER/setup.sh
 source /tmp/$USER/setup.sh $CMSSW_VERSION

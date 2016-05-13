@@ -4,6 +4,8 @@
 #include "NeroProducer/Nero/interface/NeroCollection.hpp"
 #include "NeroProducer/Core/interface/BareEvent.hpp"
 
+#include <map>
+#include <string>
 
 class NeroEvent : virtual public NeroCollection, virtual public BareEvent
 {
@@ -20,16 +22,11 @@ class NeroEvent : virtual public NeroCollection, virtual public BareEvent
         // --- Token
         edm::EDGetTokenT<double> rho_token;
 
-        // --- additional info
-        edm::Handle<unsigned int>  originalRun_handle;
-        edm::Handle<unsigned int>  originalLumi_handle;
-        edm::Handle<unsigned int>  originalEvent_handle;
-        // --- additional info
-        edm::EDGetTokenT<unsigned int>  originalRun_token;
-        edm::EDGetTokenT<unsigned int>  originalLumi_token;
-        edm::EDGetTokenT<unsigned int>  originalEvent_token;
-
-
+        // --- met filters
+        edm::EDGetTokenT<edm::TriggerResults> filter_token;
+        
+        // need to convert the name to bit in the enum
+        map<string,unsigned> metNameToBit;
 };
 
 
