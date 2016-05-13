@@ -77,6 +77,9 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
             l.selBits |= unsigned(mu.isLooseMuon()) * LepLoose;
             l.selBits |= unsigned(mu.isTightMuon( * vtx_->GetPV() ))*LepTight ;
             l.selBits |= unsigned(mu.isMediumMuon() * LepMedium);
+            if ( fabs((mu.muonBestTrack()->dz((*vtx_->GetPV()).position())))<0.1 and (mu.dB()< 0.01) )
+                l.selBits |= unsigned(mu.isMediumMuon() * LepMediumIP);
+            
         l.pfPt = mu.pfP4().pt();
 
         l.chiso  = chiso;
