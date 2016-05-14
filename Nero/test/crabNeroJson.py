@@ -79,6 +79,7 @@ if __name__ == '__main__':
             if sys.argv[1] !=  config.General.requestName: return
             ###
             print "--- Submitting " + "\033[01;32m" + config.Data.inputDataset.split('/')[1] + "\033[00m"  + " ---"
+            print "* config is:",config.JobType.pyCfgParams
             config.Data.outputDatasetTag = config.General.requestName
             try:
                 crabCommand('submit', config = config)
@@ -121,6 +122,7 @@ if __name__ == '__main__':
     
     ## add the json files 
     ## modify the torun.json at needs
+    jsons={} ## per file
     fileList= ['torun.json']
     for jfile in fileList:
         print "-> Opening",jfile
@@ -131,6 +133,17 @@ if __name__ == '__main__':
             if 'none' in info:
                     continue
 
+            if 'file' in info: 
+                    ## read other info and set them as well
+                    fileList.append(info['file'])
+                    jsons[info['file']] = info ## save the jsons and merge them
+                    continue
+            if jfile in jsons: #merge the jsons
+                for key in jsons[jfile]:
+                    if key == 'file' : continue
+                    if key in info : continue
+                    #print "* adding key",key, "from configuration of file",jfile
+                    info[key] = jsons[jfile][key]
             #print '->Doing Request',info['requestName'] ## DEBUG
 
             if 'workArea' in info: config.General.workArea= info['workArea']
@@ -146,10 +159,6 @@ if __name__ == '__main__':
             #print "* DS",config.Data.inputDataset
             #print "* data", 'data' in info and info['data']
 
-            if 'file' in info: 
-                    ## read other info and set them as well
-                    fileList.append(info['file'])
-                    continue
 
             if 'requestName' not in info or 'inputDataset' not in info: continue
 
