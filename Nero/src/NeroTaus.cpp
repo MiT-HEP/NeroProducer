@@ -60,6 +60,11 @@ int NeroTaus::analyze(const edm::Event & iEvent)
         bits |= bool(tau.tauID("byMediumIsolationMVArun2v1DBnewDMwLT")) * byMediumIsolationMVArun2v1DBnewDMwLT;
         bits |= bool(tau.tauID("byTightIsolationMVArun2v1DBnewDMwLT")) * byTightIsolationMVArun2v1DBnewDMwLT;
         bits |= bool(tau.tauID("byVTightIsolationMVArun2v1DBnewDMwLT")) * byVTightIsolationMVArun2v1DBnewDMwLT;
+        // DB ISO WP
+        bits |= bool(tau.tauID("byLooseCombinedIsolationDeltaBetaCorr3Hits")) * byLooseCombinedIsolationDeltaBetaCorr3Hits;
+        bits |= bool(tau.tauID("byMediumCombinedIsolationDeltaBetaCorr3Hits")) * byMediumCombinedIsolationDeltaBetaCorr3Hits;
+        bits |= bool(tau.tauID("byTightCombinedIsolationDeltaBetaCorr3Hits")) * byTightCombinedIsolationDeltaBetaCorr3Hits;
+
         selBits -> push_back(bits);
         Q -> push_back( tau.charge() );
         M -> push_back( tau.mass() );
@@ -70,7 +75,7 @@ int NeroTaus::analyze(const edm::Event & iEvent)
             neutralIsoPtSum  -> push_back( tau.tauID("neutralIsoPtSum") );
             isoDeltaBetaCorr -> push_back( tau.tauID("byCombinedIsolationDeltaBetaCorrRaw3Hits"));
             //isoPileupWeightedRaw -> push_back( tau.tauID("byPileupWeightedIsolationRaw3Hits")); // not in 80X
-
+            isoMva -> push_back(tau.tauID("byIsolationMVArun2v1DBnewDMwLTraw") );
         }
 
 
