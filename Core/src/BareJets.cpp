@@ -23,12 +23,17 @@ BareJets::~BareJets(){
     BareFunctions::Delete(qglMult);
     BareFunctions::Delete(qglPtD);
     BareFunctions::Delete(qglAxis2);
+    //JER
+    BareFunctions::Delete(refPt);
+    BareFunctions::Delete(ptResUncUp);
+    BareFunctions::Delete(ptResUncDown);
 }
 
 void BareJets::init(){
     BareP4::init();
 
     BareFunctions::New(rawPt);
+    BareFunctions::New(refPt);
     BareFunctions::New(bDiscr);
     BareFunctions::New(bDiscrLegacy);
     BareFunctions::New(puId);
@@ -45,6 +50,9 @@ void BareJets::init(){
     BareFunctions::New(qglMult);
     BareFunctions::New(qglPtD);
     BareFunctions::New(qglAxis2);
+    //
+    BareFunctions::New(ptResUncUp);
+    BareFunctions::New(ptResUncDown);
 
 }
 
@@ -72,6 +80,11 @@ void BareJets::clear(){
     qglMult->clear();
     qglPtD->clear();
     qglAxis2->clear();
+
+    //
+    refPt->clear();
+    ptResUncUp->clear();
+    ptResUncDown->clear();
 }
 
 void BareJets::defineBranches(TTree *t){
@@ -81,6 +94,7 @@ void BareJets::defineBranches(TTree *t){
     BareP4::defineBranches(t, jetName.Data());
     //
     t->Branch(jetName + "RawPt","vector<float>",&rawPt);
+    t->Branch(jetName + "RefPt","vector<float>",&refPt);
     //
     t->Branch(jetName + "Bdiscr","vector<float>",&bDiscr);
     //
@@ -108,6 +122,9 @@ void BareJets::defineBranches(TTree *t){
     t->Branch(jetName + "Q","vector<float>",&Q);
 
     t->Branch(jetName + "QnoPU","vector<float>",&QnoPU);
+    //
+    t->Branch(jetName + "PtResUncUp","vector<float>",&ptResUncUp);
+    t->Branch(jetName + "PtResUncDown","vector<float>",&ptResUncDown);
 }
 
 void BareJets::setBranchAddresses(TTree* t, std::string prefix)
@@ -117,6 +134,7 @@ void BareJets::setBranchAddresses(TTree* t, std::string prefix)
 
     BareP4::setBranchAddresses(t,jetName.Data());
     BareFunctions::SetBranchAddress(t,jetName + "RawPt"	,&rawPt);
+    BareFunctions::SetBranchAddress(t,jetName + "RefPt"	,&refPt);
     BareFunctions::SetBranchAddress(t,jetName + "Bdiscr"	,&bDiscr);
     BareFunctions::SetBranchAddress(t,jetName + "BdiscrLegacy"	,&bDiscrLegacy);
     BareFunctions::SetBranchAddress(t,jetName + "PuId"	,&puId);
@@ -135,6 +153,9 @@ void BareJets::setBranchAddresses(TTree* t, std::string prefix)
     // ---
     BareFunctions::SetBranchAddress(t,jetName + "Q",&Q);
     BareFunctions::SetBranchAddress(t,jetName + "QnoPU",&QnoPU);
+    // ---
+    BareFunctions::SetBranchAddress(t,jetName + "PtResUncUp"	,&ptResUncUp);
+    BareFunctions::SetBranchAddress(t,jetName + "PtResUncDown"	,&ptResUncDown);
 
 }
 

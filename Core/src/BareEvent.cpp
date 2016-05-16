@@ -1,8 +1,15 @@
 #include "NeroProducer/Core/interface/BareEvent.hpp"
 #include "NeroProducer/Core/interface/BareFunctions.hpp"
 
-BareEvent::BareEvent():BareCollection(){};
-BareEvent::~BareEvent(){};
+BareEvent::BareEvent():
+    BareCollection(),
+    metfilterNames(new vector<string>)
+{
+};
+
+BareEvent::~BareEvent(){
+    BareFunctions::Delete(metfilterNames);
+};
 
 void BareEvent::clear()
 {
@@ -12,9 +19,9 @@ void BareEvent::clear()
     lumiNum = -1;
     eventNum = 0;
     rho = -999;
-    originalRun = -999;
-    originalLumi = -999;
-    originalEvent = -999;
+    
+    //not sure if this is a good idea..
+    selBits = 0;
 
 }
 
@@ -25,11 +32,9 @@ void BareEvent::defineBranches(TTree *t){
     t->Branch("lumiNum"     ,&lumiNum      ,"lumiNum/I");
     t->Branch("eventNum"    ,&eventNum     ,"eventNum/l");
     t->Branch("rho"    ,&rho     ,"rho/F");
+    t->Branch("filterSelBits", &selBits, "selBits/i");
     if ( IsExtend() ) 
     {
-        t->Branch("originalRun"      ,&originalRun       ,"originalRun/I");
-        t->Branch("originalLumi"      ,&originalLumi       ,"originalLumi/I");
-        t->Branch("originalEvent"      ,&originalEvent       ,"originalEvent/I");
     
     }
 }
@@ -41,12 +46,10 @@ void BareEvent::setBranchAddresses(TTree *t){
     BareFunctions::SetBranchAddress(t,"lumiNum", &lumiNum);
     BareFunctions::SetBranchAddress(t,"eventNum", &eventNum);
     BareFunctions::SetBranchAddress(t,"rho", &rho);
+    BareFunctions::SetBranchAddress(t,"filterSelBits",&selBits);
 
     if (IsExtend() )
     {
-        BareFunctions::SetBranchAddress(t,"originalRun", &originalRun);
-        BareFunctions::SetBranchAddress(t,"originalLumi", &originalLumi);
-        BareFunctions::SetBranchAddress(t,"originalEvent", &originalEvent);
     }
 }
 

@@ -82,7 +82,6 @@ int NeroMet::analyze(const edm::Event& iEvent){
         //sumEtRawPuppi = handle_puppiUncorr->front().sumEt();
         sumEtRawPuppi = puppi.uncorSumEt();
 
-        
         for(Syst mysyst = (Syst)0; mysyst < MaxSyst ; mysyst = (Syst)((int)mysyst +1 ) )
         {
             pat::MET::METUncertainty miniAODUnc=pat::MET::METUncertaintySize;
@@ -119,6 +118,13 @@ int NeroMet::analyze(const edm::Event& iEvent){
                     puppi . shiftedP4(miniAODUnc).py(),  
                     puppi . shiftedP4(miniAODUnc).pz(),  
                     puppi . shiftedP4(miniAODUnc).energy()
+                    );
+
+            new ( (*metSyst)[ mysyst ] ) TLorentzVector( 
+                    met . shiftedP4( miniAODUnc).px(), 
+                    met . shiftedP4(miniAODUnc).py(),  
+                    met . shiftedP4(miniAODUnc).pz(),  
+                    met . shiftedP4(miniAODUnc).energy()
                     );
         }// end syst loop
         

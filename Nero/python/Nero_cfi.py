@@ -53,6 +53,18 @@ nero = cms.EDAnalyzer("Nero",
     phoChargedIsolation = cms.InputTag("photonIDValueMapProducer:phoChargedIsolation"),
     phoNeutralHadronIsolation = cms.InputTag("photonIDValueMapProducer:phoNeutralHadronIsolation"),
     phoPhotonIsolation = cms.InputTag("photonIDValueMapProducer:phoPhotonIsolation"),
+
+    ## MET Filters
+    metfilterNames = cms.vstring(['Flag_HBHENoiseFilter', 
+                                  'Flag_HBHENoiseIsoFilter', 
+                                  'Flag_CSCTightHalo2015Filter', 
+                                  'Flag_EcalDeadCellTriggerPrimitiveFilter', 
+                                  'Flag_goodVertices', 
+                                  'Flag_eeBadScFilter'
+                                  ]),
+    #metFilterToken = cms.InputTag("TriggerResults"),          
+    metFilterToken = cms.InputTag("TriggerResults","","RECO"),          
+
     #
     ## TRIGGER
     triggerNames = cms.vstring(['HLT_Ele27_eta2p1_WPLoose_Gsf', # unprescaled, SingleElectron 
@@ -77,6 +89,10 @@ nero = cms.EDAnalyzer("Nero",
 				'HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v1',
                                 'HLT_CaloMET200_NoiseCleaned',
 				'HLT_IsoTkMu20', ## Muon POG
+                                'Flag_CSCTightHaloFilter',
+                                'Flag_eeBadScFilter',
+                                'Flag_HBHENoiseFilter',
+                                'Flag_HBHENoiseIsoFilter'
 				]),
     prescales = cms.InputTag('patTrigger'),
     trigger = cms.InputTag("TriggerResults","","HLT"),
