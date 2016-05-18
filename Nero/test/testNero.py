@@ -18,7 +18,7 @@ options.register("nerotag", "YYY", VarParsing.VarParsing.multiplicity.singleton,
 options.register('isParticleGun', False, VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Set it to true if MonteCarlo is ParticleGun")
 options.register('is25ns', True, VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Set it to true to run on 25ns data/MC")
 options.register('is50ns', False, VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Set it to true to run on 50ns data/MC")
-options.register('is2016', False, VarPArsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Set to true to run on 2016 data")
+options.register('is2016', False, VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Set to true to run on 2016 data")
 
 options.parseArguments()
 isData = options.isData
@@ -44,12 +44,13 @@ process.load("FWCore.MessageService.MessageLogger_cfi")
 # the size of the output by prescaling the report of the event number
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
 
 if isData:
    fileList = [
        #'/store/data/Run2015D/MET/MINIAOD/16Dec2015-v1/50000/00EA1DB2-90AA-E511-AEEE-0025905C2CE6.root'
        #'/store/data/Run2015D/DoubleMuon/MINIAOD/16Dec2015-v1/10000/000913F7-E9A7-E511-A286-003048FFD79C.root'
+       'file:2016b_2.root'
        ]
 else:
    fileList = [
@@ -103,15 +104,13 @@ from CondCore.DBCommon.CondDBSetup_cfi import *
 #from CondCore.CondDB.CondDB_cfi import *
 
 ######## LUMI MASK
-'''
-if isData and not options.isGrid : ## dont load the lumiMaks, will be called by crab
+if isData and not options.isGrid and not options.is2016: ## dont load the lumiMaks, will be called by crab
     #pass
     import FWCore.PythonUtilities.LumiList as LumiList
     ## SILVER
     #process.source.lumisToProcess = LumiList.LumiList(filename='/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_Silver.txt').getVLuminosityBlockRange()
     process.source.lumisToProcess = LumiList.LumiList(filename='/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_Silver_v2.txt').getVLuminosityBlockRange()
     print "FIX JSON"
-'''
 
 ## SKIM INFO
 process.load('NeroProducer.Skim.infoProducerSequence_cff')
