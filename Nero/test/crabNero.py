@@ -86,8 +86,11 @@ if __name__ == '__main__':
             except ClientException as cle:
                 print "Failed submitting task: %s" % (cle)
 
-    def setdata(value="True",is25ns=False):
-        if value == "True":
+    def setdata(value="True",is25ns=False,year='2015'):
+        if year=='2016' and value=='True':
+            config.Data.splitting = 'FileBased'
+            config.Data.lumiMask=None
+        elif value == "True":
             url = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions15/13TeV/"
             if is25ns:
                 #config.Data.lumiMask= url + "Cert_246908-258159_13TeV_PromptReco_Collisions15_25ns_JSON_v3.txt"
@@ -119,6 +122,18 @@ if __name__ == '__main__':
     #############################################################################################
     ## From now on that's what users should modify: this is the a-la-CRAB2 configuration part. ##
     #############################################################################################
+    
+    ###################################################
+    ########            25ns  2016             ########
+    ###################################################
+    setdata("True",is25ns=True,year='2016')
+    ###################################################
+    config.Data.unitsPerJob = 150
+
+    config.General.requestName = 'SingleMuon-Run2016B'
+    config.Data.inputDataset = '/SingleMuon/Run2016B-PromptReco-v1/MINIAOD'
+    submit(config)
+
 
     ###################################################
     ########              25ns                 ########
@@ -126,7 +141,6 @@ if __name__ == '__main__':
     setdata("True",is25ns=True)
     ###################################################
     config.Data.unitsPerJob = 150
-
 
     config.General.requestName = 'SingleMuon-Run2015D'
     config.Data.inputDataset = '/SingleMuon/Run2015D-16Dec2015-v1/MINIAOD'
@@ -289,7 +303,6 @@ if __name__ == '__main__':
     ###################################################
     setdata("False",is25ns=False)
     ###################################################
-
 
 # Local Variables:
 # mode:python
