@@ -70,6 +70,8 @@ class BareMonteCarlo : virtual public BareP4
         std::vector<float> *genIso{0};
         std::vector<float> *genIsoFrixione{0};
 
+        // Parent index
+        std::vector<int> *parent{0};
 };
 
 #endif

@@ -13,6 +13,7 @@
 #include <stdexcept>
 #include <algorithm>
 #include <cstring>
+#include <map>
 
 ClassImp(mithep::nero::MonteCarloFiller)
 
@@ -133,6 +134,9 @@ mithep::nero::MonteCarloFiller::fill()
     return false;
   };
 
+  std::map<const MCParticle*,unsigned int> neroIndices;
+  std::vector<const MCParticle*> savedParticles;
+
   auto* mcParticles = getSource<mithep::MCParticleCol>(mcParticlesName_);
   for (unsigned iP(0); iP != mcParticles->GetEntries(); ++iP) {
     auto& part(*mcParticles->At(iP));
@@ -144,7 +148,29 @@ mithep::nero::MonteCarloFiller::fill()
         (part.Status() != 1 && part.StatusFlag(12) && partIs(part, {MCParticle::kTau, MCParticle::kZ, MCParticle::kW, MCParticle::kH, MCParticle::kHp, MCParticle::kUp, MCParticle::kDown, MCParticle::kStrange, MCParticle::kCharm, MCParticle::kBottom, MCParticle::kTop}))) { // 12 = kIsFirstCopy
         newP4(out_, part);
         out_.pdgId->push_back(part.PdgId());
+        neroIndices[mcParticles->At(iP)] = out_.pdgId->size()-1;
+        savedParticles.push_back(mcParticles->At(iP));
     }
+  }
+  
+  for (unsigned iP=0; iP != savedParticles.size(); ++iP) {
+    const MCParticle *part = savedParticles[iP];
+    if (!part->HasMother()) {
+      out_.parent->push_back(-1);
+      continue;
+    }
+    int motherIdx=-1;
+    const MCParticle *mother=part;
+    while (mother->HasMother()) {
+      mother = mother->Mother();
+      auto mother_ = neroIndices.find(mother);
+      if (mother_==neroIndices.end()) {
+        continue;
+      }
+      motherIdx = mother_->second;
+      break;
+    }
+    out_.parent->push_back(motherIdx);
   }
 
   auto* genJets = getSource<mithep::GenJetCol>(genJetsName_, false);
