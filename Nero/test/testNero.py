@@ -18,6 +18,7 @@ options.register("nerotag", "YYY", VarParsing.VarParsing.multiplicity.singleton,
 options.register('isParticleGun', False, VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Set it to true if MonteCarlo is ParticleGun")
 options.register('is25ns', True, VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Set it to true to run on 25ns data/MC")
 options.register('is50ns', False, VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Set it to true to run on 50ns data/MC")
+options.register('is2016', False, VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Set to true to run on 2016 data")
 
 options.parseArguments()
 isData = options.isData
@@ -35,6 +36,8 @@ if options.isData:
     print "-> Loading DATA configuration"
 else:
     print "-> Loading MC configuration"
+if options.is2016:
+    print "-> Loading 2016 data configuration"
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 # If you run over many samples and you save the log, remember to reduce
@@ -80,8 +83,10 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 if (isData):
     if options.is25ns:
-        process.GlobalTag.globaltag = '76X_dataRun2_16Dec2015_v0'
-        print "FIX GLOBAL TAG"
+        if options.is2016:
+            process.GlobalTag.globaltag = '80X_dataRun2_Prompt_v8'
+        else:
+            process.GlobalTag.globaltag = '76X_dataRun2_16Dec2015_v0'
     if options.is50ns:
         process.GlobalTag.globaltag = '74X_dataRun2_Prompt_v1'
         print "FIX GLOBAL TAG"
@@ -98,14 +103,13 @@ from CondCore.DBCommon.CondDBSetup_cfi import *
 #from CondCore.CondDB.CondDB_cfi import *
 
 ######## LUMI MASK
-if isData and not options.isGrid : ## dont load the lumiMaks, will be called by crab
+if isData and not options.isGrid and not options.is2016: ## dont load the lumiMaks, will be called by crab
     #pass
     import FWCore.PythonUtilities.LumiList as LumiList
     ## SILVER
     #process.source.lumisToProcess = LumiList.LumiList(filename='/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_Silver.txt').getVLuminosityBlockRange()
     process.source.lumisToProcess = LumiList.LumiList(filename='/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_Silver_v2.txt').getVLuminosityBlockRange()
     print "FIX JSON"
-
 
 ## SKIM INFO
 process.load('NeroProducer.Skim.infoProducerSequence_cff')
