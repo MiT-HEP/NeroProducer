@@ -29,7 +29,7 @@ config.General.transferLogs = False
 ## JobType
 config.JobType.pluginName = 'Analysis'
 config.JobType.psetName = 'testNero.py'
-config.JobType.pyCfgParams=['isGrid=True','isData=False','is25ns=True','is50ns=False','nerohead='+check_output("git rev-parse HEAD",shell=True), 'nerotag='+check_output('git describe --tags',shell=True)]
+config.JobType.pyCfgParams=['isGrid=True','isData=False','is25ns=True','is50ns=False','is2016=False','nerohead='+check_output("git rev-parse HEAD",shell=True), 'nerotag='+check_output('git describe --tags',shell=True)]
 
 # request shipping of the JEC V4 -- local
 #config.JobType.inputFiles=['jec/Summer15_50nsV4_DATA.db','jec/Summer15_50nsV4_MC.db']
@@ -88,7 +88,7 @@ if __name__ == '__main__':
 
     def setdata(value="True",is25ns=False,year='2015'):
         if year=='2016' and value=='True':
-            config.Data.splitting = 'FileBased'
+            config.Data.splitting = 'LumiBased'
             config.Data.lumiMask=None
         elif value == "True":
             url = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions15/13TeV/"
@@ -108,6 +108,8 @@ if __name__ == '__main__':
             config.Data.splitting = 'FileBased'
 
         for idx,par in enumerate(config.JobType.pyCfgParams):
+            if 'is2016' in par:
+                config.JobType.pyCfgParams[idx] = 'is2016=' + 'True' if year=='2016' else 'False'
             if "isData" in par:
                 config.JobType.pyCfgParams[idx] = "isData=" + value
             if "is25ns" in par:
@@ -128,7 +130,7 @@ if __name__ == '__main__':
     ###################################################
     setdata("True",is25ns=True,year='2016')
     ###################################################
-    config.Data.unitsPerJob = 150
+    config.Data.unitsPerJob = 1
 
     config.General.requestName = 'SingleMuon-Run2016B'
     config.Data.inputDataset = '/SingleMuon/Run2016B-PromptReco-v1/MINIAOD'
