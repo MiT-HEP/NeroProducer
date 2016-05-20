@@ -90,7 +90,8 @@ class CMSSWHandler:
         cmd += "chmod u+x " + setup + " && "
         if sha != "":
             cmd +=  "git checkout " + sha + " && "
-        cmd += setup + " " + args
+        cmd += "cd $CMSSW_BASE/src && "
+        cmd += "./" + self._repomain + "/" + setup + " " + args
 
         if self.debug : print "* with cmd '" +cmd +"'"
 
