@@ -167,7 +167,7 @@ nero = cms.EDAnalyzer("Nero",
     matchTau  = cms.bool (True),
     matchTauDr = cms.double (0.1),
 
-    minGenParticlePt = cms.double(5.),
+    minGenParticlePt = cms.double(200.),
     minGenJetPt = cms.double(20.),
     particleGun = cms.untracked.bool(False),
                       
