@@ -1,5 +1,5 @@
 import FWCore.ParameterSet.Config as cms
 
 meNPartonsFilter = cms.EDFilter("MatrixElementNPartons",
-		matrixElementPartons= cms.untracked.int(0),
+		matrixElementPartons= cms.int32(0),
 		)
