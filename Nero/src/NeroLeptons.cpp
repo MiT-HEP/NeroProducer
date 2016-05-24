@@ -77,6 +77,9 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
             l.selBits |= unsigned(mu.isLooseMuon()) * LepLoose;
             l.selBits |= unsigned(mu.isTightMuon( * vtx_->GetPV() ))*LepTight ;
             l.selBits |= unsigned(mu.isMediumMuon() * LepMedium);
+            if ( fabs((mu.muonBestTrack()->dz((*vtx_->GetPV()).position())))<0.1 and (mu.dB()< 0.01) )
+                l.selBits |= unsigned(mu.isMediumMuon() * LepMediumIP);
+            
         l.pfPt = mu.pfP4().pt();
 
         l.chiso  = chiso;
@@ -155,7 +158,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         else
         {
                  // the kNone refers to systematcis changes
-                 smear = EleCorr->getSmearingSigma((int) iEvent.id().run(), el.isEB(), el.r9(), aeta, el.energy(), 0.,0.);
+                 smear = EleCorr->getSmearingSigma((int) iEvent.id().run(), el.isEB(), el.r9(), aeta, et, 0.,0.);
                  float corr = 1.0  + smear * rnd_->Gaus(0,1);
                  l.p4 *= corr;
         

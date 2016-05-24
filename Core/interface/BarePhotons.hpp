@@ -54,6 +54,7 @@ class BarePhotons : virtual public BareP4
         vector<float> *r9{0};
 };
 
+
 #endif
 // Local Variables:
 // mode:c++

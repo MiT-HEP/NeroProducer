@@ -3,6 +3,9 @@
 
 //JES
 #include "FWCore/Framework/interface/ESHandle.h"
+#include "JetMETCorrections/Modules/interface/JetResolution.h"
+
+#include <ctime>
 
 
 const reco::Candidate * getMother(const reco::Candidate * part){
@@ -18,8 +21,8 @@ const reco::Candidate * getMother(const reco::Candidate * part){
 }
 
 NeroJets::NeroJets() : 
-        NeroCollection(),
-        BareJets()
+    NeroCollection(),
+    BareJets()
 {
     mMinPt = 15.;
     mMinNjets = 0;
@@ -28,6 +31,9 @@ NeroJets::NeroJets() :
     pf = NULL;
     // JES
     isJecUncSet_= false;
+    //
+    rnd_=new TRandom3();
+    rnd_->SetSeed((unsigned)time(NULL));
 }
 
 NeroJets::~NeroJets(){
@@ -37,12 +43,17 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
 
     if ( mOnlyMc  ) return 0;
 
+
     // maybe handle should be taken before
     iEvent.getByToken(token, handle);
     iEvent.getByToken(qg_token,qg_handle);
 
     if ( not handle.isValid() ) cout<<"[NeroJets]::[analyze]::[ERROR] handle is not valid"<<endl;
     if ( not qg_handle.isValid() ) cout<<"[NeroJets]::[analyze]::[ERROR] qg_handle is not valid"<<endl;
+
+    iEvent.getByToken(qg_token_Mult,qg_handle_Mult);
+    iEvent.getByToken(qg_token_Axis2,qg_handle_Axis2);
+    iEvent.getByToken(qg_token_PtD,qg_handle_PtD);
 
     // -- need to init JES here, where there is the iSetup
     InitJes(iSetup);
@@ -62,8 +73,8 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
         // GET  ValueMaps
         edm::RefToBase<pat::Jet> jetRef(edm::Ref<pat::JetCollection>(handle, ijetRef) );
         float qgLikelihood = (*qg_handle)[jetRef];
-    
-    
+
+
         // Generator-level Info [Charged-H specific]
         int jetMatchedPartonPdgId_I = 0;
         int motherPdgId_I = 0;
@@ -79,7 +90,7 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
             if(!(jetGrMother == 0)){grMotherPdgId_I = jetGrMother->pdgId();}
             jetFlavour_I = j.partonFlavour();
         }
-       
+
         float charge =  0.;
         float charge_den =  0.;
         float charge_nopu = 0.;
@@ -96,9 +107,9 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
             for(size_t iVtx=0;iVtx < vtx->handle->size(); ++iVtx)
             {
 
-            if ( int(iVtx) == vtx->firstGoodVertexIdx ) continue;
+                if ( int(iVtx) == vtx->firstGoodVertexIdx ) continue;
 
-            if (cand->fromPV(iVtx)>1) isFromOtherVtx = true; // 0 noPV, 1 PVLoose, 2 PVTight
+                if (cand->fromPV(iVtx)>1) isFromOtherVtx = true; // 0 noPV, 1 PVLoose, 2 PVTight
             }
 
             if (cand->charge() !=0 ) {  
@@ -109,23 +120,75 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
             {
                 charge_nopu     += cand->charge() * ( j.px()*cand->px() + j.py()*cand->py() + j.pz()*cand->pz()  ) ;
                 charge_nopu_den +=                  ( j.px()*cand->px() + j.py()*cand->py() + j.pz()*cand->pz()  ) ;
-            
+
             }
         }
-        
+
+        // Fill Output  --- part I
+        new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(j.px(), j.py(), j.pz(), j.energy());
+        refPt->push_back( j.pt() );
+
         //JES UNCERTAINTY
         jecUnc_->setJetEta(j.eta());
         jecUnc_->setJetPt(j.pt()) ;//https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections  corrected jet pt
         float jecunc = jecUnc_->getUncertainty(true);
 
+        // JER
+        if (not iEvent.isRealData())
+        {
+            // https://github.com/blinkseb/cmssw/blob/jer_fix_76x/JetMETCorrections/Modules/plugins/JetResolutionDemo.cc#L74
+            JME::JetResolution resolution = JME::JetResolution::get(iSetup, "AK4PFchs_pt");
+            JME::JetResolutionScaleFactor resolution_sf = JME::JetResolutionScaleFactor::get(iSetup, "AK4PFchs");
+            JME::JetParameters jpar;
+            jpar.setJetPt( j.pt()).setJetEta( j.eta() ).setRho( evt->rho)  ;
+            float res = resolution.getResolution(jpar);
+            float sf = resolution_sf.getScaleFactor(jpar);
+            float sf_up = resolution_sf.getScaleFactor(jpar, Variation::UP);
+            float sf_down = resolution_sf.getScaleFactor(jpar, Variation::DOWN);
+
+            // https://twiki.cern.ch/twiki/bin/view/CMS/JetResolution#Smearing_procedures
+            const reco::GenJet* genjet= j.genJet() ;
+            float newpt = j.pt();
+            float oldpt = j.pt();
+            float newptUp = j.pt();
+            float newptDown = j.pt();
+
+            //
+            // -- if (genjet==NULL) cout <<"DEBUG: NO GENJET"<<endl;
+            // -- else cout <<"DEBUG: YES GENJET"<<"DR="<<reco::deltaR(*genjet,j) <<" DPT="<<fabs(j.pt()-genjet->pt())<< " 3Sig="<<3*res*genjet->pt()<<endl;
+
+            // additional matching dR(reco jet, gen jet)<Rcone/2 and dpt=abs(pT-pTgen)<3*sigma_MC
+            if (genjet!=NULL and reco::deltaR(*genjet,j) <0.2 and fabs(j.pt()-genjet->pt())<3*res*genjet->pt()) { //scaling
+                float genpt=genjet->pt();
+                newpt     = std::max(float(0.),float(genpt+sf*(j.pt()-genpt)      ));
+                newptUp   = std::max(float(0.),float(genpt+sf_up*(j.pt()-genpt)   ));
+                newptDown = std::max(float(0.),float(genpt+sf_down*(j.pt()-genpt) ));
+            }
+            else{ // smearing
+                float sigma=TMath::Sqrt( sf*sf -1) * res;
+                float sigmaUp=TMath::Sqrt( sf_up*sf_up -1) * res;
+                float sigmaDown=TMath::Sqrt( sf_down*sf_down -1) * res;
+                float s = rnd_->Gaus(0,1);
+                newpt = s * sigma + oldpt;
+                newptUp = s * sigmaUp + oldpt;
+                newptDown = s * sigmaDown +oldpt;
+            }
+            *(TLorentzVector*)(*p4)[p4->GetEntriesFast()-1] *= newpt /oldpt ; // Update the pt stored in p4 at the last position (N-1)
+            ptResUncUp->push_back(newptUp);
+            ptResUncDown->push_back(newptDown) ;
+        } // end is MC for JER
 
         // Fill output object	
-        new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(j.px(), j.py(), j.pz(), j.energy());
         rawPt  -> push_back (j.pt()*j.jecFactor("Uncorrected"));
         puId   -> push_back (j.userFloat("pileupJetId:fullDiscriminant") );
         bDiscr -> push_back( j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") );
         bDiscrLegacy -> push_back( j.bDiscriminator("combinedSecondaryVertexBJetTags") );
         qgl     -> push_back( qgLikelihood );
+        // if the token was not valid, this will simply not be filled
+        if (qg_handle_Mult.isValid()) qglMult->push_back(  (*qg_handle_Mult)[jetRef] );
+        if (qg_handle_PtD.isValid()) qglPtD->push_back(  (*qg_handle_PtD)[jetRef] );
+        if (qg_handle_Axis2.isValid()) qglAxis2->push_back(  (*qg_handle_Axis2)[jetRef] );
+
         flavour -> push_back( jetFlavour_I );
         matchedPartonPdgId -> push_back( jetMatchedPartonPdgId_I );
         motherPdgId -> push_back( motherPdgId_I );

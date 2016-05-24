@@ -32,6 +32,47 @@ class BareCollection
         inline bool IsExtend(){return extend_;}
 };
 
+// ----------------------------  factory ----------------
+#include <map>
+#include <iostream>
+class BareCreator;
+
+class BareFactory{
+    private:
+        BareFactory(){} // private constructor
+        BareFactory(BareFactory const&)  = delete; // avoid copies around
+        void operator=(BareFactory const&)  = delete; // avoid copies around
+        std::map<std::string, BareCreator*> table_;
+    public:
+        static BareFactory& get(){static BareFactory instance; return instance;}
+        BareCollection* create(const string& name);
+        void inline registerit(string name, BareCreator *creator) { table_[name] = creator;}
+};
+
+class BareCreator{
+    private:
+    public:
+        virtual BareCollection* create() = 0;
+        BareCreator(const string& name){ std::cout<<"called creator for class"<<name<<std::endl; BareFactory::get() . registerit( name, this); }
+};
+
+template <typename T>
+class BareCreatorImpl : public BareCreator
+{
+    public:
+        BareCreatorImpl(const string &name) : BareCreator(name) {}
+        BareCollection* create() override final { return new T(); } 
+};
+
+
+//Register macros
+#define BAREREGISTER(classname)\
+    namespace { \
+        BareCreatorImpl<classname> _creator_ (#classname); \
+    };
+// ------------------------------------------------- END FACTORY ----------------------------
+
+
 #endif
 // Local Variables:
 // mode:c++

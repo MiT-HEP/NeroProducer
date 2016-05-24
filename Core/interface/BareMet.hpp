@@ -40,6 +40,9 @@ class BareMet : virtual public BareP4
         // --- SYSTEMATICS -- //
         enum Syst{ JesUp= 0 , JesDown, JerUp,JerDown,UnclusterUp, UnclusterDown, TauUp, TauDown, PhotonUp, PhotonDown , ElectronUp, ElectronDown, MuonUp, MuonDown,  MaxSyst};
 
+        // for PF MET
+        TClonesArray *metSyst{0};
+        // for Puppi MET
         TClonesArray *metPuppiSyst{0};
         // 
         float caloMet_Pt;
@@ -48,6 +51,7 @@ class BareMet : virtual public BareP4
         float rawMet_Pt;
         float rawMet_Phi;
 };
+
 #endif
 // Local Variables:
 // mode:c++

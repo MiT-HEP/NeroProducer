@@ -112,6 +112,7 @@ void BarePhotons::setBranchAddresses(TTree *t){
         BareFunctions::SetBranchAddress(t, "photonR9", &r9);
     }
 }
+BAREREGISTER(BarePhotons);
 // Local Variables:
 // mode:c++
 // indent-tabs-mode:nil

@@ -33,6 +33,7 @@ class BareTrigger: virtual public BareCollection
         vector<unsigned>  *triggerNoneTaus{0};
 };
 
+
 #endif
 // Local Variables:
 // mode:c++

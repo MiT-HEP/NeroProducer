@@ -34,6 +34,8 @@ void BareAll::setBranchAddresses(TTree *t){
     BareFunctions::SetBranchAddress(t,"puTrueInt"     ,&puTrueInt  );
 }
 
+BAREREGISTER(BareAll);
+
 // Local Variables:
 // mode:c++
 // indent-tabs-mode:nil

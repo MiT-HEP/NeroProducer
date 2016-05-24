@@ -115,6 +115,8 @@ void BareMonteCarlo::compress(){
 		BareFunctions::Compress( * (TLorentzVector*) jetP4->At(i)  );
 }
 
+BAREREGISTER(BareMonteCarlo);
+
 // Local Variables:
 // mode:c++
 // indent-tabs-mode:nil

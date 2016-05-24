@@ -5,6 +5,7 @@
 #include "NeroProducer/Core/interface/BareJets.hpp"
 #include "NeroProducer/Nero/interface/NeroPF.hpp"
 #include "NeroProducer/Nero/interface/NeroVertex.hpp"
+#include "NeroProducer/Nero/interface/NeroEvent.hpp"
 
 
 // --- JEC UNCERTAINTY ---
@@ -13,7 +14,7 @@
 #include "JetMETCorrections/Objects/interface/JetCorrectionsRecord.h"
 #include "JetMETCorrections/Objects/interface/JetCorrector.h"
 //  ----
-
+#include "TRandom3.h"
 
 class NeroJets : virtual public NeroCollection, virtual public BareJets
 {
@@ -30,9 +31,17 @@ class NeroJets : virtual public NeroCollection, virtual public BareJets
         edm::Handle<pat::JetCollection> handle;	
         edm::Handle<edm::ValueMap<float>> qg_handle;
 
+        edm::Handle<edm::ValueMap<int>> qg_handle_Mult;
+        edm::Handle<edm::ValueMap<float>> qg_handle_PtD;
+        edm::Handle<edm::ValueMap<float>> qg_handle_Axis2;
+
         // --- Token
         edm::EDGetTokenT<pat::JetCollection> token;
         edm::EDGetTokenT<edm::ValueMap<float> > qg_token;
+
+        edm::EDGetTokenT<edm::ValueMap<int> >   qg_token_Mult;
+        edm::EDGetTokenT<edm::ValueMap<float> > qg_token_PtD;
+        edm::EDGetTokenT<edm::ValueMap<float> > qg_token_Axis2;
 
         // --- configuration
         float mMinPt;
@@ -43,14 +52,18 @@ class NeroJets : virtual public NeroCollection, virtual public BareJets
         // 
         NeroPF *pf;
         NeroVertex *vtx;
+        NeroEvent *evt;
         
         // JES
         void InitJes(const edm::EventSetup& iSetup);
 
-// JES
     private:
+        // JES
         JetCorrectionUncertainty *jecUnc_;
         bool isJecUncSet_;
+
+        //JER 
+        TRandom3*rnd_{0};
 };
 
 

@@ -35,10 +35,15 @@ class BareJets : virtual public BareP4
         // -- variables
         //TClonesArray  *p4{0};
         vector<float> *rawPt{0};
+        vector<float> *refPt{0}; // as in MINIAOD->pt()
         vector<float> *bDiscr{0};
         vector<float> *bDiscrLegacy{0};
         vector<float> *puId{0};
         vector<float> *unc{0};
+        // JER:
+        vector<float> *ptResUncUp{0};
+        vector<float> *ptResUncDown{0};
+        //
         vector<float> *qgl{0};
         vector<int>   *flavour{0};
         vector<int>   *matchedPartonPdgId{0};
@@ -49,7 +54,14 @@ class BareJets : virtual public BareP4
         vector<float> *Q{0};
         vector<float> *QnoPU{0};
 
+        // QGL variables
+        vector<int>   *qglMult{0};
+        vector<float> *qglPtD{0};
+        vector<float> *qglAxis2{0};
+
 };
+
+
 
 #endif
 
