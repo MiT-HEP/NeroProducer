@@ -35,6 +35,7 @@ mithep::nero::JetsFiller::initialize()
     gROOT->cd();
     jetId_ = new JetIDMVA();
     jetId_->Initialize(JetIDMVA::CutType(jetIdCutWP_), JetIDMVA::MVAType(jetIdMVATrainingSet_), jetIdMVAWeightsFile_, jetIdCutsFile_);
+    jetId_->SetReproducePullBug(jetIdMVAReproducePullBug_);
 
     cwd->cd();
 
@@ -62,6 +63,8 @@ mithep::nero::JetsFiller::fill()
     return;
 
   auto* vertices = getSource<mithep::VertexCol>(verticesName_);
+
+  auto* rho = getSource<mithep::PileupEnergyDensityCol>(rhoName_)->At(0);
 
   mithep::NFArrBool const* tightId(0);
   if (tightIdName_.Length() != 0)
@@ -105,7 +108,7 @@ mithep::nero::JetsFiller::fill()
       out_.selBits->push_back(selBits);
 
       if (jetId_ && vertices)
-        out_.puId->push_back(jetId_->MVAValue(&pfJet, vertices->At(0), vertices));
+        out_.puId->push_back(jetId_->MVAValue(&pfJet, vertices->At(0), vertices, rho->Rho(jetIdMVARhoAlgo_)));
       else
         out_.puId->push_back(-999.);
 

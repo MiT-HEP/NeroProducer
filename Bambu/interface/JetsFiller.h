@@ -3,6 +3,7 @@
 
 #include "NeroProducer/Bambu/interface/BaseFiller.h"
 #include "NeroProducer/Core/interface/BareJets.hpp"
+#include "MitAna/DataTree/interface/Names.h"
 #include "MitPhysics/Init/interface/ModNames.h"
 #include "MitPhysics/Utils/interface/JetIDMVA.h"
 
@@ -27,9 +28,12 @@ namespace mithep {
       void SetJetsName(char const* _name) { jetsName_ = _name; }
       void SetTightIdName(char const* _name) { tightIdName_ = _name; }
       void SetVerticesName(char const* _name) { verticesName_ = _name; }
+      void SetRhoName(char const* _name) { rhoName_ = _name; }
       void SetJetIdCutWP(unsigned _p) { jetIdCutWP_ = _p; }
       void SetJetIdMVATrainingSet(unsigned _p) { jetIdMVATrainingSet_ = _p; }
       void SetJetIdMVAWeightsFile(char const* _path, unsigned _idx = 0);
+      void SetJetIdMVARhoAlgo(unsigned _a) { jetIdMVARhoAlgo_ = _a; }
+      void SetJetIdMVAPullBug(Bool_t b) { jetIdMVAReproducePullBug_ = b; }
       void SetJetIdCutsFile(char const* _path) { jetIdCutsFile_ = _path; }
       void SetJetIDMVA(mithep::JetIDMVA* _mva) { jetId_ = _mva; }
 
@@ -41,9 +45,12 @@ namespace mithep {
       TString jetsName_ = "AKt4PFJetsCHS";
       TString tightIdName_ = "";
       TString verticesName_ = ModNames::gkGoodVertexesName;
+      TString rhoName_ = Names::gkPileupEnergyDensityBrn;
       JetIDMVA* jetId_ = 0;
       unsigned jetIdCutWP_ = JetIDMVA::kLoose;
       unsigned jetIdMVATrainingSet_ = JetIDMVA::nMVATypes;
+      unsigned jetIdMVARhoAlgo_ = 0;
+      bool jetIdMVAReproducePullBug_ = false;
       std::vector<TString> jetIdMVAWeightsFile_{""};
       TString jetIdCutsFile_ = "";
       bool ownJetId_ = false;

@@ -602,10 +602,15 @@ jetsFiller = mithep.nero.JetsFiller(mithep.nero.BaseFiller.kJets,
     JetsName = looseAK4Jets.GetOutputName(),
     VerticesName = goodPVFilterMod.GetOutputName(),
     JetIdCutWP = mithep.JetIDMVA.kLoose,
-    JetIdMVATrainingSet = mithep.JetIDMVA.k53BDTCHSFullPlusRMS,
-    JetIdMVAWeightsFile = mitdata + '/JetId/TMVAClassification_5x_BDT_chsFullPlusRMS.weights.xml',
-    JetIdCutsFile = mitdata + '/JetId/jetIDCuts_121221.dat'
+    JetIdMVATrainingSet = mithep.JetIDMVA.k74CHS,
+    JetIdMVARhoAlgo = mithep.PileupEnergyDensity.kFixedGridFastjetAll,
+    JetIdMVAPullBug = True,
+    JetIdCutsFile = mitdata + '/JetId/jetIDCuts_150807.dat',
 )
+jetsFiller.SetJetIdMVAWeightsFile(mitdata + '/JetId/TMVAClassificationCategory_BDTG.weights_jteta_0_2_newNames.xml', 0)
+jetsFiller.SetJetIdMVAWeightsFile(mitdata + '/JetId/TMVAClassificationCategory_BDTG.weights_jteta_2_2p5_newNames.xml', 1)
+jetsFiller.SetJetIdMVAWeightsFile(mitdata + '/JetId/TMVAClassificationCategory_BDTG.weights_jteta_2p5_3_newNames.xml', 2)
+jetsFiller.SetJetIdMVAWeightsFile(mitdata + '/JetId/TMVAClassificationCategory_BDTG.weights_jteta_3_5_newNames.xml', 3)
 
 neroMod.AddFiller(jetsFiller)
 
@@ -716,7 +721,7 @@ neroMod.AddFiller(mithep.nero.AllFiller())
 triggerFiller = mithep.nero.TriggerFiller()
 neroMod.AddFiller(triggerFiller)
 
-neroMod.SetPrintLevel(3)
+neroMod.SetPrintLevel(0)
 
 ################
 ### TRIGGERS ###
