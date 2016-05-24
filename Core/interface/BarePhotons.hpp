@@ -13,14 +13,16 @@ class BarePhotons : virtual public BareP4
             PhoLoose  = 1UL << 3, 
             PhoMedium = 1UL << 4,
             PhoTight  = 1UL << 5,
-            PhoElectronVeto =1UL<<7,
+            PhoElectronVeto = 1UL << 7,
+            PhoCSafeVeto = 1UL << 8,
+            PhoPixelSeedVeto = 1UL << 9,
             // NONPOG
-            PhoVLoose50 = 1UL<<8, // loose, no-sieie, looser ph-iso
-            PhoVLoose25 = 1UL <<9, // loose + no-sieie, looser ph-iso
-            PhoHighPt = 1UL << 10,
-            PhoLooseNoEVeto = 1UL << 11,
-            PhoMediumNoEVeto = 1UL << 12,
-            PhoTightNoEVeto = 1UL << 13
+            PhoVLoose50 = 1UL << 10, // loose, no-sieie, looser ph-iso
+            PhoVLoose25 = 1UL << (PhoVLoose50 + 1), // loose + no-sieie, looser ph-iso
+            PhoHighPt = 1UL << (PhoVLoose50 + 2),
+            PhoLooseNoEVeto = 1UL << (PhoVLoose50 + 3),
+            PhoMediumNoEVeto = 1UL << (PhoVLoose50 + 4),
+            PhoTightNoEVeto = 1UL << (PhoVLoose50 + 5)
         };
 
         BarePhotons();
@@ -37,6 +39,7 @@ class BarePhotons : virtual public BareP4
         // -- variables
         //TClonesArray *p4{0};
         vector<float> *sieie{0};
+        
         vector<float> *iso{0};
         vector<unsigned> *selBits{0};
 
@@ -51,7 +54,23 @@ class BarePhotons : virtual public BareP4
 
         // EXTENDED VARIABLES
         vector<float> *rawpt{0};
+        vector<float> *e55{0};
+
+        vector<float> *hOverE{0};
+        vector<float> *chWorstIso{0};
+        vector<float> *chIsoMax{0};
+    
+        vector<float> *sipip{0};
+        vector<float> *sieip{0};
         vector<float> *r9{0};
+        vector<float> *s4{0};
+
+        vector<float> *mipEnergy{0};
+
+        vector<float> *time{0};
+        vector<float> *timeSpan{0};
+    
+        vector<short> *genMatched{0};
 };
 
 #endif

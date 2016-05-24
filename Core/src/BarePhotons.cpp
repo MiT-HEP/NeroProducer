@@ -18,7 +18,18 @@ BarePhotons::~BarePhotons(){
     BareFunctions::Delete(puIso);
     BareFunctions::Delete(puIsoRC);
     BareFunctions::Delete(rawpt);
+    BareFunctions::Delete(e55);
+    BareFunctions::Delete(hOverE);
+    BareFunctions::Delete(chWorstIso);
+    BareFunctions::Delete(chIsoMax);
+    BareFunctions::Delete(sipip);
+    BareFunctions::Delete(sieip);
     BareFunctions::Delete(r9);
+    BareFunctions::Delete(s4);
+    BareFunctions::Delete(mipEnergy);
+    BareFunctions::Delete(time);
+    BareFunctions::Delete(timeSpan);
+    BareFunctions::Delete(genMatched);
 }
 
 void BarePhotons::init(){
@@ -38,7 +49,18 @@ void BarePhotons::init(){
 
     if (IsExtend()) {
         BareFunctions::New(rawpt);
+        BareFunctions::New(e55);
+        BareFunctions::New(hOverE);
+        BareFunctions::New(chWorstIso);
+        BareFunctions::New(chIsoMax);
+        BareFunctions::New(sipip);
+        BareFunctions::New(sieip);
         BareFunctions::New(r9);
+        BareFunctions::New(s4);
+        BareFunctions::New(mipEnergy);
+        BareFunctions::New(time);
+        BareFunctions::New(timeSpan);
+        BareFunctions::New(genMatched);
     }
 }
 
@@ -60,7 +82,18 @@ void BarePhotons::clear(){
 
     if (extend_) {
         rawpt->clear();
+        e55->clear();
+        hOverE->clear();
+        chWorstIso->clear();
+        chIsoMax->clear();
+        sipip->clear();
+        sieip->clear();
         r9->clear();
+        s4->clear();
+        mipEnergy->clear();
+        time->clear();
+        timeSpan->clear();
+        genMatched->clear();
     }
 }
 
@@ -86,7 +119,18 @@ void BarePhotons::defineBranches(TTree *t){
 
     if (IsExtend()) {
         t->Branch("photonRawPt", "vector<float>", &rawpt);
+        t->Branch("photonE55", "vector<float>", &e55);
+        t->Branch("photonHOverE", "vector<float>", &hOverE);
+        t->Branch("photonChWorstIso", "vector<float>", &chWorstIso);
+        t->Branch("photonChIsoMax", "vector<float>", &chIsoMax);
+        t->Branch("photonSipip", "vector<float>", &sipip);
+        t->Branch("photonSieip", "vector<float>", &sieip);
         t->Branch("photonR9", "vector<float>", &r9);
+        t->Branch("photonS4", "vector<float>", &s4);
+        t->Branch("photonMipEnergy", "vector<float>", &mipEnergy);
+        t->Branch("photonTime", "vector<float>", &time);
+        t->Branch("photonTimeSpan", "vector<float>", &timeSpan);
+        t->Branch("photonGenMatched", "vector<float>", &genMatched);
     }
 }
 
@@ -109,7 +153,18 @@ void BarePhotons::setBranchAddresses(TTree *t){
 
     if (IsExtend()) {
         BareFunctions::SetBranchAddress(t, "photonRawPt", &rawpt);
+        BareFunctions::SetBranchAddress(t, "photonE55", &e55);
+        BareFunctions::SetBranchAddress(t, "photonHOverE", &hOverE);
+        BareFunctions::SetBranchAddress(t, "photonChWorstIso", &chWorstIso);
+        BareFunctions::SetBranchAddress(t, "photonChIsoMax", &chIsoMax);
+        BareFunctions::SetBranchAddress(t, "photonSipip", &sipip);
+        BareFunctions::SetBranchAddress(t, "photonSieip", &sieip);
         BareFunctions::SetBranchAddress(t, "photonR9", &r9);
+        BareFunctions::SetBranchAddress(t, "photonS4", &s4);
+        BareFunctions::SetBranchAddress(t, "photonMipEnergy", &mipEnergy);
+        BareFunctions::SetBranchAddress(t, "photonTime", &time);
+        BareFunctions::SetBranchAddress(t, "photonTimeSpan", &timeSpan);
+        BareFunctions::SetBranchAddress(t, "photonGenMatched", &genMatched);
     }
 }
 // Local Variables:
