@@ -36,6 +36,7 @@ mithep::nero::JetsFiller::initialize()
     jetId_ = new JetIDMVA();
     jetId_->Initialize(JetIDMVA::CutType(jetIdCutWP_), JetIDMVA::MVAType(jetIdMVATrainingSet_), jetIdMVAWeightsFile_, jetIdCutsFile_);
     jetId_->SetReproducePullBug(jetIdMVAReproducePullBug_);
+    jetId_->SetReproduceCovarianceBug(jetIdMVAReproduceCovarianceBug_);
 
     cwd->cd();
 

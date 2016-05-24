@@ -604,7 +604,8 @@ jetsFiller = mithep.nero.JetsFiller(mithep.nero.BaseFiller.kJets,
     JetIdCutWP = mithep.JetIDMVA.kLoose,
     JetIdMVATrainingSet = mithep.JetIDMVA.k74CHS,
     JetIdMVARhoAlgo = mithep.PileupEnergyDensity.kFixedGridFastjetAll,
-    JetIdMVAPullBug = True,
+    JetIdMVAPullBug = True, # Set to False for >= 80X
+    JetIdMVACovarianceBug = True, # Set to False whenever fixed (81X?)
     JetIdCutsFile = mitdata + '/JetId/jetIDCuts_150807.dat',
 )
 jetsFiller.SetJetIdMVAWeightsFile(mitdata + '/JetId/TMVAClassificationCategory_BDTG.weights_jteta_0_2_newNames.xml', 0)
