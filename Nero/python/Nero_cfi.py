@@ -67,15 +67,27 @@ nero = cms.EDAnalyzer("Nero",
 
     #
     ## TRIGGER
-    triggerNames = cms.vstring(['HLT_Ele27_eta2p1_WPLoose_Gsf', # unprescaled, SingleElectron 
+    triggerNames = cms.vstring(['HLT_Ele27_eta2p1_WPLoose_Gsf',
+				'HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL', # unprescaled, SingleElectron 
+				'HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL',
+				'HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL',
+				'HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL',
+				'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ',
+				'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ',
+				'HLT_IsoMu27',			
 	    			'HLT_IsoMu20',
+				'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ',
+				'HLT_Ele23_WPLoose_Gsf',
+				'HLT_Ele22_eta2p1_WP75_Gsf',
+				'HLT_Ele27_WPLoose_Gsf',
+				'HLT_Ele27_WP85_Gsf',
                                 'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET80', ## not always available, Tau
                                 'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET120', ## unprescaled , Tau
                                 'HLT_PFMET170_NoiseCleaned',
                                 'HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight',
                                 'HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight',
 				#### Control triggers, extra
-				'HLT_IsoMu27', # SingleMuon, Iso20 is not always available in 25ns
+			
 				'HLT_LooseIsoPFTau50_Trk30_eta2p1_v', ## Prescaled, Tau, for turn on studies
 				'HLT_Ele15_IsoVVL_PFHT350_PFMET70',  ## Unprescaled, SingleElectron
 				'HLT_Mu15_IsoVVVL_PFHT350_PFMET70',  ## Unprescaled ,SingleMuon
