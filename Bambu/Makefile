@@ -40,7 +40,7 @@ $(DICTOBJ): $(DICT)
 	$(CXX) $(CXXFLAGS) $(INC) -o $@ -c $<
 
 $(DICT): $(LINKDEF) $(DICTHDR)
-	rootcling -f $(DICT) -I$(CMSSW_BASE)/src NeroProducer/Bambu/$(DICTHDR) $(LINKDEF)
+	rootcling -f $(DICT) -I$(CMSSW_BASE)/src NeroProducer/Bambu/$(DICTHDR) -Wno-inconsistent-missing-override $(LINKDEF)
 	mv source/$(PCM) $(TMPDIR)/$(PCM)
 
 $(TMPDIR)/%.o: source/%.cc interface/%.h
