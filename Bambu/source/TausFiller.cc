@@ -17,9 +17,9 @@ mithep::nero::TausFiller::fill()
     newP4(out_, tau);
 
     unsigned selBits(BareTaus::TauBaseline);
-    if (tau.PFTauDiscriminator(mithep::PFTau::kDiscriminationByDecayModeFindingNewDMs) > 0.5)
+    if (tau.PFTauIdentifier(mithep::PFTau::iDecayModeFindingNewDMs))
       selBits |= BareTaus::TauDecayModeFindingNewDMs;
-    if (tau.PFTauDiscriminator(mithep::PFTau::kDiscriminationByDecayModeFinding) > 0.5)
+    if (tau.PFTauIdentifier(mithep::PFTau::iDecayModeFinding))
       selBits |= BareTaus::TauDecayModeFinding;
     if (tau.PFTauDiscriminator(mithep::PFTau::kDiscriminationByLooseElectronRejection) > 0.5)
       selBits |= BareTaus::AgainstEleLoose;
@@ -39,7 +39,7 @@ mithep::nero::TausFiller::fill()
     if (out_.IsExtend()) {
       out_.chargedIsoPtSum->push_back(tau.PFTauDiscriminator(mithep::PFTau::kMVA3IsolationChargedIsoPtSum));
       out_.neutralIsoPtSum->push_back(tau.PFTauDiscriminator(mithep::PFTau::kMVA3IsolationNeutralIsoPtSum));
-      out_.isoDeltaBetaCorr->push_back(tau.PFTauDiscriminator(mithep::PFTau::kDiscriminationByRawCombinedIsolationDBSumPtCorr3Hits));
+      out_.isoDeltaBetaCorr->push_back(tau.PFTauDiscriminator(mithep::PFTau::dByCombinedIsolationDeltaBetaCorrRaw3Hits));
     }
   }
 }
