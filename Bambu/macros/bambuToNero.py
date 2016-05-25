@@ -601,7 +601,6 @@ neroMod.AddFiller(mithep.nero.VertexFiller(
 jetsFiller = mithep.nero.JetsFiller(mithep.nero.BaseFiller.kJets,
     JetsName = looseAK4Jets.GetOutputName(),
     JetIdCutWP = mithep.JetIDMVA.kLoose,
-    JetIdMVATrainingSet = mithep.JetIDMVA.k74CHS,
     JetIdMVARhoAlgo = mithep.PileupEnergyDensity.kFixedGridFastjetAll
 )
 
@@ -609,6 +608,7 @@ synchTo = '76X'
 
 if synchTo == '76X':
     # to synch with 76X MINIAOD out-of-the-box values
+    jetsFiller.SetJetIdMVATrainingSet(mithep.JetIDMVA.k74CHS)
     jetsFiller.SetJetIdMVAWeightsFile(mitdata + '/JetId/TMVAClassificationCategory_BDTG.weights_jteta_0_2_newNames.xml', 0)
     jetsFiller.SetJetIdMVAWeightsFile(mitdata + '/JetId/TMVAClassificationCategory_BDTG.weights_jteta_2_2p5_newNames.xml', 1)
     jetsFiller.SetJetIdMVAWeightsFile(mitdata + '/JetId/TMVAClassificationCategory_BDTG.weights_jteta_2p5_3_newNames.xml', 2)
@@ -618,6 +618,7 @@ if synchTo == '76X':
     jetsFiller.SetJetIdMVACovarianceBug(True)
 elif synchTo == '80Xv1':
     # to synch with 80X MINIAODv1 or privately recomputed 76X using tag pileupJetId76X of https://github.com/jbrands/cmssw.git
+    jetsFiller.SetJetIdMVATrainingSet(mithep.JetIDMVA.k76CHS)
     jetId.SetMVAWeightsFile(mitdata + '/JetId/pileupJetId_76x_Eta0to2p5_BDT.weights.xml', 0)
     jetId.SetMVAWeightsFile(mitdata + '/JetId/pileupJetId_76x_Eta2p5to2p75_BDT.weights.xml', 1)
     jetId.SetMVAWeightsFile(mitdata + '/JetId/pileupJetId_76x_Eta2p75to3_BDT.weights.xml', 2)
@@ -626,6 +627,7 @@ elif synchTo == '80Xv1':
     jetsFiller.SetJetIdMVACovarianceBug(True)
 elif synchTo == '80Xv2':
     # to synch with 80X MINIAODv2
+    jetsFiller.SetJetIdMVATrainingSet(mithep.JetIDMVA.k80CHS)
     jetId.SetMVAWeightsFile(mitdata + '/JetId/pileupJetId_80x_Eta0to2p5_BDT.weights.xml', 0)
     jetId.SetMVAWeightsFile(mitdata + '/JetId/pileupJetId_80x_Eta2p5to2p75_BDT.weights.xml', 1)
     jetId.SetMVAWeightsFile(mitdata + '/JetId/pileupJetId_80x_Eta2p75to3_BDT.weights.xml', 2)
