@@ -16,14 +16,14 @@ except KeyError:
 def switchBX(case25, case50):
     return case25 if bx == '25ns' else case50
 
-jecVersion = switchBX('25nsV6', '50nsV5')
+jecVersion = switchBX('Fall15_25nsV2', 'Summer15_50nsV5')
 
 if analysis.isRealData:
-    jecPattern = mitdata + '/JEC/Summer15_' + jecVersion + '/Summer15_' + jecVersion + '_DATA_{level}_{jettype}.txt'
+    jecPattern = mitdata + '/JEC/' + jecVersion + '/' + jecVersion + '_DATA_{level}_{jettype}.txt'
     jecLevels = ['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual']
 
 else:
-    jecPattern = mitdata +'/JEC/Summer15_' + jecVersion + '/Summer15_' + jecVersion + '_MC_{level}_{jettype}.txt'
+    jecPattern = mitdata +'/JEC/' + jecVersion + '/' + jecVersion + '_MC_{level}_{jettype}.txt'
     jecLevels = ['L1FastJet', 'L2Relative', 'L3Absolute']
 
 #########################################
@@ -602,15 +602,29 @@ jetsFiller = mithep.nero.JetsFiller(mithep.nero.BaseFiller.kJets,
     JetsName = looseAK4Jets.GetOutputName(),
     JetIdCutWP = mithep.JetIDMVA.kLoose,
     JetIdMVATrainingSet = mithep.JetIDMVA.k74CHS,
-    JetIdMVARhoAlgo = mithep.PileupEnergyDensity.kFixedGridFastjetAll,
-    JetIdMVAPullBug = True, # Set to False for >= 80X
-    JetIdMVACovarianceBug = True, # Set to False whenever fixed (81X?)
-    JetIdCutsFile = mitdata + '/JetId/jetIDCuts_150807.dat',
+    JetIdMVARhoAlgo = mithep.PileupEnergyDensity.kFixedGridFastjetAll
 )
-jetsFiller.SetJetIdMVAWeightsFile(mitdata + '/JetId/TMVAClassificationCategory_BDTG.weights_jteta_0_2_newNames.xml', 0)
-jetsFiller.SetJetIdMVAWeightsFile(mitdata + '/JetId/TMVAClassificationCategory_BDTG.weights_jteta_2_2p5_newNames.xml', 1)
-jetsFiller.SetJetIdMVAWeightsFile(mitdata + '/JetId/TMVAClassificationCategory_BDTG.weights_jteta_2p5_3_newNames.xml', 2)
-jetsFiller.SetJetIdMVAWeightsFile(mitdata + '/JetId/TMVAClassificationCategory_BDTG.weights_jteta_3_5_newNames.xml', 3)
+
+synchTo = '76X'
+
+if synchTo == '76X':
+    # 74X training; went into 76X MINIAODs (both v1 and v2)
+    jetsFiller.SetJetIdMVAWeightsFile(mitdata + '/JetId/TMVAClassificationCategory_BDTG.weights_jteta_0_2_newNames.xml', 0)
+    jetsFiller.SetJetIdMVAWeightsFile(mitdata + '/JetId/TMVAClassificationCategory_BDTG.weights_jteta_2_2p5_newNames.xml', 1)
+    jetsFiller.SetJetIdMVAWeightsFile(mitdata + '/JetId/TMVAClassificationCategory_BDTG.weights_jteta_2p5_3_newNames.xml', 2)
+    jetsFiller.SetJetIdMVAWeightsFile(mitdata + '/JetId/TMVAClassificationCategory_BDTG.weights_jteta_3_5_newNames.xml', 3)
+    jetsFiller.SetJetIdCutsFile(mitdata + '/JetId/jetIDCuts_150807.dat')
+    jetsFiller.SetJetIdMVAPullBug(True)
+    jetsFiller.SetJetIdMVACovarianceBug(True)
+
+elif synchTo == '76Xrecompute':
+    # 76X training; went into 76X MINIAODs (both v1 and v2)
+    jetsFiller.SetJetIdMVAWeightsFile(mitdata + '/JetId/pileupJetId_76x_Eta0to2p5_BDT.weights.xml', 0)
+    jetsFiller.SetJetIdMVAWeightsFile(mitdata + '/JetId/pileupJetId_76x_Eta2p5to2p75_BDT.weights.xml', 1)
+    jetsFiller.SetJetIdMVAWeightsFile(mitdata + '/JetId/pileupJetId_76x_Eta2p75to3_BDT.weights.xml', 2)
+    jetsFiller.SetJetIdMVAWeightsFile(mitdata + '/JetId/pileupJetId_76x_Eta3to5_BDT.weights.xml', 3)
+    jetsFiller.SetJetIdCutsFile(mitdata + '/JetId/jetIDCuts_160225.dat')
+    jetsFiller.SetJetIdMVACovarianceBug(True)
 
 neroMod.AddFiller(jetsFiller)
 
