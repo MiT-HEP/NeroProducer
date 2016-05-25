@@ -601,7 +601,6 @@ neroMod.AddFiller(mithep.nero.VertexFiller(
 jetsFiller = mithep.nero.JetsFiller(mithep.nero.BaseFiller.kJets,
     JetsName = looseAK4Jets.GetOutputName(),
     JetIdCutWP = mithep.JetIDMVA.kLoose,
-    JetIdMVATrainingSet = mithep.JetIDMVA.k74CHS,
     JetIdMVARhoAlgo = mithep.PileupEnergyDensity.kFixedGridFastjetAll
 )
 
@@ -609,6 +608,7 @@ synchTo = '76X'
 
 if synchTo == '76X':
     # 74X training; went into 76X MINIAODs (both v1 and v2)
+    jetsFiller.SetJetIdMVATrainingSet(mithep.JetIDMVA.k74CHS)
     jetsFiller.SetJetIdMVAWeightsFile(mitdata + '/JetId/TMVAClassificationCategory_BDTG.weights_jteta_0_2_newNames.xml', 0)
     jetsFiller.SetJetIdMVAWeightsFile(mitdata + '/JetId/TMVAClassificationCategory_BDTG.weights_jteta_2_2p5_newNames.xml', 1)
     jetsFiller.SetJetIdMVAWeightsFile(mitdata + '/JetId/TMVAClassificationCategory_BDTG.weights_jteta_2p5_3_newNames.xml', 2)
@@ -619,6 +619,7 @@ if synchTo == '76X':
 
 elif synchTo == '76Xrecompute':
     # 76X training; went into 76X MINIAODs (both v1 and v2)
+    jetsFiller.SetJetIdMVATrainingSet(mithep.JetIDMVA.k76CHS)
     jetsFiller.SetJetIdMVAWeightsFile(mitdata + '/JetId/pileupJetId_76x_Eta0to2p5_BDT.weights.xml', 0)
     jetsFiller.SetJetIdMVAWeightsFile(mitdata + '/JetId/pileupJetId_76x_Eta2p5to2p75_BDT.weights.xml', 1)
     jetsFiller.SetJetIdMVAWeightsFile(mitdata + '/JetId/pileupJetId_76x_Eta2p75to3_BDT.weights.xml', 2)
@@ -630,7 +631,6 @@ neroMod.AddFiller(jetsFiller)
 
 neroMod.AddFiller(mithep.nero.JetsFiller(mithep.nero.BaseFiller.kPuppiJets,
     JetsName = puppiJetCorrection.GetOutputName(),
-    VerticesName = goodPVFilterMod.GetOutputName(),
     JetIdCutWP = mithep.JetIDMVA.nCutTypes,
     JetIdMVATrainingSet = mithep.JetIDMVA.nMVATypes
 ))
