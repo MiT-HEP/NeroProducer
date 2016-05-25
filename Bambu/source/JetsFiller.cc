@@ -4,6 +4,7 @@
 #include "MitAna/DataTree/interface/Vertex.h"
 #include "MitAna/DataTree/interface/PFJet.h"
 #include "MitAna/DataCont/interface/Types.h"
+#include "MitAna/DataTree/interface/Names.h"
 
 #include "TDirectory.h"
 #include "TROOT.h"
@@ -63,7 +64,8 @@ mithep::nero::JetsFiller::fill()
   if (!jets)
     return;
 
-  auto* vertices = getSource<mithep::VertexCol>(verticesName_);
+  // PU jet id uses all PVs
+  auto* vertices = getSource<mithep::VertexCol>(Names::gkPVBrn);
 
   auto* rho = getSource<mithep::PileupEnergyDensityCol>(rhoName_)->At(0);
 

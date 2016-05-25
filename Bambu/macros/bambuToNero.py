@@ -600,7 +600,6 @@ neroMod.AddFiller(mithep.nero.VertexFiller(
 
 jetsFiller = mithep.nero.JetsFiller(mithep.nero.BaseFiller.kJets,
     JetsName = looseAK4Jets.GetOutputName(),
-    VerticesName = goodPVFilterMod.GetOutputName(),
     JetIdCutWP = mithep.JetIDMVA.kLoose,
     JetIdMVATrainingSet = mithep.JetIDMVA.k74CHS,
     JetIdMVARhoAlgo = mithep.PileupEnergyDensity.kFixedGridFastjetAll,

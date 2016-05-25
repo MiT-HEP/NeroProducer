@@ -27,7 +27,6 @@ namespace mithep {
       // must be corrected, loose-id jets
       void SetJetsName(char const* _name) { jetsName_ = _name; }
       void SetTightIdName(char const* _name) { tightIdName_ = _name; }
-      void SetVerticesName(char const* _name) { verticesName_ = _name; }
       void SetRhoName(char const* _name) { rhoName_ = _name; }
       void SetJetIdCutWP(unsigned _p) { jetIdCutWP_ = _p; }
       void SetJetIdMVATrainingSet(unsigned _p) { jetIdMVATrainingSet_ = _p; }
@@ -45,7 +44,6 @@ namespace mithep {
 
       TString jetsName_ = "AKt4PFJetsCHS";
       TString tightIdName_ = "";
-      TString verticesName_ = ModNames::gkGoodVertexesName;
       TString rhoName_ = Names::gkPileupEnergyDensityBrn;
       JetIDMVA* jetId_ = 0;
       unsigned jetIdCutWP_ = JetIDMVA::kLoose;
