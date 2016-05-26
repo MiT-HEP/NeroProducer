@@ -29,7 +29,7 @@ config.General.transferLogs = False
 ## JobType
 config.JobType.pluginName = 'Analysis'
 config.JobType.psetName = 'testNero.py'
-config.JobType.pyCfgParams=['isGrid=True','isData=False','is25ns=True','is50ns=False','nerohead='+check_output("git rev-parse HEAD",shell=True), 'nerotag='+check_output('git describe --tags',shell=True)]
+config.JobType.pyCfgParams=['isGrid=True','isData=False','is25ns=True','is50ns=False','is2016=False','nerohead='+check_output("git rev-parse HEAD",shell=True), 'nerotag='+check_output('git describe --tags',shell=True)]
 
 # request shipping of the JEC V4 -- local
 #config.JobType.inputFiles=['jec/Summer15_50nsV4_DATA.db','jec/Summer15_50nsV4_MC.db']
@@ -86,8 +86,11 @@ if __name__ == '__main__':
             except ClientException as cle:
                 print "Failed submitting task: %s" % (cle)
 
-    def setdata(value="True",is25ns=False):
-        if value == "True":
+    def setdata(value="True",is25ns=False,year='2015'):
+        if year=='2016' and value=='True':
+            config.Data.splitting = 'LumiBased'
+            config.Data.lumiMask=None
+        elif value == "True":
             url = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions15/13TeV/"
             if is25ns:
                 #config.Data.lumiMask= url + "Cert_246908-258159_13TeV_PromptReco_Collisions15_25ns_JSON_v3.txt"
@@ -105,6 +108,8 @@ if __name__ == '__main__':
             config.Data.splitting = 'FileBased'
 
         for idx,par in enumerate(config.JobType.pyCfgParams):
+            if 'is2016' in par:
+                config.JobType.pyCfgParams[idx] = 'is2016=' + 'True' if year=='2016' else 'False'
             if "isData" in par:
                 config.JobType.pyCfgParams[idx] = "isData=" + value
             if "is25ns" in par:
@@ -119,6 +124,18 @@ if __name__ == '__main__':
     #############################################################################################
     ## From now on that's what users should modify: this is the a-la-CRAB2 configuration part. ##
     #############################################################################################
+    
+    ###################################################
+    ########            25ns  2016             ########
+    ###################################################
+    setdata("True",is25ns=True,year='2016')
+    ###################################################
+    config.Data.unitsPerJob = 1
+
+    config.General.requestName = 'SingleMuon-Run2016B'
+    config.Data.inputDataset = '/SingleMuon/Run2016B-PromptReco-v1/MINIAOD'
+    submit(config)
+
 
     ###################################################
     ########              25ns                 ########
@@ -126,7 +143,6 @@ if __name__ == '__main__':
     setdata("True",is25ns=True)
     ###################################################
     config.Data.unitsPerJob = 150
-
 
     config.General.requestName = 'SingleMuon-Run2015D'
     config.Data.inputDataset = '/SingleMuon/Run2015D-16Dec2015-v1/MINIAOD'
@@ -289,7 +305,6 @@ if __name__ == '__main__':
     ###################################################
     setdata("False",is25ns=False)
     ###################################################
-
 
 # Local Variables:
 # mode:python

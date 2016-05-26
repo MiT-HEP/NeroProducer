@@ -74,7 +74,7 @@ int NeroTaus::analyze(const edm::Event & iEvent)
             chargedIsoPtSum  -> push_back( tau.tauID("chargedIsoPtSum") );
             neutralIsoPtSum  -> push_back( tau.tauID("neutralIsoPtSum") );
             isoDeltaBetaCorr -> push_back( tau.tauID("byCombinedIsolationDeltaBetaCorrRaw3Hits"));
-            isoPileupWeightedRaw -> push_back( tau.tauID("byPileupWeightedIsolationRaw3Hits"));
+            //isoPileupWeightedRaw -> push_back( tau.tauID("byPileupWeightedIsolationRaw3Hits")); // not in 80X
             isoMva -> push_back(tau.tauID("byIsolationMVArun2v1DBnewDMwLTraw") );
         }
 

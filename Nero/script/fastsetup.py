@@ -12,9 +12,13 @@ parser.add_option("","--download",help='''download extra stuff in directory comm
 		Example:
 		NeroProducer/Nero/test,https://gist.github.com/amarini/a60d90c2049178954ec22a59b8c214fd/archive/3da5590f8108a0c9e4aec671bb32389ff0c01048.zip
 		''', default="" )
+parser.add_option("-m","--merge",type='string',
+			help='''merge branches (comma separated)  [%default]
+			Example:
+			amarini:topic_80X
+			''', default="" )
 
 opts, args = parser.parse_args()
-
 
 fullpath=opts.destination
 if fullpath[-1] != "/" : fullpath += "/"
@@ -37,6 +41,17 @@ if not handler.success() :
 	exit(0)
 else:
 	print "* " + handler.green + "OK" + handler.white
+
+for pr in opts.merge.split(','):
+	origin=pr.split(":")[0]
+	branch=pr.split(":")[1]
+	print handler.cyan + "-> Merge PR" + handler.white
+	handler.testPR(origin,branch)
+	if not handler.success() :
+		print "* " + handler.red + "ERROR" + handler.white
+		exit(0)
+	else:
+		print "* " + handler.green + "OK" + handler.white
 
 print handler.cyan + "-> SET UP" + handler.white
 handler.callSetup("./Nero/script/setup.sh",opts.version,opts.tag)

@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Instruct builder to use a particular CMSSW release
-# [CMSSW] CMSSW_7_6_4
+# [CMSSW] CMSSW_8_0_3_patch1
 # [Options] isData=False is25ns=True is50ns=False
-# [fileList] /store/mc/RunIIFall15MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/70000/FA0A72D5-C7B8-E511-8B1D-901B0E6459E0.root 
+# [fileList] /store/mc/RunIISpring16MiniAODv1/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUFlat0to50_80X_mcRun2_asymptotic_2016_v3-v1/20000/626CD584-6AF3-E511-986F-001E67DDBEDA.root
 # [MaxEvents] 5000
 
 function CMSSW_7_6_4 {
@@ -27,6 +27,11 @@ function CMSSW_7_6_4 {
 	#git clone git@github.com:zdemirag/NeroProducer.git ## TO REMOVE
 }
 
-[ "X$1" == "X" ] && $1=$CMSSW_VERSION
 
+function CMSSW_8_0_3_patch1 {
+	git cms-merge-topic matteosan1:smearer_76X
+}
+
+# expected default
+[ "X$1" == "X" ] && $1=$CMSSW_VERSION
 $1
