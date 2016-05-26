@@ -619,19 +619,19 @@ if synchTo == '76X':
 elif synchTo == '80Xv1':
     # to synch with 80X MINIAODv1 or privately recomputed 76X using tag pileupJetId76X of https://github.com/jbrands/cmssw.git
     jetsFiller.SetJetIdMVATrainingSet(mithep.JetIDMVA.k76CHS)
-    jetId.SetMVAWeightsFile(mitdata + '/JetId/pileupJetId_76x_Eta0to2p5_BDT.weights.xml', 0)
-    jetId.SetMVAWeightsFile(mitdata + '/JetId/pileupJetId_76x_Eta2p5to2p75_BDT.weights.xml', 1)
-    jetId.SetMVAWeightsFile(mitdata + '/JetId/pileupJetId_76x_Eta2p75to3_BDT.weights.xml', 2)
-    jetId.SetMVAWeightsFile(mitdata + '/JetId/pileupJetId_76x_Eta3to5_BDT.weights.xml', 3)
+    jetsFiller.SetJetIdMVAWeightsFile(mitdata + '/JetId/pileupJetId_76x_Eta0to2p5_BDT.weights.xml', 0)
+    jetsFiller.SetJetIdMVAWeightsFile(mitdata + '/JetId/pileupJetId_76x_Eta2p5to2p75_BDT.weights.xml', 1)
+    jetsFiller.SetJetIdMVAWeightsFile(mitdata + '/JetId/pileupJetId_76x_Eta2p75to3_BDT.weights.xml', 2)
+    jetsFiller.SetJetIdMVAWeightsFile(mitdata + '/JetId/pileupJetId_76x_Eta3to5_BDT.weights.xml', 3)
     jetsFiller.SetJetIdCutsFile(mitdata + '/JetId/jetIDCuts_160225.dat')
     jetsFiller.SetJetIdMVACovarianceBug(True)
 elif synchTo == '80Xv2':
     # to synch with 80X MINIAODv2
     jetsFiller.SetJetIdMVATrainingSet(mithep.JetIDMVA.k80CHS)
-    jetId.SetMVAWeightsFile(mitdata + '/JetId/pileupJetId_80x_Eta0to2p5_BDT.weights.xml', 0)
-    jetId.SetMVAWeightsFile(mitdata + '/JetId/pileupJetId_80x_Eta2p5to2p75_BDT.weights.xml', 1)
-    jetId.SetMVAWeightsFile(mitdata + '/JetId/pileupJetId_80x_Eta2p75to3_BDT.weights.xml', 2)
-    jetId.SetMVAWeightsFile(mitdata + '/JetId/pileupJetId_80x_Eta3to5_BDT.weights.xml', 3)
+    jetsFiller.SetJetIdMVAWeightsFile(mitdata + '/JetId/pileupJetId_80x_Eta0to2p5_BDT.weights.xml', 0)
+    jetsFiller.SetJetIdMVAWeightsFile(mitdata + '/JetId/pileupJetId_80x_Eta2p5to2p75_BDT.weights.xml', 1)
+    jetsFiller.SetJetIdMVAWeightsFile(mitdata + '/JetId/pileupJetId_80x_Eta2p75to3_BDT.weights.xml', 2)
+    jetsFiller.SetJetIdMVAWeightsFile(mitdata + '/JetId/pileupJetId_80x_Eta3to5_BDT.weights.xml', 3)
     jetsFiller.SetJetIdCutsFile(mitdata + '/JetId/jetIDCuts_160416.dat')
     jetsFiller.SetJetIdMVACovarianceBug(True)
 
