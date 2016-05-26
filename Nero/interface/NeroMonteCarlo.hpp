@@ -25,6 +25,7 @@ class NeroMonteCarlo : virtual public NeroCollection,
         edm::Handle<edm::View<pat::PackedGenParticle>> packed_handle;	
         edm::Handle<edm::View<reco::GenParticle> > pruned_handle;
         edm::Handle<GenEventInfoProduct> info_handle;
+        edm::Handle<LHEEventProduct> lhe_handle;
         edm::Handle< std::vector<PileupSummaryInfo> > pu_handle;
         edm::Handle<reco::GenJetCollection> jet_handle;
         edm::Handle<GenRunInfoProduct> runinfo_handle; 
@@ -33,6 +34,7 @@ class NeroMonteCarlo : virtual public NeroCollection,
         edm::EDGetTokenT<edm::View<pat::PackedGenParticle> > packed_token;
         edm::EDGetTokenT<edm::View<reco::GenParticle> > pruned_token;
         edm::EDGetTokenT<GenEventInfoProduct> info_token;
+        edm::EDGetTokenT<LHEEventProduct> lhe_token;
         edm::EDGetTokenT< std::vector<PileupSummaryInfo> > pu_token;
         edm::EDGetTokenT<reco::GenJetCollection> jet_token;
         edm::EDGetTokenT<GenRunInfoProduct> runinfo_token;

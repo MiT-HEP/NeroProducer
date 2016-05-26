@@ -33,6 +33,7 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
     if(VERBOSE)sw.Start();
     // maybe handle should be taken before
     iEvent.getByToken(info_token, info_handle);
+    iEvent.getByToken(lhe_token, lhe_handle);
     iEvent.getByToken(packed_token, packed_handle);
     iEvent.getByToken(pruned_token, pruned_handle);
     iEvent.getByToken(pu_token, pu_handle);
@@ -51,19 +52,19 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
     if(VERBOSE>1) cout<<"                                     mcWeight="<<mcWeight<<endl;
     //weights() 
     //---  scale
-    if ( info_handle -> weights()  .size() >= 9){
-        r1f2 = info_handle -> weights() [1] ;   
-        r1f5 = info_handle -> weights() [2] ;   
-        r2f1 = info_handle -> weights() [3] ;   
-        r2f2 = info_handle -> weights() [4] ;   
-        r5f1 = info_handle -> weights() [6] ;    
-        r5f5 = info_handle -> weights() [8] ;     
+    if (lhe_handle.isValid() and  lhe_handle->weights().size() >=9){
+        r1f2 = double(lhe_handle -> weights() . at(1) . wgt); 
+        r1f5 = double(lhe_handle -> weights() . at(2) . wgt); 
+        r2f1 = double(lhe_handle -> weights() . at(3) . wgt); 
+        r2f2 = double(lhe_handle -> weights() . at(4) . wgt); 
+        r5f1 = double(lhe_handle -> weights() . at(6) . wgt); 
+        r5f5 = double(lhe_handle -> weights() . at(8) . wgt);  
     }
 
-    if (info_handle -> weights().size() > 109)
+    if (lhe_handle.isValid() and  lhe_handle->weights().size() >109)
         for( int pdfw = 9 ; pdfw<109 ;++pdfw)
         {
-        pdfRwgt -> push_back( info_handle -> weights() [pdfw] );    
+        pdfRwgt -> push_back( double(lhe_handle -> weights() . at(pdfw) . wgt ) );    
         }
     // --- fill pdf Weights
     //
