@@ -322,6 +322,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     info -> events_token = consumes<std::vector<long>,edm::InLumi>( edm::InputTag("InfoProducer","vecEvents") ) ;
     info -> weights_token = consumes<std::vector<float>,edm::InLumi>( edm::InputTag("InfoProducer","vecMcWeights") ) ;
     info -> putrue_token = consumes<std::vector<int>,edm::InLumi>( edm::InputTag("InfoProducer","vecPuTrueInt") ) ;
+    obj.insert(obj.begin(),info);
     lumiObj.push_back(info);
 
 
