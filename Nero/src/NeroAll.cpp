@@ -27,6 +27,7 @@ int NeroAll::analyze(const edm::Event&iEvent)
     //
     //I suppose to have a info_handle
     iEvent.getByToken(info_token,info_handle);
+    iEvent.getByToken(lhe_token,lhe_handle);
     //---  scale
     if (lhe_handle.isValid() and  lhe_handle->weights().size() >=9){
         hDscaleReweightSums -> Fill( 0+.5 , double(lhe_handle -> weights() . at(1) .wgt)) ;
