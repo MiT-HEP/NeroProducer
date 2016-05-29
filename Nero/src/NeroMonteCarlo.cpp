@@ -212,26 +212,6 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
         }
 
     } //end packed
-    for ( unsigned int i=0;i < savedParticles.size() ;++i) // repeat loop to associate parents
-                                                           // this loop is O(N*logN) where N is the number of saved particles
-    {
-        const auto gen = savedParticles[i];
-        if (gen->numberOfMothers()==0) {
-            parent->push_back(-1);
-            continue;
-        }         
-        int motherIdx=-1;
-        const reco::Candidate *gen_parent = gen;
-        while (gen_parent->numberOfMothers()>0) {
-            gen_parent = gen_parent->mother(0);
-            auto gen_parent_ = genIndices.find(gen_parent);
-            if (gen_parent_==genIndices.end())
-                continue;
-            motherIdx=gen_parent_->second;
-            break;
-        }
-        parent->push_back(motherIdx);
-    }
 
 
     if(VERBOSE){ sw.Stop() ; cout<<"[NeroMonteCarlo]::[analyze] packed took "<<sw.CpuTime()<<" Cpu and "<<sw.RealTime()<<" RealTime"<<endl; sw.Reset(); sw.Start();}
@@ -264,9 +244,32 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
             new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(gen->px(), gen->py(), gen->pz(), gen->energy());
             pdgId -> push_back( pdg );
             flags -> push_back( flag );
+            genIndices[gen] = pdgId->size()-1; // save gen particle pointers
+            savedParticles.push_back(gen);     // so we can associate mothers later
             genIso -> push_back (0.) ;
             genIsoFrixione -> push_back (0.) ;
         }
+    }
+    fprintf(stderr,"saved %u out of %u\n",(unsigned int)savedParticles.size(),(unsigned int)pdgId->size());
+    for ( unsigned int i=0;i < savedParticles.size() ;++i) // repeat loop to associate parents
+                                                           // this loop is O(N*logN) where N is the number of saved particles
+    {
+        const auto gen = savedParticles[i];
+        if (gen->numberOfMothers()==0) {
+            parent->push_back(-1);
+            continue;
+        }         
+        int motherIdx=-1;
+        const reco::Candidate *gen_parent = gen;
+        while (gen_parent->numberOfMothers()>0) {
+            gen_parent = gen_parent->mother(0);
+            auto gen_parent_ = genIndices.find(gen_parent);
+            if (gen_parent_==genIndices.end())
+                continue;
+            motherIdx=gen_parent_->second;
+            break;
+        }
+        parent->push_back(motherIdx);
     }
 
     if(VERBOSE){ sw.Stop() ; cout<<"[NeroMonteCarlo]::[analyze] pruned took "<<sw.CpuTime()<<" Cpu and "<<sw.RealTime()<<" RealTime"<<endl; sw.Reset(); sw.Start();}
