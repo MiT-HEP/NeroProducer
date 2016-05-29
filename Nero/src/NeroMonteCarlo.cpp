@@ -2,6 +2,9 @@
 #include "NeroProducer/Nero/interface/Nero.hpp"
 
 #include "TStopwatch.h"
+
+#include <map>
+
 #define VERBOSE 0
 
 NeroMonteCarlo::NeroMonteCarlo() :  
@@ -106,6 +109,8 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
     if(VERBOSE){ sw.Stop() ; cout<<"[NeroMonteCarlo]::[analyze] pu&info took "<<sw.CpuTime()<<" Cpu and "<<sw.RealTime()<<" RealTime"<<endl; sw.Reset(); sw.Start();}
     // GEN PARTICLES
     //TLorentzVector genmet(0,0,0,0);
+    std::map<const reco::Candidate *,unsigned int> genIndices;
+    std::vector<const reco::Candidate *> savedParticles;
     //for ( auto & gen : *packed_handle)
     for ( unsigned int i=0;i < packed_handle->size() ;++i)
     {
@@ -138,6 +143,8 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
             new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(gen->px(), gen->py(), gen->pz(), gen->energy());
             pdgId -> push_back( pdg );
             flags -> push_back( ComputeFlags( *gen ) );
+            genIndices[gen] = pdgId->size()-1; // save gen particle pointers
+            savedParticles.push_back(gen);     // so we can associate mothers later
             // compute ISOLATION
             float iso=0;
             float isoFx=0;
@@ -194,6 +201,9 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
                     new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector( dressedLepton );
                     pdgId -> push_back( pdg );
                     flags -> push_back( Dressed );
+                    // doing the following for dressed leptons as well so vectors stay in sync
+                    genIndices[gen] = pdgId->size()-1; // save gen particle pointers
+                    savedParticles.push_back(gen);     // so we can associate mothers later
                     genIso -> push_back (0.) ;
                     genIsoFrixione -> push_back (0.) ;
                     // --- end of dressing
@@ -202,6 +212,26 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
         }
 
     } //end packed
+    for ( unsigned int i=0;i < savedParticles.size() ;++i) // repeat loop to associate parents
+                                                           // this loop is O(N*logN) where N is the number of saved particles
+    {
+        const auto gen = savedParticles[i];
+        if (gen->numberOfMothers()==0) {
+            parent->push_back(-1);
+            continue;
+        }         
+        int motherIdx=-1;
+        const reco::Candidate *gen_parent = gen;
+        while (gen_parent->numberOfMothers()>0) {
+            gen_parent = gen_parent->mother(0);
+            auto gen_parent_ = genIndices.find(gen_parent);
+            if (gen_parent_==genIndices.end())
+                continue;
+            motherIdx=gen_parent_->second;
+            break;
+        }
+        parent->push_back(motherIdx);
+    }
 
 
     if(VERBOSE){ sw.Stop() ; cout<<"[NeroMonteCarlo]::[analyze] packed took "<<sw.CpuTime()<<" Cpu and "<<sw.RealTime()<<" RealTime"<<endl; sw.Reset(); sw.Start();}
