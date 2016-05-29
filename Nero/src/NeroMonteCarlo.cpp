@@ -224,6 +224,8 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
         if (gen->pt()  < mMinGenParticlePt ) continue;
         int pdg = gen->pdgId();
         int apdg = abs(pdg);
+        int mpdg = gen->mother(0)->pdgId();
+        if (pdg==mpdg)          continue;
         if (gen->status() == 1) continue; //packed
 
         unsigned flag = ComputeFlags(*gen);
