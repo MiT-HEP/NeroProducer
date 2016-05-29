@@ -250,7 +250,6 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
             genIsoFrixione -> push_back (0.) ;
         }
     }
-    fprintf(stderr,"saved %u out of %u\n",(unsigned int)savedParticles.size(),(unsigned int)pdgId->size());
     for ( unsigned int i=0;i < savedParticles.size() ;++i) // repeat loop to associate parents
                                                            // this loop is O(N*logN) where N is the number of saved particles
     {
