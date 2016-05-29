@@ -4,6 +4,7 @@
 #include "MitAna/DataTree/interface/Vertex.h"
 #include "MitAna/DataTree/interface/PFJet.h"
 #include "MitAna/DataCont/interface/Types.h"
+#include "MitAna/DataTree/interface/Names.h"
 
 #include "TDirectory.h"
 #include "TROOT.h"
@@ -35,6 +36,8 @@ mithep::nero::JetsFiller::initialize()
     gROOT->cd();
     jetId_ = new JetIDMVA();
     jetId_->Initialize(JetIDMVA::CutType(jetIdCutWP_), JetIDMVA::MVAType(jetIdMVATrainingSet_), jetIdMVAWeightsFile_, jetIdCutsFile_);
+    jetId_->SetReproducePullBug(jetIdMVAReproducePullBug_);
+    jetId_->SetReproduceCovarianceBug(jetIdMVAReproduceCovarianceBug_);
 
     cwd->cd();
 
@@ -61,7 +64,10 @@ mithep::nero::JetsFiller::fill()
   if (!jets)
     return;
 
-  auto* vertices = getSource<mithep::VertexCol>(verticesName_);
+  // PU jet id uses all PVs
+  auto* vertices = getSource<mithep::VertexCol>(Names::gkPVBrn);
+
+  auto* rho = getSource<mithep::PileupEnergyDensityCol>(rhoName_)->At(0);
 
   mithep::NFArrBool const* tightId(0);
   if (tightIdName_.Length() != 0)
@@ -105,7 +111,7 @@ mithep::nero::JetsFiller::fill()
       out_.selBits->push_back(selBits);
 
       if (jetId_ && vertices)
-        out_.puId->push_back(jetId_->MVAValue(&pfJet, vertices->At(0), vertices));
+        out_.puId->push_back(jetId_->MVAValue(&pfJet, vertices->At(0), vertices, rho->Rho(jetIdMVARhoAlgo_)));
       else
         out_.puId->push_back(-999.);
 
