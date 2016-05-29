@@ -173,6 +173,7 @@ mithep::nero::MonteCarloFiller::fill()
     out_.parent->push_back(motherIdx);
   }
 
+
   auto* genJets = getSource<mithep::GenJetCol>(genJetsName_, false);
   if (genJets) {
     minPt = std::max(20., minGenJetPt_);

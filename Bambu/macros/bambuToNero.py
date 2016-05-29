@@ -7,6 +7,7 @@ import os
 ####################################
 
 mitdata = os.environ['MIT_DATA']
+doFilter = False
 
 try:
     bx = analysis.custom['bx']
@@ -449,7 +450,7 @@ metSkim = mithep.MonoXSkimMod('MetSkim',
     GoodElectronsName = veryLooseElectrons.GetOutputName(),
     GoodMuonsName = veryLooseMuons.GetOutputName(),
     GoodPhotonsName = loosePhotons.GetOutputName(),
-    MinMetPt = 90.
+    MinMetPt = (90. if doFilter else 0.)
 )
 metSkim.SetCategoryActive(mithep.MonoXSkimMod.kMet, True)
 metSkim.SetCategoryActive(mithep.MonoXSkimMod.kDielectron, True)
@@ -476,7 +477,6 @@ def OR(expr1, expr2):
 skim = mithep.BooleanMod('Skim',
     Expression = OR(metSkim, OR(electronBaselineId, muonBaselineId))
 )
-
 ###############
 ### NEROMOD ###
 ###############
