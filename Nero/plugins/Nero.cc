@@ -117,22 +117,24 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     bool doAK8 = iConfig.getParameter<bool>("doAK8");
     bool doCA15 = iConfig.getParameter<bool>("doCA15");
     bool doPuppi = iConfig.getParameter<bool>("doPuppi");
+
+    NeroFatJets *chsAK8 = new NeroFatJets();
+    chsAK8 -> mRunJEC = false; // these jets are already corrected in MiniAOD
+    chsAK8 -> mOnlyMc = onlyMc;
+    chsAK8 -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("chsAK8"));
+    chsAK8 -> mMinPt = iConfig.getParameter<double>("minAK8CHSPt");
+    chsAK8 -> mMaxEta = iConfig.getParameter<double>("minAK8CHSEta");
+    chsAK8 -> mMinId = iConfig.getParameter<string>("minAK8CHSId");
+    chsAK8 -> cachedPrefix = iConfig.getParameter<string>("AK8CHSName");
+    chsAK8 -> jetRadius = 0.8;
+    chsAK8 -> subjets_token = mayConsume<reco::PFJetCollection>(edm::InputTag("PFJetsSoftDrop"+chsAK8 -> cachedPrefix ,"SubJets"));
+    chsAK8 -> btags_token = mayConsume<reco::JetTagCollection>(edm::InputTag(chsAK8->cachedPrefix + "PFCombinedInclusiveSecondaryVertexV2BJetTags") ) ;
+    obj.push_back(chsAK8);
+
+
     //--
     if (doReclustering){
         if (doAK8) {
-           NeroFatJets *chsAK8 = new NeroFatJets();
-           chsAK8 -> mRunJEC = false; // these jets are already corrected in MiniAOD
-           chsAK8 -> mOnlyMc = onlyMc;
-           chsAK8 -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("chsAK8"));
-           chsAK8 -> mMinPt = iConfig.getParameter<double>("minAK8CHSPt");
-           chsAK8 -> mMaxEta = iConfig.getParameter<double>("minAK8CHSEta");
-           chsAK8 -> mMinId = iConfig.getParameter<string>("minAK8CHSId");
-           chsAK8 -> cachedPrefix = iConfig.getParameter<string>("AK8CHSName");
-           chsAK8 -> jetRadius = 0.8;
-           chsAK8 -> subjets_token = mayConsume<reco::PFJetCollection>(edm::InputTag("PFJetsSoftDrop"+chsAK8 -> cachedPrefix ,"SubJets"));
-           chsAK8 -> btags_token = mayConsume<reco::JetTagCollection>(edm::InputTag(chsAK8->cachedPrefix + "PFCombinedInclusiveSecondaryVertexV2BJetTags") ) ;
-           obj.push_back(chsAK8);
-
            if (doPuppi) {
                NeroPuppiFatJets *puppiAK8= new NeroPuppiFatJets();
                puppiAK8 -> mOnlyMc = onlyMc;
