@@ -14,14 +14,14 @@ class BarePhotons : virtual public BareP4
             PhoMedium = 1UL << 4,
             PhoTight  = 1UL << 5,
             PhoElectronVeto = 1UL << 7,
+            PhoPixelSeedVeto = 1UL << 8
             // NONPOG
-            PhoVLoose50 = 1UL << 8, // loose, no-sieie, looser ph-iso
-            PhoVLoose25 = 1UL << 9, // loose + no-sieie, looser ph-iso
-            PhoHighPt = 1UL << 10,
-            PhoLooseNoEVeto = 1UL << 11,
-            PhoMediumNoEVeto = 1UL << 12,
-            PhoTightNoEVeto = 1UL << 13,
-            PhoPixelSeedVeto = 1UL << 14
+            PhoVLoose50 = 1UL << 16, // loose, no-sieie, looser ph-iso
+            PhoVLoose25 = 1UL << 17, // loose + no-sieie, looser ph-iso
+            PhoHighPt = 1UL << 18,
+            PhoLooseNoEVeto = 1UL << 19,
+            PhoMediumNoEVeto = 1UL << 20,
+            PhoTightNoEVeto = 1UL << 21
         };
 
         BarePhotons();
