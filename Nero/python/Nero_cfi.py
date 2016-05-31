@@ -70,6 +70,8 @@ nero = cms.EDAnalyzer("Nero",
     triggerNames = cms.vstring(['HLT_Ele27_eta2p1_WPLoose_Gsf', # unprescaled, SingleElectron 
 	    			'HLT_IsoMu20',
                                 'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET80', ## not always available, Tau
+                                'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET90', ## 
+                                'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET110', ## 
                                 'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET120', ## unprescaled , Tau
                                 'HLT_PFMET170_NoiseCleaned',
                                 'HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight',
