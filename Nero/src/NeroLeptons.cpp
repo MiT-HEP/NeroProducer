@@ -193,6 +193,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         if ( isEE && el.hadronicOverEm()< 0.08 && fabs(el.deltaEtaSuperClusterTrackAtVtx()) < 0.01 && fabs(el.deltaPhiSuperClusterTrackAtVtx()) < 0.08 && fabs(el.sigmaIetaIeta()) < 0.031 &&  el.eEleClusterOverPout()< 0.08 && fabs(el.dB()) < 0.2 && fabs(el.gsfTrack()->dz((*vtx_->GetPV()).position())) < 0.602 ) { isEleFakeID = 1; }
         if ( phoIso / el.pt() < 0.45 && nhIso / el.pt() < 0.25 && chIso / el.pt() <0.2) { isEleFakeIso = 1; }		
 
+
 		l.selBits |= unsigned(isEleFakeID*isEleFakeIso) * LepFake;
 		
 
