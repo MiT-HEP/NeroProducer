@@ -39,6 +39,9 @@ class NeroAll : virtual public NeroCollection,
         edm::EDGetTokenT<GenEventInfoProduct> info_token;
         edm::Handle<GenEventInfoProduct> info_handle;
 
+        edm::Handle<LHEEventProduct> lhe_handle;
+        edm::EDGetTokenT<LHEEventProduct> lhe_token;
+
         edm::EDGetTokenT<std::vector<PileupSummaryInfo> > pu_token;
         edm::Handle< std::vector<PileupSummaryInfo> > pu_handle;
 

@@ -27,21 +27,22 @@ int NeroAll::analyze(const edm::Event&iEvent)
     //
     //I suppose to have a info_handle
     iEvent.getByToken(info_token,info_handle);
+    iEvent.getByToken(lhe_token,lhe_handle);
     //---  scale
-    if ( info_handle ->weights()  .size() >= 9){
-        hDscaleReweightSums -> Fill( 0+.5 , info_handle -> weights() [1] ) ;
-        hDscaleReweightSums -> Fill( 1+.5 , info_handle -> weights() [2] ) ;
-        hDscaleReweightSums -> Fill( 2+.5 , info_handle -> weights() [3] ) ;
-        hDscaleReweightSums -> Fill( 3+.5 , info_handle -> weights() [4] ) ;
-        hDscaleReweightSums -> Fill( 4+.5 , info_handle -> weights() [6] ) ;    
-        hDscaleReweightSums -> Fill( 5+.5 , info_handle -> weights() [8] ) ;     
+    if (lhe_handle.isValid() and  lhe_handle->weights().size() >=9){
+        hDscaleReweightSums -> Fill( 0+.5 , double(lhe_handle -> weights() . at(1) .wgt)) ;
+        hDscaleReweightSums -> Fill( 1+.5 , double(lhe_handle -> weights() . at(2) .wgt)) ;
+        hDscaleReweightSums -> Fill( 2+.5 , double(lhe_handle -> weights() . at(3) .wgt)) ;
+        hDscaleReweightSums -> Fill( 3+.5 , double(lhe_handle -> weights() . at(4) .wgt)) ;
+        hDscaleReweightSums -> Fill( 4+.5 , double(lhe_handle -> weights() . at(6) .wgt)) ;    
+        hDscaleReweightSums -> Fill( 5+.5 , double(lhe_handle -> weights() . at(8) .wgt)) ;     
     }
 
     // ------ pdf
-    if (info_handle -> weights().size() > 109)
+    if (lhe_handle.isValid() and  lhe_handle->weights().size() > 109)
         for( int pdfw = 9 ; pdfw<109 ;++pdfw)
         {
-        hDpdfReweightSums -> Fill( pdfw -9 + .5, info_handle -> weights() [pdfw] );    
+        hDpdfReweightSums -> Fill( pdfw -9 + .5, double(lhe_handle -> weights() . at(pdfw) .wgt));    
         }
 
     if( isSkim() == 0) 
