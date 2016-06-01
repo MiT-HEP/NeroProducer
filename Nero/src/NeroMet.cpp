@@ -55,7 +55,6 @@ int NeroMet::analyze(const edm::Event& iEvent){
 
         if ( pf == NULL ) cout<<"[NeroMet]::[analyze]::[ERROR] PF pointer is null. Run NeroPF. "<<endl; 
 
-            /*
         for (unsigned int i = 0, n = pf->handle->size(); i < n; ++i) {
             const pat::PackedCandidate &cand = (*pf->handle)[i];
 
@@ -75,7 +74,6 @@ int NeroMet::analyze(const edm::Event& iEvent){
         *pfMet_e3p0 = TLorentzVector( -pfmet_3p0 );
         *metNoMu = TLorentzVector(metnomu);  // no minus
         *trackMet = TLorentzVector( -tkMet );
-        */
 
         auto &puppi = handle_puppi->front(); 
         *metPuppi =  TLorentzVector( puppi.px(), puppi.py(),puppi.pz(),puppi.energy() );
@@ -113,12 +111,14 @@ int NeroMet::analyze(const edm::Event& iEvent){
             if (miniAODUnc == pat::MET::METUncertaintySize)
                 cout <<"[NeroMet]::[analyze]::[WARNING] unable to translate met syst,"<< int(mysyst) <<endl;
 
+            /*
             new ( (*metPuppiSyst)[ mysyst ] ) TLorentzVector( 
                     puppi . shiftedP4( miniAODUnc).px(), 
                     puppi . shiftedP4(miniAODUnc).py(),  
                     puppi . shiftedP4(miniAODUnc).pz(),  
                     puppi . shiftedP4(miniAODUnc).energy()
                     );
+            */
 
             new ( (*metSyst)[ mysyst ] ) TLorentzVector( 
                     met . shiftedP4( miniAODUnc).px(), 

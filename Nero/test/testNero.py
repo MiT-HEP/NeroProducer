@@ -201,6 +201,40 @@ print "-> Updating the met collection to run on to 'slimmedMETs with nero' with 
 ###                              )
 ## no sequence ? , no change in input Tag ? 
 
+############ RUN PUPPI ##########################
+process.puppiSequence = cms.Sequence()
+process.jetSequence = cms.Sequence()
+if process.nero.doReclustering:
+    if process.nero.doPuppi:
+        ### puppi ###
+        process.load('CommonTools.PileupAlgos.Puppi_cff')
+        process.puppi.candName = cms.InputTag('packedPFCandidates')
+        process.puppi.vertexName = cms.InputTag('offlineSlimmedPrimaryVertices')
+        process.pfCandNoLep = cms.EDFilter("CandPtrSelector", src = cms.InputTag("packedPFCandidates"), cut = cms.string("abs(pdgId) != 13 && abs(pdgId) != 11 && abs(pdgId) != 15"))
+        process.pfCandLep   = cms.EDFilter("CandPtrSelector", src = cms.InputTag("packedPFCandidates"), cut = cms.string("abs(pdgId) == 13 || abs(pdgId) == 11 || abs(pdgId) == 15"))
+        process.puppinolep = process.puppi.clone()
+        process.puppinolep.candName = 'pfCandNoLep'
+        process.puppiSequence += process.puppi
+        process.puppiSequence += process.pfCandNoLep
+        process.puppiSequence += process.pfCandLep
+        process.puppiSequence += process.puppinolep
+        process.puppiForMET = cms.EDProducer("CandViewMerger",src = cms.VInputTag( 'puppinolep','pfCandLep'))
+        process.puppiSequence += process.puppiForMET
+
+    from NeroProducer.Nero.makeFatJets_cff import *
+    if process.nero.doAK8 or process.nero.doCA15:
+        fatjetInitSequence = initFatJets(process,isData)
+        process.jetSequence += fatjetInitSequence
+    if process.nero.doAK8 and process.nero.doPuppi:
+        ak8PuppiSequence = makeFatJets(process,isData=isData,pfCandidates='puppiForMET',algoLabel='AK',jetRadius=0.8)
+        process.jetSequence += ak8PuppiSequence
+    if process.nero.doCA15:
+        ca15CHSSequence = makeFatJets(process,isData=isData,pfCandidates='pfCHS',algoLabel='CA',jetRadius=1.5)
+        process.jetSequence += ca15CHSSequence
+        if process.nero.doPuppi:
+            ca15PuppiSequence = makeFatJets(process,isData=isData,pfCandidates='puppiForMET',algoLabel='CA',jetRadius=1.5)
+            process.jetSequence += ca15PuppiSequence
+
 
 # ------------------------QG-----------------------------------------------
 # after jec, because need to be run on the corrected (latest) jet collection
@@ -259,6 +293,8 @@ process.p = cms.Path(
                 process.jecSequence *
                 process.QGTagger    * ## after jec, because it will produce the new jet collection
                 process.fullPatMetSequence *## no puppi
+                process.puppiSequence *
+                process.jetSequence *
                 process.nero
                 )
 
