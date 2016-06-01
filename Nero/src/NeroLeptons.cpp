@@ -69,7 +69,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         bool isFake = 0;
 
         if ( mMaxIso_mu > 0 and totiso/mu.pt() > mMaxIso_mu ) continue;
-        if ( totiso/mu.pt() < 0.4){ isFake = 1; }
+        if ( totiso/mu.pt() < 0.4 && mu.isolationR03().sumPt/mu.pt() < 0.4 ){ isFake = 1; }
 
         myLepton l;
         l.pdgId = -mu.charge()*13;
@@ -83,9 +83,10 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
             if ( fabs((mu.muonBestTrack()->dz((*vtx_->GetPV()).position())))<0.1 and (mu.dB()< 0.02) ){
                 l.selBits |= unsigned(mu.isMediumMuon() * LepMediumIP);
                 l.selBits |= unsigned(mu.isTightMuon( * vtx_->GetPV() ))*LepTightIP ;
-                l.selBits |= unsigned(mu.isLooseMuon()) * LepSoftIP;
+                //l.selBits |= unsigned(mu.isLooseMuon()) * LepSoftIP;
                 if(isFake){ l.selBits |= unsigned(mu.isMediumMuon() * LepFake); }
                 }
+
             
         l.pfPt = mu.pfP4().pt();
 
@@ -182,6 +183,15 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
             //--
             l.selBits |= unsigned(isEB and (not isEBEEGap and not isEBEtaGap and not isEBPhiGap)  ) * LepEBEE;
             l.selBits |= unsigned(isEE and (not isEBEEGap and not isEERingGap and not isEEDeeGap)  ) * LepEBEE;
+
+            bool isEleFakeID = 0;
+            bool isEleFakeIso = 0;
+            if ( isEB && el.hadronicOverEm()< 0.08 && fabs(el.deltaEtaSuperClusterTrackAtVtx()) < 0.01 && fabs(el.deltaPhiSuperClusterTrackAtVtx()) < 0.04 && fabs(el.sigmaIetaIeta()) < 0.011 &&  el.eEleClusterOverPout()< 0.01 && fabs(el.dB()) < 0.1 && fabs(el.gsfTrack()->dz((*vtx_->GetPV()).position())) < 0.373 ) { isEleFakeID = 1; }
+            if ( isEE && el.hadronicOverEm()< 0.08 && fabs(el.deltaEtaSuperClusterTrackAtVtx()) < 0.01 && fabs(el.deltaPhiSuperClusterTrackAtVtx()) < 0.08 && fabs(el.sigmaIetaIeta()) < 0.031 &&  el.eEleClusterOverPout()< 0.08 && fabs(el.dB()) < 0.2 && fabs(el.gsfTrack()->dz((*vtx_->GetPV()).position())) < 0.602 ) { isEleFakeID = 1; }
+            if ( phoIso / el.pt() < 0.45 && nhIso / el.pt() < 0.25 && chIso / el.pt() <0.2) { isEleFakeIso = 1; }      
+            
+            l.selBits |= unsigned(isEleFakeID*isEleFakeIso) * LepFake;
+
         l.pfPt = el.pt();
     
         l.chiso  = chIso;
