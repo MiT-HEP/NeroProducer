@@ -66,8 +66,10 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         float phoiso = mu.pfIsolationR04().sumPhotonEt;
         float puiso = mu.pfIsolationR04().sumPUPt;
         float totiso = chiso + TMath::Max( niso + phoiso - .5*puiso, 0. ) ;
-    
+        bool isFake = 0;
+
         if ( mMaxIso_mu > 0 and totiso/mu.pt() > mMaxIso_mu ) continue;
+        if ( totiso/mu.pt() < 0.4){ isFake = 1; }
 
         myLepton l;
         l.pdgId = -mu.charge()*13;
@@ -77,8 +79,13 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
             l.selBits |= unsigned(mu.isLooseMuon()) * LepLoose;
             l.selBits |= unsigned(mu.isTightMuon( * vtx_->GetPV() ))*LepTight ;
             l.selBits |= unsigned(mu.isMediumMuon() * LepMedium);
-            if ( fabs((mu.muonBestTrack()->dz((*vtx_->GetPV()).position())))<0.1 and (mu.dB()< 0.01) )
+
+            if ( fabs((mu.muonBestTrack()->dz((*vtx_->GetPV()).position())))<0.1 and (mu.dB()< 0.02) ){
                 l.selBits |= unsigned(mu.isMediumMuon() * LepMediumIP);
+                l.selBits |= unsigned(mu.isTightMuon( * vtx_->GetPV() ))*LepTightIP ;
+                l.selBits |= unsigned(mu.isLooseMuon()) * LepSoftIP;
+                if(isFake){ l.selBits |= unsigned(mu.isMediumMuon() * LepFake); }
+                }
             
         l.pfPt = mu.pfP4().pt();
 
