@@ -67,20 +67,20 @@ nero = cms.EDAnalyzer("Nero",
 
     #
     ## TRIGGER
-    triggerNames = cms.vstring(['HLT_Ele27_eta2p1_WPLoose_Gsf',
-				'HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL', # unprescaled, SingleElectron 
-				'HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL',
-				'HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL',
-				'HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL',
-				'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ',
-				'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ',
-				'HLT_IsoMu27',			
-	    			'HLT_IsoMu20',
-				'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ',
-				'HLT_Ele23_WPLoose_Gsf',
-				'HLT_Ele22_eta2p1_WP75_Gsf',
-				'HLT_Ele27_WPLoose_Gsf',
-				'HLT_Ele27_WP85_Gsf',
+    triggerNames = cms.vstring(['HLT_Ele27_eta2p1_WPLoose_Gsf_v',
+				'HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v', # unprescaled, SingleElectron 
+				'HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v',
+				'HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v',
+				'HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v',
+				'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v',
+				'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v',
+				'HLT_IsoMu27_v',			
+	    			'HLT_IsoMu20_v',
+				'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v',
+				'HLT_Ele23_WPLoose_Gsf_v',
+				'HLT_Ele22_eta2p1_WP75_Gsf_v',
+				'HLT_Ele27_WPLoose_Gsf_v',
+				'HLT_Ele27_WP85_Gsf_v',
                                 'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET80', ## not always available, Tau
                                 'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET120', ## unprescaled , Tau
                                 'HLT_PFMET170_NoiseCleaned',
@@ -97,10 +97,10 @@ nero = cms.EDAnalyzer("Nero",
 				'HLT_Photon175',
 				'HLT_Photon165_HE10',
 				### DoubleMu / DoubleE cross check and sync with Z
-				'HLT_Mu17_v1',
-				'HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v1',
+				'HLT_Mu17_v',
+				'HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v',
                                 'HLT_CaloMET200_NoiseCleaned',
-				'HLT_IsoTkMu20', ## Muon POG
+				'HLT_IsoTkMu20_v', ## Muon POG
                                 'Flag_CSCTightHaloFilter',
                                 'Flag_eeBadScFilter',
                                 'Flag_HBHENoiseFilter',
