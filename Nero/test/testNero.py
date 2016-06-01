@@ -4,6 +4,7 @@ import re
 import os
 
 process = cms.Process("nero")
+cmssw_base = os.environ['CMSSW_BASE']
 
 options = VarParsing.VarParsing ('analysis')
 options.register('isData',
@@ -104,8 +105,8 @@ if isData and not options.isGrid : ## dont load the lumiMaks, will be called by 
 ## SKIM INFO
 process.load('NeroProducer.Skim.infoProducerSequence_cff')
 process.load('NeroProducer.Nero.Nero_cfi')
-#process.load('NeroProducer.Nero.NeroMonotop_cfi')
-#process.load('NeroProducer.Nero.NeroMonojet_cfi')
+process.load('NeroProducer.Nero.NeroMonotop_cfi')
+process.load('NeroProducer.Nero.NeroMonojet_cfi')
 #process.load('NeroProducer.Nero.NeroChargedHiggs_cfi')
 
 #-----------------------ELECTRON ID-------------------------------
@@ -245,7 +246,7 @@ if process.nero.doReclustering:
         process.puppiMetSequence += process.pfMETPuppi
 
         # correct puppi jets
-        jeclabel = 'Data' if isData else 'MC'
+        jeclabel = 'DATA' if isData else 'MC'
         process.jec =  cms.ESSource("PoolDBESSource",
                             CondDBSetup,
                             toGet = cms.VPSet(
@@ -277,7 +278,7 @@ if process.nero.doReclustering:
 
                 )  
         if isData:
-          process.jec.connect = cms.string('sqlite:////'+cmssw_base+'/src/NeroProducer/Nero/test/jec/Fall15_25nsV2_Data.db')
+          process.jec.connect = cms.string('sqlite:////'+cmssw_base+'/src/NeroProducer/Nero/test/jec/Fall15_25nsV2_DATA.db')
         else:
           process.jec.connect = cms.string('sqlite:////'+cmssw_base+'/src/NeroProducer/Nero/test/jec/Fall15_25nsV2_MC.db')
 
