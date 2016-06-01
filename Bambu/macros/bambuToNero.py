@@ -7,7 +7,7 @@ import os
 ####################################
 
 mitdata = os.environ['MIT_DATA']
-doFilter = False
+doFilter = True 
 
 try:
     bx = analysis.custom['bx']
