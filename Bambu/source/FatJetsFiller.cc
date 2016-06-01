@@ -2,6 +2,8 @@
 
 #include "MitAna/DataTree/interface/FatJetCol.h"
 #include "MitAna/DataTree/interface/FatJet.h"
+#include "MitAna/DataTree/interface/XlFatJetCol.h"
+#include "MitAna/DataTree/interface/XlFatJet.h"
 #include "MitAna/DataTree/interface/JetCol.h"
 #include "MitAna/DataTree/interface/Jet.h"
 #include "MitAna/DataTree/interface/XlSubJet.h"
@@ -43,26 +45,18 @@ mithep::nero::FatJetsFiller::finalize()
     delete topANN;
 }
 
-void
-mithep::nero::FatJetsFiller::fill()
+bool
+mithep::nero::FatJetsFiller::fillFatJet(const mithep::FatJet &jet)
 {
-  auto* jets = getSource<mithep::JetCol>(fatJetsName_);
-  unsigned int subjetCounter=0;
-  for (unsigned iJ(0); iJ != jets->GetEntries(); ++iJ) {
-    if (jets->At(iJ)->ObjType() != kFatJet)
-      throw std::runtime_error("non-fat jet passed to FatJetsFiller");
-    
-    auto& jet(*static_cast<mithep::FatJet const*>(jets->At(iJ)));
-
     if (jet.Pt() < 100.)
-      continue;
+      return false;
 
     double rawE = jet.RawMom().E();
     double chf = jet.ChargedHadronEnergy()/rawE;
     double nhf = jet.NeutralHadronEnergy()/rawE;
 
     if (applyMJId && (nhf>0.8 || chf<0.1))
-      continue;
+      return false;
 
     newP4(out_, jet);
 
@@ -83,15 +77,54 @@ mithep::nero::FatJetsFiller::fill()
     for (unsigned int iB=0; iB!=nSubjets; ++iB) {
       out_.subjet_btag->push_back(subjetBtags[iB]);
     }
-    
     subjetCounter += nSubjets;
-    
+
+    return true;
+}
+
+void
+mithep::nero::FatJetsFiller::fill()
+{
+  subjetCounter=0;
+  if (extended) {
+    auto* jets = getSource<mithep::XlFatJetCol>(fatJetsName_);
+
+    for (unsigned iJ(0); iJ != jets->GetEntries(); ++iJ) {
+      if (jets->At(iJ)->ObjType() != kXlFatJet)
+        throw std::runtime_error("non-xlfat jet passed to FatJetsFiller with extended=true");
+      auto& jet(*static_cast<mithep::XlFatJet const*>(jets->At(iJ)));
+
+      bool filled = fillFatJet(jet);    
+      
+      if (filled) {
+        out_.trimmedMass->push_back(jet.MassTrimmed());
+        out_.prunedMass->push_back(jet.MassPruned());
+        out_.filteredMass->push_back(jet.MassFiltered());
+      }
+    }
+  } else {
+    auto* jets = getSource<mithep::JetCol>(fatJetsName_);
+
+    for (unsigned iJ(0); iJ != jets->GetEntries(); ++iJ) {
+      if (jets->At(iJ)->ObjType() != kFatJet)
+        throw std::runtime_error("non-fat jet passed to FatJetsFiller");
+      auto& jet(*static_cast<mithep::FatJet const*>(jets->At(iJ)));
+
+      bool filled = fillFatJet(jet);    
+      
+      if (filled) {
+        out_.trimmedMass->push_back(-1);
+        out_.prunedMass->push_back(-1);
+        out_.filteredMass->push_back(-1);
+      }
+    }
   }
+
 }
 
 float
 mithep::nero::FatJetsFiller::cleanInput(float x) {
-	if (x>=0) // false for nan
+	if (x==x) // false for nan or inf
 		return x;
 	else
 		return -1;
