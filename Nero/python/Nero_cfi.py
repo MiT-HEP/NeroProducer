@@ -70,25 +70,25 @@ nero = cms.EDAnalyzer("Nero",
     ## TRIGGER
     triggerNames = cms.vstring([
 	    			## ELECTRON
-				'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ',
-				'HLT_Ele22_eta2p1_WP75_Gsf',
-				'HLT_Ele23_WPLoose_Gsf',
-	    			'HLT_Ele27_eta2p1_WPLoose_Gsf', # unprescaled, SingleElectron 
-				'HLT_Ele27_WP85_Gsf',
-				'HLT_Ele27_WPLoose_Gsf',
+				'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v',
+				'HLT_Ele22_eta2p1_WP75_Gsf_v',
+				'HLT_Ele23_WPLoose_Gsf_v',
+	    			'HLT_Ele27_eta2p1_WPLoose_Gsf_v', # unprescaled, SingleElectron 
+				'HLT_Ele27_WP85_Gsf_v',
+				'HLT_Ele27_WPLoose_Gsf_v',
 				## MUONS
-				'HLT_IsoTkMu20', ## Muon POG
+				'HLT_IsoTkMu20_v', ## Muon POG
 				'HLT_Mu17_v',
-	    			'HLT_IsoMu20',
-				'HLT_IsoMu27', # SingleMuon, Iso20 is not always available in 25ns
-				'HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL',
-				'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ',
-				'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ',
-				'HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL',
-				'HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL', # unprescaled, SingleElectron 
-				'HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL',
+	    			'HLT_IsoMu20_v',
+				'HLT_IsoMu27_v', # SingleMuon, Iso20 is not always available in 25ns
+				'HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v',
+				'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v',
+				'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v',
+				'HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v',
+				'HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v', # unprescaled, SingleElectron 
+				'HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v',
 				## TAU
-                                'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET80', ## not always available, Tau
+                                'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET80', ## not always available, Tau, NOT _v because there is noise cleaned
                                 'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET90', ## not always available, Tau
                                 'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET110', ## not always available, Tau
                                 'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET120', ## unprescaled , Tau
