@@ -131,7 +131,6 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     chsAK8 -> btags_token = mayConsume<reco::JetTagCollection>(edm::InputTag(chsAK8->cachedPrefix + "PFCombinedInclusiveSecondaryVertexV2BJetTags") ) ;
     obj.push_back(chsAK8);
 
-
     //--
     if (doReclustering){
         if (doAK8) {
