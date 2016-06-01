@@ -15,7 +15,7 @@ NeroPhotons::NeroPhotons() :
     mMaxEta = 2.5;
 
     pf = NULL;
-    rnd_ = new TRandom3( (unsigned)time(NULL) ) ;
+    rnd_ = new TRandom3( (unsigned)time(0) ) ;
 }
 
 NeroPhotons::~NeroPhotons(){
