@@ -21,12 +21,12 @@ NeroLeptons::NeroLeptons():
 
     mMinNleptons = 0;    
 
-    rnd_ = new TRandom3( (unsigned)time(NULL) ) ;
+    //rnd_ = new TRandom3( (unsigned)time(NULL) ) ;
 }
 
 NeroLeptons::~NeroLeptons(){
-    delete EleCorr; 
-    delete rnd_; 
+    //delete EleCorr; 
+    //delete rnd_; 
 }
 
 
@@ -145,6 +145,8 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         l.iso = chIso + TMath::Max( nhIso + phoIso - evt_->rho * ea , 0. ) ; 
 
         l.p4.SetPxPyPzE( el.px(),el.py(),el.pz(),el.energy());
+
+        /* Smearing and corrections have not been computed yet
         float smear = 0.0, scale = 1.0;
         float aeta = std::abs(el.eta());
         float et = el.energy()/cosh(aeta);
@@ -163,6 +165,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
                  l.p4 *= corr;
         
         }
+        */
 
         l.selBits = 0 ;
             l.selBits |= unsigned(isPassTight)*LepTight;
