@@ -68,6 +68,8 @@ process.TFileService = cms.Service("TFileService",
         )
 
 ##----------------GLOBAL TAG ---------------------------
+
+
 # used by photon id and jets
 process.load("Configuration.Geometry.GeometryIdeal_cff") 
 process.load('Configuration.StandardSequences.Services_cff')
@@ -160,6 +162,16 @@ process.es_prefer_jer = cms.ESPrefer('PoolDBESSource', 'jer')
 
 
 ################ end sqlite connection
+
+process.load("RecoJets.JetProducers.PileupJetID_cfi")
+process.pileupJetIdUpdated = process.pileupJetId.clone(
+  jets=cms.InputTag("slimmedJets"),
+  inputIsCorrected=True,
+  applyJec=True,
+  vertexes=cms.InputTag("offlineSlimmedPrimaryVertices")
+  )
+
+
 #### RECOMPUTE JEC From GT ###
 from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 
@@ -175,7 +187,11 @@ updateJetCollection(
 )
 print "-> Updating the jets collection to run on to 'updatedPatJetsUpdatedJEC' with the new jec in the GT"
 process.nero.jets=cms.InputTag('updatedPatJetsUpdatedJEC')
-process.jecSequence = cms.Sequence( process.patJetCorrFactorsUpdatedJEC* process.updatedPatJetsUpdatedJEC )
+
+print "-> Updating the jet user float for the pu id"
+process.updatedPatJetsUpdatedJEC.userData.userFloats.src += ['pileupJetIdUpdated:fullDiscriminant']
+
+process.jecSequence = cms.Sequence( process.pileupJetIdUpdated*process.patJetCorrFactorsUpdatedJEC* process.updatedPatJetsUpdatedJEC )
 
 ############ RECOMPUTE MET #######################
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
