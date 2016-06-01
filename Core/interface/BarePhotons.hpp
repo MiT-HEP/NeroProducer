@@ -14,7 +14,7 @@ class BarePhotons : virtual public BareP4
             PhoMedium = 1UL << 4,
             PhoTight  = 1UL << 5,
             PhoElectronVeto = 1UL << 7,
-            PhoPixelSeedVeto = 1UL << 8
+            PhoPixelSeedVeto = 1UL << 8,
             // NONPOG
             PhoVLoose50 = 1UL << 16, // loose, no-sieie, looser ph-iso
             PhoVLoose25 = 1UL << 17, // loose + no-sieie, looser ph-iso
