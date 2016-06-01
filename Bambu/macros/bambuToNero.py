@@ -386,6 +386,22 @@ goodAK8Jets = looseAK4Jets.clone('GoodAK8Jets',
     OutputName = 'GoodAK8Jets'
 )
 
+ak8JetExtender = mithep.FatJetExtenderMod('AK8JetExtender',
+    InputName = goodAK8Jets.GetOutputName(),
+    OutputName = 'XlAK8Jets',
+    ProcessNJets = 4,
+    ConeSize = 0.8,
+    PFCandsName = mithep.Names.gkPFCandidatesBrn,
+    VertexesName = goodPVFilterMod.GetOutputName(),
+    UseSoftDropLib = False,
+    SoftDropR0 = 0.8,
+    SoftDropZCut = 0.1,
+    QGTaggingOn = False,
+    DoShowerDeconstruction = False,
+    DoECF = False,
+    DoQjets = False,
+    BeVerbose = False
+)
 
 ca15JetCorrection = mithep.JetCorrectionMod('CA15JetCorrection',
     InputName = 'CA15FatJetsCHS',
@@ -602,7 +618,8 @@ elif emva == mithep.ElectronIDMVA.kIDEGamma2015NonTrig25ns:
 neroMod.AddFiller(leptonsFiller)
 
 neroMod.AddFiller(mithep.nero.FatJetsFiller(mithep.nero.BaseFiller.kAK8Jets,
-    FatJetsName = goodAK8Jets.GetOutputName()
+    FatJetsName = ak8JetExtender.GetOutputName(),
+    ExtendedOn = True
 ))
 
 neroMod.AddFiller(mithep.nero.FatJetsFiller(mithep.nero.BaseFiller.kCA15Jets,
@@ -753,6 +770,7 @@ postskimSequence = Chain([
     ak8JetCorrection,
     ca15JetCorrection,
     goodAK8Jets,
+    ak8JetExtender,
     goodCA15Jets,
     puppiAK8CorrectionMod,
     puppiCA15CorrectionMod,
