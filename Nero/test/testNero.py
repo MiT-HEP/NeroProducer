@@ -105,8 +105,8 @@ if isData and not options.isGrid : ## dont load the lumiMaks, will be called by 
 ## SKIM INFO
 process.load('NeroProducer.Skim.infoProducerSequence_cff')
 process.load('NeroProducer.Nero.Nero_cfi')
-process.load('NeroProducer.Nero.NeroMonotop_cfi')
-process.load('NeroProducer.Nero.NeroMonojet_cfi')
+#process.load('NeroProducer.Nero.NeroMonotop_cfi')
+#process.load('NeroProducer.Nero.NeroMonojet_cfi')
 #process.load('NeroProducer.Nero.NeroChargedHiggs_cfi')
 
 #-----------------------ELECTRON ID-------------------------------
