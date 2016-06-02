@@ -37,6 +37,7 @@ using namespace std;
 #include "DataFormats/JetReco/interface/PFJetCollection.h"
 
 // GEN
+#include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenRunInfoProduct.h"
 #include "DataFormats/JetReco/interface/GenJet.h"
