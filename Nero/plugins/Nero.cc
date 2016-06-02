@@ -213,7 +213,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     leps -> SetMatch( iConfig.getParameter<bool>("matchLep") );
 
     // eventually configure
-    leps -> EleCorr = new EnergyScaleCorrection_class("EgammaAnalysis/ElectronTools/data/76X_16DecRereco_2015");
+    leps -> EleCorr = new EnergyScaleCorrection_class("EgammaAnalysis/ElectronTools/data/76X_16DecRereco_2015_Etunc");
         leps->EleCorr -> doSmearings= true;
         leps->EleCorr -> doScale= true;
 

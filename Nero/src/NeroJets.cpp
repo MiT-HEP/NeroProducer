@@ -68,7 +68,7 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
         if ( !JetId(j,mMinId) ) continue;
 
         //0 < |eta| < 2.5: PUID > -0.63
-        if ( !(j.userFloat("pileupJetId:fullDiscriminant") > -0.63) ) continue;
+        //if ( !(j.userFloat("pileupJetId:fullDiscriminant") > -0.63) ) continue;
 
         // GET  ValueMaps
         edm::RefToBase<pat::Jet> jetRef(edm::Ref<pat::JetCollection>(handle, ijetRef) );
@@ -180,7 +180,8 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
 
         // Fill output object	
         rawPt  -> push_back (j.pt()*j.jecFactor("Uncorrected"));
-        puId   -> push_back (j.userFloat("pileupJetId:fullDiscriminant") );
+        //puId   -> push_back (j.userFloat("pileupJetId:fullDiscriminant") );
+        puId   -> push_back (j.userFloat("pileupJetIdUpdated:fullDiscriminant") );
         bDiscr -> push_back( j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") );
         bDiscrLegacy -> push_back( j.bDiscriminator("combinedSecondaryVertexBJetTags") );
         qgl     -> push_back( qgLikelihood );
