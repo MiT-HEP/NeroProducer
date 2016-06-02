@@ -7,9 +7,9 @@
 #include "NeroProducer/Nero/interface/NeroEvent.hpp"
 
 // Electron corrector
-#include "EgammaAnalysis/ElectronTools/interface/EnergyScaleCorrection_class.hh"
+//#include "EgammaAnalysis/ElectronTools/interface/EnergyScaleCorrection_class.hh"
 
-#include "TRandom3.h"
+//#include "TRandom3.h"
 
 class NeroLeptons : virtual public NeroCollection,
     virtual public BareLeptons
@@ -83,9 +83,8 @@ class NeroLeptons : virtual public NeroCollection,
         int mMinNleptons;
 
         // --- EGTools
-        EnergyScaleCorrection_class *EleCorr{0};
-
-        TRandom3 *rnd_{0};
+        //EnergyScaleCorrection_class *EleCorr{0};
+        //TRandom3 *rnd_{0};
 };
 
 

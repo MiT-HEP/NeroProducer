@@ -15,12 +15,12 @@ NeroPhotons::NeroPhotons() :
     mMaxEta = 2.5;
 
     pf = NULL;
-    rnd_ = new TRandom3( (unsigned)time(NULL) ) ;
+    //rnd_ = new TRandom3( (unsigned)time(NULL) ) ;
 }
 
 NeroPhotons::~NeroPhotons(){
-    delete PhoCorr; 
-    delete rnd_; 
+    //delete PhoCorr; 
+    //delete rnd_; 
 }
 
 
@@ -100,7 +100,7 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         bits |= pho.passElectronVeto() * PhoElectronVeto;
 
         // RC -- with FPR
-        //
+        /*
         float _chIsoRC_ = 0;
         float _nhIsoRC_ = 0;
         float _phIsoRC_ = 0;
@@ -136,6 +136,7 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
              _phIsoRC_ = -999.;
              _puIsoRC_ = -999.;// not fill for the moment in the FPR TODO
         }
+        */
 
         // RC -- without FPR
         // allowed dphi
@@ -196,7 +197,8 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
     
         //FILL
         TLorentzVector phoP4=TLorentzVector(pho.px(),pho.py(),pho.pz(),pho.energy());
-
+        
+        /*
         float smear = 0.0, scale = 1.0;
         float aeta = std::abs(pho.eta());
         float et = pho.energy()/cosh(aeta);
@@ -215,6 +217,7 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
                  phoP4 *= corr;
         
         }
+        */
 
         //
         new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(phoP4);
@@ -228,10 +231,12 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         nhIso -> push_back ( _nhIso_ ) ;
         puIso -> push_back ( _puIso_ ) ;
 
+        /*
         chIsoRC -> push_back( _chIsoRC_);
         phoIsoRC -> push_back( _phIsoRC_ ) ;
         nhIsoRC -> push_back ( _nhIsoRC_ ) ;
         puIsoRC -> push_back ( _puIsoRC_ ) ;
+        */
     }
    
     if ( int(selBits -> size()) < mMinNpho  ) return 1;
