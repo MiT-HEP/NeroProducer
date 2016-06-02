@@ -467,7 +467,10 @@ Nero::beginJob()
 
     // define branches
     for(auto o : obj)
+    {
+        if (dynamic_cast<NeroAll*> (o) !=NULL ) { continue ; }  // otherwise I will have also the branch in the main tree.
         o -> defineBranches(tree_);
+    }
 
     for(auto o : lumiObj)
         o -> defineBranches(all_);
