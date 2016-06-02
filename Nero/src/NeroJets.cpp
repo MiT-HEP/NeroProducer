@@ -238,6 +238,7 @@ bool NeroJets::JetId(const pat::Jet &j, std::string id)
     float eta = j.eta();
 
     //tightLepVetoJetID = (NHF<0.90 && NEMF<0.90 && NumConst>1 && MUF<0.8) && ((fabs(eta)<=2.4 && CHF>0 && CHM>0 && CEMF<0.90) || fabs(eta)>2.4) && fabs(eta)<=3.0 
+    if (id=="none") return true;
 
     if (id=="loose" || id=="monojet" || id=="monojetloose" || id=="monojet2015")
     {
