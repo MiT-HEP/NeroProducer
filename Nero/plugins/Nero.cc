@@ -266,6 +266,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     phos -> evt = evt;
     phos -> vtx = vtx;
     phos -> leps = leps;
+    phos -> SetExtend (iConfig.getParameter<bool>("extendPhotons"));
     /*
     phos -> fpr = new SuperClusterFootprintRemovalMiniAOD( consumesCollector() );
     phos -> PhoCorr = new EnergyScaleCorrection_class("EgammaAnalysis/ElectronTools/data/76X_16DecRereco_2015");

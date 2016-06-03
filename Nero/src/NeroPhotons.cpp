@@ -98,7 +98,7 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         if (not bits) continue; // even if there is some misalignment ntuples will not be corrupted
 
         bits |= pho.passElectronVeto() * PhoElectronVeto;
-        bits |= pho.hasPixelSeed() * PhoPixelSeedVeto;
+        bits |= !pho.hasPixelSeed() * PhoPixelSeedVeto;
 
         // RC -- with FPR
         /*
@@ -241,20 +241,20 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
 
         if (IsExtend() ){
             rawpt->push_back(pho.pt());
-            // e55->push_back( ??? );
+            e55->push_back(pho.e5x5());
             
-            // hOverE->push_back( ??? );
-            // chWorstIso->push_back( ??? );
+            hOverE->push_back(pho.hadTowOverEm()); //pho.hadronicOverEm());
+            chWorstIso->push_back(pho.chargedHadronIsoWrongVtx());
             // chIsoMax->push_back( ??? );
             
             sipip->push_back(pho.spp());
             sieip->push_back(pho.sep());
-            r9->push_back(pho.eMax() / pho.e3x3());
+            r9->push_back(pho.r9());
             s4->push_back(pho.eMax()/(pho.eMax()+pho.eTop()+pho.eBottom()+pho.eLeft()+pho.eRight()));
             
-            // mipEnergy->push_back( ??? );
+            mipEnergy->push_back(pho.mipTotEnergy());
             
-            // time->push_back( ??? );
+            // time->push_back(pho.superCluster()->SeedTime());
             // timeSpan->push_back( ??? );
             
             // genMatched->push_back( ??? );
