@@ -56,7 +56,7 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         #endif
 
         //if ( not pho.passElectronVeto ()  ) continue;
-
+        // pt> 14 hOe <.15
         // r9()>0.8 , chargedHadronIso()<20, chargedHadronIso()<0.3*pt()
         if (pho.pt() <15 or pho.chargedHadronIso()/pho.pt() > 0.3) continue; // 10 -- 14  GeV photons are saved if chargedHadronIso()<10
         if (fabs(pho.eta()) > mMaxEta ) continue;
@@ -98,6 +98,7 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         if (not bits) continue; // even if there is some misalignment ntuples will not be corrupted
 
         bits |= pho.passElectronVeto() * PhoElectronVeto;
+        bits |= !pho.hasPixelSeed() * PhoPixelSeedVeto;
 
         // RC -- with FPR
         /*
@@ -233,6 +234,33 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
 
         etaSC -> push_back(  pho.superCluster()->eta() ) ;
 
+        /*
+        chIsoRC -> push_back( _chIsoRC_);
+        phoIsoRC -> push_back( _phIsoRC_ ) ;
+        nhIsoRC -> push_back ( _nhIsoRC_ ) ;
+        puIsoRC -> push_back ( _puIsoRC_ ) ;
+        */
+
+        if (IsExtend() ){
+            rawpt->push_back(pho.pt());
+            e55->push_back(pho.e5x5());
+            
+            hOverE->push_back(pho.hadTowOverEm()); //pho.hadronicOverEm());
+            chWorstIso->push_back(pho.chargedHadronIsoWrongVtx());
+            // chIsoMax->push_back( ??? );
+            
+            sipip->push_back(pho.spp());
+            sieip->push_back(pho.sep());
+            r9->push_back(pho.r9());
+            s4->push_back(pho.eMax()/(pho.eMax()+pho.eTop()+pho.eBottom()+pho.eLeft()+pho.eRight()));
+            
+            mipEnergy->push_back(pho.mipTotEnergy());
+            
+            // time->push_back(pho.superCluster()->SeedTime());
+            // timeSpan->push_back( ??? );
+            
+            // genMatched->push_back( ??? );
+        }
     }
    
     if ( int(selBits -> size()) < mMinNpho  ) return 1;

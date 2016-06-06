@@ -190,6 +190,7 @@ nero = cms.EDAnalyzer("Nero",
     minGenJetPt = cms.double(20.),
     particleGun = cms.untracked.bool(False),
                       
+    extendPhotons = cms.bool(True),
     minPhoPt  = cms.double (15.),
     minPhoEta = cms.double (2.5),
     minPhoN   = cms.int32  (0),
