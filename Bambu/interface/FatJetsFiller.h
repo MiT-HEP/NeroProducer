@@ -37,7 +37,7 @@ namespace mithep {
       void SetExtendedOn(bool b) { extended = b; }
 
     private:
-      bool fillFatJet(const FatJet &jet);
+      bool fillFatJet(const FatJet &jet, bool subjetsFilled);
       BareFatJets out_{};
 
       BaseFiller::Collection collection_;

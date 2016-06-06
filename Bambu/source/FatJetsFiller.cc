@@ -46,7 +46,7 @@ mithep::nero::FatJetsFiller::finalize()
 }
 
 bool
-mithep::nero::FatJetsFiller::fillFatJet(const mithep::FatJet &jet)
+mithep::nero::FatJetsFiller::fillFatJet(const mithep::FatJet &jet, bool subjetsFilled)
 {
     if (jet.Pt() < 100.)
       return false;
@@ -60,7 +60,6 @@ mithep::nero::FatJetsFiller::fillFatJet(const mithep::FatJet &jet)
 
     newP4(out_, jet);
 
-
     out_.rawPt->push_back(jet.RawMom().Pt());
     out_.tau1->push_back(jet.Tau1());
     out_.tau2->push_back(jet.Tau2());
@@ -70,14 +69,22 @@ mithep::nero::FatJetsFiller::fillFatJet(const mithep::FatJet &jet)
     
     std::vector<float> subjetBtags = jet.GetSubJetBtags();
 
-    unsigned int nSubjets = subjetBtags.size();
-    out_.nSubjets->push_back(nSubjets);
-    out_.firstSubjet->push_back(subjetCounter);
+    unsigned int nSubjets;
+    if (subjetsFilled) {
+      nSubjets = out_.nSubjets->back();
+    } else {
+      nSubjets = subjetBtags.size();
+      out_.nSubjets->push_back(nSubjets);
+      out_.firstSubjet->push_back(subjetCounter);
+      subjetCounter += nSubjets;
+    }
 
     for (unsigned int iB=0; iB!=nSubjets; ++iB) {
-      out_.subjet_btag->push_back(subjetBtags[iB]);
+      if (iB>=subjetBtags.size()-1)
+        out_.subjet_btag->push_back(-1);
+      else
+        out_.subjet_btag->push_back(subjetBtags[iB]);
     }
-    subjetCounter += nSubjets;
 
     return true;
 }
@@ -94,7 +101,15 @@ mithep::nero::FatJetsFiller::fill()
         throw std::runtime_error("non-xlfat jet passed to FatJetsFiller with extended=true");
       auto& jet(*static_cast<mithep::XlFatJet const*>(jets->At(iJ)));
 
-      bool filled = fillFatJet(jet);    
+      auto& subjets(jet.GetSubJets(XlSubJet::kSoftDrop));
+      unsigned int nSubjets = subjets.GetEntries();
+      out_.nSubjets[out_.nSubjets->size()-1] = nSubjets; 
+      for (unsigned int iS=0; iS!=subjets.GetEntries(); ++iS) {
+        auto& subjet(*subjets.At(is));
+        newP4(*out_.subjet,subjet);
+      }
+
+      bool filled = fillFatJet(jet,true);    
       
       if (filled) {
         out_.trimmedMass->push_back(jet.MassTrimmed());
@@ -110,7 +125,7 @@ mithep::nero::FatJetsFiller::fill()
         throw std::runtime_error("non-fat jet passed to FatJetsFiller");
       auto& jet(*static_cast<mithep::FatJet const*>(jets->At(iJ)));
 
-      bool filled = fillFatJet(jet);    
+      bool filled = fillFatJet(jet,false);    
       
       if (filled) {
         out_.trimmedMass->push_back(-1);
