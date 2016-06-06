@@ -7,6 +7,7 @@
 #include "MitCommon/DataFormats/interface/Types.h"
 #include "MitCommon/DataFormats/interface/Vect4M.h"
 #include "MitPhysics/Utils/interface/NeuralNet.h"
+#include "MitAna/DataTree/interface/FatJet.h"
 
 namespace mithep {
   namespace nero {
@@ -33,8 +34,10 @@ namespace mithep {
 
       void SetMVAOn(bool b) { MVAOn = b; }
       void SetMJIdOn(bool b) { applyMJId=b; }
+      void SetExtendedOn(bool b) { extended = b; }
 
     private:
+      bool fillFatJet(const FatJet &jet);
       BareFatJets out_{};
 
       BaseFiller::Collection collection_;
@@ -43,12 +46,14 @@ namespace mithep {
       
       bool applyMJId=false;      
       bool MVAOn=false;
+      bool extended=false;
       NeuralNet *topANN;
       float nn_mSD;
       float nn_QGTag;
       float nn_groomedIso;
       float nn_tau32;
       float nn_tau21;
+      unsigned int subjetCounter;
       
       ClassDef(FatJetsFiller, 0)
     };

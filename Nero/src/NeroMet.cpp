@@ -12,6 +12,7 @@ NeroMet::~NeroMet(){
 }
 
 
+
 int NeroMet::analyze(const edm::Event& iEvent){
 
     if ( mOnlyMc  ) return 0; // in principle I would like to have the gen met: TODO
@@ -20,8 +21,17 @@ int NeroMet::analyze(const edm::Event& iEvent){
     iEvent.getByToken(token, handle);
     if ( not handle.isValid() ) cout<<"[NeroMet]::[analyze]::[ERROR] handle is not valid"<<endl;
 
-    iEvent.getByToken(token_puppi,handle_puppi);
-    if ( not handle_puppi.isValid() ) cout<<"[NeroMet]::[analyze]::[ERROR] handle_puppi is not valid"<<endl;
+    if (rerunPuppi) {
+        iEvent.getByToken(token_puppiRerun,handle_puppiRerun);
+        if ( not handle_puppiRerun.isValid() ) cout<<"[NeroMetRecluster]::[analyze]::[ERROR] handle_puppiRerun is not valid"<<endl;
+
+        iEvent.getByToken(token_puppiRerunUncorr,handle_puppiRerunUncorr);
+        if ( not handle_puppiRerunUncorr.isValid() ) cout<<"[NeroMetRecluster]::[analyze]::[ERROR] handle_puppiRerunUncorr is not valid"<<endl;
+    } else {
+        iEvent.getByToken(token_puppi,handle_puppi);
+        if ( not handle_puppi.isValid() ) cout<<"[NeroMet]::[analyze]::[ERROR] handle_puppi is not valid"<<endl;
+    }
+
 
     // -- iEvent.getByToken(token_puppiUncorr,handle_puppiUncorr);
     // -- if ( not handle_puppiUncorr.isValid() ) cout<<"[NeroMet]::[analyze]::[ERROR] handle_puppiUncorr is not valid"<<endl;
@@ -55,7 +65,6 @@ int NeroMet::analyze(const edm::Event& iEvent){
 
         if ( pf == NULL ) cout<<"[NeroMet]::[analyze]::[ERROR] PF pointer is null. Run NeroPF. "<<endl; 
 
-            /*
         for (unsigned int i = 0, n = pf->handle->size(); i < n; ++i) {
             const pat::PackedCandidate &cand = (*pf->handle)[i];
 
@@ -75,12 +84,17 @@ int NeroMet::analyze(const edm::Event& iEvent){
         *pfMet_e3p0 = TLorentzVector( -pfmet_3p0 );
         *metNoMu = TLorentzVector(metnomu);  // no minus
         *trackMet = TLorentzVector( -tkMet );
-        */
 
-        auto &puppi = handle_puppi->front(); 
-        *metPuppi =  TLorentzVector( puppi.px(), puppi.py(),puppi.pz(),puppi.energy() );
-        //sumEtRawPuppi = handle_puppiUncorr->front().sumEt();
-        sumEtRawPuppi = puppi.uncorSumEt();
+        if (rerunPuppi) {
+            auto &puppi = handle_puppiRerun->front(); 
+            *metPuppi =  TLorentzVector( puppi.px(), puppi.py(),puppi.pz(),puppi.energy() );
+            sumEtRawPuppi = handle_puppiRerunUncorr->front().sumEt();
+        } else {
+            auto &puppi = handle_puppi->front(); 
+            *metPuppi =  TLorentzVector( puppi.px(), puppi.py(),puppi.pz(),puppi.energy() );
+            //sumEtRawPuppi = handle_puppiUncorr->front().sumEt();
+            sumEtRawPuppi = puppi.uncorSumEt();
+        }
 
         for(Syst mysyst = (Syst)0; mysyst < MaxSyst ; mysyst = (Syst)((int)mysyst +1 ) )
         {
@@ -113,12 +127,14 @@ int NeroMet::analyze(const edm::Event& iEvent){
             if (miniAODUnc == pat::MET::METUncertaintySize)
                 cout <<"[NeroMet]::[analyze]::[WARNING] unable to translate met syst,"<< int(mysyst) <<endl;
 
+            /*
             new ( (*metPuppiSyst)[ mysyst ] ) TLorentzVector( 
                     puppi . shiftedP4( miniAODUnc).px(), 
                     puppi . shiftedP4(miniAODUnc).py(),  
                     puppi . shiftedP4(miniAODUnc).pz(),  
                     puppi . shiftedP4(miniAODUnc).energy()
                     );
+            */
 
             new ( (*metSyst)[ mysyst ] ) TLorentzVector( 
                     met . shiftedP4( miniAODUnc).px(), 
