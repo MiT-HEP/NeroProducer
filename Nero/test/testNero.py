@@ -16,28 +16,14 @@ options.register('isGrid', False, VarParsing.VarParsing.multiplicity.singleton,V
 options.register('nerohead', "XXX", VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.string,"Set to the head of the repository. use check_output 'git rev-parse HEAD' in the crab py file. active only if isGrid.")
 options.register("nerotag", "YYY", VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.string,"Set to the tag of the repository. use check_output 'git rev-parse HEAD' in the crab py file. active only if isGrid.")
 options.register('isParticleGun', False, VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Set it to true if MonteCarlo is ParticleGun")
-options.register('is25ns', True, VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Set it to true to run on 25ns data/MC")
-options.register('is50ns', False, VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Set it to true to run on 50ns data/MC")
-options.register('is2016', False, VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Set to true to run on 2016 data")
 
 options.parseArguments()
 isData = options.isData
 
-if options.is25ns and options.is50ns : 
-    raise('cannot run both on 25 and 50ns. Pick up one')
-if not options.is25ns and not options.is50ns:
-    raise('cannot run nor 25ns nor 50ns configuration. Pick up one.')
-
-if options.is25ns:
-    print "-> Loading 25ns configuration"
-if options.is50ns:
-    print "-> Loading 50ns configuration"
 if options.isData:
     print "-> Loading DATA configuration"
 else:
     print "-> Loading MC configuration"
-if options.is2016:
-    print "-> Loading 2016 data configuration"
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 # If you run over many samples and you save the log, remember to reduce
@@ -48,6 +34,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 if isData:
    fileList = [
+       '/store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v2/000/273/409/00000/16132799-721B-E611-BDDA-02163E014231.root'
        #'/store/data/Run2015D/MET/MINIAOD/16Dec2015-v1/50000/00EA1DB2-90AA-E511-AEEE-0025905C2CE6.root'
        #'/store/data/Run2015D/DoubleMuon/MINIAOD/16Dec2015-v1/10000/000913F7-E9A7-E511-A286-003048FFD79C.root'
        ]
@@ -82,28 +69,16 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 #mc https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions#Global_Tags_for_Run2_MC_Producti
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 if (isData):
-    if options.is25ns:
-        if options.is2016:
-            process.GlobalTag.globaltag = '80X_dataRun2_Prompt_v8'
-        else:
-            process.GlobalTag.globaltag = '76X_dataRun2_16Dec2015_v0'
-    if options.is50ns:
-        process.GlobalTag.globaltag = '74X_dataRun2_Prompt_v1'
-        print "FIX GLOBAL TAG"
+        process.GlobalTag.globaltag = '80X_dataRun2_Prompt_v8'
 else:
-    if options.is25ns:
-        #process.GlobalTag.globaltag = '76X_mcRun2_asymptotic_RunIIFall15DR76_v1'
         process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_v3'
-    if options.is50ns:
-        process.GlobalTag.globaltag = 'MCRUN2_74_V9A::All' ## FIXME
-        print "FIX GLOBAL TAG"
 
 ### LOAD DATABASE
 from CondCore.DBCommon.CondDBSetup_cfi import *
 #from CondCore.CondDB.CondDB_cfi import *
 
 ######## LUMI MASK
-if isData and not options.isGrid and not options.is2016: ## dont load the lumiMaks, will be called by crab
+if isData and not options.isGrid and False: ## dont load the lumiMaks, will be called by crab
     #pass
     import FWCore.PythonUtilities.LumiList as LumiList
     ## SILVER
