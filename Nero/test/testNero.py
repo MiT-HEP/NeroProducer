@@ -115,8 +115,8 @@ if isData and not options.isGrid and not options.is2016: ## dont load the lumiMa
 ## SKIM INFO
 process.load('NeroProducer.Skim.infoProducerSequence_cff')
 process.load('NeroProducer.Nero.Nero_cfi')
-#process.load('NeroProducer.Nero.NeroMonotop_cfi')
 #process.load('NeroProducer.Nero.NeroMonojet_cfi')
+#process.load('NeroProducer.Nero.NeroMonotop_cfi')
 #process.load('NeroProducer.Nero.NeroChargedHiggs_cfi')
 
 #-----------------------ELECTRON ID-------------------------------
@@ -287,9 +287,11 @@ if process.nero.doReclustering:
 
                 )  
         if isData:
-          process.jec.connect = cms.string('sqlite:////'+cmssw_base+'/src/NeroProducer/Nero/test/jec/Fall15_25nsV2_DATA.db')
+          #process.jec.connect = cms.string('sqlite:////'+cmssw_base+'/src/NeroProducer/Nero/test/jec/Fall15_25nsV2_DATA.db')
+          process.jec.connect = cms.string('sqlite:jec/Fall15_25nsV2_DATA.db')
         else:
-          process.jec.connect = cms.string('sqlite:////'+cmssw_base+'/src/NeroProducer/Nero/test/jec/Fall15_25nsV2_MC.db')
+          process.jec.connect = cms.string('sqlite:jec/Fall15_25nsV2_MC.db')
+        process.es_prefer_jec = cms.ESPrefer('PoolDBESSource', 'jec')
 
         from JetMETCorrections.Configuration.JetCorrectorsAllAlgos_cff  import *
         jetlabel='AK4PFPuppi'
@@ -351,11 +353,12 @@ if process.nero.doReclustering:
         ak8PuppiSequence = makeFatJets(process,isData=isData,pfCandidates='puppiForMET',algoLabel='AK',jetRadius=0.8)
         process.jetSequence += ak8PuppiSequence
     if process.nero.doCA15:
-        ca15CHSSequence = makeFatJets(process,isData=isData,pfCandidates='pfCHS',algoLabel='CA',jetRadius=1.5)
-        process.jetSequence += ca15CHSSequence
         if process.nero.doPuppi:
             ca15PuppiSequence = makeFatJets(process,isData=isData,pfCandidates='puppiForMET',algoLabel='CA',jetRadius=1.5)
             process.jetSequence += ca15PuppiSequence
+        else:
+            ca15CHSSequence = makeFatJets(process,isData=isData,pfCandidates='pfCHS',algoLabel='CA',jetRadius=1.5)
+            process.jetSequence += ca15CHSSequence
 
 
 # ------------------------QG-----------------------------------------------
