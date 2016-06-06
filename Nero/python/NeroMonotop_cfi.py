@@ -5,8 +5,6 @@ print " ------- LOADING MONO TOP CONFIGURATION -------- "
 
 nero.info = cms.string("NeroMonotop")
 
-nero.triggerNames = cms.vstring(['HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight',
-                                 'HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight'])
 nero.minJetPt         = cms.double (20.)
 nero.minJetEta        = cms.double (4.7)
 nero.minJetId         = cms.string ('loose')
