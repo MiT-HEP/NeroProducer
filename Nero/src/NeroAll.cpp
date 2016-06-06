@@ -13,7 +13,7 @@ NeroAll::~NeroAll(){}
 
 int NeroAll::analyze(const edm::Event&iEvent)
 {
-    if(VERBOSE>1) cout<<"[NeroAll]::[analyze]::[DEBUG] figure out if it is MC"<<endl;
+    if(VERBOSE>0) cout<<"[NeroAll]::[analyze]::[DEBUG] figure out if it is MC"<<endl;
 
     if(isMc_ <0 )
     {
@@ -28,6 +28,10 @@ int NeroAll::analyze(const edm::Event&iEvent)
     //I suppose to have a info_handle
     iEvent.getByToken(info_token,info_handle);
     iEvent.getByToken(lhe_token,lhe_handle);
+
+    if(VERBOSE>0) { if (lhe_handle.isValid()) cout<<"[NeroAll]::[analyze]::[DEBUG] LHE Handle is valid. SIZE="<<lhe_handle->weights().size()<<endl;
+        else cout<<"[NeroAll]::[analyze]::[DEBUG] LHE Handle is NOT valid."<<endl;
+    }
     //---  scale
     if (lhe_handle.isValid() and  lhe_handle->weights().size() >=9){
         hDscaleReweightSums -> Fill( 0+.5 , double(lhe_handle -> weights() . at(1) .wgt)) ;
@@ -48,6 +52,7 @@ int NeroAll::analyze(const edm::Event&iEvent)
     if( isSkim() == 0) 
     {
         //TODO FILL all_
+        throw 5;
         isRealData = ( iEvent.isRealData() ) ? 1 : 0;	
         runNum = iEvent.id().run();
         lumiNum = iEvent.luminosityBlock(); 	
