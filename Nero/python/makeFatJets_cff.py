@@ -201,7 +201,9 @@ def makeFatJets(process,isData,pfCandidates,algoLabel,jetRadius):
                                                           jetPtMin = cms.double(150)
                                                       )
   )
+  process.dump = cms.EDAnalyzer("EventContentAnalyzer")
   if addingGenJets and not(isData):
+    print 'addingGenJets', 'genJetsNoNu'+rLabel
     newSeq += getattr(process,'genJetsNoNu'+rLabel)
     newSeq += getattr(process,'genJetsNoNuSoftDrop'+rLabel)
   newSeq += getattr(process,'PFJets'+neroLabel)
