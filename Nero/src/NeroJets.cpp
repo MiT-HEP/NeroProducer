@@ -173,7 +173,8 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
                 newptUp = s * sigmaUp + oldpt;
                 newptDown = s * sigmaDown +oldpt;
             }
-            *(TLorentzVector*)(*p4)[p4->GetEntriesFast()-1] *= newpt /oldpt ; // Update the pt stored in p4 at the last position (N-1)
+            //*(TLorentzVector*)(*p4)[p4->GetEntriesFast()-1] *= newpt /oldpt ; // Update the pt stored in p4 at the last position (N-1)
+            ptResUncCentral->push_back(newpt);
             ptResUncUp->push_back(newptUp);
             ptResUncDown->push_back(newptDown) ;
         } // end is MC for JER

@@ -41,6 +41,7 @@ class BareJets : virtual public BareP4
         vector<float> *puId{0};
         vector<float> *unc{0};
         // JER:
+        vector<float> *ptResUncCentral{0};
         vector<float> *ptResUncUp{0};
         vector<float> *ptResUncDown{0};
         //
