@@ -231,12 +231,8 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         nhIso -> push_back ( _nhIso_ ) ;
         puIso -> push_back ( _puIso_ ) ;
 
-        /*
-        chIsoRC -> push_back( _chIsoRC_);
-        phoIsoRC -> push_back( _phIsoRC_ ) ;
-        nhIsoRC -> push_back ( _nhIsoRC_ ) ;
-        puIsoRC -> push_back ( _puIsoRC_ ) ;
-        */
+        etaSC -> push_back(  pho.superCluster()->eta() ) ;
+
     }
    
     if ( int(selBits -> size()) < mMinNpho  ) return 1;
