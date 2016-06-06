@@ -29,7 +29,7 @@ config.General.transferLogs = False
 ## JobType
 config.JobType.pluginName = 'Analysis'
 config.JobType.psetName = 'testNero.py'
-config.JobType.pyCfgParams=['isGrid=True','isData=False','is25ns=True','is50ns=False','is2016=False','nerohead='+check_output("git rev-parse HEAD",shell=True), 'nerotag='+check_output('git describe --tags',shell=True)]
+config.JobType.pyCfgParams=['isGrid=True','isData=False','nerohead='+check_output("git rev-parse HEAD",shell=True), 'nerotag='+check_output('git describe --tags',shell=True)]
 
 # request shipping of the JEC V4 -- local
 #config.JobType.inputFiles=['jec/Summer15_50nsV4_DATA.db','jec/Summer15_50nsV4_MC.db']
@@ -86,38 +86,19 @@ if __name__ == '__main__':
             except ClientException as cle:
                 print "Failed submitting task: %s" % (cle)
 
-    def setdata(value="True",is25ns=False,year='2015'):
-        if year=='2016' and value=='True':
+    def setdata(value="True"):
+        if value=='True':
             config.Data.splitting = 'LumiBased'
             config.Data.lumiMask=None
-        elif value == "True":
-            url = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions15/13TeV/"
-            if is25ns:
-                #config.Data.lumiMask= url + "Cert_246908-258159_13TeV_PromptReco_Collisions15_25ns_JSON_v3.txt"
-                # GOLDEN
-                ##Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt
-                # SILVER
-                #config.Data.lumiMask = url + "Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_Silver_v2.txt"
-                ## SILVER REPROCESSING
-                config.Data.lumiMask = url + "Reprocessing/Cert_13TeV_16Dec2015ReReco_Collisions15_25ns_JSON_Silver_v2.txt"
-            else:
-                config.Data.lumiMask= url + "Cert_246908-255031_13TeV_PromptReco_Collisions15_50ns_JSON.txt"
-            config.Data.splitting = 'LumiBased'
+            #url = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions15/13TeV/"
+            #config.Data.lumiMask = url + "Reprocessing/Cert_13TeV_16Dec2015ReReco_Collisions15_25ns_JSON_Silver_v2.txt"
         else:
             config.Data.lumiMask = None
             config.Data.splitting = 'FileBased'
 
         for idx,par in enumerate(config.JobType.pyCfgParams):
-            if 'is2016' in par:
-                config.JobType.pyCfgParams[idx] = 'is2016=' + 'True' if year=='2016' else 'False'
             if "isData" in par:
                 config.JobType.pyCfgParams[idx] = "isData=" + value
-            if "is25ns" in par:
-                if is25ns : config.JobType.pyCfgParams[idx] = "is25ns=True"
-                else : config.JobType.pyCfgParams[idx] = "is25ns=False"
-            if "is50ns" in par:
-                if is25ns : config.JobType.pyCfgParams[idx] = "is50ns=False"
-                else : config.JobType.pyCfgParams[idx] = "is50ns=True"
         return 
             
 
@@ -128,7 +109,7 @@ if __name__ == '__main__':
     ###################################################
     ########            25ns  2016             ########
     ###################################################
-    setdata("True",is25ns=True,year='2016')
+    setdata("True")
     ###################################################
     config.Data.unitsPerJob = 1
 
@@ -140,7 +121,7 @@ if __name__ == '__main__':
     ###################################################
     ########              25ns                 ########
     ###################################################
-    setdata("True",is25ns=True)
+    setdata("True")
     ###################################################
     config.Data.unitsPerJob = 150
 
@@ -161,7 +142,7 @@ if __name__ == '__main__':
     submit(config)
 
     ###################################################
-    setdata("False", is25ns=True)
+    setdata("False")
     ###################################################
 
     config.General.requestName = 'WZ-pythia8'
@@ -296,15 +277,6 @@ if __name__ == '__main__':
     config.Data.inputDataset = '/QCD_Pt_3200toInf_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'
     submit(config)
 
-    ###################################################
-    ########              50ns                 ########
-    ###################################################
-    setdata("True",is25ns=False)
-    ###################################################
-
-    ###################################################
-    setdata("False",is25ns=False)
-    ###################################################
 
 # Local Variables:
 # mode:python

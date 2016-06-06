@@ -23,7 +23,7 @@ class NeroLeptons : virtual public NeroCollection,
         //
         class myLepton{
             public:
-                myLepton(){ chiso=-999; nhiso=-999; phoiso=-999; puiso=-999;mva = -999;}
+                myLepton(){ chiso=-999; nhiso=-999; phoiso=-999; puiso=-999;mva = -999; etasc=0;}
                 float iso;
                 TLorentzVector p4;
                 unsigned selBits;
@@ -36,6 +36,8 @@ class NeroLeptons : virtual public NeroCollection,
                 float puiso;
 
                 float mva;
+
+                float etasc;
         };
 
         // to be setted by the vertex

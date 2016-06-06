@@ -25,6 +25,7 @@ BareJets::~BareJets(){
     BareFunctions::Delete(qglAxis2);
     //JER
     BareFunctions::Delete(refPt);
+    BareFunctions::Delete(ptResUncCentral);
     BareFunctions::Delete(ptResUncUp);
     BareFunctions::Delete(ptResUncDown);
 }
@@ -51,6 +52,7 @@ void BareJets::init(){
     BareFunctions::New(qglPtD);
     BareFunctions::New(qglAxis2);
     //
+    BareFunctions::New(ptResUncCentral);
     BareFunctions::New(ptResUncUp);
     BareFunctions::New(ptResUncDown);
 
@@ -83,6 +85,7 @@ void BareJets::clear(){
 
     //
     refPt->clear();
+    ptResUncCentral->clear();
     ptResUncUp->clear();
     ptResUncDown->clear();
 }
@@ -123,6 +126,7 @@ void BareJets::defineBranches(TTree *t){
 
     t->Branch(jetName + "QnoPU","vector<float>",&QnoPU);
     //
+    t->Branch(jetName + "PtResUncCentral","vector<float>",&ptResUncCentral);
     t->Branch(jetName + "PtResUncUp","vector<float>",&ptResUncUp);
     t->Branch(jetName + "PtResUncDown","vector<float>",&ptResUncDown);
 }
@@ -154,6 +158,7 @@ void BareJets::setBranchAddresses(TTree* t, std::string prefix)
     BareFunctions::SetBranchAddress(t,jetName + "Q",&Q);
     BareFunctions::SetBranchAddress(t,jetName + "QnoPU",&QnoPU);
     // ---
+    BareFunctions::SetBranchAddress(t,jetName + "PtResUncCentral"	,&ptResUncCentral);
     BareFunctions::SetBranchAddress(t,jetName + "PtResUncUp"	,&ptResUncUp);
     BareFunctions::SetBranchAddress(t,jetName + "PtResUncDown"	,&ptResUncDown);
 

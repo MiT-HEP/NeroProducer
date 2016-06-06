@@ -10,13 +10,9 @@ BarePhotons::~BarePhotons(){
     BareFunctions::Delete(sieie);
     BareFunctions::Delete(selBits);
     BareFunctions::Delete(chIso);
-    BareFunctions::Delete(chIsoRC);
     BareFunctions::Delete(nhIso);
-    BareFunctions::Delete(nhIsoRC);
     BareFunctions::Delete(phoIso);
-    BareFunctions::Delete(phoIsoRC);
     BareFunctions::Delete(puIso);
-    BareFunctions::Delete(puIsoRC);
     BareFunctions::Delete(rawpt);
     BareFunctions::Delete(e55);
     BareFunctions::Delete(hOverE);
@@ -30,6 +26,7 @@ BarePhotons::~BarePhotons(){
     BareFunctions::Delete(time);
     BareFunctions::Delete(timeSpan);
     BareFunctions::Delete(genMatched);
+    BareFunctions::Delete(etaSC);
 }
 
 void BarePhotons::init(){
@@ -39,13 +36,9 @@ void BarePhotons::init(){
     BareFunctions::New(sieie);
     BareFunctions::New(selBits);
     BareFunctions::New(chIso);
-    BareFunctions::New(chIsoRC);
     BareFunctions::New(nhIso);
-    BareFunctions::New(nhIsoRC);
     BareFunctions::New(phoIso);
-    BareFunctions::New(phoIsoRC);
     BareFunctions::New(puIso);
-    BareFunctions::New(puIsoRC);
 
     if (IsExtend()) {
         BareFunctions::New(rawpt);
@@ -56,6 +49,7 @@ void BarePhotons::init(){
         BareFunctions::New(sipip);
         BareFunctions::New(sieip);
         BareFunctions::New(r9);
+        BareFunctions::New(etaSC);
         BareFunctions::New(s4);
         BareFunctions::New(mipEnergy);
         BareFunctions::New(time);
@@ -72,13 +66,9 @@ void BarePhotons::clear(){
     selBits -> clear();
 
     chIso -> clear();
-    chIsoRC -> clear();
     nhIso -> clear();
-    nhIsoRC -> clear();
     phoIso -> clear();
-    phoIsoRC -> clear();
     puIso -> clear();
-    puIsoRC -> clear();
 
     if (extend_) {
         rawpt->clear();
@@ -89,6 +79,7 @@ void BarePhotons::clear(){
         sipip->clear();
         sieip->clear();
         r9->clear();
+        etaSC->clear();
         s4->clear();
         mipEnergy->clear();
         time->clear();
@@ -109,13 +100,9 @@ void BarePhotons::defineBranches(TTree *t){
     //
 
     t->Branch("photonChIso","vector<float>",&chIso);
-    t->Branch("photonChIsoRC","vector<float>",&chIsoRC);
     t->Branch("photonNhIso","vector<float>",&nhIso);
-    t->Branch("photonNhIsoRC","vector<float>",&nhIsoRC);
     t->Branch("photonPhoIso","vector<float>",&phoIso);
-    t->Branch("photonPhoIsoRC","vector<float>",&phoIsoRC);
     t->Branch("photonPuIso","vector<float>",&puIso);
-    t->Branch("photonPuIsoRC","vector<float>",&puIsoRC);
 
     if (IsExtend()) {
         t->Branch("photonRawPt", "vector<float>", &rawpt);
@@ -126,6 +113,7 @@ void BarePhotons::defineBranches(TTree *t){
         t->Branch("photonSipip", "vector<float>", &sipip);
         t->Branch("photonSieip", "vector<float>", &sieip);
         t->Branch("photonR9", "vector<float>", &r9);
+        t->Branch("photonEtaSC", "vector<float>", &etaSC);
         t->Branch("photonS4", "vector<float>", &s4);
         t->Branch("photonMipEnergy", "vector<float>", &mipEnergy);
         t->Branch("photonTime", "vector<float>", &time);
@@ -143,13 +131,9 @@ void BarePhotons::setBranchAddresses(TTree *t){
     BareFunctions::SetBranchAddress(t,"photonSelBits"	,&selBits);
 
     BareFunctions::SetBranchAddress(t,"photonChIso",&chIso);
-    BareFunctions::SetBranchAddress(t,"photonChIsoRC",&chIsoRC);
     BareFunctions::SetBranchAddress(t,"photonNhIso",&nhIso);
-    BareFunctions::SetBranchAddress(t,"photonNhIsoRC",&nhIsoRC);
     BareFunctions::SetBranchAddress(t,"photonPhoIso",&phoIso);
-    BareFunctions::SetBranchAddress(t,"photonPhoIsoRC",&phoIsoRC);
     BareFunctions::SetBranchAddress(t,"photonPuIso",&puIso);
-    BareFunctions::SetBranchAddress(t,"photonPuIsoRC",&puIsoRC);
 
     if (IsExtend()) {
         BareFunctions::SetBranchAddress(t, "photonRawPt", &rawpt);
@@ -160,6 +144,7 @@ void BarePhotons::setBranchAddresses(TTree *t){
         BareFunctions::SetBranchAddress(t, "photonSipip", &sipip);
         BareFunctions::SetBranchAddress(t, "photonSieip", &sieip);
         BareFunctions::SetBranchAddress(t, "photonR9", &r9);
+        BareFunctions::SetBranchAddress(t, "photonEtaSC", &etaSC);
         BareFunctions::SetBranchAddress(t, "photonS4", &s4);
         BareFunctions::SetBranchAddress(t, "photonMipEnergy", &mipEnergy);
         BareFunctions::SetBranchAddress(t, "photonTime", &time);

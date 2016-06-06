@@ -121,6 +121,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         l.pdgId = -el.charge()*11;
 
         l.mva = (*el_mva)[ref];
+        l.etasc = el.superCluster()->eta();
         
         // float chIso = el.chargedHadronIso();
         // float nhIso = el.neutralHadronIso();
@@ -222,6 +223,8 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         nhIso	-> push_back(l.nhiso);
         phoIso	-> push_back(l.phoiso);
         puIso	-> push_back(l.puiso);
+
+        etaSC	-> push_back(l.etasc);
     }
     return 0;
 }

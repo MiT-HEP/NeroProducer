@@ -56,7 +56,7 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         #endif
 
         //if ( not pho.passElectronVeto ()  ) continue;
-
+        // pt> 14 hOe <.15
         // r9()>0.8 , chargedHadronIso()<20, chargedHadronIso()<0.3*pt()
         if (pho.pt() <15 or pho.chargedHadronIso()/pho.pt() > 0.3) continue; // 10 -- 14  GeV photons are saved if chargedHadronIso()<10
         if (fabs(pho.eta()) > mMaxEta ) continue;
@@ -231,6 +231,8 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         phoIso -> push_back( _phIso_ ) ;
         nhIso -> push_back ( _nhIso_ ) ;
         puIso -> push_back ( _puIso_ ) ;
+
+        etaSC -> push_back(  pho.superCluster()->eta() ) ;
 
         /*
         chIsoRC -> push_back( _chIsoRC_);
