@@ -402,6 +402,7 @@ ak8JetExtender = mithep.FatJetExtenderMod('AK8JetExtender',
     DoQjets = False,
     BeVerbose = False
 )
+ak8JetExtender.SetSubJetTypeOn(mithep.XlSubJet.kSoftDrop)
 
 ca15JetCorrection = mithep.JetCorrectionMod('CA15JetCorrection',
     InputName = 'CA15FatJetsCHS',
