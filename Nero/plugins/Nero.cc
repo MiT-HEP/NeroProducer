@@ -256,6 +256,9 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     phos -> iso_ch_token = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>("phoChargedIsolation"));
     phos -> iso_nh_token = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>("phoNeutralHadronIsolation"));
     phos -> iso_pho_token = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>("phoPhotonIsolation"));
+    phos -> iso_wch_token = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>("phoWorstChargedIsolation"));
+    phos -> ebRecHits_token = mayConsume<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("ebRecHits"));
+    phos -> eeRecHits_token = mayConsume<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("eeRecHits"));
     phos -> mMinPt = iConfig.getParameter<double>("minPhoPt");
     phos -> mMaxIso = iConfig.getParameter<double>("maxPhoIso");
     phos -> mMinNpho = iConfig.getParameter<int>("minPhoN");

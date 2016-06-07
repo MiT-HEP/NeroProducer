@@ -9,6 +9,7 @@
 #include "NeroProducer/Nero/interface/NeroVertex.hpp"
 #include "NeroProducer/Nero/interface/NeroLeptons.hpp"
 #include "NeroProducer/Nero/interface/SuperClusterFootprintRemovalMiniAOD.h"
+#include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
 
 // Electron corrector
 //#include "EgammaAnalysis/ElectronTools/interface/EnergyScaleCorrection_class.hh"
@@ -36,6 +37,7 @@ class NeroPhotons : virtual public NeroCollection,
         edm::Handle<edm::ValueMap<float> > iso_ch;
         edm::Handle<edm::ValueMap<float> > iso_nh;
         edm::Handle<edm::ValueMap<float> > iso_pho;
+        edm::Handle<edm::ValueMap<float> > iso_wch;
 
         // --- Token
         edm::EDGetTokenT<pat::PhotonCollection> token;
@@ -45,6 +47,13 @@ class NeroPhotons : virtual public NeroCollection,
         edm::EDGetTokenT<edm::ValueMap<float> > iso_ch_token;
         edm::EDGetTokenT<edm::ValueMap<float> > iso_nh_token;
         edm::EDGetTokenT<edm::ValueMap<float> > iso_pho_token;
+        edm::EDGetTokenT<edm::ValueMap<float> > iso_wch_token;
+        
+        edm::EDGetTokenT<EcalRecHitCollection> ebRecHits_token;
+        edm::EDGetTokenT<EcalRecHitCollection> eeRecHits_token;
+    
+
+        EcalClusterLazyTools *clusterTools = 0;
 
         // --- RC
 
