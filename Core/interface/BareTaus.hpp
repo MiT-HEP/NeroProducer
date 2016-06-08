@@ -34,6 +34,17 @@ class BareTaus : virtual public BareP4
             byMediumCombinedIsolationDeltaBetaCorr3Hits  = 1UL <<21,
             byTightCombinedIsolationDeltaBetaCorr3Hits  = 1UL <<22,
 
+            // NProng
+            OneProng = 1UL << 25,
+            TwoProng = 1UL << 26,
+            ThreeProng = 1UL << 27,
+            ZeroPiZero = 1UL << 28,
+            OnePiZero = 1UL << 29,
+            TwoPiZero = 1UL << 30,
+            ThreePiZero = 1UL << 31,
+
+            /// NOTHING ABOVE 31 !!!
+
         };
 
         BareTaus();

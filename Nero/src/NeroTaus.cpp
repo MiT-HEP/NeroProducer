@@ -1,5 +1,6 @@
 #include "NeroProducer/Nero/interface/NeroTaus.hpp"
 #include "NeroProducer/Nero/interface/Nero.hpp"
+#include "DataFormats/TauReco/interface/PFTau.h"
 
 NeroTaus::NeroTaus(): 
         NeroCollection(),
@@ -32,7 +33,7 @@ int NeroTaus::analyze(const edm::Event & iEvent)
         if ( mMaxIso >=0 and tau.tauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") >= mMaxIso ) continue;
 
         if ( fabs(tau.eta()) > mMinEta ) continue;
-        
+
         // ------------ END SELECTION 
 
          float phoIso = 0.; for(auto cand : tau.isolationGammaCands() ) phoIso += cand->pt();//tau.isolationPFGammaCandsEtSum() ;
@@ -64,6 +65,29 @@ int NeroTaus::analyze(const edm::Event & iEvent)
         bits |= bool(tau.tauID("byLooseCombinedIsolationDeltaBetaCorr3Hits")) * byLooseCombinedIsolationDeltaBetaCorr3Hits;
         bits |= bool(tau.tauID("byMediumCombinedIsolationDeltaBetaCorr3Hits")) * byMediumCombinedIsolationDeltaBetaCorr3Hits;
         bits |= bool(tau.tauID("byTightCombinedIsolationDeltaBetaCorr3Hits")) * byTightCombinedIsolationDeltaBetaCorr3Hits;
+
+        switch (tau.decayMode() ) {
+            case reco::PFTau::kOneProng0PiZero : { bits |= OneProng; bits |= ZeroPiZero; break;}
+            case reco::PFTau::kOneProng1PiZero : { bits |= OneProng; bits |= OnePiZero; break;}
+            case reco::PFTau::kOneProng2PiZero : { bits |= OneProng; bits |= TwoPiZero; break;}
+            case reco::PFTau::kOneProng3PiZero : { bits |= OneProng; bits |= ThreePiZero; break;}
+            case reco::PFTau::kOneProngNPiZero : { bits |= OneProng; bits |= ThreePiZero; break;}
+
+            case reco::PFTau::kTwoProng0PiZero : { bits |= TwoProng; bits |= ZeroPiZero; break;}
+            case reco::PFTau::kTwoProng1PiZero : { bits |= TwoProng; bits |= OnePiZero; break;}
+            case reco::PFTau::kTwoProng2PiZero : { bits |= TwoProng; bits |= TwoPiZero; break;}
+            case reco::PFTau::kTwoProng3PiZero : { bits |= TwoProng; bits |= ThreePiZero; break;}
+            case reco::PFTau::kTwoProngNPiZero : { bits |= TwoProng; bits |= ThreePiZero; break;} // three or moreY
+
+            case reco::PFTau::kThreeProng0PiZero : { bits |= ThreeProng; bits |= ZeroPiZero; break;}
+            case reco::PFTau::kThreeProng1PiZero : { bits |= ThreeProng; bits |= OnePiZero; break;}
+            case reco::PFTau::kThreeProng2PiZero : { bits |= ThreeProng; bits |= TwoPiZero; break;}
+            case reco::PFTau::kThreeProng3PiZero : { bits |= ThreeProng; bits |= ThreePiZero; break;}
+            case reco::PFTau::kThreeProngNPiZero : { bits |= ThreeProng; bits |= ThreePiZero; break;} // three or moreY
+
+            case reco::PFTau::kNull : {break;} 
+            case reco::PFTau::kRareDecayMode : {break;} 
+        }  
 
         selBits -> push_back(bits);
         Q -> push_back( tau.charge() );
