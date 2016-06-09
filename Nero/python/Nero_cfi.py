@@ -57,6 +57,11 @@ nero = cms.EDAnalyzer("Nero",
     phoChargedIsolation = cms.InputTag("photonIDValueMapProducer:phoChargedIsolation"),
     phoNeutralHadronIsolation = cms.InputTag("photonIDValueMapProducer:phoNeutralHadronIsolation"),
     phoPhotonIsolation = cms.InputTag("photonIDValueMapProducer:phoPhotonIsolation"),
+    phoWorstChargedIsolation = cms.InputTag("photonIDValueMapProducer:phoWorstChargedIsolation"),
+
+    ### Rec Hits
+    ebRecHits = cms.InputTag("reducedEgamma:reducedEBRecHits"),
+    eeRecHits = cms.InputTag("reducedEgamma:reducedEERecHits"),
 
     ## MET Filters
     metfilterNames = cms.vstring(['Flag_HBHENoiseFilter', 
@@ -210,7 +215,7 @@ nero = cms.EDAnalyzer("Nero",
     minPhoEta = cms.double (2.5),
     minPhoN   = cms.int32  (0),
     maxPhoIso = cms.double (-1.),
-    matchPho  = cms.bool (False),
+    matchPho  = cms.bool (True),
     matchPhoDr = cms.double (0.3),
 )
 #------------------------------------------------------

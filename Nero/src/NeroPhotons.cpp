@@ -38,6 +38,7 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
     iEvent.getByToken(iso_ch_token, iso_ch);
     iEvent.getByToken(iso_nh_token, iso_nh);
     iEvent.getByToken(iso_pho_token, iso_pho);
+    
 
     if ( not handle.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] handle is not valid"<<endl;
     if ( not loose_id.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] loose_id is not valid"<<endl;
@@ -46,6 +47,11 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
     if ( not iso_ch.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] iso_ch is not valid"<<endl;
     if ( not iso_nh.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] iso_nh is not valid"<<endl;
     if ( not iso_pho.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] iso_pho is not valid"<<endl;
+    
+    if (IsExtend() ) {
+        iEvent.getByToken(iso_wch_token, iso_wch);
+        if ( not iso_wch.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] iso_wch is not valid"<<endl;
+    }
 
     int iPho = -1;	
     for (auto &pho : *handle)
@@ -75,6 +81,7 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         float _chIso_ =  (*iso_ch) [ref];
         float _nhIso_ =  (*iso_nh) [ref];
         float _phIso_ =  (*iso_pho)[ref];	
+        
         float _puIso_ =  pho.puChargedHadronIso() ;  // the other are eff area corrected, no need for this correction
         float totIso = _chIso_ + _nhIso_ + _phIso_;
 
@@ -246,7 +253,7 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
             e55->push_back(pho.e5x5());
             
             hOverE->push_back(pho.hadTowOverEm()); //pho.hadronicOverEm());
-            chWorstIso->push_back(pho.chargedHadronIsoWrongVtx());
+            chWorstIso->push_back( (*iso_wch)[ref] );
             // chIsoMax->push_back( ??? );
             
             sipip->push_back(pho.spp());
@@ -255,9 +262,11 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
             s4->push_back(pho.eMax()/(pho.eMax()+pho.eTop()+pho.eBottom()+pho.eLeft()+pho.eRight()));
             
             mipEnergy->push_back(pho.mipTotEnergy());
-            
-            // time->push_back(pho.superCluster()->SeedTime());
+
+            clusterTools = new EcalClusterLazyTools(iEvent, iSetup, ebRecHits_token, eeRecHits_token);
+            time->push_back(clusterTools->SuperClusterSeedTime(*pho.superCluster()));
             // timeSpan->push_back( ??? );
+            delete clusterTools;
             
             // genMatched->push_back( ??? );
         }
