@@ -20,6 +20,9 @@ nero = cms.EDAnalyzer("Nero",
     puppijets = cms.InputTag("slimmedJetsPuppi"),
     ############### RECLUSTERED JETS and MET
     doReclustering = cms.bool(False),
+    doAK8 = cms.bool(False),
+    doCA15 = cms.bool(False),
+    doPuppi = cms.bool(False),
 
     chsAK8 = cms.InputTag("slimmedJetsAK8"),
     puppiAK8 = cms.InputTag("packedPatJetsPFAK8Puppi"),
@@ -86,6 +89,8 @@ nero = cms.EDAnalyzer("Nero",
 				'HLT_Mu17_v',
 	    			'HLT_IsoMu20_v',
 				'HLT_IsoMu27_v', # SingleMuon, Iso20 is not always available in 25ns
+				'HLT_IsoMu24_v',
+				'HLT_Mu50_v',
 				'HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v',
 				'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v',
 				'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v',
@@ -98,11 +103,21 @@ nero = cms.EDAnalyzer("Nero",
                                 'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET110', ## not always available, Tau
                                 'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET120', ## unprescaled , Tau
 				'HLT_LooseIsoPFTau50_Trk30_eta2p1_v', ## Prescaled, Tau, for turn on studies
+				'HLT_PFMET120_JetIdCleaned_BtagCSV0p72',## unprescaled, MET, control on tau turn on
 				'HLT_PFMET120_NoiseCleaned_BtagCSV0p72',## unprescaled, MET, control on tau turn on
+				'HLT_PFMET120_BtagCSV0p72',## unprescaled, MET, control on tau turn on
 				## MET
                                 'HLT_PFMET170_NoiseCleaned',
                                 'HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight',
                                 'HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight',
+				'HLT_PFMET170_HBHECleaned',
+				'HLT_PFMET170_JetIdCleaned',
+				'HLT_PFMET170_NotCleaned',
+			        'HLT_PFMETNoMu90_PFMHTNoMu90_IDTight',
+			        'HLT_PFMETNoMu100_PFMHTNoMu100_IDTight',
+			        'HLT_PFMETNoMu110_PFMHTNoMu110_IDTight',
+			        'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight',
+			        'HLT_Photon120_R9Id90_HE10_IsoM',
 				#### Control triggers, extra
 				'HLT_Ele15_IsoVVL_PFHT350_PFMET70',  ## Unprescaled, SingleElectron
 				'HLT_Mu15_IsoVVVL_PFHT350_PFMET70',  ## Unprescaled ,SingleMuon
@@ -132,7 +147,7 @@ nero = cms.EDAnalyzer("Nero",
     minJetPt  = cms.double (15.),
     minJetEta = cms.double (4.7),
     minJetN   = cms.int32  (0),
-    minJetId  = cms.string ('loose'),
+    minJetId  = cms.string ('none'),
     matchJet  = cms.bool (True),
     matchJetDr = cms.double(0.3),
 

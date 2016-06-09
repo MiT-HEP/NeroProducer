@@ -4,10 +4,11 @@ from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 import re,os
 
 def initEGammaVID(process, options):
-	if options.is25ns:
-		replace = {'bx' : '25ns', 'vs' : 'V1'}
-	if options.is50ns:
-		replace = {'bx' : '50ns', 'vs' : 'V2'}
+	replace = {'bx' : '25ns', 'vs' : 'V1'}
+	## if options.is25ns:
+	## 	replace = {'bx' : '25ns', 'vs' : 'V1'}
+	## if options.is50ns:
+	## 	replace = {'bx' : '50ns', 'vs' : 'V2'}
 	
 	toProduce={}
 	for obj in ['ele','pho']:
@@ -16,9 +17,9 @@ def initEGammaVID(process, options):
 	  if obj=='pho': directory = 'RecoEgamma.PhotonIdentification'
 	  for ID in ['veto','medium','loose','tight']:
 	      if obj == 'pho' and ID == 'veto' : continue
-	      if obj == 'pho' : 
-		 	replace['bx'] = '50ns' ##FIXME, we have only this
-			replace['vs'] = 'V1'
+	      ##if obj == 'pho' : 
+	      ##   	#replace['bx'] = '50ns' ##FIXME, we have only this
+	      ##  	replace['vs'] = 'V1'
 	
 	      replace['id'] = ID
 	      cmd = 'string = process.nero.' + obj + ID.title() + 'IdMap.value()'

@@ -173,7 +173,8 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
                 newptUp = s * sigmaUp + oldpt;
                 newptDown = s * sigmaDown +oldpt;
             }
-            *(TLorentzVector*)(*p4)[p4->GetEntriesFast()-1] *= newpt /oldpt ; // Update the pt stored in p4 at the last position (N-1)
+            //*(TLorentzVector*)(*p4)[p4->GetEntriesFast()-1] *= newpt /oldpt ; // Update the pt stored in p4 at the last position (N-1)
+            ptResUncCentral->push_back(newpt);
             ptResUncUp->push_back(newptUp);
             ptResUncDown->push_back(newptDown) ;
         } // end is MC for JER
@@ -238,6 +239,7 @@ bool NeroJets::JetId(const pat::Jet &j, std::string id)
     float eta = j.eta();
 
     //tightLepVetoJetID = (NHF<0.90 && NEMF<0.90 && NumConst>1 && MUF<0.8) && ((fabs(eta)<=2.4 && CHF>0 && CHM>0 && CEMF<0.90) || fabs(eta)>2.4) && fabs(eta)<=3.0 
+    if (id=="none") return true;
 
     if (id=="loose" || id=="monojet" || id=="monojetloose" || id=="monojet2015")
     {

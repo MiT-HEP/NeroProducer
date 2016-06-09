@@ -27,6 +27,7 @@ int NeroVertex::analyze(const edm::Event& iEvent){
 
     // Find the first vertex in the collection that passes
     // good quality criteria
+    /*
     VertexCollection::const_iterator firstGoodVertex = handle->end();
     firstGoodVertexIdx = -1;
     npv=0;
@@ -47,6 +48,10 @@ int NeroVertex::analyze(const edm::Event& iEvent){
 
     if ( firstGoodVertex==handle->end() ) return 1; // skip event if there are no good PVs
     pv_ = &(*firstGoodVertex); // it should remain after ending
+    */
+    npv= handle->size();
+    if (handle->empty() ) return 1; // skip event if there are no good PVs
+    pv_  = &handle->front();
 
     return 0;
 }

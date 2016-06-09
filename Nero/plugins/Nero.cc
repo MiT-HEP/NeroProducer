@@ -113,61 +113,77 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     puppijets -> cachedPrefix = "";
     obj.push_back(puppijets);
     
+    //--
     bool doReclustering= iConfig.getParameter<bool>("doReclustering");
+    bool doAK8 = iConfig.getParameter<bool>("doAK8");
+    bool doCA15 = iConfig.getParameter<bool>("doCA15");
+    bool doPuppi = iConfig.getParameter<bool>("doPuppi");
+
+    NeroFatJets *chsAK8 = new NeroFatJets();
+    chsAK8 -> mRunJEC = false; // these jets are already corrected in MiniAOD
+    chsAK8 -> mOnlyMc = onlyMc;
+    chsAK8 -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("chsAK8"));
+    chsAK8 -> mMinPt = iConfig.getParameter<double>("minAK8CHSPt");
+    chsAK8 -> mMaxEta = iConfig.getParameter<double>("minAK8CHSEta");
+    chsAK8 -> mMinId = iConfig.getParameter<string>("minAK8CHSId");
+    chsAK8 -> cachedPrefix = iConfig.getParameter<string>("AK8CHSName");
+    chsAK8 -> jetRadius = 0.8;
+    chsAK8 -> subjets_token = mayConsume<reco::PFJetCollection>(edm::InputTag("PFJetsSoftDrop"+chsAK8 -> cachedPrefix ,"SubJets"));
+    chsAK8 -> btags_token = mayConsume<reco::JetTagCollection>(edm::InputTag(chsAK8->cachedPrefix + "PFCombinedInclusiveSecondaryVertexV2BJetTags") ) ;
+    obj.push_back(chsAK8);
+
+
     //--
     if (doReclustering){
-       NeroFatJets *chsAK8 = new NeroFatJets();
-       chsAK8 -> mRunJEC = false; // these jets are already corrected in MiniAOD
-       chsAK8 -> mOnlyMc = onlyMc;
-       chsAK8 -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("chsAK8"));
-       chsAK8 -> mMinPt = iConfig.getParameter<double>("minAK8CHSPt");
-       chsAK8 -> mMaxEta = iConfig.getParameter<double>("minAK8CHSEta");
-       chsAK8 -> mMinId = iConfig.getParameter<string>("minAK8CHSId");
-       chsAK8 -> cachedPrefix = iConfig.getParameter<string>("AK8CHSName");
-       chsAK8 -> jetRadius = 0.8;
-       chsAK8 -> subjets_token = mayConsume<reco::PFJetCollection>(edm::InputTag("PFJetsSoftDrop"+chsAK8 -> cachedPrefix ,"SubJets"));
-       chsAK8 -> btags_token = mayConsume<reco::JetTagCollection>(edm::InputTag(chsAK8->cachedPrefix + "PFCombinedInclusiveSecondaryVertexV2BJetTags") ) ;
-       obj.push_back(chsAK8);
+        if (doAK8) {
+           if (doPuppi) {
+               NeroPuppiFatJets *puppiAK8= new NeroPuppiFatJets();
+               puppiAK8 -> mOnlyMc = onlyMc;
+               puppiAK8 -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("puppiAK8"));
+               puppiAK8 -> rho_token = evt->rho_token;
+               puppiAK8 -> mMinPt = iConfig.getParameter<double>("minAK8PuppiPt");
+               puppiAK8 -> mMaxEta = iConfig.getParameter<double>("minAK8PuppiEta");
+               puppiAK8 -> mMinId = iConfig.getParameter<string>("minAK8PuppiId");
+               puppiAK8 -> cachedPrefix = iConfig.getParameter<string>("AK8PuppiName");
+               puppiAK8 -> jetRadius = 0.8;
+               puppiAK8 -> subjets_token = mayConsume<reco::PFJetCollection>(edm::InputTag("PFJetsSoftDrop"+puppiAK8 -> cachedPrefix ,"SubJets"));
+               puppiAK8 -> btags_token = mayConsume<reco::JetTagCollection>(edm::InputTag(puppiAK8->cachedPrefix + "PFCombinedInclusiveSecondaryVertexV2BJetTags") ) ;
+               obj.push_back(puppiAK8);
+           }
+        }
 
-       NeroPuppiFatJets *puppiAK8= new NeroPuppiFatJets();
-       puppiAK8 -> mOnlyMc = onlyMc;
-       puppiAK8 -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("puppiAK8"));
-       puppiAK8 -> rho_token = evt->rho_token;
-       puppiAK8 -> mMinPt = iConfig.getParameter<double>("minAK8PuppiPt");
-       puppiAK8 -> mMaxEta = iConfig.getParameter<double>("minAK8PuppiEta");
-       puppiAK8 -> mMinId = iConfig.getParameter<string>("minAK8PuppiId");
-       puppiAK8 -> cachedPrefix = iConfig.getParameter<string>("AK8PuppiName");
-       puppiAK8 -> jetRadius = 0.8;
-       puppiAK8 -> subjets_token = mayConsume<reco::PFJetCollection>(edm::InputTag("PFJetsSoftDrop"+puppiAK8 -> cachedPrefix ,"SubJets"));
-       puppiAK8 -> btags_token = mayConsume<reco::JetTagCollection>(edm::InputTag(puppiAK8->cachedPrefix + "PFCombinedInclusiveSecondaryVertexV2BJetTags") ) ;
-       obj.push_back(puppiAK8);
+        if (doCA15) {
 
-       NeroFatJets *chsCA15 = new NeroFatJets();
-       chsCA15 -> mRunJEC = true; // these jets are already corrected in MiniAOD
-       chsCA15 -> mOnlyMc = onlyMc;
-       chsCA15 -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("chsCA15"));
-       chsCA15 -> rho_token = evt->rho_token;
-       chsCA15 -> mMinPt = iConfig.getParameter<double>("minCA15CHSPt");
-       chsCA15 -> mMaxEta = iConfig.getParameter<double>("minCA15CHSEta");
-       chsCA15 -> mMinId = iConfig.getParameter<string>("minCA15CHSId");
-       chsCA15 -> cachedPrefix = iConfig.getParameter<string>("CA15CHSName");
-       chsCA15 -> jetRadius = 1.5;
-       chsCA15 -> subjets_token = mayConsume<reco::PFJetCollection>(edm::InputTag("PFJetsSoftDrop"+chsCA15 -> cachedPrefix ,"SubJets"));
-       chsCA15 -> btags_token = mayConsume<reco::JetTagCollection>(edm::InputTag(chsCA15->cachedPrefix + "PFCombinedInclusiveSecondaryVertexV2BJetTags") ) ;
-       obj.push_back(chsCA15);
+           if (doPuppi) {
+               NeroPuppiFatJets *puppiCA15= new NeroPuppiFatJets();
+               puppiCA15 -> mOnlyMc = onlyMc;
+               puppiCA15 -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("puppiCA15"));
+               puppiCA15 -> rho_token = evt->rho_token;
+               puppiCA15 -> mMinPt = iConfig.getParameter<double>("minCA15PuppiPt");
+               puppiCA15 -> mMaxEta = iConfig.getParameter<double>("minCA15PuppiEta");
+               puppiCA15 -> mMinId = iConfig.getParameter<string>("minCA15PuppiId");
+               puppiCA15 -> cachedPrefix = iConfig.getParameter<string>("CA15PuppiName");
+               puppiCA15 -> jetRadius = 1.5;
+               puppiCA15 -> subjets_token = mayConsume<reco::PFJetCollection>(edm::InputTag("PFJetsSoftDrop"+puppiCA15 -> cachedPrefix ,"SubJets"));
+               puppiCA15 -> btags_token = mayConsume<reco::JetTagCollection>(edm::InputTag(puppiCA15->cachedPrefix + "PFCombinedInclusiveSecondaryVertexV2BJetTags") ) ;
+               obj.push_back(puppiCA15);
+           } else {
+               NeroFatJets *chsCA15 = new NeroFatJets();
+               chsCA15 -> mRunJEC = true; 
+               chsCA15 -> mOnlyMc = onlyMc;
+               chsCA15 -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("chsCA15"));
+               chsCA15 -> rho_token = evt->rho_token;
+               chsCA15 -> mMinPt = iConfig.getParameter<double>("minCA15CHSPt");
+               chsCA15 -> mMaxEta = iConfig.getParameter<double>("minCA15CHSEta");
+               chsCA15 -> mMinId = iConfig.getParameter<string>("minCA15CHSId");
+               chsCA15 -> cachedPrefix = iConfig.getParameter<string>("CA15CHSName");
+               chsCA15 -> jetRadius = 1.5;
+               chsCA15 -> subjets_token = mayConsume<reco::PFJetCollection>(edm::InputTag("PFJetsSoftDrop"+chsCA15 -> cachedPrefix ,"SubJets"));
+               chsCA15 -> btags_token = mayConsume<reco::JetTagCollection>(edm::InputTag(chsCA15->cachedPrefix + "PFCombinedInclusiveSecondaryVertexV2BJetTags") ) ;
+               obj.push_back(chsCA15);
 
-       NeroPuppiFatJets *puppiCA15= new NeroPuppiFatJets();
-       puppiCA15 -> mOnlyMc = onlyMc;
-       puppiCA15 -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("puppiCA15"));
-       puppiCA15 -> rho_token = evt->rho_token;
-       puppiCA15 -> mMinPt = iConfig.getParameter<double>("minCA15PuppiPt");
-       puppiCA15 -> mMaxEta = iConfig.getParameter<double>("minCA15PuppiEta");
-       puppiCA15 -> mMinId = iConfig.getParameter<string>("minCA15PuppiId");
-       puppiCA15 -> cachedPrefix = iConfig.getParameter<string>("CA15PuppiName");
-       puppiCA15 -> jetRadius = 1.5;
-       puppiCA15 -> subjets_token = mayConsume<reco::PFJetCollection>(edm::InputTag("PFJetsSoftDrop"+puppiCA15 -> cachedPrefix ,"SubJets"));
-       puppiCA15 -> btags_token = mayConsume<reco::JetTagCollection>(edm::InputTag(puppiCA15->cachedPrefix + "PFCombinedInclusiveSecondaryVertexV2BJetTags") ) ;
-       obj.push_back(puppiCA15);
+           }
+        }
     }
 
     // --- 
@@ -223,27 +239,20 @@ Nero::Nero(const edm::ParameterSet& iConfig)
 
     //--
 
-    if (doReclustering){
-
-        NeroMetRecluster *met = new NeroMetRecluster();
-        met -> mOnlyMc = onlyMc;
-        met -> token = consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("mets"));
-        met -> token_puppi = consumes<reco::PFMETCollection>(iConfig.getParameter<edm::InputTag>("metsPuppi"));
-        met -> token_puppiUncorr = consumes<reco::PFMETCollection>(iConfig.getParameter<edm::InputTag>("metsPuppiUncorrected"));
-        met -> pf = pf;
-        met -> SetExtend (iConfig.getParameter<bool>("extendMet"));
-        obj.push_back(met);
-
+    NeroMet *met = new NeroMet();
+    met -> mOnlyMc = onlyMc;
+    met -> token = consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("mets"));
+    met -> pf = pf;
+    if (doReclustering && doPuppi) {
+        met -> rerunPuppi = true;
+        met -> token_puppiRerun = consumes<reco::PFMETCollection>(iConfig.getParameter<edm::InputTag>("metsPuppi"));
+        met -> token_puppiRerunUncorr = consumes<reco::PFMETCollection>(iConfig.getParameter<edm::InputTag>("metsPuppiUncorrected"));
     } else {
-
-        NeroMet *met = new NeroMet();
-        met -> mOnlyMc = onlyMc;
-        met -> token = consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("mets"));
+        met -> rerunPuppi = false;
         met -> token_puppi = consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("metsPuppi"));
-        met -> pf = pf;
-        met -> SetExtend (iConfig.getParameter<bool>("extendMet"));
-        obj.push_back(met);
     }
+    met -> SetExtend (iConfig.getParameter<bool>("extendMet"));
+    obj.push_back(met);
 
 
     // --
@@ -471,7 +480,10 @@ Nero::beginJob()
 
     // define branches
     for(auto o : obj)
+    {
+        if (dynamic_cast<NeroAll*> (o) !=NULL ) { continue ; }  // otherwise I will have also the branch in the main tree.
         o -> defineBranches(tree_);
+    }
 
     for(auto o : lumiObj)
         o -> defineBranches(all_);

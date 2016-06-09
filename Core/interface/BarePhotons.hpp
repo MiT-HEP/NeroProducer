@@ -42,13 +42,15 @@ class BarePhotons : virtual public BareP4
         vector<unsigned> *selBits{0};
 
         vector<float> *chIso{0};
-        vector<float> *chIsoRC{0};
         vector<float> *nhIso{0};
-        vector<float> *nhIsoRC{0};
         vector<float> *phoIso{0};
-        vector<float> *phoIsoRC{0};
         vector<float> *puIso{0};
-        vector<float> *puIsoRC{0};
+
+        vector<float> *etaSC{0};
+        //vector<float> *chIsoRC{0};
+        //vector<float> *nhIsoRC{0};
+        //vector<float> *phoIsoRC{0};
+        //vector<float> *puIsoRC{0};
 
         // EXTENDED VARIABLES
         vector<float> *rawpt{0};

@@ -82,7 +82,7 @@ mithep::nero::MetFiller::fill()
   }
 
   if (puppiRawMetName_.Length() != 0) {
-    auto& puppiRawMet(*getSource<mithep::MetCol>(puppiRawMetName_)->At(0));
+    auto& puppiRawMet(*getSource<mithep::PFMetCol>(puppiRawMetName_)->At(0));
     out_.sumEtRawPuppi = puppiRawMet.SumEt();
   }
 
