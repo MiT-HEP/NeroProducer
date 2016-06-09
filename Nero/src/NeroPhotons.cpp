@@ -266,6 +266,7 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
             clusterTools = new EcalClusterLazyTools(iEvent, iSetup, ebRecHits_token, eeRecHits_token);
             time->push_back(clusterTools->SuperClusterSeedTime(*pho.superCluster()));
             // timeSpan->push_back( ??? );
+            delete clusterTools;
             
             // genMatched->push_back( ??? );
         }
