@@ -22,10 +22,12 @@ class NeroFatJets : virtual public NeroCollection,
         // --- Handle
         edm::Handle<pat::JetCollection> handle;	
         edm::Handle<double> rho_handle;
-
+        edm::Handle<reco::VertexCollection> vertex_handle;
+    
         // --- Token
         edm::EDGetTokenT<pat::JetCollection> token;
         edm::EDGetTokenT<double> rho_token;
+        edm::EDGetTokenT<reco::VertexCollection> vertex_token;
         edm::EDGetTokenT<reco::PFJetCollection> subjets_token;
         edm::EDGetTokenT<reco::JetTagCollection> btags_token;
 
