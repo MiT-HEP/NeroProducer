@@ -299,9 +299,14 @@ for idx0,fl in enumerate(fileChunks):
 	print >> sh, "cd " + opts.dir
 	print >> sh, 'rm sub_%d.run'%idx
 	print >> sh, 'echo "exit status is ${EXIT}"'
+
+	copyCmd="cmsStage -f " 
+	if opts.instance != "" and opts.instance != "root://eoscms":
+		copyCmd=EOS2 + " cp "
+
 	if opts.put != "":
 		#print >> sh, '[ "${EXIT}" == "0" ] && { cmsMkdir ' + opts.put +'  && cmsStage -f ${WORKDIR}/NeroNtuples.root ' + opts.put + '/NeroNtuples_%(idx)d.root  && touch sub_%(idx)d.done || echo "cmsStage fail" > sub_%(idx)d.fail; }'%{'idx':idx}
-		print >> sh, '[ "${EXIT}" == "0" ] && { ' + EOS2 + " mkdir " + "/eos/cms"+opts.put +'  ; cmsStage -f ${WORKDIR}/NeroNtuples.root ' + opts.put + '/NeroNtuples_%(idx)d.root  && touch sub_%(idx)d.done || echo "cmsStage fail" > sub_%(idx)d.fail; }'%{'idx':idx}
+		print >> sh, '[ "${EXIT}" == "0" ] && { ' + EOS2 + " mkdir " + "/eos/cms"+opts.put +'  ; ' +copyCmd+ ' ${WORKDIR}/NeroNtuples.root ' + opts.put + '/NeroNtuples_%(idx)d.root  && touch sub_%(idx)d.done || echo "cmsStage fail" > sub_%(idx)d.fail; }'%{'idx':idx}
 	else:
 		print >> sh, '[ "${EXIT}" == "0" ] && { cp ${WORKDIR}/NeroNtuples.root ./NeroNtuples_%(idx)d.root && touch sub_%(idx)d.done || echo "cp fail" > sub_%(idx)d.fail ; }'%{'idx':idx}
 
