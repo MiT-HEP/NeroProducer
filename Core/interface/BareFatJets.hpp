@@ -30,7 +30,7 @@ class BareFatJets : virtual public BareP4
 
         vector<float> *trimmedMass{0};
         vector<float> *prunedMass{0};
-        vector<float> *filteredMass{0};
+        vector<float> *corrprunedMass{0};
         vector<float> *softdropMass{0};
 
         TClonesArray  *subjet{0};

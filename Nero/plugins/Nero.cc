@@ -123,6 +123,8 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     chsAK8 -> mRunJEC = false; // these jets are already corrected in MiniAOD
     chsAK8 -> mOnlyMc = onlyMc;
     chsAK8 -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("chsAK8"));
+    chsAK8 -> rho_token = consumes<double>(iConfig.getParameter<edm::InputTag>("rho"));
+    chsAK8 -> vertex_token = consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("vertices"));
     chsAK8 -> mMinPt = iConfig.getParameter<double>("minAK8CHSPt");
     chsAK8 -> mMaxEta = iConfig.getParameter<double>("minAK8CHSEta");
     chsAK8 -> mMinId = iConfig.getParameter<string>("minAK8CHSId");

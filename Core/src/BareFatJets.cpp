@@ -14,7 +14,7 @@ BareFatJets::~BareFatJets(){
     BareFunctions::Delete(tau3           );
     BareFunctions::Delete(trimmedMass    );
     BareFunctions::Delete(prunedMass     );
-    BareFunctions::Delete(filteredMass   );
+    BareFunctions::Delete(corrprunedMass );
     BareFunctions::Delete(softdropMass   );
     BareFunctions::Delete(subjet         );
     BareFunctions::Delete(nSubjets       );
@@ -34,7 +34,7 @@ void BareFatJets::init(){
     BareFunctions::New(tau3);
     BareFunctions::New(trimmedMass    );
     BareFunctions::New(prunedMass     );
-    BareFunctions::New(filteredMass   );
+    BareFunctions::New(corrprunedMass );
     BareFunctions::New(softdropMass   );
     BareFunctions::New(subjet         );
     BareFunctions::New(nSubjets       );
@@ -54,7 +54,7 @@ void BareFatJets::clear(){
     tau3 -> clear();
     trimmedMass -> clear();
     prunedMass -> clear();
-    filteredMass -> clear();
+    corrprunedMass -> clear();
     softdropMass -> clear();
     subjet->Clear();
     nSubjets->clear();
@@ -80,7 +80,7 @@ void BareFatJets::defineBranches(TTree *t){
     //
     t->Branch(jetName + "TrimmedMass","vector<float>",&trimmedMass);
     t->Branch(jetName + "PrunedMass","vector<float>",&prunedMass);
-    t->Branch(jetName + "FilteredMass","vector<float>",&filteredMass);
+    t->Branch(jetName + "CorrectedPrunedMass","vector<float>",&corrprunedMass);
     t->Branch(jetName + "SoftdropMass","vector<float>",&softdropMass);
 
     t->Branch(jetName + "subjet","TClonesArray", &subjet, 128000, 0);
@@ -109,7 +109,7 @@ void BareFatJets::setBranchAddresses(TTree *t, std::string prefix){
 
     BareFunctions::SetBranchAddress(t,jetName + "TrimmedMass"   ,&trimmedMass);
     BareFunctions::SetBranchAddress(t,jetName + "PrunedMass"    ,&prunedMass);
-    BareFunctions::SetBranchAddress(t,jetName + "FilteredMass"  ,&filteredMass);
+    BareFunctions::SetBranchAddress(t,jetName + "CorrectedPrunedMass"  ,&corrprunedMass);
     BareFunctions::SetBranchAddress(t,jetName + "SoftdropMass"  ,&softdropMass);
 
     BareFunctions::SetBranchAddress(t,jetName + "subjet"  ,&subjet);
