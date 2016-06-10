@@ -34,6 +34,9 @@ class BareMet : virtual public BareP4
         TLorentzVector *metNoHF{0};
         float sumEtRawNoHF;
         TLorentzVector *trackMet{0};
+        TLorentzVector *neutralMet{0};
+        TLorentzVector *photonMet{0};
+        TLorentzVector *HFMet{0};
 
         TLorentzVector *metPuppi{0};
         float sumEtRawPuppi;

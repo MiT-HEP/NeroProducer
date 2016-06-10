@@ -17,6 +17,7 @@ NeroEvent::NeroEvent():
     metNameToBit["Flag_EcalDeadCellTriggerPrimitiveFilter"] = EcalDeadCellTriggerPrimitiveFilter;
     metNameToBit["Flag_goodVertices"] = goodVertices;
     metNameToBit["Flag_eeBadScFilter" ] = eeBadScFilter;
+    metNameToBit["Flag_globalTightHalo2016Filter" ] = GlobalTightHalo2016;
 }
 
 NeroEvent::~NeroEvent(){
@@ -35,52 +36,52 @@ int NeroEvent::analyze(const edm::Event& iEvent){
     rho 	   =  *rho_handle;
 
     // Implement MET Filters
-    if (isRealData) {
+    //if (isRealData) {
 
-        edm::Handle < edm::TriggerResults > metFiltersResults;
-        iEvent.getByToken(filter_token, metFiltersResults);
-        const edm::TriggerNames &names = iEvent.triggerNames(*metFiltersResults);
+    edm::Handle < edm::TriggerResults > metFiltersResults;
+    iEvent.getByToken(filter_token, metFiltersResults);
+    const edm::TriggerNames &names = iEvent.triggerNames(*metFiltersResults);
 
-        unsigned int filter=0;
+    unsigned int filter=0;
 
-        if ( metFiltersResults.isValid() and not metFiltersResults.failedToGet() ) {
+    if ( metFiltersResults.isValid() and not metFiltersResults.failedToGet() ) {
 
-            //std::auto_ptr<std::vector<bool> > metFilters(new std::vector<bool>() );
-            std::auto_ptr<bool> passesMETFilters(new bool(true));
+        //std::auto_ptr<std::vector<bool> > metFilters(new std::vector<bool>() );
+        std::auto_ptr<bool> passesMETFilters(new bool(true));
 
-            for ( unsigned int i = 0; i < names.size(); ++i) {            
-                if ( std::find( metfilterNames->begin(), metfilterNames->end(), names.triggerName(i) ) != metfilterNames->end() ) {
+        for ( unsigned int i = 0; i < names.size(); ++i) {            
+            if ( std::find( metfilterNames->begin(), metfilterNames->end(), names.triggerName(i) ) != metfilterNames->end() ) {
 
-                    *passesMETFilters = *passesMETFilters && metFiltersResults->accept( i );
-                    //metFilters->push_back( metFiltersResults->accept( i ) );
-                    unsigned bitflag = Unknown;
-                    const auto& it = metNameToBit.find(names.triggerName(i) );
-                    if ( it != metNameToBit.end()) bitflag = it->second;
-                    else { 
-                        std::cout<<"[NeroEvent]::[analyze]::[ERROR] trigger Name in cfg "<< names.triggerName(i) <<" has no selection bit associated. Will not be saved"<<std::endl;
-                    }
-                    filter |= metFiltersResults->accept(i) * bitflag;
-
-                    #ifdef VERBOSE
-                        if(VERBOSE>0)std::cout << "MetFilter : " << names.triggerName(i) << " is registered " << metFiltersResults->accept(i) << std::endl;
-                    #endif
-
+                *passesMETFilters = *passesMETFilters && metFiltersResults->accept( i );
+                //metFilters->push_back( metFiltersResults->accept( i ) );
+                unsigned bitflag = Unknown;
+                const auto& it = metNameToBit.find(names.triggerName(i) );
+                if ( it != metNameToBit.end()) bitflag = it->second;
+                else { 
+                    std::cout<<"[NeroEvent]::[analyze]::[ERROR] trigger Name in cfg "<< names.triggerName(i) <<" has no selection bit associated. Will not be saved"<<std::endl;
                 }
+                filter |= metFiltersResults->accept(i) * bitflag;
+
+#ifdef VERBOSE
+                if(VERBOSE>0)std::cout << "MetFilter : " << names.triggerName(i) << " is registered " << metFiltersResults->accept(i) << std::endl;
+#endif
+
             }
-
-
-
-            filter |= ((*passesMETFilters) * FullRecommendation);
-
-            selBits = filter;                
-
-            #ifdef VERBOSE
-                if(VERBOSE>0)cout << "SelBits is:"<<selBits<<": "<<BareFunctions::printBinary(selBits)<<endl;
-            #endif
-
         }
 
-    } //end isRealData
+
+
+        filter |= ((*passesMETFilters) * FullRecommendation);
+
+        selBits = filter;                
+
+#ifdef VERBOSE
+        if(VERBOSE>0)cout << "SelBits is:"<<selBits<<": "<<BareFunctions::printBinary(selBits)<<endl;
+#endif
+
+    }
+
+    //} //end isRealData
 
 
     return 0;

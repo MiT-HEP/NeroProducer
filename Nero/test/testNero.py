@@ -35,17 +35,19 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 if isData:
    fileList = [
-       '/store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v2/000/273/409/00000/16132799-721B-E611-BDDA-02163E014231.root'
+       '/store/data/Run2016B/MET/MINIAOD/PromptReco-v2/000/273/150/00000/2CF02CDC-D819-E611-AA68-02163E011A52.root'
+       #'/store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v2/000/273/409/00000/16132799-721B-E611-BDDA-02163E014231.root'
        #'/store/data/Run2015D/MET/MINIAOD/16Dec2015-v1/50000/00EA1DB2-90AA-E511-AEEE-0025905C2CE6.root'
        #'/store/data/Run2015D/DoubleMuon/MINIAOD/16Dec2015-v1/10000/000913F7-E9A7-E511-A286-003048FFD79C.root'
        ]
 else:
    fileList = [
-        "/store/mc/RunIISpring16MiniAODv1/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUFlat0to50_80X_mcRun2_asymptotic_2016_v3-v1/20000/626CD584-6AF3-E511-986F-001E67DDBEDA.root",
-        "/store/mc/RunIISpring16MiniAODv1/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUFlat0to50_80X_mcRun2_asymptotic_2016_v3-v1/20000/6C339CAD-54F3-E511-8BD4-90B11C12E856.root",
-        "/store/mc/RunIISpring16MiniAODv1/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUFlat0to50_80X_mcRun2_asymptotic_2016_v3-v1/20000/704816A7-54F3-E511-802A-001E67A3ED40.root",
-        "/store/mc/RunIISpring16MiniAODv1/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUFlat0to50_80X_mcRun2_asymptotic_2016_v3-v1/20000/7612ABC7-60F3-E511-9AFA-001E67A3F49D.root",
-        "/store/mc/RunIISpring16MiniAODv1/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUFlat0to50_80X_mcRun2_asymptotic_2016_v3-v1/20000/7A9FA1C7-5BF3-E511-93D7-001E67A3EC05.root",
+       "/store/mc/RunIISpring16MiniAODv2/TTbarDMJets_pseudoscalar_Mchi-1_Mphi-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext1-v1/40000/C06A61EE-EF25-E611-870A-02163E011A12.root"
+       #"/store/mc/RunIISpring16MiniAODv1/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUFlat0to50_80X_mcRun2_asymptotic_2016_v3-v1/20000/626CD584-6AF3-E511-986F-001E67DDBEDA.root",
+       #"/store/mc/RunIISpring16MiniAODv1/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUFlat0to50_80X_mcRun2_asymptotic_2016_v3-v1/20000/6C339CAD-54F3-E511-8BD4-90B11C12E856.root",
+       #"/store/mc/RunIISpring16MiniAODv1/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUFlat0to50_80X_mcRun2_asymptotic_2016_v3-v1/20000/704816A7-54F3-E511-802A-001E67A3ED40.root",
+       #"/store/mc/RunIISpring16MiniAODv1/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUFlat0to50_80X_mcRun2_asymptotic_2016_v3-v1/20000/7612ABC7-60F3-E511-9AFA-001E67A3F49D.root",
+       #"/store/mc/RunIISpring16MiniAODv1/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUFlat0to50_80X_mcRun2_asymptotic_2016_v3-v1/20000/7A9FA1C7-5BF3-E511-93D7-001E67A3EC05.root",
        ]
 ### do not remove the line below!
 ###FILELIST###
@@ -72,7 +74,7 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condD
 if (isData):
         process.GlobalTag.globaltag = '80X_dataRun2_Prompt_v8'
 else:
-        process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_v3'
+        process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_miniAODv2'
 
 ### LOAD DATABASE
 from CondCore.DBCommon.CondDBSetup_cfi import *
@@ -147,35 +149,46 @@ process.es_prefer_jer = cms.ESPrefer('PoolDBESSource', 'jer')
 
 ################ end sqlite connection
 #### RECOMPUTE JEC From GT ###
-### from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
-### 
-### jecLevels= ['L1FastJet',  'L2Relative', 'L3Absolute']
-### if options.isData:
-###         jecLevels =['L1FastJet',  'L2Relative', 'L3Absolute', 'L2L3Residual']
-### 
-### updateJetCollection(
-###    process,
-###    jetSource = process.nero.jets,
-###    labelName = 'UpdatedJEC',
-###    jetCorrections = ('AK4PFchs', cms.vstring(jecLevels), 'None')  # Do not forget 'L2L3Residual' on data!
-### )
-### print "-> Updating the jets collection to run on to 'updatedPatJetsUpdatedJEC' with the new jec in the GT"
-### process.nero.jets=cms.InputTag('updatedPatJetsUpdatedJEC')
-### process.jecSequence = cms.Sequence( process.patJetCorrFactorsUpdatedJEC* process.updatedPatJetsUpdatedJEC )
+from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
+ 
+jecLevels= ['L1FastJet',  'L2Relative', 'L3Absolute']
+if options.isData:
+        jecLevels =['L1FastJet',  'L2Relative', 'L3Absolute', 'L2L3Residual']
+ 
+updateJetCollection(
+    process,
+    jetSource = process.nero.jets,
+    labelName = 'UpdatedJEC',
+    jetCorrections = ('AK4PFchs', cms.vstring(jecLevels), 'None')  # Do not forget 'L2L3Residual' on data!
+)
+
+updateJetCollection(
+    process,
+    jetSource = process.nero.chsAK8,
+    labelName = 'UpdatedJECAK8',
+    jetCorrections = ('AK8PFchs', cms.vstring(jecLevels), 'None')  # Do not forget 'L2L3Residual' on data!
+)
+
+print "-> Updating the jets collection to run on to 'updatedPatJetsUpdatedJEC' with the new jec in the GT"
+process.nero.jets=cms.InputTag('updatedPatJetsUpdatedJEC')
+process.nero.chsAK8=cms.InputTag('updatedPatJetsUpdatedJECAK8')
+process.jecSequence = cms.Sequence( process.patJetCorrFactorsUpdatedJEC* process.updatedPatJetsUpdatedJEC* process.patJetCorrFactorsUpdatedJECAK8* process.updatedPatJetsUpdatedJECAK8)
 
 ############ RECOMPUTE MET #######################
-## from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
-## runMetCorAndUncFromMiniAOD(process,
-##            isData=isData,
-##            )
-##
-## print "-> Updating the met collection to run on to 'slimmedMETs with nero' with the new jec in the GT for Type1"
-
+from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+runMetCorAndUncFromMiniAOD(process,
+           isData=isData,
+           )
+print "-> Updating the met collection to run on to 'slimmedMETs with nero' with the new jec in the GT for Type1"
+process.nero.mets=cms.InputTag('slimmedMETs','','nero')
+if not options.isData:
+            process.nero.metFilterToken=cms.InputTag("TriggerResults","","PAT")
 
 ############ RUN CLUSTERING ##########################
 process.puppiSequence = cms.Sequence()
 process.puppiMetSequence = cms.Sequence()
 process.jetSequence = cms.Sequence()
+
 if process.nero.doReclustering:
     if process.nero.doPuppi:
         # run puppi algo
@@ -335,7 +348,6 @@ if process.nero.doReclustering:
             ca15CHSSequence = makeFatJets(process,isData=isData,pfCandidates='pfCHS',algoLabel='CA',jetRadius=1.5)
             process.jetSequence += ca15CHSSequence
 
-
 # ------------------------QG-----------------------------------------------
 # after jec, because need to be run on the corrected (latest) jet collection
 qgDatabaseVersion = '76X'
@@ -389,9 +401,9 @@ process.p = cms.Path(
                 process.egmPhotonIDSequence *
                 process.photonIDValueMapProducer * ## ISO MAP FOR PHOTONS
                 process.electronIDValueMapProducer *  ## ISO MAP FOR PHOTONS
-                #process.jecSequence *
+                process.jecSequence *
                 process.QGTagger    * ## after jec, because it will produce the new jet collection
-                #process.fullPatMetSequence *## no puppi
+                process.fullPatMetSequence *## no puppi
                 process.puppiSequence *
                 process.puppiMetSequence *
                 process.jetSequence *

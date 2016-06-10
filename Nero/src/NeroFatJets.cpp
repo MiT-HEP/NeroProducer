@@ -25,21 +25,17 @@ void NeroFatJets::init()
   // set up jet energy corrections
   std::string jecDir = "jec/";
     
-  if (mRunJEC) {
-      std::vector<JetCorrectorParameters> mcParams;
-      mcParams.push_back(JetCorrectorParameters(jecDir + "Fall15_25nsV2_MC_L1FastJet_AK8PFchs.txt"));
-      mcParams.push_back(JetCorrectorParameters(jecDir + "Fall15_25nsV2_MC_L2Relative_AK8PFchs.txt"));
-      mcParams.push_back(JetCorrectorParameters(jecDir + "Fall15_25nsV2_MC_L3Absolute_AK8PFchs.txt"));
-      mcParams.push_back(JetCorrectorParameters(jecDir + "Fall15_25nsV2_MC_L2L3Residual_AK8PFchs.txt"));
-      mMCJetCorrector = new FactorizedJetCorrector(mcParams);
-     
-      std::vector<JetCorrectorParameters> dataParams;
-      dataParams.push_back(JetCorrectorParameters(jecDir + "Fall15_25nsV2_DATA_L1FastJet_AK8PFchs.txt"));
-      dataParams.push_back(JetCorrectorParameters(jecDir + "Fall15_25nsV2_DATA_L2Relative_AK8PFchs.txt"));
-      dataParams.push_back(JetCorrectorParameters(jecDir + "Fall15_25nsV2_DATA_L3Absolute_AK8PFchs.txt"));
-      dataParams.push_back(JetCorrectorParameters(jecDir + "Fall15_25nsV2_DATA_L2L3Residual_AK8PFchs.txt"));
-      mDataJetCorrector = new FactorizedJetCorrector(dataParams);
-  }
+  std::vector<JetCorrectorParameters> mcParams;
+  mcParams.push_back(JetCorrectorParameters(jecDir + "Spring16_25nsV1_MC_L2Relative_AK8PFchs.txt"));
+  mcParams.push_back(JetCorrectorParameters(jecDir + "Spring16_25nsV1_MC_L3Absolute_AK8PFchs.txt"));
+  mMCJetCorrector = new FactorizedJetCorrector(mcParams);
+  
+  std::vector<JetCorrectorParameters> dataParams;
+  dataParams.push_back(JetCorrectorParameters(jecDir + "Fall15_25nsV2_DATA_L2Relative_AK8PFchs.txt"));
+  dataParams.push_back(JetCorrectorParameters(jecDir + "Fall15_25nsV2_DATA_L3Absolute_AK8PFchs.txt"));
+  dataParams.push_back(JetCorrectorParameters(jecDir + "Fall15_25nsV2_DATA_L2L3Residual_AK8PFchs.txt"));
+  mDataJetCorrector = new FactorizedJetCorrector(dataParams);
+
 }
 
 int NeroFatJets::analyze(const edm::Event& iEvent){
@@ -51,132 +47,66 @@ int NeroFatJets::analyze(const edm::Event& iEvent){
     // maybe handle should be taken before
     iEvent.getByToken(token, handle);
 
-    if (!mRunJEC) {
-        // this jet collection is straight from miniAOD - skip all the fancy stuff
+    //Vertex
+    iEvent.getByToken(vertex_token,vertex_handle);
+    //Rho
+    iEvent.getByToken(rho_token,rho_handle);
 
-        if ( not handle.isValid() ) cout<<"[NeroFatJets]::[analyze]::[ERROR] handle is not valid"<<endl;
+    // this jet collection is straight from miniAOD - skip all the fancy stuff
 
-        int ijetRef = -1;
-        int nsubjet = 0;
-        for (const pat::Jet& j : *handle)
-        {
-            ijetRef++;
-            if (j.pt() < mMinPt || fabs(j.eta()) > mMaxEta) continue;
+    if ( not handle.isValid() ) cout<<"[NeroFatJets]::[analyze]::[ERROR] handle is not valid"<<endl;
+    
+    int ijetRef = -1;
+    int nsubjet = 0;
+    for (const pat::Jet& j : *handle)
+    {
+        ijetRef++;
+        if (j.pt() < mMinPt || fabs(j.eta()) > mMaxEta) continue;
+        
+        // JET ID
+        if ( !NeroJets::JetId(j,mMinId) ) continue;
+        
+        // GET  ValueMaps
+        
+        // Fill output object	
+        new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(j.px(), j.py(), j.pz(), j.energy());
+        
+        rawPt -> push_back (j.pt()*j.jecFactor("Uncorrected"));
+        
+        //L2L3 Corrected Jet only for the pruned mass correction
+        double corr=0.;              
+        FactorizedJetCorrector *jecAK8_ = ( iEvent.isRealData() ) ? mDataJetCorrector : mMCJetCorrector;
+        jecAK8_->setJetEta( j.eta()*j.jecFactor("Uncorrected") );
+        jecAK8_->setJetPt ( j.pt()*j.jecFactor("Uncorrected") );
+        jecAK8_->setJetE  ( j.energy()*j.jecFactor("Uncorrected") );
+        jecAK8_->setJetA  ( j.jetArea() );
+        jecAK8_->setRho   ( *rho_handle );
+        jecAK8_->setNPV   ( vertex_handle->size() );
+        corr = jecAK8_->getCorrection();        
 
-            // JET ID
-            if ( !NeroJets::JetId(j,mMinId) ) continue;
+        flavour -> push_back( j.partonFlavour() );
+        tau1 -> push_back(j.userFloat("NjettinessAK8:tau1"));
+        tau2 -> push_back(j.userFloat("NjettinessAK8:tau2"));
+        tau3 -> push_back(j.userFloat("NjettinessAK8:tau3"));
 
-            // GET  ValueMaps
-
-            // Fill output object	
-            //p4 -> AddLast(new TLorentzVector(j.px(), j.py(), j.pz(), j.energy())  );
-            new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(j.px(), j.py(), j.pz(), j.energy());
-
-            rawPt -> push_back (j.pt()*j.jecFactor("Uncorrected"));
-            flavour -> push_back( j.partonFlavour() );
-            tau1 -> push_back(j.userFloat("NjettinessAK8:tau1"));
-            tau2 -> push_back(j.userFloat("NjettinessAK8:tau2"));
-            tau3 -> push_back(j.userFloat("NjettinessAK8:tau3"));
-
-            trimmedMass ->push_back(j.userFloat("ak8PFJetsCHSTrimmedMass"));
-            prunedMass  ->push_back(j.userFloat("ak8PFJetsCHSPrunedMass"));
-            filteredMass->push_back(j.userFloat("ak8PFJetsCHSFilteredMass"));
-            softdropMass->push_back(j.userFloat("ak8PFJetsCHSSoftDropMass"));
-
-            // --float hbb= j.bDiscriminator("pfBoostedDoubleSecondaryVertexAK8BJetTags"); // HBB 75X
-            // --cout <<"Hbb tagger="<<hbb<<endl;
-            // --if(hbb>10) cout<<endl;
-            //float hbb =  (*pfBoostedDoubleSecondaryVertex).value(ijetRef) ;//HBB 74X
-            //hbb -> push_back( (*pfBoostedDoubleSecondaryVertex).value(ijetRef) ) ;
-            hbb -> push_back( j.bDiscriminator("pfBoostedDoubleSecondaryVertexAK8BJetTags") ) ;
+        corrprunedMass  ->push_back(j.userFloat("ak8PFJetsCHSPrunedMass")*corr);
+        prunedMass  ->push_back(j.userFloat("ak8PFJetsCHSPrunedMass"));
+        softdropMass->push_back(j.userFloat("ak8PFJetsCHSSoftDropMass"));
+        
+        hbb -> push_back( j.bDiscriminator("pfBoostedDoubleSecondaryVertexAK8BJetTags") ) ;
             
-            unsigned int nsubjetThisJet=0;
-            firstSubjet->push_back(nsubjet);
-            auto &Subjets = j.subjets("SoftDrop");
-            for ( auto const & i : Subjets ) {
-                new ( (*subjet)[nsubjet]) TLorentzVector(i->px(), i->py(), i->pz(), i->energy());
-                subjet_btag->push_back(i->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
-                nsubjetThisJet++;
-                nsubjet++;
-            }
-            nSubjets->push_back(nsubjetThisJet);
-
+        unsigned int nsubjetThisJet=0;
+        firstSubjet->push_back(nsubjet);
+        auto &Subjets = j.subjets("SoftDrop");
+        for ( auto const & i : Subjets ) {
+            new ( (*subjet)[nsubjet]) TLorentzVector(i->px(), i->py(), i->pz(), i->energy());
+            subjet_btag->push_back(i->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+            nsubjetThisJet++;
+            nsubjet++;
         }
-    } else {
-        // this collection was reclustered and needs a different interface
-        
-        iEvent.getByToken(rho_token,rho_handle);
-        
-        TString tPrefix(cachedPrefix);
-
-        edm::Handle<reco::PFJetCollection> subjets_handle;
-        //edm::InputTag subjetLabel("PFJetsSoftDrop"+tPrefix,"SubJets");
-        iEvent.getByToken(subjets_token,subjets_handle);
-        const reco::PFJetCollection *subjetCol = subjets_handle.product();
-        assert(subjets_handle.isValid());
-
-        edm::Handle<reco::JetTagCollection> btags_handle;
-        //iEvent.getByLabel(edm::InputTag((tPrefix+"PFCombinedInclusiveSecondaryVertexV2BJetTags").Data()),btags_handle);
-        iEvent.getByToken(btags_token,btags_handle);
-        assert((btags_handle.isValid()));
-
-        FactorizedJetCorrector *corrector = ( iEvent.isRealData() ) ? mDataJetCorrector : mMCJetCorrector;
-
-        int ijetRef = -1;
-        int nsubjet = 0;
-        for (const pat::Jet& j : *handle)
-        {
-            ijetRef++;
-
-            if (fabs(j.eta() ) > mMaxEta)  continue; 
-            if ( !NeroJets::JetId(j,mMinId) ) continue;
-            // pT cut applied after applying JEC if necessary
-
-            // GET  ValueMaps
-
-            // Fill output object   
-
-              edm::RefToBase<pat::Jet> jetRef(edm::Ref<pat::JetCollection>(handle,ijetRef));
-
-              double jecFactor=0;
-              if (fabs(j.eta())<5.191) {
-                corrector->setJetPt(j.pt());
-                corrector->setJetEta(j.eta());
-                corrector->setJetPhi(j.phi());
-                corrector->setJetE(j.energy());
-                corrector->setRho(*rho_handle);
-                corrector->setJetA(j.jetArea());
-                corrector->setJetEMF(-99.0);
-                jecFactor = corrector->getCorrection();
-              }
-
-              if (j.pt()*jecFactor < mMinPt)  continue;
-              rawPt -> push_back (j.pt());
-              new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(j.px()*jecFactor, j.py()*jecFactor, j.pz()*jecFactor, j.energy()*jecFactor);
-
-              tau1 -> push_back(j.userFloat(tPrefix+"Njettiness:tau1"));
-              tau2 -> push_back(j.userFloat(tPrefix+"Njettiness:tau2"));
-              tau3 -> push_back(j.userFloat(tPrefix+"Njettiness:tau3"));
-      
-              softdropMass->push_back(j.userFloat(tPrefix+"SDKinematics:Mass")*jecFactor);
-        
-              unsigned int nsubjetThisJet=0;
-              firstSubjet->push_back(nsubjet);
-
-              for (reco::PFJetCollection::const_iterator i = subjetCol->begin(); i!=subjetCol->end(); ++i) {
-                if (reco::deltaR(i->eta(),i->phi(),j.eta(),j.phi())>jetRadius) continue;
-                nsubjetThisJet++;
-               
-                new ( (*subjet)[nsubjet]) TLorentzVector(i->px(), i->py(), i->pz(), i->energy());
-                nsubjet++;
-
-                reco::JetBaseRef sjBaseRef(reco::PFJetRef(subjets_handle,i-subjetCol->begin()));
-                subjet_btag->push_back((float)(*(btags_handle.product()))[sjBaseRef]);
-              }
-
-              nSubjets->push_back(nsubjetThisJet);
-        }
+        nSubjets->push_back(nsubjetThisJet);
     }
+        
     return 0;
 }
 

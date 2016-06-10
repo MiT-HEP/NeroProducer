@@ -29,6 +29,10 @@ function CMSSW_7_6_4 {
 
 
 function CMSSW_8_0_10 {
+	git cms-init
+        #echo /PhysicsTools/PatUtils/ >> .git/info/sparse-checkout
+	git cms-merge-topic cms-met:metTool80X
+
 }
 
 # expected default
