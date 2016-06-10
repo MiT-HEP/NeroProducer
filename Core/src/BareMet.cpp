@@ -16,6 +16,10 @@ BareMet::~BareMet(){
     BareFunctions::Delete(metNoHF);
     BareFunctions::Delete(pfMet_e3p0);
     BareFunctions::Delete(trackMet);
+    BareFunctions::Delete(neutralMet);
+    BareFunctions::Delete(photonMet);
+    BareFunctions::Delete(HFMet);
+
 }
 
 void BareMet::init(){
@@ -34,6 +38,9 @@ void BareMet::init(){
         BareFunctions::New(metNoHF);
         BareFunctions::New(pfMet_e3p0);
         BareFunctions::New(trackMet);
+        BareFunctions::New(neutralMet);
+        BareFunctions::New(photonMet);
+        BareFunctions::New(HFMet);
     }
 }
 
@@ -54,6 +61,9 @@ void BareMet::clear(){
         *metNoHF *= 0.;
         *pfMet_e3p0 *= 0.;
         *trackMet *= 0.;
+        *neutralMet *= 0.;
+        *photonMet *= 0.;
+        *HFMet *= 0.;
         rawMet_Pt = 0.;
         rawMet_Phi = 0.;
     }
@@ -87,6 +97,9 @@ void BareMet::defineBranches(TTree *t){
         t->Branch("pfMet_e3p0","TLorentzVector",&pfMet_e3p0);
         //
         t->Branch("trackMet","TLorentzVector",&trackMet);
+        t->Branch("neutralMet","TLorentzVector",&neutralMet);
+        t->Branch("photonMet","TLorentzVector",&photonMet);
+        t->Branch("HFMet","TLorentzVector",&HFMet);
         // calo Met
         t->Branch("caloMet_Pt",&caloMet_Pt,"caloMet_Pt/F");
         t->Branch("caloMet_Phi",&caloMet_Phi,"caloMet_Phi/F");
@@ -117,6 +130,9 @@ void BareMet::setBranchAddresses(TTree *t){
         BareFunctions::SetBranchAddress(t,"metSumEtRawNoHF",&sumEtRawNoHF);
         BareFunctions::SetBranchAddress(t,"pfMet_e3p0", &pfMet_e3p0);
         BareFunctions::SetBranchAddress(t,"trackMet", &trackMet);
+        BareFunctions::SetBranchAddress(t,"neutralMet", &neutralMet);
+        BareFunctions::SetBranchAddress(t,"photonMet", &photonMet);
+        BareFunctions::SetBranchAddress(t,"HFMet", &HFMet);
         //calo met
         BareFunctions::SetBranchAddress(t,"caloMet_Pt", &caloMet_Pt);
         BareFunctions::SetBranchAddress(t,"caloMet_Phi", &caloMet_Phi);
@@ -147,6 +163,9 @@ void BareMet::compress(){
         BareFunctions::Compress(*metNoHF);
         BareFunctions::Compress(*pfMet_e3p0);
         BareFunctions::Compress(*trackMet);
+        BareFunctions::Compress(*neutralMet);
+        BareFunctions::Compress(*photonMet);
+        BareFunctions::Compress(*HFMet);
     }
 
 }

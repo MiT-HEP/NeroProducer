@@ -67,9 +67,6 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
         if ( fabs(j.eta()) > mMinEta ) continue;
         if ( !JetId(j,mMinId) ) continue;
 
-        //0 < |eta| < 2.5: PUID > -0.63
-        if ( !(j.userFloat("pileupJetId:fullDiscriminant") > -0.63) ) continue;
-
         // GET  ValueMaps
         edm::RefToBase<pat::Jet> jetRef(edm::Ref<pat::JetCollection>(handle, ijetRef) );
         float qgLikelihood = (*qg_handle)[jetRef];
@@ -173,7 +170,6 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
                 newptUp = s * sigmaUp + oldpt;
                 newptDown = s * sigmaDown +oldpt;
             }
-            //*(TLorentzVector*)(*p4)[p4->GetEntriesFast()-1] *= newpt /oldpt ; // Update the pt stored in p4 at the last position (N-1)
             ptResUncCentral->push_back(newpt);
             ptResUncUp->push_back(newptUp);
             ptResUncDown->push_back(newptDown) ;
