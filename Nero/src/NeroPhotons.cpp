@@ -1,6 +1,6 @@
 #include "NeroProducer/Nero/interface/NeroPhotons.hpp"
 #include "NeroProducer/Nero/interface/Nero.hpp"
-#include <time.h>
+#include <ctime>
 
 //#define VERBOSE 2
 
@@ -15,7 +15,7 @@ NeroPhotons::NeroPhotons() :
     mMaxEta = 2.5;
 
     pf = NULL;
-    rnd_ = new TRandom3( (unsigned)time(0) ) ;
+    rnd_ = new TRandom3( (unsigned)std::time(NULL) ) ;
 }
 
 NeroPhotons::~NeroPhotons(){
