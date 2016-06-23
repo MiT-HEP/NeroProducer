@@ -48,6 +48,7 @@ parser.add_option("-d","--dir",dest="dir",type="string",help="working directory"
 parser.add_option("-e","--eos",dest="eos",type="string",help="eos directory to scout, will not read the files in the pSet",default="");
 parser.add_option("","--put-in",dest="put",type="string",help="eos directory to cp the results ",default="");
 parser.add_option("-q","--queue",dest="queue",type="string",help="batch Queue",default="");
+parser.add_option("","--instance",dest="instance",type="string",help="eos instance eg root://eoscms root://eosusr",default="");
 
 
 sub_group = OptionGroup(parser, "Submit Options:","these options are used to submit jobs");
@@ -145,7 +146,10 @@ if opts.status:
 		exit(0)
 	else: exit(1)
 
+## to read
 EOS = "/afs/cern.ch/project/eos/installation/0.3.84-aquamarine/bin/eos.select"
+## to write to
+EOS2 = "/afs/cern.ch/project/eos/installation/0.3.84-aquamarine/bin/eos.select " + opts.instance
 
 ## check if working directory exists
 cmd = "[ -d "+ opts.dir+" ]"
@@ -295,9 +299,16 @@ for idx0,fl in enumerate(fileChunks):
 	print >> sh, "cd " + opts.dir
 	print >> sh, 'rm sub_%d.run'%idx
 	print >> sh, 'echo "exit status is ${EXIT}"'
+
+	copyCmd="cmsStage -f " 
+	prefix="/eos/cms"
+	if opts.instance != "" and opts.instance != "root://eoscms":
+		copyCmd=EOS2 + " cp "
+		prefix=""
+
 	if opts.put != "":
 		#print >> sh, '[ "${EXIT}" == "0" ] && { cmsMkdir ' + opts.put +'  && cmsStage -f ${WORKDIR}/NeroNtuples.root ' + opts.put + '/NeroNtuples_%(idx)d.root  && touch sub_%(idx)d.done || echo "cmsStage fail" > sub_%(idx)d.fail; }'%{'idx':idx}
-		print >> sh, '[ "${EXIT}" == "0" ] && { ' + EOS + " mkdir " + "/eos/cms"+opts.put +'  ; cmsStage -f ${WORKDIR}/NeroNtuples.root ' + opts.put + '/NeroNtuples_%(idx)d.root  && touch sub_%(idx)d.done || echo "cmsStage fail" > sub_%(idx)d.fail; }'%{'idx':idx}
+		print >> sh, '[ "${EXIT}" == "0" ] && { ' + EOS2 + " mkdir " + prefix+opts.put +'  ; ' +copyCmd+ ' ${WORKDIR}/NeroNtuples.root ' + opts.put + '/NeroNtuples_%(idx)d.root  && touch sub_%(idx)d.done || echo "cmsStage fail" > sub_%(idx)d.fail; }'%{'idx':idx}
 	else:
 		print >> sh, '[ "${EXIT}" == "0" ] && { cp ${WORKDIR}/NeroNtuples.root ./NeroNtuples_%(idx)d.root && touch sub_%(idx)d.done || echo "cp fail" > sub_%(idx)d.fail ; }'%{'idx':idx}
 
