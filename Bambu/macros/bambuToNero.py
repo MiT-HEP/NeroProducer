@@ -18,7 +18,7 @@ def switchBX(case25, case50):
     global bx
     return case25 if bx == '25ns' else case50
 
-jecVersion = switchBX('Spring16_25nsV1', 'Summer15_50nsV5')
+jecVersion = switchBX('Spring16_25nsV3', 'Summer15_50nsV5')
 
 if analysis.isRealData:
     jecPattern = mitdata + '/JEC/' + jecVersion + '/' + jecVersion + '_DATA_{level}_{jettype}.txt'
@@ -802,6 +802,12 @@ if analysis.isRealData:
         badEventsFilterMod.SetFilter('MuBadTrackFilter')
         badEventsFilterMod.SetFilter('HBHENoiseIsoFilter')
 
+        from MitPhysics.SelMods.BadPFTrackFilterMod import badPFTrackFilterMod
+        # uncomment below (and set tagging mode to true in badEventsFilterMod) if you want to save bits
+        #badPFTrackFilterMod.SetTaggingMode(True)
+        #badEventsFilterMod.AddFilter(badPFTrackFilterMod.GetOutputName(0), badPFTrackFilterMod.GetOutputName(), 0)
+        #badEventsFilterMod.AddFilter(badPFTrackFilterMod.GetOutputName(1), badPFTrackFilterMod.GetOutputName(), 1)
+
     hltMod = mithep.HLTMod(
         ExportTrigObjects = False
     )
@@ -813,7 +819,7 @@ if analysis.isRealData:
             for p in path:
                 hltMod.AddTrigger(p)
 
-    initialFilterSequence = badEventsFilterMod * hltMod * initialFilterSequence
+    initialFilterSequence = badPFTrackFilterMod * badEventsFilterMod * hltMod * initialFilterSequence
 
 else:
     generator = mithep.GeneratorMod(
