@@ -47,8 +47,9 @@ int NeroTaus::analyze(const edm::Event & iEvent)
         unsigned bits = 0;
         bits |= bool(tau.tauID("decayModeFindingNewDMs") ) * TauDecayModeFindingNewDMs;
         bits |= bool(tau.tauID("decayModeFinding") ) * TauDecayModeFinding;
-        bits |= bool(tau.tauID("againstElectronLooseMVA6") )* AgainstEleLoose  ; // FIXME 76 MVA 6
+        bits |= bool(tau.tauID("againstElectronLooseMVA6") )* AgainstEleLoose  ; 
         bits |= bool(tau.tauID("againstElectronMediumMVA6"))* AgainstEleMedium ;
+        bits |= bool(tau.tauID("againstElectronTightMVA6") )* AgainstEleTight  ; 
         bits |= bool(tau.tauID("againstMuonLoose3"))        * AgainstMuLoose   ;
         bits |= bool(tau.tauID("againstMuonTight3"))        * AgainstMuTight   ;
         // old id the following only in 76 v2 

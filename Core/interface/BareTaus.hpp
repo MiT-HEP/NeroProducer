@@ -13,6 +13,7 @@ class BareTaus : virtual public BareP4
             TauDecayModeFinding = 1UL << 2,
 
             // 0--7 POG
+            AgainstEleTight = 1UL <<7,
             AgainstEleLoose = 1UL <<8,
             AgainstEleMedium = 1UL<<9,
             AgainstMuLoose = 1UL<<10,
