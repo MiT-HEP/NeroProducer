@@ -54,6 +54,7 @@ config.Data.publication = False
 config.Data.outputDatasetTag ='NeroNtuples'
 
 config.Site.storageSite = 'T2_CH_CERN'
+#config.Site.storageSite = 'T2_CH_CERNBOX'
 #config.Site.blacklist = [ 'T2_US_Florida','T2_US_Vanderbilt']
 
 
@@ -158,9 +159,12 @@ if __name__ == '__main__':
             #print "* UJ",config.Data.unitsPerJob
             #print "* DS",config.Data.inputDataset
             #print "* data", 'data' in info and info['data']
+            if 'pset' in info:
+                config.JobType.psetName = info['pset']  
 
 
             if 'requestName' not in info or 'inputDataset' not in info: continue
+
 
             if info['submit'] : submit(config)
 

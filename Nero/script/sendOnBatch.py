@@ -58,6 +58,7 @@ parser.add_option_group(sub_group)
 sub_group.add_option("-s","--status",dest="status",action='store_true',help="Display status of dir", default=False)
 sub_group.add_option("" ,"--follow", dest="follow", action="store_true",help= "follow eos directory, and if new files are created look into submission [default=%default]" , default=False)
 sub_group.add_option("" ,"--options", dest="options", type="string",help= "Add the following additional options to cmsRun" , default="")
+parser.add_option("","--query",dest="query",action='store_true',help="Use DAS for scouting. Ignore locality",default=False);
 
 (opts,args) = parser.parse_args()
 
@@ -229,6 +230,10 @@ call(cmd)
 ## get list of files from pset
 if opts.eos == "":
 	exec( re.sub('/','.',"from "+opts.input+" import fileList") )
+elif opts.query:
+	cmd = 'das_client.py --query="file dataset=' + opts.eos+'" --idx=0 --limit=10000  | grep -v "Showing" | grep -v \'^$\' '
+	outputList = check_output(cmd,shell=True);
+	fileList = [  '"'+ f +'"' for f in outputList.split() if '/store' in f ]
 else:	
 	cmd = EOS+ " find -f " + opts.eos
 	print "Going to call cmd:",cmd

@@ -110,10 +110,10 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
     for ( unsigned int i=0;i < packed_handle->size() ;++i)
     {
         const auto gen  = & (*packed_handle)[i];
-        if (gen->pt()  < 5 ) continue;
-        if (gen->pt() < mMinGenParticlePt ) continue;
         int pdg = gen->pdgId();
         int apdg = abs(pdg);
+        if (gen->pt()  < 5 ) continue;
+        if (gen->pt() < mMinGenParticlePt and apdg != 6 ) continue; //
 
         //neutrinos
         // --- if ( (apdg != 12 and apdg !=14 and apdg != 16

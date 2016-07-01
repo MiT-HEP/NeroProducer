@@ -80,7 +80,9 @@ nero = cms.EDAnalyzer("Nero",
 				'HLT_LooseIsoPFTau50_Trk30_eta2p1_v', ## Prescaled, Tau, for turn on studies
 				'HLT_Ele15_IsoVVL_PFHT350_PFMET70',  ## Unprescaled, SingleElectron
 				'HLT_Mu15_IsoVVVL_PFHT350_PFMET70',  ## Unprescaled ,SingleMuon
+				'HLT_PFMET120_JetIdCleaned_BtagCSV0p72',## unprescaled, MET, control on tau turn on
 				'HLT_PFMET120_NoiseCleaned_BtagCSV0p72',## unprescaled, MET, control on tau turn on
+				'HLT_PFMET120_BTagCSV0p72',
 				'HLT_PFMET120_PFMHT120_IDTight',## unprescaled, MET, control on tau turn on
 				#### Photon triggers
 				'HLT_Photon175',
@@ -90,6 +92,13 @@ nero = cms.EDAnalyzer("Nero",
 				'HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v1',
                                 'HLT_CaloMET200_NoiseCleaned',
 				'HLT_IsoTkMu20', ## Muon POG
+				
+				### JET HT
+				'HLT_PFJet140',
+				'HLT_PFJet450',
+				'HLT_PFJet80',
+
+
                                 'Flag_CSCTightHaloFilter',
                                 'Flag_eeBadScFilter',
                                 'Flag_HBHENoiseFilter',
