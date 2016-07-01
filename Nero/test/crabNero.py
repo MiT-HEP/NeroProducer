@@ -101,6 +101,15 @@ if __name__ == '__main__':
                 config.JobType.pyCfgParams[idx] = "isData=" + value
         return 
             
+    def submitDatasets(datasetNames):
+        usedNames = {}
+        for datasetName in datasetNames:
+            basename = datasetName.split('/')[1]
+            datasetNum = usedNames.get(basename, 0)
+            config.General.requestName = '{0}_{1}'.format(basename,datasetNum)
+            config.Data.inputDataset = datasetName
+            submit(config)
+            usedNames[basename] = datasetNum + 1
 
     #############################################################################################
     ## From now on that's what users should modify: this is the a-la-CRAB2 configuration part. ##
