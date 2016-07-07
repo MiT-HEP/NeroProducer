@@ -146,6 +146,37 @@ process.jer = cms.ESSource("PoolDBESSource",
 process.es_prefer_jer = cms.ESPrefer('PoolDBESSource', 'jer')
 
 
+### JEC DB
+
+#from CondCore.DBCommon.CondDBSetup_cfi import *
+
+
+if options.isData:
+     print "-> Using JES for MC"
+     connectString = cms.string('sqlite:jec/Spring16_25nsV6_MC.db')
+     tagName = 'Spring16_25nsV6_MC_AK4PFchs'
+else:
+     connectString = cms.string('sqlite:jec/Spring16_25nsV6_MC.db')
+     tagName = 'Spring16_25nsV6_MC_AK4PFchs'
+
+
+process.jec = cms.ESSource("PoolDBESSource",
+        DBParameters = cms.PSet(
+            messageLevel = cms.untracked.int32(0)
+            ),
+        timetype = cms.string('runnumber'),
+        toGet = cms.VPSet(
+            cms.PSet(
+                record = cms.string('JetCorrectionsRecord'),
+                tag    = cms.string('JetCorrectorParametersCollection_%s'%tagName),
+                label  = cms.untracked.string('AK4PFchs')
+                ),
+            ), 
+        connect = connectString
+)
+
+process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
+
 ################ end sqlite connection
 #### RECOMPUTE JEC From GT ###
 from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
