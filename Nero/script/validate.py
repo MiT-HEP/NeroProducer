@@ -25,8 +25,8 @@ if opts.batch:
 	ROOT.gROOT.SetBatch()
 
 
-#version="v1.1.2"
-version="v1.3.1"
+version="QG"
+base2="/store/user/amarini/Nero/v1.3.1/"
 
 disks={}
 xsections={}
@@ -43,16 +43,16 @@ book=['DY','WZ','ZZ','WW','TTJets']
 datasets=['SingleMuon']
 ##configure
 if True:
-	#### Asympt 50 ns v2
 	base='/store/user/amarini/Nero/' + version + "/"
-	disks['DY']=base+'DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/'
-	disks['WZ']=base+'WZ_TuneCUETP8M1_13TeV-pythia8/'
-	disks['ZZ']=base+'ZZ_TuneCUETP8M1_13TeV-pythia8/'
-	### 50ns v1
-	disks['WW']=base+'WW_TuneCUETP8M1_13TeV-pythia8/'
-	disks['WJets']=base+'WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/'
-	disks['TTJets']=base+'TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/'
-	### DATA -- promptReco
+	#disks['DY']=base+'DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/'
+	disks['DY']=base+'DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-PU25nsPoisson25_76X_mcRun2_asymptotic_v12_ext1-v1/'
+	disks['WZ']=base2+'WZ_TuneCUETP8M1_13TeV-pythia8/'
+	disks['ZZ']=base2+'ZZ_TuneCUETP8M1_13TeV-pythia8/'
+	disks['WW']=base2+'WW_TuneCUETP8M1_13TeV-pythia8/'
+	disks['WJets']=base2+'WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/'
+	#disks['TTJets']=base2+'TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/'
+	disks['TTJets']=base2+'TT_TuneCUETP8M1_13TeV-amcatnlo-pythia8/'
+	### DATA --
 	base='/store/user/amarini/Nero/' + version +"/" #+ "/data/"
 	disks['SingleMuon']=base+'SingleMuon'
 	disks['SingleElectron']=base+'SingleElectron'
@@ -111,6 +111,7 @@ doPileup=True
 if puFile == None:
 	print "-> ERROR: Pileup File does not exists. Not Reweighting"
 	doPileup=False
+
 #puTarget=ROOT.TH1D("pu","pu",100,0,50) # rho
 if doPileup:
 	puTarget=puFile.Get("pileup")
@@ -122,7 +123,6 @@ if doPileup:
 print "->Getting pu for data" ## TODO, for puTrueInt, this is meaningless
 if doPileup:
 	pu['data'] = puTarget.Clone("puData")
-
 	puTarget.Reset("ACE")
 
 ## compute nevents
@@ -157,7 +157,10 @@ for mc in book:
 		pu[mc] = puTarget.Clone("pu_"+mc)
 		pu[mc + '_reweight'] = puTarget.Clone("pu_"+mc + "_reweight") ## try to get the true reweight distribution
 		t.Draw("puTrueInt>>pu_"+mc,"","goff")
+		print "MC",mc, "has",pu[mc].Integral(),"integral" ##DEBUG
 	print "DONE"
+	if t.GetEntries() == 0: 
+		print "MC", mc, "has a total of 0 entries"
 
 
 
@@ -391,7 +394,7 @@ if doPileup:
    		num = pu['data'].GetBinContent( pu['data'].FindBin(c) ) 
    		den = pu[what].GetBinContent(i+1)
                 if den==0:
-                           print "\n EVENT WITH NULL PU REWEIGHT", c
+                           print "\n EVENT WITH NULL PU REWEIGHT", c, "FOR ",what
                            num=0
                            den=1
    		s += (num/den)  * den

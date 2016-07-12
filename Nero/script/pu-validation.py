@@ -7,7 +7,8 @@ import json
 
 
 usage ='''prog [opts] args
-		produces validation plots
+		produces validation plots for pileup.
+		Takes the pu distribution, and reweight the mc accordingly. (1st step)
 	'''
 parser= OptionParser(usage=usage)
 parser.add_option("-b","--batch",dest="batch",action="store_true",help="Run in Batch mode",default=False);
@@ -24,7 +25,8 @@ if opts.batch:
 	ROOT.gROOT.SetBatch()
 
 
-version="v1.3.1"
+version="QG"
+base2='/store/user/amarini/Nero/v1.3.1/' ## TTJets
 
 disks={}
 xsections={}
@@ -40,14 +42,16 @@ datasets=['SingleMuon']
 if True:
 	#### Asympt 50 ns v2
 	base='/store/user/amarini/Nero/' + version + "/"
-	disks['DY']=base+'DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/'
+	#disks['DY']=base+'DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/'
+	disks['DY']=base+'DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-PU25nsPoisson25_76X_mcRun2_asymptotic_v12_ext1-v1/'
 	disks['WZ']=base+'WZ_TuneCUETP8M1_13TeV-pythia8/'
 	disks['ZZ']=base+'ZZ_TuneCUETP8M1_13TeV-pythia8/'
 	### 50ns v1
 	disks['WW']=base+'WW_TuneCUETP8M1_13TeV-pythia8/'
 	disks['WJets']=base+'WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/'
 	#disks['TTJets']=base+'TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/'
-	disks['TTJets']=base+'TT_TuneCUETP8M1_13TeV-amcatnlo-pythia8/'
+	#disks['TTJets']=base+'TT_TuneCUETP8M1_13TeV-amcatnlo-pythia8/'
+	disks['TTJets']=base2+'TT_TuneCUETP8M1_13TeV-amcatnlo-pythia8/'
 	### DATA -- promptReco
 	base='/store/user/amarini/Nero/' + version + "/"
 	disks['SingleMuon']=base+'SingleMuon'
