@@ -42,7 +42,8 @@ if not handler.success() :
 else:
 	print "* " + handler.green + "OK" + handler.white
 
-for pr in opts.merge.split(','):
+if opts.merge != "":
+   for pr in opts.merge.split(','):
 	origin=pr.split(":")[0]
 	branch=pr.split(":")[1]
 	print handler.cyan + "-> Merge PR" + handler.white
