@@ -27,8 +27,10 @@ function CMSSW_7_6_4 {
 	#git clone git@github.com:zdemirag/NeroProducer.git ## TO REMOVE
 }
 
+## CMSSW_8_0_10 removed because metTool80X will merge all CMSSW
+## >CMSSW_8_0_13 conflicts there
 
-function CMSSW_8_0_10 {
+function CMSSW_8_0_12 {
 	git cms-init
         #echo /PhysicsTools/PatUtils/ >> .git/info/sparse-checkout
 	git cms-merge-topic cms-met:metTool80X
