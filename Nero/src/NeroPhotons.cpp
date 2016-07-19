@@ -13,6 +13,7 @@ NeroPhotons::NeroPhotons() :
     mMaxIso = -1;
     mMinNpho = 0;
     mMaxEta = 2.5;
+    mMinId = "loose";
 
     pf = NULL;
     //rnd_ = new TRandom3( (unsigned)time(NULL) ) ;
@@ -23,10 +24,24 @@ NeroPhotons::~NeroPhotons(){
     //delete rnd_; 
 }
 
+unsigned NeroPhotons::idStringToEnum(std::string idString)
+{
+    unsigned idEnum = 0;
+    if (idString == "loose") { idEnum = PhoLoose; }
+    else if (idString == "medium") { idEnum = PhoMedium; }
+    else if (idString == "tight") { idEnum = PhoTight; }
+    else if (idString == "vloose50") { idEnum = PhoVLoose50; }
+    else if (idString == "vloose25") { idEnum = PhoVLoose25; }
+    else if (idString == "highpt") { idEnum = PhoHighPt; }
+    else if (idString == "monoph") { idEnum = PhoMonophBaseline; }
+    return idEnum;
+}
 
 int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup){
 
     if ( mOnlyMc  ) return 0;
+   
+    kMinId = idStringToEnum(mMinId);
 
     // maybe handle should be taken before
     iEvent.getByToken(token, handle);
@@ -90,6 +105,7 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         bool isPassTight  = (*tight_id)[ref];	
         bool isPassVLoose50 = cutBasedPhotonId( pho, "loose_50ns", false, false); // no pho iso , no sieie
         bool isPassVLoose25 = cutBasedPhotonId( pho, "loose_25ns", false, false); // no pho iso , no sieie
+        bool isPassMonophBaseline = cutBasedPhotonId( pho, "monoph_baseline", true, false); // iso bool does nothing right now, sieie false allows events with sieie > 0.015
 
         //if (not isPassVLoose) continue;
         if (mMaxIso >=0 and totIso > mMaxIso) continue;
@@ -101,8 +117,9 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         bits |= isPassLoose * PhoLoose;
         bits |= isPassVLoose50 * PhoVLoose50;
         bits |= isPassVLoose25 * PhoVLoose25;
-
-        if (not bits) continue; // even if there is some misalignment ntuples will not be corrupted
+        bits |= isPassMonophBaseline * PhoMonophBaseline;
+        
+        if ( not (bits & kMinId) ) continue; // even if there is some misalignment ntuples will not be corrupted
 
         bits |= pho.passElectronVeto() * PhoElectronVeto;
         bits |= !pho.hasPixelSeed() * PhoPixelSeedVeto;
@@ -250,14 +267,17 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
 
         if (IsExtend() ){
             rawpt->push_back(pho.pt());
-            e55->push_back(pho.e5x5());
+            rawScEnergy->push_back(pho.superCluster()->rawEnergy());
             
             hOverE->push_back(pho.hadTowOverEm()); //pho.hadronicOverEm());
             chWorstIso->push_back( (*iso_wch)[ref] );
             // chIsoMax->push_back( ??? );
             
-            sipip->push_back(pho.spp());
-            sieip->push_back(pho.sep());
+            e33->push_back(pho.full5x5_e3x3());
+            e55->push_back(pho.full5x5_e5x5());
+
+            sipip->push_back(pho.full5x5_showerShapeVariables().sigmaIphiIphi);
+            sieip->push_back(pho.full5x5_showerShapeVariables().sigmaIetaIphi);
             r9->push_back(pho.r9());
             s4->push_back(pho.eMax()/(pho.eMax()+pho.eTop()+pho.eBottom()+pho.eLeft()+pho.eRight()));
             
@@ -265,6 +285,9 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
 
             clusterTools = new EcalClusterLazyTools(iEvent, iSetup, ebRecHits_token, eeRecHits_token);
             time->push_back(clusterTools->SuperClusterSeedTime(*pho.superCluster()));
+            emax->push_back(clusterTools->eMax(*pho.superCluster()));
+            e2nd->push_back(clusterTools->e2nd(*pho.superCluster()));
+
             // timeSpan->push_back( ??? );
             delete clusterTools;
             
@@ -293,7 +316,7 @@ bool NeroPhotons::cutBasedPhotonId( const pat::Photon& pho, string type, bool wi
     // ------------ BARREL ------------
     if ( pho.isEB() )
         {
-        if (not withSieie and sieie > 0.014) return false;  // pu a very loose sieie requirement
+        if (not withSieie and sieie > 0.15) return false;  // pu a very loose sieie requirement
         if (not withIso and phoiso > 10 ) return false; // put  a very loose pho-iso requirement
 
         if ( type == "loose_50ns" ) 
@@ -325,6 +348,17 @@ bool NeroPhotons::cutBasedPhotonId( const pat::Photon& pho, string type, bool wi
                 return true;
             }
         // ---------------- 25ns ---------------
+        if ( type == "monoph_baseline") // using spring15 loose selections, but with sieie and chiso sidebands
+            {
+                if (hoe >= 0.05   ) return false;
+                if (sieie >= 0.015  and withSieie  ) return false;
+                if (chiso - cutBasedPhotonIdEffArea(pho,"ch_25ns") * rho >= 11.0) return false;// 
+                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_25ns")*rho >= 1.92 + 0.014*pho.pt() + 0.000019*pho.pt()*pho.pt() ) return false;// 
+                if (phoiso - cutBasedPhotonIdEffArea(pho,"pho_25ns") *rho >= 0.81 + 0.0053*pho.pt() ) return false ;//
+
+                return true;
+            }
+        // selections below are CSA14; latest version used by most people is Spring15
         if ( type == "loose_25ns" ) 
             {
                 if (hoe >= 0.553   ) return false;

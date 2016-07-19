@@ -62,6 +62,8 @@ class NeroPhotons : virtual public NeroCollection,
         int   mMinNpho;
         float mMaxEta;
         float mMaxIso;
+        string mMinId;
+        unsigned kMinId;
 
         // -- PF
         NeroPF *pf;
@@ -74,6 +76,8 @@ class NeroPhotons : virtual public NeroCollection,
 
         // needed to be constructed during the plugin construction
         //SuperClusterFootprintRemovalMiniAOD  *fpr;
+
+        unsigned idStringToEnum(std::string idString);
 
         bool cutBasedPhotonId( const pat::Photon& pho, string type="loose_50ns", bool withIso = true , bool withSieie=true);
 

@@ -210,11 +210,13 @@ nero = cms.EDAnalyzer("Nero",
     minGenParticlePt = cms.double(5.),
     minGenJetPt = cms.double(20.),
     particleGun = cms.untracked.bool(False),
-                      
+
+    # PHOTONS
     extendPhotons = cms.bool(True),
     minPhoPt  = cms.double (15.),
     minPhoEta = cms.double (2.5),
     minPhoN   = cms.int32  (0),
+    minPhoId = cms.string ('loose'),
     maxPhoIso = cms.double (-1.),
     matchPho  = cms.bool (True),
     matchPhoDr = cms.double (0.3),
