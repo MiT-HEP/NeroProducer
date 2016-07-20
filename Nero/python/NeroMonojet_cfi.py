@@ -53,4 +53,4 @@ nero.minTauId  = cms.string ('decayModeFinding')
 nero.maxTauIso = cms.double (5)
 nero.extendTau = cms.bool(False)
 nero.extendMet = cms.bool(True)
-
+nero.minPhoId = cms.string ('monoph')

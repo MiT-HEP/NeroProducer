@@ -14,10 +14,14 @@ BarePhotons::~BarePhotons(){
     BareFunctions::Delete(phoIso);
     BareFunctions::Delete(puIso);
     BareFunctions::Delete(rawpt);
-    BareFunctions::Delete(e55);
+    BareFunctions::Delete(rawScEnergy);
     BareFunctions::Delete(hOverE);
     BareFunctions::Delete(chWorstIso);
     BareFunctions::Delete(chIsoMax);
+    BareFunctions::Delete(emax);
+    BareFunctions::Delete(e2nd);
+    BareFunctions::Delete(e33);
+    BareFunctions::Delete(e55);
     BareFunctions::Delete(sipip);
     BareFunctions::Delete(sieip);
     BareFunctions::Delete(r9);
@@ -42,10 +46,14 @@ void BarePhotons::init(){
 
     if (IsExtend()) {
         BareFunctions::New(rawpt);
-        BareFunctions::New(e55);
+        BareFunctions::New(rawScEnergy);
         BareFunctions::New(hOverE);
         BareFunctions::New(chWorstIso);
         BareFunctions::New(chIsoMax);
+        BareFunctions::New(emax);
+        BareFunctions::New(e2nd);
+        BareFunctions::New(e33);
+        BareFunctions::New(e55);
         BareFunctions::New(sipip);
         BareFunctions::New(sieip);
         BareFunctions::New(r9);
@@ -72,10 +80,14 @@ void BarePhotons::clear(){
 
     if (extend_) {
         rawpt->clear();
-        e55->clear();
+        rawScEnergy->clear();
         hOverE->clear();
         chWorstIso->clear();
         chIsoMax->clear();
+        emax->clear();
+        e2nd->clear();
+        e33->clear();
+        e55->clear();
         sipip->clear();
         sieip->clear();
         r9->clear();
@@ -106,10 +118,14 @@ void BarePhotons::defineBranches(TTree *t){
 
     if (IsExtend()) {
         t->Branch("photonRawPt", "vector<float>", &rawpt);
-        t->Branch("photonE55", "vector<float>", &e55);
+        t->Branch("photonRawScEnergy", "vector<float>", &rawScEnergy);
         t->Branch("photonHOverE", "vector<float>", &hOverE);
         t->Branch("photonChWorstIso", "vector<float>", &chWorstIso);
         t->Branch("photonChIsoMax", "vector<float>", &chIsoMax);
+        t->Branch("photonEmax", "vector<float>", &emax);
+        t->Branch("photonE2nd", "vector<float>", &e2nd);
+        t->Branch("photonE33", "vector<float>", &e33);
+        t->Branch("photonE55", "vector<float>", &e55);
         t->Branch("photonSipip", "vector<float>", &sipip);
         t->Branch("photonSieip", "vector<float>", &sieip);
         t->Branch("photonR9", "vector<float>", &r9);
@@ -137,10 +153,14 @@ void BarePhotons::setBranchAddresses(TTree *t){
 
     if (IsExtend()) {
         BareFunctions::SetBranchAddress(t, "photonRawPt", &rawpt);
-        BareFunctions::SetBranchAddress(t, "photonE55", &e55);
+        BareFunctions::SetBranchAddress(t, "photonRawScEnergy", &rawScEnergy);
         BareFunctions::SetBranchAddress(t, "photonHOverE", &hOverE);
         BareFunctions::SetBranchAddress(t, "photonChWorstIso", &chWorstIso);
         BareFunctions::SetBranchAddress(t, "photonChIsoMax", &chIsoMax);
+        BareFunctions::SetBranchAddress(t, "photonEmax", &emax);
+        BareFunctions::SetBranchAddress(t, "photonE2nd", &e2nd);
+        BareFunctions::SetBranchAddress(t, "photonE33", &e33);
+        BareFunctions::SetBranchAddress(t, "photonE55", &e55);
         BareFunctions::SetBranchAddress(t, "photonSipip", &sipip);
         BareFunctions::SetBranchAddress(t, "photonSieip", &sieip);
         BareFunctions::SetBranchAddress(t, "photonR9", &r9);

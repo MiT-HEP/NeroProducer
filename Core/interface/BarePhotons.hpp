@@ -21,7 +21,8 @@ class BarePhotons : virtual public BareP4
             PhoHighPt = 1UL << 18,
             PhoLooseNoEVeto = 1UL << 19,
             PhoMediumNoEVeto = 1UL << 20,
-            PhoTightNoEVeto = 1UL << 21
+            PhoTightNoEVeto = 1UL << 21,
+            PhoMonophBaseline = 1UL << 22
         };
 
         BarePhotons();
@@ -54,12 +55,17 @@ class BarePhotons : virtual public BareP4
 
         // EXTENDED VARIABLES
         vector<float> *rawpt{0};
-        vector<float> *e55{0};
+        vector<float> *rawScEnergy{0};
 
         vector<float> *hOverE{0};
         vector<float> *chWorstIso{0};
         vector<float> *chIsoMax{0};
     
+        vector<float> *emax{0};
+        vector<float> *e2nd{0};
+        vector<float> *e33{0};
+        vector<float> *e55{0};
+
         vector<float> *sipip{0};
         vector<float> *sieip{0};
         vector<float> *r9{0};
