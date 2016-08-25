@@ -44,7 +44,12 @@ class BareLeptons : virtual public BareP4
         vector<unsigned> *selBits{0};
         vector<float>    *lepPfPt{0};
 
-        vector<float>    *etaSC{0}; // for electrons
+        // for electrons
+        vector<float>    *etaSC{0}; 
+        vector<float>    *sieie{0}; 
+        vector<float>    *sipip{0};
+        vector<float>    *sieip{0};
+        vector<float>    *r9{0};   
 
         vector<float>    *mva{0};
         vector<float>    *chIso{0};

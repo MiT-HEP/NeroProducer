@@ -15,6 +15,10 @@ BareLeptons::~BareLeptons(){
     BareFunctions::Delete(phoIso);
     BareFunctions::Delete(puIso);
     BareFunctions::Delete(etaSC);
+    BareFunctions::Delete(sieie);
+    BareFunctions::Delete(sipip);
+    BareFunctions::Delete(sieip);
+    BareFunctions::Delete(r9);
 }
 
 void BareLeptons::init(){
@@ -30,6 +34,10 @@ void BareLeptons::init(){
     BareFunctions::New(phoIso);
     BareFunctions::New(puIso);
     BareFunctions::New(etaSC);
+    BareFunctions::New(sieie);
+    BareFunctions::New(sipip);
+    BareFunctions::New(sieip);
+    BareFunctions::New(r9);
 
 }
 
@@ -42,6 +50,10 @@ void BareLeptons::clear(){
     lepPfPt->clear();    
 
     etaSC->clear();    
+    sieie->clear();
+    sipip->clear();    
+    sieip->clear();    
+    r9->clear();    
 
     mva->clear();
     chIso->clear();
@@ -70,6 +82,10 @@ void BareLeptons::defineBranches(TTree*t){
     t->Branch("lepPuIso","vector<float>",&puIso);
 
     t->Branch("lepEtaSC","vector<float>",&etaSC);
+    t->Branch("lepSieie","vector<float>",&sieie);
+    t->Branch("lepSipip","vector<float>",&sipip);
+    t->Branch("lepSieip","vector<float>",&sieip);
+    t->Branch("lepR9","vector<float>",&r9);
 }
 
 void BareLeptons::setBranchAddresses(TTree*t){
@@ -88,6 +104,10 @@ void BareLeptons::setBranchAddresses(TTree*t){
     BareFunctions::SetBranchAddress(t,"lepPuIso",&puIso);
 
     BareFunctions::SetBranchAddress(t,"lepEtaSC",&etaSC);
+    BareFunctions::SetBranchAddress(t,"lepSieie",&sieie);
+    BareFunctions::SetBranchAddress(t,"lepSipip",&sipip);
+    BareFunctions::SetBranchAddress(t,"lepSieip",&sieip);
+    BareFunctions::SetBranchAddress(t,"lepR9",&r9);
 }
 
 BAREREGISTER(BareLeptons);
