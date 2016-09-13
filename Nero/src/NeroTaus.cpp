@@ -94,6 +94,7 @@ int NeroTaus::analyze(const edm::Event & iEvent)
         Q -> push_back( tau.charge() );
         M -> push_back( tau.mass() );
         iso -> push_back( totIso ) ; 
+        leadTrackPt -> push_back( tau.leadChargedHadrCand().Pt() ) ;
 
         if (IsExtend() ){
             chargedIsoPtSum  -> push_back( tau.tauID("chargedIsoPtSum") );

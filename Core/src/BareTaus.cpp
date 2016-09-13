@@ -14,6 +14,7 @@ BareTaus::~BareTaus(){
     BareFunctions::Delete(isoDeltaBetaCorr);
     BareFunctions::Delete(isoPileupWeightedRaw);
     BareFunctions::Delete(isoMva);
+    BareFunctions::Delete(leadTrackPt);
 }
 
 void BareTaus::init(){
@@ -23,6 +24,7 @@ void BareTaus::init(){
     BareFunctions::New(Q);
     BareFunctions::New(M);
     BareFunctions::New(iso);
+    BareFunctions::New(leadTrackPt);
 
 
     if ( IsExtend() )
@@ -41,6 +43,7 @@ void BareTaus::clear(){
     Q->clear();
     M->clear();
     iso -> clear();
+    leadTrackPt -> clear();
     if ( extend_ ) 
     {
         chargedIsoPtSum->clear();
@@ -61,6 +64,8 @@ void BareTaus::defineBranches(TTree *t){
     t->Branch("tauM","vector<float>",&M);
     //
     t->Branch("tauIso","vector<float>",&iso);
+    //
+    t->Branch("tauLeadTrackPt","vector<float>",&leadTrackPt);
 
     if ( IsExtend() )
     {
@@ -80,6 +85,7 @@ void BareTaus::setBranchAddresses(TTree *t){
     BareFunctions::SetBranchAddress(t,"tauQ"	,&Q);
     BareFunctions::SetBranchAddress(t,"tauM"	,&M);
     BareFunctions::SetBranchAddress(t,"tauIso"	,&iso);
+    BareFunctions::SetBranchAddress(t,"tauLeadTrackPt"	,&leadTrackPt);
 
     // EXTENDED VARIBALES
     if ( IsExtend() )

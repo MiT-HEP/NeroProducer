@@ -69,6 +69,7 @@ class BareTaus : virtual public BareP4
         vector<float>   *chargedIsoPtSum{0};
         vector<float>   *neutralIsoPtSum{0};
         vector<float>   *isoDeltaBetaCorr{0};
+        vector<float>   *leadTrackPt{0};
         
         // the ids are RecoTauTag/Configuration/python/HPSPFTaus_cff.py
         // VL=3.5 L=2.5 M=1.5 T=0.8
