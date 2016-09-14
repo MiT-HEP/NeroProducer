@@ -14,6 +14,7 @@ NeroTrigger::NeroTrigger() :
     taus_=NULL;
     photons_=NULL;
     mDr = 0.2;
+    mNMatch=32; //<= uint  n. bits
     cout<<"[NeroTrigger]::[NeroTrigger]::[WARNING] Trigger matching based on object and best DR. No official tools yet."<<endl;
 }
 
@@ -127,7 +128,7 @@ int NeroTrigger::analyze(const edm::Event& iEvent){
             //std::cout << "   " << pathNamesAll[h];
             //if (isNone && !isBoth && !isL3 && !isLF) continue;
 
-            for ( unsigned i =0  ; i<triggerNames->size() ;++i)
+            for ( unsigned i =0  ; i<triggerNames->size() and i < mNMatch ;++i)
             {
                 if(VERBOSE)cout<<"[NeroTrigger]::[analize] triggerNames i="<<i<<endl;
                 if (  pathNamesAll[h].find((*triggerNames)[i] ) !=string::npos )

@@ -77,6 +77,7 @@ nero = cms.EDAnalyzer("Nero",
 
     #
     ## TRIGGER
+    triggerNMatch = cms.int32(10),
     triggerNames = cms.vstring([
 	    			## ELECTRON
 				'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v',
