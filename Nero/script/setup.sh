@@ -2,7 +2,7 @@
 
 # Instruct builder to use a particular CMSSW release
 # [CMSSW] CMSSW_8_0_12
-# [Options] isData=False is25ns=True is50ns=False
+# [Options] isData=False
 # [fileList] /store/mc/RunIISpring16MiniAODv1/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUFlat0to50_80X_mcRun2_asymptotic_2016_v3-v1/20000/626CD584-6AF3-E511-986F-001E67DDBEDA.root
 # [MaxEvents] 5000
 
