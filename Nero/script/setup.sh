@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Instruct builder to use a particular CMSSW release
-# [CMSSW] CMSSW_8_0_3_patch1
-# [Options] isData=False is25ns=True is50ns=False
+# [CMSSW] CMSSW_8_0_12
+# [Options] isData=False
 # [fileList] /store/mc/RunIISpring16MiniAODv1/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUFlat0to50_80X_mcRun2_asymptotic_2016_v3-v1/20000/626CD584-6AF3-E511-986F-001E67DDBEDA.root
 # [MaxEvents] 5000
 
@@ -34,7 +34,7 @@ function CMSSW_8_0_12 {
 	git cms-init
         #echo /PhysicsTools/PatUtils/ >> .git/info/sparse-checkout
 	git cms-merge-topic cms-met:metTool80X
-
+	git cms-merge-topic -u cms-met:CMSSW_8_0_X-METFilterUpdate
 }
 
 # expected default

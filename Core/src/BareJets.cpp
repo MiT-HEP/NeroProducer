@@ -28,6 +28,9 @@ BareJets::~BareJets(){
     BareFunctions::Delete(ptResUncCentral);
     BareFunctions::Delete(ptResUncUp);
     BareFunctions::Delete(ptResUncDown);
+    //jet var
+    BareFunctions::Delete(chef);
+    BareFunctions::Delete(nhef);    
 }
 
 void BareJets::init(){
@@ -55,6 +58,9 @@ void BareJets::init(){
     BareFunctions::New(ptResUncCentral);
     BareFunctions::New(ptResUncUp);
     BareFunctions::New(ptResUncDown);
+    //jet var
+    BareFunctions::New(chef);
+    BareFunctions::New(nhef);    
 
 }
 
@@ -88,6 +94,10 @@ void BareJets::clear(){
     ptResUncCentral->clear();
     ptResUncUp->clear();
     ptResUncDown->clear();
+    
+    //
+    chef->clear();
+    nhef->clear();
 }
 
 void BareJets::defineBranches(TTree *t){
@@ -129,6 +139,10 @@ void BareJets::defineBranches(TTree *t){
     t->Branch(jetName + "PtResUncCentral","vector<float>",&ptResUncCentral);
     t->Branch(jetName + "PtResUncUp","vector<float>",&ptResUncUp);
     t->Branch(jetName + "PtResUncDown","vector<float>",&ptResUncDown);
+    //
+    t->Branch(jetName + "chef","vector<float>",&chef);
+    t->Branch(jetName + "nhef","vector<float>",&nhef);
+
 }
 
 void BareJets::setBranchAddresses(TTree* t, std::string prefix)
@@ -161,6 +175,9 @@ void BareJets::setBranchAddresses(TTree* t, std::string prefix)
     BareFunctions::SetBranchAddress(t,jetName + "PtResUncCentral"	,&ptResUncCentral);
     BareFunctions::SetBranchAddress(t,jetName + "PtResUncUp"	,&ptResUncUp);
     BareFunctions::SetBranchAddress(t,jetName + "PtResUncDown"	,&ptResUncDown);
+    //
+    BareFunctions::SetBranchAddress(t,jetName + "chef"	,&chef);
+    BareFunctions::SetBranchAddress(t,jetName + "nhef"	,&nhef);
 
 }
 
