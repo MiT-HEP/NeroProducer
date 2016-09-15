@@ -39,6 +39,8 @@ class BareEvent : virtual public BareCollection
     
         vector<string> *metfilterNames;
         unsigned selBits{0};
+        bool filterbadChCandidate;
+        bool filterbadPFMuon;
 
 };
 
