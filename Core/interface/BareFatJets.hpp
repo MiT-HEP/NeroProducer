@@ -41,6 +41,10 @@ class BareFatJets : virtual public BareP4
         vector<float> *hbb{0};
         vector<float> *topMVA{0};
 
+        vector<float> *puppitau1{0};
+        vector<float> *puppitau2{0};
+        vector<float> *puppisoftdropMass{0};
+
 };
 
 

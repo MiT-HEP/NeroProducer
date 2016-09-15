@@ -18,23 +18,26 @@ nero = cms.EDAnalyzer("Nero",
     photons = cms.InputTag("slimmedPhotons"),
     jets = cms.InputTag("slimmedJets"),
     puppijets = cms.InputTag("slimmedJetsPuppi"),
+
+    calibratedelectrons = cms.InputTag("calibratedPatElectrons"),
+    calibratedphotons = cms.InputTag("calibratedPatPhotons"),                      
+                      
+    doPuppi = cms.bool(True),
+    mets = cms.InputTag("slimmedMETs"),
+    metsPuppi = cms.InputTag("slimmedMETsPuppi"),
+    metsPuppiUncorrected = cms.InputTag("pfMETPuppi"), ## RECLUSTERING
+                      
     ############### RECLUSTERED JETS and MET
     doReclustering = cms.bool(False),
     doAK8 = cms.bool(False),
     doCA15 = cms.bool(False),
-    doPuppi = cms.bool(False),
 
     chsAK8 = cms.InputTag("slimmedJetsAK8"),
     puppiAK8 = cms.InputTag("packedPatJetsPFAK8Puppi"),
     chsCA15 = cms.InputTag("packedPatJetsPFCA15CHS"),
     puppiCA15 = cms.InputTag("packedPatJetsPFCA15Puppi"),
 
-    mets = cms.InputTag("slimmedMETs"),
-    metsPuppi = cms.InputTag("slimmedMETsPuppi"),
-    #metsPuppi = cms.InputTag("type1PuppiMET"),  ## RECLUSTERING
-    #metsPuppiUncorrected = cms.InputTag("pfMETPuppi"), ## RECLUSTERING
     pfCands = cms.InputTag("packedPFCandidates"),
-
 
     # gen
     pileup = cms.InputTag("slimmedAddPileupInfo"),
@@ -74,30 +77,14 @@ nero = cms.EDAnalyzer("Nero",
                                   ]),
     #metFilterToken = cms.InputTag("TriggerResults"),          
     metFilterToken = cms.InputTag("TriggerResults","","RECO"),          
+  
+    BadChCandFilterToken = cms.InputTag("BadChargedCandidateFilter"),                    
+    BadPFMuonToken = cms.InputTag("BadPFMuonFilter"),                    
 
     #
     ## TRIGGER
+    triggerNMatch = cms.int32(10),
     triggerNames = cms.vstring([
-	    			## ELECTRON
-				'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v',
-				'HLT_Ele22_eta2p1_WP75_Gsf_v',
-				'HLT_Ele23_WPLoose_Gsf_v',
-	    			'HLT_Ele27_eta2p1_WPLoose_Gsf_v', # unprescaled, SingleElectron 
-				'HLT_Ele27_WP85_Gsf_v',
-				'HLT_Ele27_WPLoose_Gsf_v',
-				## MUONS
-				'HLT_IsoTkMu20_v', ## Muon POG
-				'HLT_Mu17_v',
-	    			'HLT_IsoMu20_v',
-				'HLT_IsoMu27_v', # SingleMuon, Iso20 is not always available in 25ns
-				'HLT_IsoMu24_v',
-				'HLT_Mu50_v',
-				'HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v',
-				'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v',
-				'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v',
-				'HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v',
-				'HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v', # unprescaled, SingleElectron 
-				'HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v',
 				## TAU
                                 'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET80', ## not always available, Tau, NOT _v because there is noise cleaned
                                 'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET90', ## not always available, Tau
@@ -107,32 +94,43 @@ nero = cms.EDAnalyzer("Nero",
 				'HLT_PFMET120_JetIdCleaned_BtagCSV0p72',## unprescaled, MET, control on tau turn on
 				'HLT_PFMET120_NoiseCleaned_BtagCSV0p72',## unprescaled, MET, control on tau turn on
 				'HLT_PFMET120_BtagCSV0p72',## unprescaled, MET, control on tau turn on
+	    			## ELECTRON
+				'HLT_Ele25_eta2p1_WPTight_Gsf_v',
+				'HLT_Ele27_eta2p1_WPLoose_Gsf_v',
+				'HLT_Ele27_WPTight_Gsf_v',
+				'HLT_Ele35_WPLoose_Gsf_v',
+                                'HLT_Ele105_CaloIdVT_GsfTrkIdT_v',
+                                'HLT_ECALHT800_v',
+				## MUONS
+				'HLT_IsoTkMu22_v', ## Muon POG
+	    			'HLT_IsoMu20_v',
+	    			'HLT_IsoMu22_v',
+				'HLT_IsoMu24_v',
+				'HLT_IsoMu27_v', # SingleMuon, Iso20 is not always available in 25ns
+				'HLT_Mu50_v', # SingleMuon, Iso20 is not always available in 25ns
 				## MET
-                                'HLT_PFMET170_NoiseCleaned',
-                                'HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight',
-                                'HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight',
-				'HLT_PFMET170_HBHECleaned',
-				'HLT_PFMET170_JetIdCleaned',
-				'HLT_PFMET170_NotCleaned',
-			        'HLT_PFMETNoMu90_PFMHTNoMu90_IDTight',
-			        'HLT_PFMETNoMu100_PFMHTNoMu100_IDTight',
-			        'HLT_PFMETNoMu110_PFMHTNoMu110_IDTight',
-			        'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight',
-			        'HLT_Photon120_R9Id90_HE10_IsoM',
-				#### Control triggers, extra
-				'HLT_Ele15_IsoVVL_PFHT350_PFMET70',  ## Unprescaled, SingleElectron
-				'HLT_Mu15_IsoVVVL_PFHT350_PFMET70',  ## Unprescaled ,SingleMuon
-				'HLT_PFMET120_PFMHT120_IDTight',## unprescaled, MET, control on tau turn on
+                                'HLT_PFMET170_NoiseCleaned_v',
+                                'HLT_PFMET170_NotCleaned_v',
+                                'HLT_PFMETNoMu90_PFMHTNoMu90_IDTight_v',
+                                'HLT_PFMETNoMu100_PFMHTNoMu100_IDTight_v',
+                                'HLT_PFMETNoMu110_PFMHTNoMu110_IDTight_v',
+                                'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v',
 				#### Photon triggers
-				'HLT_Photon175',
-				'HLT_Photon165_HE10',
-				### DoubleMu / DoubleE cross check and sync with Z
-				'HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v',
-                                'HLT_CaloMET200_NoiseCleaned',
-                                'Flag_CSCTightHaloFilter',
-                                'Flag_eeBadScFilter',
-                                'Flag_HBHENoiseFilter',
-                                'Flag_HBHENoiseIsoFilter'
+				'HLT_Photon175_v',
+				'HLT_Photon165_HE10_v',
+                                'HLT_Photon120_R9Id90_HE10_Iso40_EBOnly_PFMET40_v',
+                                'HLT_Photon135_PFMET100_v',
+                                'HLT_Photon300_NoHE_v',
+                                ### HT Triggers
+                                'HLT_PFJet320_v',
+                                'HLT_PFJet400_v',
+                                'HLT_PFHT400_SixJet30_DoubleBTagCSV_p056_v',
+                                'HLT_PFHT450_SixJet40_BTagCSV_p056_v2',
+                                'HLT_PFHT750_4JetPt50_v',
+                                'HLT_PFHT650_v',
+                                'HLT_PFHT800_v',
+                                'HLT_AK8DiPFJet280_200_TrimMass30_BTagCSV_p20_v',
+                                'HLT_AK8PFHT600_TrimR0p1PT0p03Mass50_BTagCSV_p20_v',
 				]),
     prescales = cms.InputTag('patTrigger'),
     trigger = cms.InputTag("TriggerResults","","HLT"),
@@ -218,7 +216,7 @@ nero = cms.EDAnalyzer("Nero",
     minPhoN   = cms.int32  (0),
     minPhoId = cms.string ('loose'),
     maxPhoIso = cms.double (-1.),
-    matchPho  = cms.bool (True),
+    matchPho  = cms.bool (False),
     matchPhoDr = cms.double (0.3),
 )
 #------------------------------------------------------

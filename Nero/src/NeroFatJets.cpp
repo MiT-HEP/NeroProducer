@@ -26,14 +26,14 @@ void NeroFatJets::init()
   std::string jecDir = "jec/";
     
   std::vector<JetCorrectorParameters> mcParams;
-  mcParams.push_back(JetCorrectorParameters(jecDir + "Spring16_25nsV1_MC_L2Relative_AK8PFchs.txt"));
-  mcParams.push_back(JetCorrectorParameters(jecDir + "Spring16_25nsV1_MC_L3Absolute_AK8PFchs.txt"));
+  mcParams.push_back(JetCorrectorParameters(jecDir + "Spring16_25nsV6_MC_L2Relative_AK8PFchs.txt"));
+  mcParams.push_back(JetCorrectorParameters(jecDir + "Spring16_25nsV6_MC_L3Absolute_AK8PFchs.txt"));
   mMCJetCorrector = new FactorizedJetCorrector(mcParams);
   
   std::vector<JetCorrectorParameters> dataParams;
-  dataParams.push_back(JetCorrectorParameters(jecDir + "Fall15_25nsV2_DATA_L2Relative_AK8PFchs.txt"));
-  dataParams.push_back(JetCorrectorParameters(jecDir + "Fall15_25nsV2_DATA_L3Absolute_AK8PFchs.txt"));
-  dataParams.push_back(JetCorrectorParameters(jecDir + "Fall15_25nsV2_DATA_L2L3Residual_AK8PFchs.txt"));
+  dataParams.push_back(JetCorrectorParameters(jecDir + "Spring16_25nsV6_DATA_L2Relative_AK8PFchs.txt"));
+  dataParams.push_back(JetCorrectorParameters(jecDir + "Spring16_25nsV6_DATA_L3Absolute_AK8PFchs.txt"));
+  dataParams.push_back(JetCorrectorParameters(jecDir + "Spring16_25nsV6_DATA_L2L3Residual_AK8PFchs.txt"));
   mDataJetCorrector = new FactorizedJetCorrector(dataParams);
 
 }
@@ -92,9 +92,9 @@ int NeroFatJets::analyze(const edm::Event& iEvent){
         corrprunedMass  ->push_back(j.userFloat("ak8PFJetsCHSPrunedMass")*corr);
         prunedMass  ->push_back(j.userFloat("ak8PFJetsCHSPrunedMass"));
         softdropMass->push_back(j.userFloat("ak8PFJetsCHSSoftDropMass"));
-        
+
         hbb -> push_back( j.bDiscriminator("pfBoostedDoubleSecondaryVertexAK8BJetTags") ) ;
-            
+
         unsigned int nsubjetThisJet=0;
         firstSubjet->push_back(nsubjet);
         auto &Subjets = j.subjets("SoftDrop");
@@ -105,6 +105,21 @@ int NeroFatJets::analyze(const edm::Event& iEvent){
             nsubjet++;
         }
         nSubjets->push_back(nsubjetThisJet);
+
+        /*
+        // PUPPI
+        puppitau1 -> push_back(j.userFloat("ak8PFJetsPuppiValueMap:NjettinessAK8PuppiTau1"));
+        puppitau2 -> push_back(j.userFloat("ak8PFJetsPuppiValueMap:NjettinessAK8PuppiTau2"));
+
+        TLorentzVector puppi_softdrop, puppi_softdrop_subjet;
+        auto const & sdSubjetsPuppi = j.subjets("SoftDropPuppi");
+        for ( auto const & it : sdSubjetsPuppi ) {
+            puppi_softdrop_subjet.SetPtEtaPhiM(it->correctedP4(0).pt(),it->correctedP4(0).eta(),it->correctedP4(0).phi(),it->correctedP4(0).mass());
+            puppi_softdrop+=puppi_softdrop_subjet;
+        }
+        //uncorrected
+        puppisoftdropMass->push_back(puppi_softdrop.M());                   
+        */
     }
         
     return 0;
