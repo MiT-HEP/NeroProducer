@@ -18,6 +18,9 @@ nero = cms.EDAnalyzer("Nero",
     photons = cms.InputTag("slimmedPhotons"),
     jets = cms.InputTag("slimmedJets"),
     puppijets = cms.InputTag("slimmedJetsPuppi"),
+
+    calibratedelectrons = cms.InputTag("calibratedPatElectrons"),
+    calibratedphotons = cms.InputTag("calibratedPatPhotons"),                      
     ############### RECLUSTERED JETS and MET
     doReclustering = cms.bool(False),
     doAK8 = cms.bool(False),

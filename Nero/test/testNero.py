@@ -141,6 +141,38 @@ process.jer = cms.ESSource("PoolDBESSource",
 
 process.es_prefer_jer = cms.ESPrefer('PoolDBESSource', 'jer')
 
+# Electron Smear/Scale                                                                                                                                                          
+process.selectedElectrons = cms.EDFilter("PATElectronSelector", 
+                                         src = cms.InputTag("slimmedElectrons"), 
+                                         cut = cms.string("pt > 5 && abs(eta)<2.5") 
+                                         ) 
+ 
+process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService", 
+                                                   calibratedPatElectrons = cms.PSet(initialSeed = cms.untracked.uint32(123456), 
+                                                                                     engineName = cms.untracked.string('TRandom3') 
+                                                                                     ) ,
+                                                   calibratedPatPhotons = cms.PSet(initialSeed = cms.untracked.uint32(123456), 
+                                                                                   engineName = cms.untracked.string('TRandom3') 
+                                                                                   ) 
+                                                   ) 
+ 
+process.load('EgammaAnalysis.ElectronTools.calibratedElectronsRun2_cfi') 
+process.calibratedPatElectrons = cms.EDProducer("CalibratedPatElectronProducerRun2", 
+                                                electrons = cms.InputTag('selectedElectrons'), 
+                                                gbrForestName = cms.string("gedelectron_p4combination_25ns"), 
+                                                isMC = cms.bool(not isData), 
+                                                isSynchronization = cms.bool(False), 
+                                                correctionFile = cms.string("EgammaAnalysis/ElectronTools/data/ScalesSmearings/80X_Golden22June_approval") 
+                                                )
+
+#Photons
+process.load('EgammaAnalysis.ElectronTools.calibratedPhotonsRun2_cfi') 
+process.calibratedPatPhotons = cms.EDProducer("CalibratedPatPhotonProducerRun2", 
+                                              photons = cms.InputTag('slimmedPhotons'),
+                                              isMC = cms.bool(not isData), 
+                                              isSynchronization = cms.bool(False),
+                                              correctionFile = cms.string("EgammaAnalysis/ElectronTools/data/ScalesSmearings/80X_Golden22June_approval") 
+                                              )
 
 ################ end sqlite connection
 #### RECOMPUTE JEC From GT ###
@@ -404,9 +436,9 @@ process.p = cms.Path(
                 process.egmPhotonIDSequence *
                 process.photonIDValueMapProducer * ## ISO MAP FOR PHOTONS
                 process.electronIDValueMapProducer *  ## ISO MAP FOR PHOTONS
-                #process.selectedElectrons *
-                #process.calibratedPatElectrons *
-                #process.calibratedPatPhotons *
+                process.selectedElectrons *
+                process.calibratedPatElectrons *
+                process.calibratedPatPhotons *
                 process.jecSequence *
                 process.QGTagger    * ## after jec, because it will produce the new jet collection
                 process.fullPatMetSequence *## no puppi
