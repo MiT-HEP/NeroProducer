@@ -226,6 +226,20 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 
         etaSC	-> push_back(l.etasc);
     }
+
+
+    // SMEARED & SCALED ##############                                                                                                                                          
+    iEvent.getByToken(token_smear, handle_smear);
+    int iEle_smear = -1;
+    for (auto &ele_smear : *handle_smear)
+    {
+        ++iEle_smear;
+        new ( (*eleP4_smear)[eleP4_smear->GetEntriesFast()]) TLorentzVector(ele_smear.px(),ele_smear.py(),ele_smear.pz(),ele_smear.energy());
+
+    }
+    //################################# 
+
+
     return 0;
 }
 

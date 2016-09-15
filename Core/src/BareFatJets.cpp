@@ -21,6 +21,9 @@ BareFatJets::~BareFatJets(){
     BareFunctions::Delete(firstSubjet    );
     BareFunctions::Delete(subjet_btag    );
     BareFunctions::Delete(topMVA         );
+    BareFunctions::Delete(puppitau1      );
+    BareFunctions::Delete(puppitau2      );
+    BareFunctions::Delete(puppisoftdropMass);
 }
 
 void BareFatJets::init(){
@@ -41,6 +44,9 @@ void BareFatJets::init(){
     BareFunctions::New(firstSubjet    );
     BareFunctions::New(subjet_btag    );
     BareFunctions::New(topMVA         );
+    BareFunctions::New(puppitau1      );
+    BareFunctions::New(puppitau2      );
+    BareFunctions::New(puppisoftdropMass);
 }
 
 void BareFatJets::clear(){
@@ -62,6 +68,9 @@ void BareFatJets::clear(){
     subjet_btag ->clear();
     hbb -> clear();
     topMVA->clear();
+    puppitau1 -> clear();
+    puppitau2 -> clear();
+    puppisoftdropMass ->clear();
 }
 
 void BareFatJets::defineBranches(TTree *t){
@@ -91,6 +100,12 @@ void BareFatJets::defineBranches(TTree *t){
     t->Branch(jetName + "Hbb","vector<float>",&hbb);
 
     t->Branch(jetName + "topMVA","vector<float>",&topMVA);
+    
+    //puppi
+    t->Branch(jetName + "PuppiTau1","vector<float>",&puppitau1);
+    t->Branch(jetName + "PuppiTau2","vector<float>",&puppitau2);
+    t->Branch(jetName + "PuppiSoftdropMass","vector<float>",&puppisoftdropMass);
+
 }
 
 void BareFatJets::setBranchAddresses(TTree *t, std::string prefix){
@@ -119,6 +134,11 @@ void BareFatJets::setBranchAddresses(TTree *t, std::string prefix){
 
     BareFunctions::SetBranchAddress(t,jetName + "Hbb",&hbb);
     BareFunctions::SetBranchAddress(t,jetName + "topMVA",&topMVA);
+
+    BareFunctions::SetBranchAddress(t,jetName + "PuppiTau1"  ,&puppitau1);
+    BareFunctions::SetBranchAddress(t,jetName + "PuppiTau2"  ,&puppitau2);
+    BareFunctions::SetBranchAddress(t,jetName + "PuppiSoftdropMass"  ,&puppisoftdropMass);
+
 }
 void BareFatJets::compress(){
     BareP4::compress();

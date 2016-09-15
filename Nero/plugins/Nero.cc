@@ -65,6 +65,8 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     evt -> rho_token = consumes<double>(iConfig.getParameter<edm::InputTag>("rho"));
     evt -> SetExtend ( iConfig.getUntrackedParameter<bool>("extendEvent",false) );
     evt -> filter_token = consumes<edm::TriggerResults>(iConfig.getParameter < edm::InputTag > ("metFilterToken"));
+    evt -> BadChCandFilter_token = consumes<bool>(iConfig.getParameter < edm::InputTag > ("BadChCandFilterToken"));
+    evt -> BadPFMuon_token = consumes<bool>(iConfig.getParameter < edm::InputTag > ("BadPFMuonToken"));
     *(evt -> metfilterNames) = iConfig.getParameter < std::vector<std::string> > ("metfilterNames");
 
     obj.push_back(evt);
@@ -208,6 +210,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     leps -> evt_ = evt; // Set the Event class
     leps -> mu_token = consumes<pat::MuonCollection>(iConfig.getParameter<edm::InputTag>("muons"));
     leps -> el_token = consumes<pat::ElectronCollection>(iConfig.getParameter<edm::InputTag>("electrons"));
+    leps -> token_smear = consumes<pat::ElectronCollection>(iConfig.getParameter<edm::InputTag>("calibratedelectrons"));
     leps -> el_vetoid_token = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleVetoIdMap"));
     leps -> el_looseid_token = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleLooseIdMap"));
     leps -> el_mediumid_token = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMediumIdMap"));
@@ -245,7 +248,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     met -> mOnlyMc = onlyMc;
     met -> token = consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("mets"));
     met -> pf = pf;
-    if (doReclustering && doPuppi) {
+    if (doPuppi) {
         met -> rerunPuppi = true;
         met -> token_puppiRerun = consumes<reco::PFMETCollection>(iConfig.getParameter<edm::InputTag>("metsPuppi"));
         met -> token_puppiRerunUncorr = consumes<reco::PFMETCollection>(iConfig.getParameter<edm::InputTag>("metsPuppiUncorrected"));
@@ -261,6 +264,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     NeroPhotons *phos = new NeroPhotons();
     phos -> mOnlyMc = onlyMc;
     phos -> token = consumes<pat::PhotonCollection>(iConfig.getParameter<edm::InputTag>("photons"));
+    phos -> token_smear = consumes<pat::PhotonCollection>(iConfig.getParameter<edm::InputTag>("calibratedphotons"));
     phos -> loose_id_token = consumes<edm::ValueMap<bool>>(iConfig.getParameter<edm::InputTag>("phoLooseIdMap"));
     phos -> medium_id_token = consumes<edm::ValueMap<bool>>(iConfig.getParameter<edm::InputTag>("phoMediumIdMap"));
     phos -> tight_id_token = consumes<edm::ValueMap<bool>>(iConfig.getParameter<edm::InputTag>("phoTightIdMap"));

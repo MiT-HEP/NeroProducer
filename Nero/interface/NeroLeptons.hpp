@@ -56,6 +56,9 @@ class NeroLeptons : virtual public NeroCollection,
         edm::EDGetTokenT<edm::ValueMap<bool> > 	el_tightid_token;
         edm::EDGetTokenT<edm::ValueMap<float> > el_mva_token;
 
+        edm::Handle<pat::ElectronCollection> handle_smear;
+        edm::EDGetTokenT<pat::ElectronCollection> token_smear;
+
         //edm::EDGetTokenT<edm::ValueMap<float> > 	el_iso_ch_token;
         //edm::EDGetTokenT<edm::ValueMap<float> > 	el_iso_nh_token;
         //edm::EDGetTokenT<edm::ValueMap<float> > 	el_iso_pho_token;
