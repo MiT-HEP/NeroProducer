@@ -42,6 +42,8 @@ class NeroTrigger : virtual public NeroCollection, virtual public BareTrigger
         NeroPhotons    *photons_;
 
         float mDr ;
+        //number of trigger to match
+        float mNMatch;
 
 };
 

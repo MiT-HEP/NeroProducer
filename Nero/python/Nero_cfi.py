@@ -83,6 +83,7 @@ nero = cms.EDAnalyzer("Nero",
 
     #
     ## TRIGGER
+    triggerNMatch = cms.int32(10),
     triggerNames = cms.vstring([
 				## TAU
                                 'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET80', ## not always available, Tau, NOT _v because there is noise cleaned

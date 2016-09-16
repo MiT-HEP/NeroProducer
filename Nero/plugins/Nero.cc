@@ -327,6 +327,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     tr -> token = consumes< edm::TriggerResults >( iConfig.getParameter<edm::InputTag>("trigger"));
     tr -> prescale_token = consumes<pat::PackedTriggerPrescales>( iConfig.getParameter<edm::InputTag>("prescales") );
     tr -> object_token = consumes< pat::TriggerObjectStandAloneCollection > ( iConfig.getParameter<edm::InputTag> ("objects") );
+    tr -> mNMatch = iConfig.getParameter<int>("triggerNMatch");
     // set the collection he needs to be awared of
     tr -> leps_ = leps;
     tr -> jets_ = jets;
