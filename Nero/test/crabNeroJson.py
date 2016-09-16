@@ -53,7 +53,8 @@ config.Data.outLFNDirBase = '/store/user/%s/Nero/%s/' % (getUsernameFromSiteDB()
 config.Data.publication = False
 config.Data.outputDatasetTag ='NeroNtuples'
 
-config.Site.storageSite = 'T2_CH_CERN'
+config.Site.storageSite = 'T2_US_MIT'
+#config.Site.storageSite = 'T2_CH_CERN'
 #config.Site.storageSite = 'T2_CH_CERNBOX'
 #config.Site.blacklist = [ 'T2_US_Florida','T2_US_Vanderbilt']
 
