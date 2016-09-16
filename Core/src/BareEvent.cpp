@@ -22,6 +22,8 @@ void BareEvent::clear()
     
     //not sure if this is a good idea..
     selBits = 0;
+    filterbadPFMuon = 0;
+    filterbadPFMuon = 0;
 
 }
 
@@ -33,6 +35,9 @@ void BareEvent::defineBranches(TTree *t){
     t->Branch("eventNum"    ,&eventNum     ,"eventNum/l");
     t->Branch("rho"    ,&rho     ,"rho/F");
     t->Branch("filterSelBits", &selBits, "selBits/i");
+    t->Branch("filterbadChCandidate" ,&filterbadChCandidate ,"filterbadChCandidate/O");
+    t->Branch("filterbadPFMuon" ,&filterbadPFMuon ,"filterbadPFMuon/O");
+
     if ( IsExtend() ) 
     {
     
@@ -47,6 +52,8 @@ void BareEvent::setBranchAddresses(TTree *t){
     BareFunctions::SetBranchAddress(t,"eventNum", &eventNum);
     BareFunctions::SetBranchAddress(t,"rho", &rho);
     BareFunctions::SetBranchAddress(t,"filterSelBits",&selBits);
+    BareFunctions::SetBranchAddress(t,"filterbadChCandidate",&filterbadChCandidate);
+    BareFunctions::SetBranchAddress(t,"filterbadPFMuon",&filterbadPFMuon);
 
     if (IsExtend() )
     {

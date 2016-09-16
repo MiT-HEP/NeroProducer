@@ -54,7 +54,6 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
     iEvent.getByToken(iso_nh_token, iso_nh);
     iEvent.getByToken(iso_pho_token, iso_pho);
     
-
     if ( not handle.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] handle is not valid"<<endl;
     if ( not loose_id.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] loose_id is not valid"<<endl;
     if ( not medium_id.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] medium_id is not valid"<<endl;
@@ -67,6 +66,25 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         iEvent.getByToken(iso_wch_token, iso_wch);
         if ( not iso_wch.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] iso_wch is not valid"<<endl;
     }
+
+    // SMEARED & SCALED ##############
+    iEvent.getByToken(token_smear, handle_smear);
+    int iPho_smear = -1;
+    for (auto &pho_smear : *handle_smear)
+    {
+        ++iPho_smear;
+        #ifdef VERBOSE
+        if (VERBOSE>0) cout<<"[NeroPhotons]::[analyze]::[DEBUG] analyzing smeared photon"<<iPho_smear<<" pt="<<pho_smear.pt() <<" pz"<<pho_smear.pz() <<endl;
+        #endif
+
+        if (pho_smear.pt() <15 or pho_smear.chargedHadronIso()/pho_smear.pt() > 0.3) continue; // 10 -- 14  GeV photons are saved if chargedHadronIso()<10                  
+        if (fabs(pho_smear.eta()) > mMaxEta ) continue;
+        if (pho_smear.pt() < mMinPt) continue;
+
+        new ( (*phoP4_smear)[phoP4_smear->GetEntriesFast()]) TLorentzVector(pho_smear.px(),pho_smear.py(),pho_smear.pz(),pho_smear.energy());
+        
+    }
+    //#################################
 
     int iPho = -1;	
     for (auto &pho : *handle)

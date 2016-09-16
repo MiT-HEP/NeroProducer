@@ -18,6 +18,9 @@ nero = cms.EDAnalyzer("Nero",
     photons = cms.InputTag("slimmedPhotons"),
     jets = cms.InputTag("slimmedJets"),
     puppijets = cms.InputTag("slimmedJetsPuppi"),
+
+    calibratedelectrons = cms.InputTag("calibratedPatElectrons"),
+    calibratedphotons = cms.InputTag("calibratedPatPhotons"),                      
     ############### RECLUSTERED JETS and MET
     doReclustering = cms.bool(False),
     doAK8 = cms.bool(False),
@@ -75,9 +78,21 @@ nero = cms.EDAnalyzer("Nero",
     #metFilterToken = cms.InputTag("TriggerResults"),          
     metFilterToken = cms.InputTag("TriggerResults","","RECO"),          
 
+    BadChCandFilterToken = cms.InputTag("BadChargedCandidateFilter"),                    
+    BadPFMuonToken = cms.InputTag("BadPFMuonFilter"),  
+
     #
     ## TRIGGER
     triggerNames = cms.vstring([
+				## TAU
+                                'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET80', ## not always available, Tau, NOT _v because there is noise cleaned
+                                'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET90', ## not always available, Tau
+                                'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET110', ## not always available, Tau
+                                'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET120', ## unprescaled , Tau
+				'HLT_LooseIsoPFTau50_Trk30_eta2p1_v', ## Prescaled, Tau, for turn on studies
+				'HLT_PFMET120_JetIdCleaned_BtagCSV0p72',## unprescaled, MET, control on tau turn on
+				'HLT_PFMET120_NoiseCleaned_BtagCSV0p72',## unprescaled, MET, control on tau turn on
+				'HLT_PFMET120_BtagCSV0p72',## unprescaled, MET, control on tau turn on
 	    			## ELECTRON
 				'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v',
 				'HLT_Ele22_eta2p1_WP75_Gsf_v',
@@ -98,15 +113,6 @@ nero = cms.EDAnalyzer("Nero",
 				'HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v',
 				'HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v', # unprescaled, SingleElectron 
 				'HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v',
-				## TAU
-                                'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET80', ## not always available, Tau, NOT _v because there is noise cleaned
-                                'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET90', ## not always available, Tau
-                                'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET110', ## not always available, Tau
-                                'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET120', ## unprescaled , Tau
-				'HLT_LooseIsoPFTau50_Trk30_eta2p1_v', ## Prescaled, Tau, for turn on studies
-				'HLT_PFMET120_JetIdCleaned_BtagCSV0p72',## unprescaled, MET, control on tau turn on
-				'HLT_PFMET120_NoiseCleaned_BtagCSV0p72',## unprescaled, MET, control on tau turn on
-				'HLT_PFMET120_BtagCSV0p72',## unprescaled, MET, control on tau turn on
 				## MET
                                 'HLT_PFMET170_NoiseCleaned',
                                 'HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight',
@@ -218,7 +224,7 @@ nero = cms.EDAnalyzer("Nero",
     minPhoN   = cms.int32  (0),
     minPhoId = cms.string ('loose'),
     maxPhoIso = cms.double (-1.),
-    matchPho  = cms.bool (True),
+    matchPho  = cms.bool (False),
     matchPhoDr = cms.double (0.3),
 )
 #------------------------------------------------------

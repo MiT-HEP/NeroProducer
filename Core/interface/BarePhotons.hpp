@@ -42,6 +42,8 @@ class BarePhotons : virtual public BareP4
         vector<float> *iso{0};
         vector<unsigned> *selBits{0};
 
+        TClonesArray *phoP4_smear{0};
+
         vector<float> *chIso{0};
         vector<float> *nhIso{0};
         vector<float> *phoIso{0};

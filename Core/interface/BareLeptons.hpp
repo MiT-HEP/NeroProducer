@@ -56,6 +56,9 @@ class BareLeptons : virtual public BareP4
         vector<float>    *nhIso{0};
         vector<float>    *phoIso{0};
         vector<float>    *puIso{0};
+    
+        TClonesArray *eleP4_smear{0};
+
 };
 
 

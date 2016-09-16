@@ -72,9 +72,9 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 #mc https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions#Global_Tags_for_Run2_MC_Producti
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 if (isData):
-        process.GlobalTag.globaltag = '80X_dataRun2_Prompt_v8'
+    process.GlobalTag.globaltag = '80X_dataRun2_Prompt_ICHEP16JEC_v0'
 else:
-        process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_miniAODv2'
+    process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_miniAODv2_v1'
 
 ### LOAD DATABASE
 from CondCore.DBCommon.CondDBSetup_cfi import *
@@ -85,15 +85,11 @@ if isData and not options.isGrid and False: ## dont load the lumiMaks, will be c
     #pass
     import FWCore.PythonUtilities.LumiList as LumiList
     ## SILVER
-    #process.source.lumisToProcess = LumiList.LumiList(filename='/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_Silver.txt').getVLuminosityBlockRange()
     process.source.lumisToProcess = LumiList.LumiList(filename='/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/DCSOnly/json_DCSONLY.txt').getVLuminosityBlockRange()
 
 ## SKIM INFO
 process.load('NeroProducer.Skim.infoProducerSequence_cff')
 process.load('NeroProducer.Nero.Nero_cfi')
-#process.load('NeroProducer.Nero.NeroMonojet_cfi')
-#process.load('NeroProducer.Nero.NeroMonotop_cfi')
-#process.load('NeroProducer.Nero.NeroChargedHiggs_cfi')
 
 #-----------------------ELECTRON ID-------------------------------
 from NeroProducer.Nero.egammavid_cfi import *
@@ -107,15 +103,15 @@ process.load("RecoEgamma/ElectronIdentification/ElectronIDValueMapProducer_cfi")
 #------------------- JER -----------------
 toGet=[]
 if options.isData:
-    jerString = cms.string('sqlite:jer/Summer15_25nsV6_DATA.db')
-    resTag= cms.string('JR_Summer15_25nsV6_DATA_PtResolution_AK4PFchs')
-    phiTag= cms.string('JR_Summer15_25nsV6_DATA_PhiResolution_AK4PFchs')
-    sfTag = cms.string('JR_Summer15_25nsV6_DATA_SF_AK4PFchs')
+    jerString = cms.string('sqlite:jer/Spring16_25nsV6_DATA.db')
+    resTag= cms.string('JR_Spring16_25nsV6_DATA_PtResolution_AK4PFchs')
+    phiTag= cms.string('JR_Spring16_25nsV6_DATA_PhiResolution_AK4PFchs')
+    sfTag = cms.string('JR_Spring16_25nsV6_DATA_SF_AK4PFchs')
 else:
-    jerString = cms.string('sqlite:jer/Summer15_25nsV6_MC.db')
-    resTag=cms.string('JR_Summer15_25nsV6_MC_PtResolution_AK4PFchs')
-    phiTag= cms.string('JR_Summer15_25nsV6_MC_PhiResolution_AK4PFchs')
-    sfTag = cms.string('JR_Summer15_25nsV6_MC_SF_AK4PFchs')
+    jerString = cms.string('sqlite:jer/Spring16_25nsV6_MC.db')
+    resTag=cms.string('JR_Spring16_25nsV6_MC_PtResolution_AK4PFchs')
+    phiTag= cms.string('JR_Spring16_25nsV6_MC_PhiResolution_AK4PFchs')
+    sfTag = cms.string('JR_Spring16_25nsV6_MC_SF_AK4PFchs')
 
 process.jer = cms.ESSource("PoolDBESSource",
         CondDBSetup,
@@ -145,6 +141,38 @@ process.jer = cms.ESSource("PoolDBESSource",
 
 process.es_prefer_jer = cms.ESPrefer('PoolDBESSource', 'jer')
 
+# Electron Smear/Scale                                                                                                                                                          
+process.selectedElectrons = cms.EDFilter("PATElectronSelector", 
+                                         src = cms.InputTag("slimmedElectrons"), 
+                                         cut = cms.string("pt > 5 && abs(eta)<2.5") 
+                                         ) 
+ 
+process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService", 
+                                                   calibratedPatElectrons = cms.PSet(initialSeed = cms.untracked.uint32(123456), 
+                                                                                     engineName = cms.untracked.string('TRandom3') 
+                                                                                     ) ,
+                                                   calibratedPatPhotons = cms.PSet(initialSeed = cms.untracked.uint32(123456), 
+                                                                                   engineName = cms.untracked.string('TRandom3') 
+                                                                                   ) 
+                                                   ) 
+ 
+process.load('EgammaAnalysis.ElectronTools.calibratedElectronsRun2_cfi') 
+process.calibratedPatElectrons = cms.EDProducer("CalibratedPatElectronProducerRun2", 
+                                                electrons = cms.InputTag('selectedElectrons'), 
+                                                gbrForestName = cms.string("gedelectron_p4combination_25ns"), 
+                                                isMC = cms.bool(not isData), 
+                                                isSynchronization = cms.bool(False), 
+                                                correctionFile = cms.string("EgammaAnalysis/ElectronTools/data/ScalesSmearings/80X_Golden22June_approval") 
+                                                )
+
+#Photons
+process.load('EgammaAnalysis.ElectronTools.calibratedPhotonsRun2_cfi') 
+process.calibratedPatPhotons = cms.EDProducer("CalibratedPatPhotonProducerRun2", 
+                                              photons = cms.InputTag('slimmedPhotons'),
+                                              isMC = cms.bool(not isData), 
+                                              isSynchronization = cms.bool(False),
+                                              correctionFile = cms.string("EgammaAnalysis/ElectronTools/data/ScalesSmearings/80X_Golden22June_approval") 
+                                              )
 
 ################ end sqlite connection
 #### RECOMPUTE JEC From GT ###
@@ -172,6 +200,16 @@ print "-> Updating the jets collection to run on to 'updatedPatJetsUpdatedJEC' w
 process.nero.jets=cms.InputTag('updatedPatJetsUpdatedJEC')
 process.nero.chsAK8=cms.InputTag('updatedPatJetsUpdatedJECAK8')
 process.jecSequence = cms.Sequence( process.patJetCorrFactorsUpdatedJEC* process.updatedPatJetsUpdatedJEC* process.patJetCorrFactorsUpdatedJECAK8* process.updatedPatJetsUpdatedJECAK8)
+
+
+########### MET Filter ################
+process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
+process.BadPFMuonFilter.muons = cms.InputTag("slimmedMuons")
+process.BadPFMuonFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+
+process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
+process.BadChargedCandidateFilter.muons = cms.InputTag("slimmedMuons")
+process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidates")
 
 ############ RECOMPUTE MET #######################
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
@@ -389,8 +427,6 @@ if options.isParticleGun:
 	## this option is for the embedding informations
 	process.nero.extendEvent = cms.untracked.bool(False)
 
-process.load('NeroProducer.Skim.MonoJetFilterSequence_cff')
-
 ##DEBUG
 ##print "Process=",process, process.__dict__.keys()
 #------------------------------------------------------
@@ -400,12 +436,17 @@ process.p = cms.Path(
                 process.egmPhotonIDSequence *
                 process.photonIDValueMapProducer * ## ISO MAP FOR PHOTONS
                 process.electronIDValueMapProducer *  ## ISO MAP FOR PHOTONS
+                process.selectedElectrons *
+                process.calibratedPatElectrons *
+                process.calibratedPatPhotons *
                 process.jecSequence *
                 process.QGTagger    * ## after jec, because it will produce the new jet collection
                 process.fullPatMetSequence *## no puppi
                 process.puppiSequence *
                 process.puppiMetSequence *
                 process.jetSequence *
+                process.BadPFMuonFilter *
+                process.BadChargedCandidateFilter * 
                 process.nero
                 )
 
