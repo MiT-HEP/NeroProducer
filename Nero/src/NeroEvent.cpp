@@ -37,6 +37,13 @@ int NeroEvent::analyze(const edm::Event& iEvent){
 
     // Implement MET Filters
     //if (isRealData) {
+    edm::Handle< bool > ifilterbadChCand;
+    iEvent.getByToken(BadChCandFilter_token, ifilterbadChCand);
+    filterbadChCandidate = *ifilterbadChCand;       
+    
+    edm::Handle< bool > ifilterbadPFMuon;
+    iEvent.getByToken(BadPFMuon_token, ifilterbadPFMuon);
+    filterbadPFMuon = *ifilterbadPFMuon;
 
     edm::Handle < edm::TriggerResults > metFiltersResults;
     iEvent.getByToken(filter_token, metFiltersResults);
