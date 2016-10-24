@@ -114,7 +114,8 @@ int NeroMet::analyze(const edm::Event& iEvent){
             sumEtRawPuppi = puppi.uncorSumEt();
         }
 
-        for(Syst mysyst = (Syst)0; mysyst < MaxSyst ; mysyst = (Syst)((int)mysyst +1 ) )
+        // saving only Jes, Jer, Uncluster
+        for(Syst mysyst = (Syst)0; mysyst < TauUp and mysyst < MaxSyst  ; mysyst = (Syst)((int)mysyst +1 ) )
         {
             pat::MET::METUncertainty miniAODUnc=pat::MET::METUncertaintySize;
             // JetResUp=0, JetResDown=1, JetEnUp=2, JetEnDown=3,
