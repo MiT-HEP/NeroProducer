@@ -152,7 +152,7 @@ nero = cms.EDAnalyzer("Nero",
 
     extendMet = cms.bool(True),
                       
-    minJetPt  = cms.double (15.),
+    minJetPt  = cms.double (20.),
     minJetEta = cms.double (4.7),
     minJetN   = cms.int32  (0),
     minJetId  = cms.string ('none'),
