@@ -296,6 +296,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
 
     NeroMonteCarlo *mc = new NeroMonteCarlo();
     mc -> mOnlyMc = onlyMc;
+    mc -> SetExtend ( iConfig.getUntrackedParameter<bool>("extendMonteCarlo",false) );
     mc -> packed_token = consumes<edm::View<pat::PackedGenParticle> >(iConfig.getParameter<edm::InputTag>("packedgen"));
     mc -> pruned_token = consumes<edm::View<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("prunedgen")) ;
     mc -> info_token   = consumes<GenEventInfoProduct>(iConfig.getParameter<edm::InputTag>("generator"));
