@@ -6,6 +6,9 @@
 #include "NeroProducer/Nero/interface/NeroVertex.hpp"
 #include "NeroProducer/Nero/interface/NeroEvent.hpp"
 
+#include "RecoEgamma/EgammaTools/interface/EffectiveAreas.h"
+#include <memory>
+
 // Electron corrector
 //#include "EgammaAnalysis/ElectronTools/interface/EnergyScaleCorrection_class.hh"
 
@@ -46,6 +49,9 @@ class NeroLeptons : virtual public NeroCollection,
             
         };
 
+        std::unique_ptr<EffectiveAreas> ea_;
+
+    
         // to be setted by the vertex
         //const reco::Vertex *pv_;
         //void inline SetPV( const reco::Vertex *pv){ pv_ = pv ; }
@@ -96,6 +102,7 @@ class NeroLeptons : virtual public NeroCollection,
         // --- EGTools
         //EnergyScaleCorrection_class *EleCorr{0};
         //TRandom3 *rnd_{0};
+        
 };
 
 

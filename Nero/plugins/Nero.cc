@@ -208,6 +208,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     leps -> mOnlyMc = onlyMc;
     leps -> vtx_ = vtx; // Set the Vertex class
     leps -> evt_ = evt; // Set the Event class
+    leps -> ea_ . reset (new EffectiveAreas(iConfig.getParameter<std::string>("eleEA")) );
     leps -> mu_token = consumes<pat::MuonCollection>(iConfig.getParameter<edm::InputTag>("muons"));
     leps -> el_token = consumes<pat::ElectronCollection>(iConfig.getParameter<edm::InputTag>("electrons"));
     leps -> token_smear = consumes<pat::ElectronCollection>(iConfig.getParameter<edm::InputTag>("calibratedelectrons"));
@@ -215,7 +216,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     leps -> el_looseid_token = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleLooseIdMap"));
     leps -> el_mediumid_token = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMediumIdMap"));
     leps -> el_tightid_token = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleTightIdMap"));
-    leps -> el_mva_token = consumes<edm::ValueMap<float> > (iConfig.getParameter<edm::InputTag>("eleMvaMap"));
+    //leps -> el_mva_token = consumes<edm::ValueMap<float> > (iConfig.getParameter<edm::InputTag>("eleMvaMap"));
     leps -> SetMatch( iConfig.getParameter<bool>("matchLep") );
 
     //leps -> el_iso_ch_token  = consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("eleChargedIsolation") );
