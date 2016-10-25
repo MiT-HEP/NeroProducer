@@ -39,7 +39,7 @@ function CMSSW_8_0_12 {
 	git clone -b ICHEP2016_v2 https://github.com/ECALELFS/ScalesSmearings.git EgammaAnalysis/ElectronTools/data/ScalesSmearings
 }
 
-function CMSSW_8_0_12 {
+function CMSSW_8_0_20 {
 	git cms-init
 	git cms-merge-topic ikrav:egm_id_80X_v1
 }
