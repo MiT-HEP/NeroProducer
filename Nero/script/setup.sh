@@ -41,6 +41,7 @@ function CMSSW_8_0_12 {
 
 function CMSSW_8_0_20 {
 	git cms-init
+	git cms-merge-topic ikrav:egm_id_80X_v1
 }
 
 # expected default
