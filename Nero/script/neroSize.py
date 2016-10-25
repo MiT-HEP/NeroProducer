@@ -62,8 +62,10 @@ for line in out.split('\n'):
 	if 'Entries' in line.split(':')[0]:
 		'*Entries :   187542 : Total  Size=     752786 bytes  File Size  =       5882 *'
 		ntr  = int(line.split(':')[1])
-		size = line.split(':')[2] . split('=')[1].replace(' ','')
+		#size = line.split(':')[2] . split('=')[1].replace(' ','')
+		size = line.split(':')[2] . split('=')[2].replace(' ','')
 		size = re.sub('bytes.*','',size)
+		size = re.sub('\ \\*','',size)
 		size = int(size)
 
 		filesize = int(line.split(':')[2].split('=')[2].replace(' ',''))
@@ -130,6 +132,24 @@ def CreatePieBranch(branches, treename="all", collapse=True):
 				or branch == 'npv'   \
 				):
 				branch = 'info'
+			if treename != "all" and (branch == 'r2f5' \
+					or branch == 'r2f2' \
+					or branch == 'r5f5' \
+					or branch == 'r5f2' \
+					or branch == 'r1f2' \
+					or branch == 'r1f5' \
+					or branch == 'r2f1' \
+					or branch == 'r5f1' \
+				):
+				branch='scale'
+			if treename != "all" and (branch == 'filterbadChCandidate' \
+					or branch == 'filterbadPFMuon' \
+					or branch == 'filterSelBits' \
+					):
+				branch='met'
+			if treename != "all" and 'Met' in branch: branch='met'
+			if treename != "all" and branch == 'phoP4_smear': branch='photon'
+			if treename != "all" and branch == 'eleP4_smear': branch='lep'
 			#from first capital letter
 			branch= re.sub('[A-Z].*','', branch)
 			#_*
