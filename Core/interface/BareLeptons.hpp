@@ -23,7 +23,8 @@ class BareLeptons : virtual public BareP4
           LepVetoIso = 1UL<<11,
           LepLooseIso = 1UL<<12,
           LepMediumIso = 1UL<<13,
-          LepTightIso = 1UL<<14
+          LepTightIso = 1UL<<14,
+          LepTripleCharge = 1UL<<15 // charge is in agreement between different measurements
         };
 
         BareLeptons();
