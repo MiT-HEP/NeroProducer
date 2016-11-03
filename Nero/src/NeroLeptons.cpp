@@ -192,7 +192,8 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
             
             l.selBits |= unsigned(isEleFakeID*isEleFakeIso) * LepFake;
 
-            if (el.chargeInfo().isGsfCtfConsistent and el.chargeInfo().isGsfCtfScPixConsistent and el.chargeInfo().isGsfScPixConsistent) l.selBits |= LepTripleCharge;
+            if (el.chargeInfo().isGsfCtfConsistent and el.chargeInfo().isGsfCtfScPixConsistent and el.chargeInfo().isGsfScPixConsistent) l.selBits |= EleTripleCharge;
+            if (el.gsfTrack()->numberOfLostHits () == 0 ) l.selBits |=EleNoMissingHits;
 
         l.pfPt = el.pt();
     
