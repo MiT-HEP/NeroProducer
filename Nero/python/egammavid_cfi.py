@@ -30,6 +30,9 @@ def initEGammaVID(process, options):
 	
 	      myid = (string%replace ).replace('-','_').split(':')[1]
 	      myid = re.sub('_standalone.*','',myid)
+	      if obj=="ele":
+		      myid="cutBasedElectronID_Summer16_80X_%(vs)s"%replace
+	      #toProduce[obj][ directory + '.Identification.' + myid + "_cff"] = 1 #remove duplicates
 	      toProduce[obj][ directory + '.Identification.' + myid + "_cff"] = 1 #remove duplicates
 	### INIT MODULES
 	dataFormat = DataFormat.MiniAOD
