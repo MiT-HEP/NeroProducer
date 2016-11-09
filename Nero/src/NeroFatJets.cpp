@@ -26,14 +26,16 @@ void NeroFatJets::init()
   std::string jecDir = "jec/";
     
   std::vector<JetCorrectorParameters> mcParams;
-  mcParams.push_back(JetCorrectorParameters(jecDir + "Spring16_25nsV1_MC_L2Relative_AK8PFchs.txt"));
-  mcParams.push_back(JetCorrectorParameters(jecDir + "Spring16_25nsV1_MC_L3Absolute_AK8PFchs.txt"));
+  mcParams.push_back(JetCorrectorParameters(jecDir + "Spring16_25nsV8_MC_L1FastJet_AK8PFchs.txt"));
+  mcParams.push_back(JetCorrectorParameters(jecDir + "Spring16_25nsV8_MC_L2Relative_AK8PFchs.txt"));
+  mcParams.push_back(JetCorrectorParameters(jecDir + "Spring16_25nsV8_MC_L3Absolute_AK8PFchs.txt"));
   mMCJetCorrector = new FactorizedJetCorrector(mcParams);
   
   std::vector<JetCorrectorParameters> dataParams;
-  dataParams.push_back(JetCorrectorParameters(jecDir + "Fall15_25nsV2_DATA_L2Relative_AK8PFchs.txt"));
-  dataParams.push_back(JetCorrectorParameters(jecDir + "Fall15_25nsV2_DATA_L3Absolute_AK8PFchs.txt"));
-  dataParams.push_back(JetCorrectorParameters(jecDir + "Fall15_25nsV2_DATA_L2L3Residual_AK8PFchs.txt"));
+  dataParams.push_back(JetCorrectorParameters(jecDir + "Spring16_25nsV8_DATA_L1FastJet_AK8PFchs.txt"));
+  dataParams.push_back(JetCorrectorParameters(jecDir + "Spring16_25nsV8_DATA_L2Relative_AK8PFchs.txt"));
+  dataParams.push_back(JetCorrectorParameters(jecDir + "Spring16_25nsV8_DATA_L3Absolute_AK8PFchs.txt"));
+  dataParams.push_back(JetCorrectorParameters(jecDir + "Spring16_25nsV8_DATA_L2L3Residual_AK8PFchs.txt"));
   mDataJetCorrector = new FactorizedJetCorrector(dataParams);
 
 }
