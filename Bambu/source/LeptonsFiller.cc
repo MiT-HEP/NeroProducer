@@ -140,6 +140,17 @@ mithep::nero::LeptonsFiller::fill()
           if (ids[kEl][iSel] && ids[kEl][iSel]->At(iE))
             selBits |= (1 << iSel);
         }
+        
+        // Triple charge requirement
+        auto* gsf(ele->GsfTrk());
+        auto* trk(ele->TrackerTrk());
+        if (gsf && trk && gsf->Charge() == trk->Charge() && gsf->Charge() == ele->ScPixCharge())
+          selBits |= BareLeptons::EleTripleCharge;
+
+        // No missing hits requirement
+        if (ele->CorrectedNExpectedHitsInner() == 0)
+          selBits |= BareLeptons::EleNoMissingHits;
+
         out_.selBits->push_back(selBits);
 
         out_.lepPfPt->push_back(0.);
