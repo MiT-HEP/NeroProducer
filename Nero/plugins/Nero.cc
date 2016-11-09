@@ -140,6 +140,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     chsAK8 -> jetRadius = 0.8;
     chsAK8 -> subjets_token = mayConsume<reco::PFJetCollection>(edm::InputTag("PFJetsSoftDrop"+chsAK8 -> cachedPrefix ,"SubJets"));
     chsAK8 -> btags_token = mayConsume<reco::JetTagCollection>(edm::InputTag(chsAK8->cachedPrefix + "PFCombinedInclusiveSecondaryVertexV2BJetTags") ) ;
+    chsAK8 -> jecBasePath= iConfig.getParameter<string>("chsAK8JEC");
     obj.push_back(chsAK8);
 
 

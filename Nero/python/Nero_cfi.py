@@ -32,6 +32,8 @@ nero = cms.EDAnalyzer("Nero",
     chsCA15 = cms.InputTag("packedPatJetsPFCA15CHS"),
     puppiCA15 = cms.InputTag("packedPatJetsPFCA15Puppi"),
 
+    chsAK8JEC = cms.string("jec/Spring16_25nsV8"),
+
     mets = cms.InputTag("slimmedMETs"),
     metsPuppi = cms.InputTag("slimmedMETsPuppi"),
     #metsPuppi = cms.InputTag("type1PuppiMET"),  ## RECLUSTERING

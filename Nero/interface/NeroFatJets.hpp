@@ -40,6 +40,9 @@ class NeroFatJets : virtual public NeroCollection,
         FactorizedJetCorrector *mMCJetCorrector;   // needed for reclustered jets
         FactorizedJetCorrector *mDataJetCorrector; 
 
+        // --- location of the jec
+        string jecBasePath;
+
 };
 
 
