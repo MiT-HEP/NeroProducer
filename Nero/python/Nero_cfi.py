@@ -102,6 +102,7 @@ nero = cms.EDAnalyzer("Nero",
 	    			'HLT_Ele27_eta2p1_WPLoose_Gsf_v', # unprescaled, SingleElectron 
 				'HLT_Ele27_WP85_Gsf_v',
 				'HLT_Ele27_WPLoose_Gsf_v',
+				'HLT_Ele27_WPTight_Gsf_v',
 				## MUONS
 				'HLT_IsoTkMu20_v', ## Muon POG
 				'HLT_Mu17_v',
