@@ -5,6 +5,7 @@
 #include "NeroProducer/Core/interface/BareLeptons.hpp"
 #include "NeroProducer/Nero/interface/NeroVertex.hpp"
 #include "NeroProducer/Nero/interface/NeroEvent.hpp"
+#include "NeroProducer/Nero/interface/NeroPF.hpp"
 
 #include "RecoEgamma/EgammaTools/interface/EffectiveAreas.h"
 #include <memory>
@@ -26,7 +27,7 @@ class NeroLeptons : virtual public NeroCollection,
         //
         class myLepton{
             public:
-                myLepton(){ chiso=-999; nhiso=-999; phoiso=-999; puiso=-999;mva = -999; 
+                myLepton(){ chiso=-999; nhiso=-999; phoiso=-999; puiso=-999;mva = -999; miniiso=-999;
                             etasc=0; sieie=0; sipip=0; sieip=0; r9=0; }
                 float iso;
                 TLorentzVector p4;
@@ -38,6 +39,7 @@ class NeroLeptons : virtual public NeroCollection,
                 float nhiso;
                 float phoiso;
                 float puiso;
+                float miniiso;
 
                 float mva;
 
@@ -58,6 +60,7 @@ class NeroLeptons : virtual public NeroCollection,
         //void inline SetPV( const reco::Vertex &pv){ pv_ = &pv ; }
         NeroVertex *vtx_ ;
         NeroEvent  *evt_ ; // rho 
+        NeroPF *pf_;
 
         // Token
         edm::EDGetTokenT<pat::MuonCollection> mu_token;

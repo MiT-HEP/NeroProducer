@@ -214,6 +214,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     leps -> mOnlyMc = onlyMc;
     leps -> vtx_ = vtx; // Set the Vertex class
     leps -> evt_ = evt; // Set the Event class
+    leps -> pf_ = pf;
     leps -> ea_ . reset (new EffectiveAreas( edm::FileInPath(iConfig.getParameter<std::string>("eleEA")).fullPath () ) );
     leps -> mu_token = consumes<pat::MuonCollection>(iConfig.getParameter<edm::InputTag>("muons"));
     leps -> el_token = consumes<pat::ElectronCollection>(iConfig.getParameter<edm::InputTag>("electrons"));

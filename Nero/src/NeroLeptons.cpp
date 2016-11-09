@@ -1,6 +1,7 @@
 #include "NeroProducer/Nero/interface/NeroLeptons.hpp"
 #include "NeroProducer/Nero/interface/Nero.hpp"
 #include "NeroProducer/Core/interface/BareFunctions.hpp"
+#include "NeroProducer/Nero/interface/MiniIsolation.hpp"
 #include <time.h>
 
 // -- Electron Isolation
@@ -94,6 +95,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         l.nhiso  = niso;
         l.phoiso = phoiso;
         l.puiso  = puiso;
+        l.miniiso = getPFMiniIsolation_DeltaBeta(pf_->handle, dynamic_cast<const reco::Candidate *>(&mu), 0.05, 0.2, 10., false);
 
         leptons.push_back(l);
     }
@@ -201,6 +203,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         l.nhiso  = nhIso;
         l.phoiso = phoIso;
         l.puiso  = puChIso;
+        l.miniiso = getPFMiniIsolation_DeltaBeta(pf_->handle, dynamic_cast<const reco::Candidate *>(&el), 0.05, 0.2, 10., false) ;
 
         leptons.push_back(l);
 
@@ -225,6 +228,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         nhIso	-> push_back(l.nhiso);
         phoIso	-> push_back(l.phoiso);
         puIso	-> push_back(l.puiso);
+        miniIso	-> push_back(l.miniiso);
 
         etaSC	-> push_back(l.etasc);
         sieie	-> push_back(l.sieie);
