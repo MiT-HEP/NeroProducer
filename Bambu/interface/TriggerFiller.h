@@ -33,7 +33,8 @@ namespace mithep {
       std::vector<std::vector<TString>> triggerNames_{};
       std::vector<std::vector<unsigned>> triggerIds_{};
 
-      std::vector<std::vector<TString>> triggerObjectsNames_{};
+      // IMPORTANT: triggerLeps etc. bitmap size hard-coded here
+      std::vector<TString> triggerObjectsNames_[sizeof(int) * 8];
 
       BareP4* leptons_ = 0;
       BareP4* taus_ = 0;

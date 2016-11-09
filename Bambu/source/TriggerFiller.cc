@@ -109,39 +109,42 @@ mithep::nero::TriggerFiller::fill()
 
     out_.triggerFired->at(iBit) = 1;
 
-    auto& objsNames(triggerObjectsNames_[iBit]);
 
-    if (objsNames.size() != 0) {
-      TList filterList;
-      for (unsigned id : triggerIds_[iBit])
-        filterList.AddAll(triggerObjs->GetList(id));
+    if (iBit < sizeof(triggerObjectsNames_) / sizeof(std::vector<TString>)) {
+      auto& objsNames(triggerObjectsNames_[iBit]);
 
-      for (TObject* obj : filterList) {
-        auto& trigObj(*static_cast<mithep::TriggerObject*>(obj));
+      if (objsNames.size() != 0) {
+        TList filterList;
+        for (unsigned id : triggerIds_[iBit])
+          filterList.AddAll(triggerObjs->GetList(id));
 
-        // not very efficient but not worth putting too much time improving this..
-        if (std::find(objsNames.begin(), objsNames.end(), trigObj.ModuleName()) == objsNames.end())
-          continue;
+        for (TObject* obj : filterList) {
+          auto& trigObj(*static_cast<mithep::TriggerObject*>(obj));
 
-        TLorentzVector objP4(trigObj.Px(), trigObj.Py(), trigObj.Pz(), trigObj.E());
+          // not very efficient but not worth putting too much time improving this..
+          if (std::find(objsNames.begin(), objsNames.end(), trigObj.ModuleName()) == objsNames.end())
+            continue;
 
-        for (unsigned iTarg(0); iTarg != 4; ++iTarg) {
-          auto* bitmaskArr(bitmaskArrs[iTarg]);
-          auto* matchTarget(matchTargets[iTarg]);
+          TLorentzVector objP4(trigObj.Px(), trigObj.Py(), trigObj.Pz(), trigObj.E());
+
+          for (unsigned iTarg(0); iTarg != 4; ++iTarg) {
+            auto* bitmaskArr(bitmaskArrs[iTarg]);
+            auto* matchTarget(matchTargets[iTarg]);
         
-          double minDR(std::numeric_limits<double>::max());
-          int minIndex(-1);
+            double minDR(std::numeric_limits<double>::max());
+            int minIndex(-1);
 
-          for (int iP(0); iP < matchTarget->p4->GetEntries(); ++iP) {
-            double dR(static_cast<TLorentzVector*>(matchTarget->p4->At(iP))->DeltaR(objP4));
-            if (dR < 0.2 && dR < minDR) {
-              minIndex = iP;
-              minDR = dR;
+            for (int iP(0); iP < matchTarget->p4->GetEntries(); ++iP) {
+              double dR(static_cast<TLorentzVector*>(matchTarget->p4->At(iP))->DeltaR(objP4));
+              if (dR < 0.2 && dR < minDR) {
+                minIndex = iP;
+                minDR = dR;
+              }
             }
-          }
         
-          if (minIndex >= 0)
-            bitmaskArr->at(minIndex) |= (1 << iBit);
+            if (minIndex >= 0)
+              bitmaskArr->at(minIndex) |= (1 << iBit);
+          }
         }
       }
     }
@@ -182,8 +185,8 @@ mithep::nero::TriggerFiller::AddTriggerName(char const* _path, UInt_t _bit/* = -
 void
 mithep::nero::TriggerFiller::AddFilterName(UInt_t _bit, char const* _filter)
 {
-  if (_bit >= triggerObjectsNames_.size())
-    triggerObjectsNames_.resize(_bit + 1);
+  if (_bit >= sizeof(triggerObjectsNames_) / sizeof(std::vector<TString>))
+    return;
 
   triggerObjectsNames_[_bit].emplace_back(_filter);
 }
