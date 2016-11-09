@@ -36,6 +36,12 @@ Implementation:
 
 //#define VERBOSE 2
 //#define VERBOSE 1
+//#define PROFILE 1
+
+#ifdef PROFILE
+    #include "TBenchmark.h"
+    TBenchmark profile;
+#endif
 
 //
 // constants, enums and typedefs
@@ -208,7 +214,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     leps -> mOnlyMc = onlyMc;
     leps -> vtx_ = vtx; // Set the Vertex class
     leps -> evt_ = evt; // Set the Event class
-    leps -> ea_ . reset (new EffectiveAreas(iConfig.getParameter<std::string>("eleEA")) );
+    leps -> ea_ . reset (new EffectiveAreas( edm::FileInPath(iConfig.getParameter<std::string>("eleEA")).fullPath () ) );
     leps -> mu_token = consumes<pat::MuonCollection>(iConfig.getParameter<edm::InputTag>("muons"));
     leps -> el_token = consumes<pat::ElectronCollection>(iConfig.getParameter<edm::InputTag>("electrons"));
     leps -> token_smear = consumes<pat::ElectronCollection>(iConfig.getParameter<edm::InputTag>("calibratedelectrons"));
@@ -396,6 +402,9 @@ Nero::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
             if (VERBOSE > 1) { cout<<"[Nero]::[analyze] going to analyze "<<o->name() <<endl; }
             if (VERBOSE){sw_.Reset(); sw_.Start();}
         #endif
+        #ifdef PROFILE
+            if (PROFILE>0)profile.Start(o->name().c_str());
+        #endif
 
         if (o->analyze(iEvent, iSetup) ) return; // analyze return 0 on success (VTX ..)
 
@@ -411,6 +420,9 @@ Nero::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
                     <<" took:"<< sw_.CpuTime()<< "CPU Time and "
                     <<sw_.RealTime()<<"RealTime"<<endl;
             }
+        #endif
+        #ifdef PROFILE
+            if (PROFILE>0)profile.Stop(o->name().c_str());
         #endif
     }
 
@@ -492,15 +504,26 @@ Nero::beginJob()
     for(auto o : obj)
     {
         if (dynamic_cast<NeroAll*> (o) !=NULL ) { continue ; }  // otherwise I will have also the branch in the main tree.
+        #ifdef VERBOSE
+            if(VERBOSE) cout<<" -> Calling defineBranch for "<<o->name()<<endl;
+        #endif
         o -> defineBranches(tree_);
     }
 
     for(auto o : lumiObj)
+    {
+        #ifdef VERBOSE
+            if(VERBOSE) cout<<" -> Calling defineBranch for "<<o->name()<<endl;
+        #endif
         o -> defineBranches(all_);
+    }
     
     //set histogram map
     for(auto o : lumiObj){
         if (dynamic_cast<NeroAll*> (o) !=NULL ) {
+            #ifdef VERBOSE
+                if(VERBOSE) cout<<" -> Setting Histograms in "<<o->name()<<endl;
+            #endif
             NeroAll * na = dynamic_cast<NeroAll*> (o);
             na->hDEvents =  hD_["Events"];
             na->hDTotalMcWeight = hD_["TotalMcWeight"];
@@ -509,6 +532,9 @@ Nero::beginJob()
             na->hDpdfReweightSums = hD_["pdfReweightSums"];
         } // end if
         } // end for o in lumiObj
+    #ifdef VERBOSE
+        if(VERBOSE) cout<<" -- end of begin job "<<endl;
+    #endif
 } //end beginJob
 
 
@@ -516,6 +542,12 @@ Nero::beginJob()
     void 
 Nero::endJob() 
 {
+    #ifdef PROFILE
+        for(auto o : obj)
+        {
+            if (PROFILE>0)profile.Show(o->name().c_str());
+        }   
+    #endif
     #ifdef VERBOSE
         if(VERBOSE) cout<<" >>>>>>> END JOB <<<<<<<<<"<<endl;
     #endif
