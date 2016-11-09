@@ -99,7 +99,7 @@ mithep::nero::FatJetsFiller::fill()
       if (filled) {
         out_.trimmedMass->push_back(jet.MassTrimmed());
         out_.prunedMass->push_back(jet.MassPruned());
-        out_.filteredMass->push_back(jet.MassFiltered());
+        out_.softdropMass->push_back(jet.MassSoftDrop());
       }
     }
   } else {
@@ -115,7 +115,7 @@ mithep::nero::FatJetsFiller::fill()
       if (filled) {
         out_.trimmedMass->push_back(-1);
         out_.prunedMass->push_back(-1);
-        out_.filteredMass->push_back(-1);
+        out_.softdropMass->push_back(jet.MassSoftDrop());
       }
     }
   }
