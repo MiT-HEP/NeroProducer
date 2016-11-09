@@ -211,44 +211,49 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
 
 bool NeroJets::JetId(const pat::Jet &j, std::string id)
 {
+    // 11/09/2016 r95
     // https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetID
-    //                              Loose -- Tight Jet ID
-    // --- Number of Constituents   > 1     > 1
-    // --- Neutral Hadron Fraction  < 0.99  < 0.90
-    // --- Neutral EM Fraction      < 0.99  < 0.90
-    // --- Muon Fraction    < 0.8   < 0.8
-    // --- And for -2.4 <= eta <= 2.4 in addition apply
-    // --- Charged Hadron Fraction  > 0     > 0
-    // --- Charged Multiplicity     > 0     > 0
-    // --- Charged EM Fraction      < 0.99  < 0.90 
 
     bool jetid = false;
 
     float NHF    = j.neutralHadronEnergyFraction();
     float NEMF   = j.neutralEmEnergyFraction();
     float CHF    = j.chargedHadronEnergyFraction();
-    //float MUF    = j.muonEnergyFraction();
+    float MUF    = j.muonEnergyFraction();
     float CEMF   = j.chargedEmEnergyFraction();
     int NumConst = j.chargedMultiplicity()+j.neutralMultiplicity();
     int CHM      = j.chargedMultiplicity();
     int NumNeutralParticle =j.neutralMultiplicity(); 
     float eta = j.eta();
 
-    //tightLepVetoJetID = (NHF<0.90 && NEMF<0.90 && NumConst>1 && MUF<0.8) && ((fabs(eta)<=2.4 && CHF>0 && CHM>0 && CEMF<0.90) || fabs(eta)>2.4) && fabs(eta)<=3.0 
     if (id=="none") return true;
 
-    if (id=="loose" || id=="monojet" || id=="monojetloose" || id=="monojet2015")
+    // POG JetID loose, tight, tightLepVeto
+    if (id=="loose")
     {
-        //jetid = (NHF<0.99 && NEMF<0.99 && NumConst>1 && MUF<0.8) && ((fabs(j.eta())<=2.4 && CHF>0 && CHM>0 && CEMF<0.99) || fabs(j.eta())>2.4);
-        jetid = (NHF<0.99 && NEMF<0.99 && NumConst>1) && ((fabs(eta)<=2.4 && CHF>0 && CHM>0 && CEMF<0.99) || fabs(eta)>2.4) && fabs(eta)<=3.0;
-        jetid = jetid || (NEMF<0.90 && NumNeutralParticle>10 && fabs(eta)>3.0);
+        jetid=(NHF<0.99 && NEMF<0.99 && NumConst>1) && ((abs(eta)<=2.4 && CHF>0 && CHM>0 && CEMF<0.99) || abs(eta)>2.4) && abs(eta)<=2.7 ;
+        jetid = jetid or (NEMF<0.90 && NumNeutralParticle>2 && abs(eta)>2.7 && abs(eta)<=3.0 ) ;
+        jetid = jetid or (NEMF<0.90 && NumNeutralParticle>10 && abs(eta)>3.0 ) ;
     }
 
-    if (id=="tight")
+    else if (id=="tight")
     {
-        //jetid = (NHF<0.90 && NEMF<0.90 && NumConst>1 && MUF<0.8) && ((fabs(j.eta())<=2.4 && CHF>0 && CHM>0 && CEMF<0.90) || fabs(j.eta())>2.4);
-        jetid = (NHF<0.90 && NEMF<0.90 && NumConst>1) && ((fabs(eta)<=2.4 && CHF>0 && CHM>0 && CEMF<0.99) || fabs(eta)>2.4) && fabs(eta)<=3.0;
-        jetid = jetid || (NEMF<0.90 && NumNeutralParticle>10 && fabs(eta)>3.0 );
+        jetid = (NHF<0.90 && NEMF<0.90 && NumConst>1) && ((abs(eta)<=2.4 && CHF>0 && CHM>0 && CEMF<0.99) || abs(eta)>2.4) && abs(eta)<=2.7 ;
+        jetid = jetid or (NEMF<0.90 && NumNeutralParticle>2 && abs(eta)>2.7 && abs(eta)<=3.0 ) ;
+        jetid = jetid or (NEMF<0.90 && NumNeutralParticle>10 && abs(eta)>3.0 ) ;
+    }
+
+    else if (id=="tightLepVeto")
+    {
+        jetid =  (NHF<0.90 && NEMF<0.90 && NumConst>1 && MUF<0.8) && ((abs(eta)<=2.4 && CHF>0 && CHM>0 && CEMF<0.90) || abs(eta)>2.4) && abs(eta)<=2.7 ;
+        jetid = jetid or (NEMF<0.90 && NumNeutralParticle>2 && abs(eta)>2.7 && abs(eta)<=3.0 ) ;
+        jetid = jetid or (NEMF<0.90 && NumNeutralParticle>10 && abs(eta)>3.0 ) ;
+    }
+
+    else if ( id=="monojet" || id=="monojetloose" || id=="monojet2015")
+    {
+        jetid = (NHF<0.99 && NEMF<0.99 && NumConst>1) && ((fabs(eta)<=2.4 && CHF>0 && CHM>0 && CEMF<0.99) || fabs(eta)>2.4) && fabs(eta)<=3.0;
+        jetid = jetid || (NEMF<0.90 && NumNeutralParticle>10 && fabs(eta)>3.0);
     }
 
     if (id=="monojet")

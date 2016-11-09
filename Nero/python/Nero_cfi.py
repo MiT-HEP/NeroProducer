@@ -48,11 +48,11 @@ nero = cms.EDAnalyzer("Nero",
     prunedgen = cms.InputTag("prunedGenParticles"),
     packedgen = cms.InputTag("packedGenParticles"),
     ### ID MAP, these will become input tag when replacing the %(bx)s field, see testNero.py
-    eleVetoIdMap   = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-%(bx)s-%(vs)s-standalone-veto"),
-    eleLooseIdMap  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-%(bx)s-%(vs)s-standalone-loose"),
-    eleMediumIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-%(bx)s-%(vs)s-standalone-medium"),
-    eleTightIdMap  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-%(bx)s-%(vs)s-standalone-tight"),
-    eleMvaMap = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values"),
+    eleVetoIdMap   = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-%(vs)s-veto"),
+    eleLooseIdMap  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-%(vs)s-loose"),
+    eleMediumIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-%(vs)s-medium"),
+    eleTightIdMap  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-%(vs)s-tight"),
+    #eleMvaMap = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values"), out of date
     phoLooseIdMap  = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-%(bx)s-%(vs)s-standalone-loose"),
     phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-%(bx)s-%(vs)s-standalone-medium"),
     phoTightIdMap  = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-%(bx)s-%(vs)s-standalone-tight"),
@@ -61,6 +61,7 @@ nero = cms.EDAnalyzer("Nero",
     phoNeutralHadronIsolation = cms.InputTag("photonIDValueMapProducer:phoNeutralHadronIsolation"),
     phoPhotonIsolation = cms.InputTag("photonIDValueMapProducer:phoPhotonIsolation"),
     phoWorstChargedIsolation = cms.InputTag("photonIDValueMapProducer:phoWorstChargedIsolation"),
+    eleEA = cms.string("RecoEgamma/ElectronIdentification/data/Summer16/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_80X.txt"),
 
     ### Rec Hits
     ebRecHits = cms.InputTag("reducedEgamma:reducedEBRecHits"),
@@ -101,6 +102,7 @@ nero = cms.EDAnalyzer("Nero",
 	    			'HLT_Ele27_eta2p1_WPLoose_Gsf_v', # unprescaled, SingleElectron 
 				'HLT_Ele27_WP85_Gsf_v',
 				'HLT_Ele27_WPLoose_Gsf_v',
+				'HLT_Ele27_WPTight_Gsf_v',
 				## MUONS
 				'HLT_IsoTkMu20_v', ## Muon POG
 				'HLT_Mu17_v',

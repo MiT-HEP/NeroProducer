@@ -41,6 +41,7 @@ void BareFatJets::init(){
     BareFunctions::New(firstSubjet    );
     BareFunctions::New(subjet_btag    );
     BareFunctions::New(topMVA         );
+    BareFunctions::New(hbb         );
 }
 
 void BareFatJets::clear(){

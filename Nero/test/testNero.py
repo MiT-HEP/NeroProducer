@@ -35,19 +35,11 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 if isData:
    fileList = [
-       '/store/data/Run2016B/MET/MINIAOD/PromptReco-v2/000/273/150/00000/2CF02CDC-D819-E611-AA68-02163E011A52.root'
-       #'/store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v2/000/273/409/00000/16132799-721B-E611-BDDA-02163E014231.root'
-       #'/store/data/Run2015D/MET/MINIAOD/16Dec2015-v1/50000/00EA1DB2-90AA-E511-AEEE-0025905C2CE6.root'
-       #'/store/data/Run2015D/DoubleMuon/MINIAOD/16Dec2015-v1/10000/000913F7-E9A7-E511-A286-003048FFD79C.root'
+        '/store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v3/60000/3A6A80A6-D797-E611-B571-0CC47A04CFF6.root'
        ]
 else:
    fileList = [
-       "/store/mc/RunIISpring16MiniAODv2/TTbarDMJets_pseudoscalar_Mchi-1_Mphi-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext1-v1/40000/C06A61EE-EF25-E611-870A-02163E011A12.root"
-       #"/store/mc/RunIISpring16MiniAODv1/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUFlat0to50_80X_mcRun2_asymptotic_2016_v3-v1/20000/626CD584-6AF3-E511-986F-001E67DDBEDA.root",
-       #"/store/mc/RunIISpring16MiniAODv1/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUFlat0to50_80X_mcRun2_asymptotic_2016_v3-v1/20000/6C339CAD-54F3-E511-8BD4-90B11C12E856.root",
-       #"/store/mc/RunIISpring16MiniAODv1/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUFlat0to50_80X_mcRun2_asymptotic_2016_v3-v1/20000/704816A7-54F3-E511-802A-001E67A3ED40.root",
-       #"/store/mc/RunIISpring16MiniAODv1/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUFlat0to50_80X_mcRun2_asymptotic_2016_v3-v1/20000/7612ABC7-60F3-E511-9AFA-001E67A3F49D.root",
-       #"/store/mc/RunIISpring16MiniAODv1/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUFlat0to50_80X_mcRun2_asymptotic_2016_v3-v1/20000/7A9FA1C7-5BF3-E511-93D7-001E67A3EC05.root",
+       "file:1A41BFCB-6DA5-E611-A620-00259057495C.root" ## monophoton trancheIV
        ]
 ### do not remove the line below!
 ###FILELIST###
@@ -71,10 +63,14 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 
 #mc https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions#Global_Tags_for_Run2_MC_Producti
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
+#process.load("CondCore.DBCommon.CondDBCommon_cfi")
+
 if (isData):
-    process.GlobalTag.globaltag = '80X_dataRun2_Prompt_ICHEP16JEC_v0'
+    # sept reprocessing
+    process.GlobalTag.globaltag = '80X_dataRun2_2016SeptRepro_v3'
 else:
-    process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_miniAODv2_v1'
+    ## tranch IV v6
+    process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_TrancheIV_v6'
 
 ### LOAD DATABASE
 from CondCore.DBCommon.CondDBSetup_cfi import *
@@ -85,6 +81,7 @@ if isData and not options.isGrid and False: ## dont load the lumiMaks, will be c
     #pass
     import FWCore.PythonUtilities.LumiList as LumiList
     ## SILVER
+    print "-> UPDATE THE LUMI LIST"
     process.source.lumisToProcess = LumiList.LumiList(filename='/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/DCSOnly/json_DCSONLY.txt').getVLuminosityBlockRange()
 
 ## SKIM INFO
@@ -100,7 +97,62 @@ initEGammaVID(process,options)
 process.load("RecoEgamma/PhotonIdentification/PhotonIDValueMapProducer_cfi")
 process.load("RecoEgamma/ElectronIdentification/ElectronIDValueMapProducer_cfi")
 
+
+################# JEC 
+############################### JEC #####################
+#### Load from a sqlite db, if not read from the global tag
+#process.load("CondCore.DBCommon.CondDBCommon_cfi")
+from CondCore.DBCommon.CondDBSetup_cfi import *
+
+if options.isData:
+    connectString = cms.string('sqlite:jec/Spring16_25nsV8BCD_DATA.db')
+    tagName = 'Spring16_25nsV8BCD_DATA_AK4PFchs'
+    ## use the first to check run, TODO, check that this work with crab
+    if 'Run2016E' in process.source.fileNames[0]:
+        connectString = cms.string('sqlite:jec/Spring16_25nsV8E_DATA.db')
+        tagName = 'Spring16_25nsV8E_DATA_AK4PFchs'
+    if 'Run2016F' in process.source.fileNames[0]:
+        connectString = cms.string('sqlite:jec/Spring16_25nsV8F_DATA.db')
+        tagName = 'Spring16_25nsV8F_DATA_AK4PFchs'
+        print "TODO: FIX JEC for A PART OF F->G run>=278802"
+    if 'Run2016G' in process.source.fileNames[0] or 'Run2016H' in process.source.fileNames[0]:
+        connectString = cms.string('sqlite:jec/Spring16_25nsV8p2_DATA.db')
+        tagName = 'Spring16_25nsV8G_DATA_AK4PFchs'
+    print "JEC SUMMARY FOR DATA: using file",connectString
+else:
+    #connectString = cms.string('sqlite:jec/Spring16_25nsV8_MC.db')
+    #tagName = 'Spring16_25nsV8_MC_AK4PFchs'
+    connectString = cms.string('sqlite:jec/Spring16_25nsV8BCD_MC.db')
+    tagName = 'Spring16_25nsV8BCD_MC_AK4PFchs'
+
+
+process.jec = cms.ESSource("PoolDBESSource",
+      DBParameters = cms.PSet(
+        messageLevel = cms.untracked.int32(0)
+        ),
+      timetype = cms.string('runnumber'),
+      toGet = cms.VPSet(
+      cms.PSet(
+            record = cms.string('JetCorrectionsRecord'),
+            tag    = cms.string('JetCorrectorParametersCollection_%s'%tagName),
+            label  = cms.untracked.string('AK4PFchs')
+            ),
+      cms.PSet( ## AK8
+            record = cms.string('JetCorrectionsRecord'),
+            tag    = cms.string('JetCorrectorParametersCollection_%s'%re.sub('AK4','AK8',tagName)),
+            label  = cms.untracked.string('AK8PFchs')
+            ),
+      ## here you add as many jet types as you need
+      ## note that the tag name is specific for the particular sqlite file 
+      ), 
+      connect = connectString
+     # uncomment above tag lines and this comment to use MC JEC
+)
+## add an es_prefer statement to resolve a possible conflict from simultaneous connection to a global tag
+process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
+
 #------------------- JER -----------------
+print "TODO: Update JER"
 toGet=[]
 if options.isData:
     jerString = cms.string('sqlite:jer/Spring16_25nsV6_DATA.db')
@@ -151,7 +203,7 @@ process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService
                                                    calibratedPatElectrons = cms.PSet(initialSeed = cms.untracked.uint32(123456), 
                                                                                      engineName = cms.untracked.string('TRandom3') 
                                                                                      ) ,
-                                                   calibratedPatPhotons = cms.PSet(initialSeed = cms.untracked.uint32(123456), 
+                                                   calibratedPatPhotons = cms.PSet(initialSeed = cms.untracked.uint32(654321), 
                                                                                    engineName = cms.untracked.string('TRandom3') 
                                                                                    ) 
                                                    ) 
@@ -199,23 +251,27 @@ updateJetCollection(
 print "-> Updating the jets collection to run on to 'updatedPatJetsUpdatedJEC' with the new jec in the GT"
 process.nero.jets=cms.InputTag('updatedPatJetsUpdatedJEC')
 process.nero.chsAK8=cms.InputTag('updatedPatJetsUpdatedJECAK8')
-process.jecSequence = cms.Sequence( process.patJetCorrFactorsUpdatedJEC* process.updatedPatJetsUpdatedJEC* process.patJetCorrFactorsUpdatedJECAK8* process.updatedPatJetsUpdatedJECAK8)
-
+process.jecSequence = cms.Sequence( process.patJetCorrFactorsUpdatedJEC* process.updatedPatJetsUpdatedJEC 
+        * process.patJetCorrFactorsUpdatedJECAK8* process.updatedPatJetsUpdatedJECAK8
+        )
 
 ########### MET Filter ################
 process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
 process.BadPFMuonFilter.muons = cms.InputTag("slimmedMuons")
 process.BadPFMuonFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+process.BadPFMuonFilter.taggingMode = cms.bool(True)
 
 process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
 process.BadChargedCandidateFilter.muons = cms.InputTag("slimmedMuons")
 process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+process.BadChargedCandidateFilter.taggingMode = cms.bool(True)
 
 ############ RECOMPUTE MET #######################
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
 runMetCorAndUncFromMiniAOD(process,
            isData=isData,
            )
+
 print "-> Updating the met collection to run on to 'slimmedMETs with nero' with the new jec in the GT for Type1"
 process.nero.mets=cms.InputTag('slimmedMETs','','nero')
 if not options.isData:
