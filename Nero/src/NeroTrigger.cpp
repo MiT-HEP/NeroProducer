@@ -64,6 +64,24 @@ int NeroTrigger::analyze(const edm::Event& iEvent){
         } // trigger loop
     } // handle is valid
 
+    // L1
+    iEvent.getByToken(token_l1EtSum,handle_l1EtSum);
+    if ( not handle_l1EtSum.isValid() ) cout<<"[NeroTrigger]::[analyze]::[ERROR] handle for l1 Et Sum is not valid"<<endl;
+    if (handle_l1EtSum.isValid() and not handle_l1EtSum.failedToGet()){
+        int bx=0; // we want only the bx =0 
+        size_t size = handle_l1EtSum->size(bx);
+        for(size_t trigger =0; trigger< size;++trigger){
+            const auto& l1obj = handle_l1EtSum->at(bx,trigger);
+            // see https://github.com/cms-sw/cmssw/blob/CMSSW_8_0_X/DataFormats/L1Trigger/interface/EtSum.h#L20-L42
+            if (l1obj.getType() == l1t::EtSum::kMissingEt){
+                //cout <<"[NeroTrigger]::[analyze]::[INFO] l1 Et miss is "<<l1obj.pt()<<endl;
+                if (l1obj.pt() >80) setTrigger("L1_ET80",1); // this will fill the correct position if it exists
+                if (l1obj.pt() >90) setTrigger("L1_ET90",1);
+                if (l1obj.pt() >100) setTrigger("L1_ET100",1);
+            }
+        }
+    }
+
 
     // ---- TRIGGER MATCHING ---
     if (leps_ !=NULL) triggerLeps -> resize(leps_ -> p4 -> GetEntries()  ,0);
@@ -154,6 +172,18 @@ int NeroTrigger::analyze(const edm::Event& iEvent){
     if(VERBOSE)cout<<"[NeroTrigger]::[analize] === RETURN ==="<<endl;
 
     return 0;
+}
+
+void NeroTrigger::setTrigger(const string& name, int value){
+
+    // reverse, usually L1 is the last
+    for (size_t pos = triggerNames->size(); pos>0 ;--pos)  // offset by 1
+    { 
+        if (triggerNames->at(pos-1) != name) continue;
+        (*triggerFired)[pos-1] =1;
+        break;// spead up
+    }
+
 }
 
 // Local Variables:

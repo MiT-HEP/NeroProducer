@@ -336,6 +336,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     tr -> token = consumes< edm::TriggerResults >( iConfig.getParameter<edm::InputTag>("trigger"));
     tr -> prescale_token = consumes<pat::PackedTriggerPrescales>( iConfig.getParameter<edm::InputTag>("prescales") );
     tr -> object_token = consumes< pat::TriggerObjectStandAloneCollection > ( iConfig.getParameter<edm::InputTag> ("objects") );
+    tr -> token_l1EtSum= consumes< BXVector< l1t::EtSum > > (edm::InputTag("caloStage2Digis:EtSum"));
     tr -> mNMatch = iConfig.getParameter<int>("triggerNMatch");
     // set the collection he needs to be awared of
     tr -> leps_ = leps;

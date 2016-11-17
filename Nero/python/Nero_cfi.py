@@ -141,7 +141,11 @@ nero = cms.EDAnalyzer("Nero",
                                 'Flag_CSCTightHaloFilter',
                                 'Flag_eeBadScFilter',
                                 'Flag_HBHENoiseFilter',
-                                'Flag_HBHENoiseIsoFilter'
+                                'Flag_HBHENoiseIsoFilter',
+				### L1  ## these needs to be implemented in the code as well
+				'L1_ET80',
+				'L1_ET90',
+				'L1_ET100',
 				]),
     prescales = cms.InputTag('patTrigger'),
     trigger = cms.InputTag("TriggerResults","","HLT"),
