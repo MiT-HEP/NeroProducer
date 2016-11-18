@@ -90,11 +90,11 @@ nero = cms.EDAnalyzer("Nero",
                                 'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET80', ## not always available, Tau, NOT _v because there is noise cleaned
                                 'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET90', ## not always available, Tau
                                 'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET110', ## not always available, Tau
-                                'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET120', ## unprescaled , Tau
-				'HLT_LooseIsoPFTau50_Trk30_eta2p1_v', ## Prescaled, Tau, for turn on studies
-				'HLT_PFMET120_JetIdCleaned_BtagCSV0p72',## unprescaled, MET, control on tau turn on
-				'HLT_PFMET120_NoiseCleaned_BtagCSV0p72',## unprescaled, MET, control on tau turn on
-				'HLT_PFMET120_BtagCSV0p72',## unprescaled, MET, control on tau turn on
+                                'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET120', ## unprescaled , Tau, Match
+				'HLT_LooseIsoPFTau50_Trk30_eta2p1_v', ## Prescaled, Tau, for turn on studies, Match
+				'HLT_VLooseIsoPFTau120_Trk50_eta2p1_v', ## partially prescaled, Match
+				'HLT_VLooseIsoPFTau140_Trk50_eta2p1_v', ## unprescaled, Match
+				'HLT_CaloMHTNoPU90_PFMET90_PFMHT90_IDTight_BTagCSV_p067_v',
 	    			## ELECTRON
 				'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v',
 				'HLT_Ele22_eta2p1_WP75_Gsf_v',
@@ -123,6 +123,7 @@ nero = cms.EDAnalyzer("Nero",
 				'HLT_PFMET170_HBHECleaned',
 				'HLT_PFMET170_JetIdCleaned',
 				'HLT_PFMET170_NotCleaned',
+				'HLT_PFMET170_HBHE_BeamHaloCleaned',
 			        'HLT_PFMETNoMu90_PFMHTNoMu90_IDTight',
 			        'HLT_PFMETNoMu100_PFMHTNoMu100_IDTight',
 			        'HLT_PFMETNoMu110_PFMHTNoMu110_IDTight',
