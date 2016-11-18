@@ -8,6 +8,9 @@
 #include "NeroProducer/Nero/interface/NeroLeptons.hpp"
 #include "NeroProducer/Nero/interface/NeroTaus.hpp"
 #include "NeroProducer/Nero/interface/NeroPhotons.hpp"
+#include "DataFormats/L1Trigger/interface/BXVector.h"
+#include "DataFormats/L1Trigger/interface/EtSum.h"
+#include "DataFormats/L1Trigger/interface/Tau.h"
 
 #define VERBOSE_TRIGGER 0
 
@@ -23,11 +26,23 @@ class NeroTrigger : virtual public NeroCollection, virtual public BareTrigger
         edm::Handle< edm::TriggerResults  > handle;	
         edm::Handle<pat::PackedTriggerPrescales> prescale_handle;
         edm::Handle<pat::TriggerObjectStandAloneCollection > object_handle;
+        //  handle for L1
+        edm::Handle<BXVector<l1t::EtSum> > handle_l1EtSum;
+        edm::Handle<BXVector<l1t::Tau> > handle_l1Tau;
+
+        //  The collections are gmtStage2Digis:Muon, caloStage2Digis:EGamma, caloStage2Digis:EtSum, caloStage2Digis:Jet, caloStage2Digis:Tau 
+        //
+        //BXVector<l1t::EGamma>                 "caloStage2Digis"           "EGamma"          "RECO"    
+        //BXVector<l1t::EtSum>                  "caloStage2Digis"           "EtSum"           "RECO"    
+        //BXVector<l1t::Jet>                    "caloStage2Digis"           "Jet"             "RECO"    
+        //BXVector<l1t::Tau>                    "caloStage2Digis"           "Tau"             "RECO" 
 
         // --- Token
         edm::EDGetTokenT< edm::TriggerResults > token;
         edm::EDGetTokenT< pat::PackedTriggerPrescales > prescale_token;
         edm::EDGetTokenT< pat::TriggerObjectStandAloneCollection > object_token;
+        edm::EDGetTokenT<BXVector<l1t::EtSum> > token_l1EtSum;
+        edm::EDGetTokenT<BXVector<l1t::Tau> > token_l1Tau;
 
         // --- configuration
         template <class T>
@@ -44,6 +59,8 @@ class NeroTrigger : virtual public NeroCollection, virtual public BareTrigger
         float mDr ;
         //number of trigger to match
         float mNMatch;
+
+        void setTrigger(const string& name, int value);
 
 };
 
