@@ -60,7 +60,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 
     for (const pat::Muon &mu : *mu_handle) {
         // selection
-        if (mu.pt() < 10. ) continue;
+        if (mu.pt() < 5. ) continue;
         if (mu.pt() < mMinPt_mu || fabs(mu.eta()) > mMinEta_mu || !mu.isLooseMuon()) continue; 
         float chiso  = mu.pfIsolationR04().sumChargedHadronPt;
         float niso   = mu.pfIsolationR04().sumNeutralHadronEt;
@@ -84,8 +84,8 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
             if ( fabs((mu.muonBestTrack()->dz((*vtx_->GetPV()).position())))<0.1 and (mu.dB()< 0.02) ){
                 l.selBits |= unsigned(mu.isMediumMuon() * LepMediumIP);
                 l.selBits |= unsigned(mu.isTightMuon( * vtx_->GetPV() ))*LepTightIP ;
-                //l.selBits |= unsigned(mu.isLooseMuon()) * LepSoftIP;
-                if(isFake){ l.selBits |= unsigned(mu.isMediumMuon() * LepFake); }
+                l.selBits |= unsigned(mu.isSoftMuon(* vtx_->GetPV())) * LepSoftIP;
+                if(isFake){ l.selBits |= unsigned(mu.isTightMuon(* vtx_->GetPV()) * LepFake); }
                 }
 
             
@@ -135,6 +135,13 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         float chIso = el.pfIsolationVariables().sumChargedHadronPt;
         float nhIso = el.pfIsolationVariables().sumNeutralHadronEt;
         float phoIso = el.pfIsolationVariables().sumPhotonEt;
+
+        
+        //// HLT SAFE ISOLATION ////
+        float hltecalIsoValue = el.ecalPFClusterIso();
+        float hlthcalIsoValue = el.hcalPFClusterIso();
+        float hlttrackIsoValue = el.dr03TkSumPt();
+        ///////////////////////////
 
         float puChIso= el.puChargedHadronIso();
 
@@ -188,9 +195,14 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 
             bool isEleFakeID = 0;
             bool isEleFakeIso = 0;
-            if ( isEB && el.hadronicOverEm()< 0.08 && fabs(el.deltaEtaSuperClusterTrackAtVtx()) < 0.01 && fabs(el.deltaPhiSuperClusterTrackAtVtx()) < 0.04 && fabs(el.sigmaIetaIeta()) < 0.011 &&  el.eEleClusterOverPout()< 0.01 && fabs(el.dB()) < 0.1 && fabs(el.gsfTrack()->dz((*vtx_->GetPV()).position())) < 0.373 ) { isEleFakeID = 1; }
-            if ( isEE && el.hadronicOverEm()< 0.08 && fabs(el.deltaEtaSuperClusterTrackAtVtx()) < 0.01 && fabs(el.deltaPhiSuperClusterTrackAtVtx()) < 0.08 && fabs(el.sigmaIetaIeta()) < 0.031 &&  el.eEleClusterOverPout()< 0.08 && fabs(el.dB()) < 0.2 && fabs(el.gsfTrack()->dz((*vtx_->GetPV()).position())) < 0.602 ) { isEleFakeID = 1; }
-            if ( phoIso / el.pt() < 0.45 && nhIso / el.pt() < 0.25 && chIso / el.pt() <0.2) { isEleFakeIso = 1; }      
+
+            const float ecal_energy_inverse = 1.0/el.ecalEnergy();
+            const float eSCoverP = el.eSuperClusterOverP();
+            float GsfEleEInverseMinusPInverseCut =  std::abs(1.0 - eSCoverP)*ecal_energy_inverse;
+
+            if ( isEB && el.hadronicOverEm()< 0.08 && fabs(el.deltaEtaSuperClusterTrackAtVtx()) < 0.01 && fabs(el.deltaPhiSuperClusterTrackAtVtx()) < 0.04 && fabs(el.sigmaIetaIeta()) < 0.011 &&  GsfEleEInverseMinusPInverseCut< 0.01 && fabs(el.dB()) < 0.1 && fabs(el.gsfTrack()->dz((*vtx_->GetPV()).position())) < 0.373 && el.gsfTrack()->numberOfLostHits () <= 1) { isEleFakeID = 1; }
+            if ( isEE && el.hadronicOverEm()< 0.08 && fabs(el.deltaEtaSuperClusterTrackAtVtx()) < 0.01 && fabs(el.deltaPhiSuperClusterTrackAtVtx()) < 0.08 && fabs(el.sigmaIetaIeta()) < 0.031 &&  GsfEleEInverseMinusPInverseCut< 0.01 && fabs(el.dB()) < 0.2 && fabs(el.gsfTrack()->dz((*vtx_->GetPV()).position())) < 0.602 && el.gsfTrack()->numberOfLostHits () <= 2) { isEleFakeID = 1; }
+            if ( hltecalIsoValue / el.pt() < 0.45 && hlthcalIsoValue / el.pt() < 0.25 && hlttrackIsoValue / el.pt() <0.2) { isEleFakeIso = 1; }      
             
             l.selBits |= unsigned(isEleFakeID*isEleFakeIso) * LepFake;
 
