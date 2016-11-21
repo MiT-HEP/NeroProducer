@@ -240,7 +240,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     leps -> mMinEta_el = iConfig.getParameter<double>("minEleEta");
     leps -> mMaxIso_el = iConfig.getParameter<double>("maxEleIso");
 
-    leps -> mMinId = iConfig.getParameter<int>("minLepId");
+    leps -> mMinId = iConfig.getParameter<string>("minLepId");
 
     leps -> mMinNleptons = iConfig.getParameter<int>("minLepN");
     leps -> SetMatch( iConfig.getParameter<bool>("matchLep") );
