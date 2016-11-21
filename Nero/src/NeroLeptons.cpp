@@ -87,7 +87,9 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
                 l.selBits |= unsigned(mu.isSoftMuon(* vtx_->GetPV())) * LepSoftIP;
                 if(isFake){ l.selBits |= unsigned(mu.isTightMuon(* vtx_->GetPV()) * LepFake); }
                 }
-
+            l.selBits |= unsigned(mu.isStandAloneMuon() * MuStandalone);
+            l.selBits |= unsigned(mu.isTrackerMuon() * MuTracker);
+            l.selBits |= unsigned(mu.isGlobalMuon() * MuGlobal);
             
         l.pfPt = mu.pfP4().pt();
 
