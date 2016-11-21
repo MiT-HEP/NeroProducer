@@ -47,6 +47,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
     iEvent.getByToken(el_vetoid_token,el_veto_id);
     iEvent.getByToken(el_looseid_token,el_loose_id);
     iEvent.getByToken(el_mva_token,el_mva);
+    iEvent.getByToken(el_hltid_token,el_hlt_id);
 
     if ( not mu_handle.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] mu_handle is not valid"<<endl;
     if ( not el_handle.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_handle is not valid"<<endl;
