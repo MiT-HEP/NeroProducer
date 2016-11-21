@@ -38,7 +38,8 @@ def initEGammaVID(process, options):
 	dataFormat = DataFormat.MiniAOD
 
 	## add the NonTrigValueMap
-	#toProduce['ele']["RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring15_25ns_nonTrig_V1_cff"] = 1
+	toProduce['ele']["RecoEgamma.ElectronIdentification.Identification.cutBasedElectronHLTPreselecition_Summer16_V1_cff"] = 1
+	#toProduce['ele']["RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring15_25ns_Trig_V1_cff"] = 1
 
 	switchOnVIDElectronIdProducer(process, dataFormat)
 	### # define which IDs we want to produce. it is silly to redifine them here hard coded

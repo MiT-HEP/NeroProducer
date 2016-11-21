@@ -46,6 +46,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
     iEvent.getByToken(el_tightid_token,el_tight_id);
     iEvent.getByToken(el_vetoid_token,el_veto_id);
     iEvent.getByToken(el_looseid_token,el_loose_id);
+    iEvent.getByToken(el_hltid_token,el_hlt_id);
     //iEvent.getByToken(el_mva_token,el_mva);
 
     if ( not mu_handle.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] mu_handle is not valid"<<endl;
@@ -54,6 +55,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
     if ( not el_tight_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_tight_id is not valid"<<endl;
     if ( not el_veto_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_veto_id is not valid"<<endl;
     if ( not el_loose_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_loose_id is not valid"<<endl;
+    if ( not el_hlt_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_hlt_id is not valid"<<endl;
     //if ( not el_mva.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_mva is not valid"<<endl;
 
     vector<myLepton> leptons;
@@ -118,6 +120,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         bool isPassTight = (*el_tight_id)[ref];
         bool isPassMedium = (*el_medium_id)[ref];
         bool isPassLoose = (*el_loose_id)[ref];
+        bool isPassHLT = (*el_hlt_id)[ref];
 
         if (not isPassVeto ) continue;
 
@@ -137,13 +140,6 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         float chIso = el.pfIsolationVariables().sumChargedHadronPt;
         float nhIso = el.pfIsolationVariables().sumNeutralHadronEt;
         float phoIso = el.pfIsolationVariables().sumPhotonEt;
-
-        
-        //// HLT SAFE ISOLATION ////
-        float hltecalIsoValue = el.ecalPFClusterIso();
-        float hlthcalIsoValue = el.hcalPFClusterIso();
-        float hlttrackIsoValue = el.dr03TkSumPt();
-        ///////////////////////////
 
         float puChIso= el.puChargedHadronIso();
 
@@ -187,29 +183,19 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         */
 
         l.selBits = 0 ;
-            l.selBits |= unsigned(isPassTight)*LepTight;
-            l.selBits |= unsigned(isPassMedium) * LepMedium;
-            l.selBits |= unsigned(isPassVeto) * LepVeto;
-            l.selBits |= unsigned(isPassLoose) * LepLoose;
-            //--
-            l.selBits |= unsigned(isEB and (not isEBEEGap and not isEBEtaGap and not isEBPhiGap)  ) * LepEBEE;
-            l.selBits |= unsigned(isEE and (not isEBEEGap and not isEERingGap and not isEEDeeGap)  ) * LepEBEE;
 
-            bool isEleFakeID = 0;
-            bool isEleFakeIso = 0;
+        l.selBits |= unsigned(isPassTight) * LepTight;
+        l.selBits |= unsigned(isPassMedium) * LepMedium;
+        l.selBits |= unsigned(isPassVeto) * LepVeto;
+        l.selBits |= unsigned(isPassLoose) * LepLoose;
 
-            const float ecal_energy_inverse = 1.0/el.ecalEnergy();
-            const float eSCoverP = el.eSuperClusterOverP();
-            float GsfEleEInverseMinusPInverseCut =  std::abs(1.0 - eSCoverP)*ecal_energy_inverse;
+        l.selBits |= unsigned(isEB and (not isEBEEGap and not isEBEtaGap and not isEBPhiGap)  ) * LepEBEE;
+        l.selBits |= unsigned(isEE and (not isEBEEGap and not isEERingGap and not isEEDeeGap)  ) * LepEBEE;
 
-            if ( isEB && el.hadronicOverEm()< 0.08 && fabs(el.deltaEtaSuperClusterTrackAtVtx()) < 0.01 && fabs(el.deltaPhiSuperClusterTrackAtVtx()) < 0.04 && fabs(el.sigmaIetaIeta()) < 0.011 &&  GsfEleEInverseMinusPInverseCut< 0.01 && fabs(el.dB()) < 0.1 && fabs(el.gsfTrack()->dz((*vtx_->GetPV()).position())) < 0.373 && el.gsfTrack()->numberOfLostHits () <= 1) { isEleFakeID = 1; }
-            if ( isEE && el.hadronicOverEm()< 0.08 && fabs(el.deltaEtaSuperClusterTrackAtVtx()) < 0.01 && fabs(el.deltaPhiSuperClusterTrackAtVtx()) < 0.08 && fabs(el.sigmaIetaIeta()) < 0.031 &&  GsfEleEInverseMinusPInverseCut< 0.01 && fabs(el.dB()) < 0.2 && fabs(el.gsfTrack()->dz((*vtx_->GetPV()).position())) < 0.602 && el.gsfTrack()->numberOfLostHits () <= 2) { isEleFakeID = 1; }
-            if ( hltecalIsoValue / el.pt() < 0.45 && hlthcalIsoValue / el.pt() < 0.25 && hlttrackIsoValue / el.pt() <0.2) { isEleFakeIso = 1; }      
-            
-            l.selBits |= unsigned(isEleFakeID*isEleFakeIso) * LepFake;
+        l.selBits |= unsigned(isPassHLT) * LepFake;
 
-            if (el.chargeInfo().isGsfCtfConsistent and el.chargeInfo().isGsfCtfScPixConsistent and el.chargeInfo().isGsfScPixConsistent) l.selBits |= EleTripleCharge;
-            if (el.gsfTrack()->numberOfLostHits () == 0 ) l.selBits |=EleNoMissingHits;
+        if (el.chargeInfo().isGsfCtfConsistent and el.chargeInfo().isGsfCtfScPixConsistent and el.chargeInfo().isGsfScPixConsistent) l.selBits |= EleTripleCharge;
+        if (el.gsfTrack()->numberOfLostHits () == 0 ) l.selBits |=EleNoMissingHits;
 
         l.pfPt = el.pt();
     
