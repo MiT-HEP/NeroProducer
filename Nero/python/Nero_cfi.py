@@ -98,27 +98,52 @@ nero = cms.EDAnalyzer("Nero",
 				'HLT_VLooseIsoPFTau120_Trk50_eta2p1_v', ## partially prescaled, Match
 				'HLT_VLooseIsoPFTau140_Trk50_eta2p1_v', ## unprescaled, Match
 				'HLT_CaloMHTNoPU90_PFMET90_PFMHT90_IDTight_BTagCSV_p067_v',
-	    			## ELECTRON
-				'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v',
+	    			## ELECTRONS
+				'HLT_Ele25_eta2p1_WPTight_Gsf_v',
+				'HLT_Ele27_eta2p1_WPLoose_Gsf_v',
+				'HLT_Ele27_WPTight_Gsf_v',
+				'HLT_Ele30_WPTight_Gsf_v',
+				'HLT_Ele35_WPLoose_Gsf_v',
+				'HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v',
+				'HLT_DoubleEle24_22_eta2p1_WPLoose_Gsf_v',
 				'HLT_Ele22_eta2p1_WP75_Gsf_v',
 				'HLT_Ele23_WPLoose_Gsf_v',
-	    			'HLT_Ele27_eta2p1_WPLoose_Gsf_v', # unprescaled, SingleElectron 
 				'HLT_Ele27_WP85_Gsf_v',
 				'HLT_Ele27_WPLoose_Gsf_v',
-				'HLT_Ele27_WPTight_Gsf_v',
 				## MUONS
-				'HLT_IsoTkMu20_v', ## Muon POG
 				'HLT_Mu17_v',
-	    			'HLT_IsoMu20_v',
-				'HLT_IsoMu27_v', # SingleMuon, Iso20 is not always available in 25ns
+				'HLT_IsoMu20_v',
+				'HLT_IsoMu22_v',
 				'HLT_IsoMu24_v',
+				'HLT_IsoMu27_v',
+	    			'HLT_IsoTkMu20_v',
+	    			'HLT_IsoTkMu22_v',
+				'HLT_IsoTkMu24_v',
+				'HLT_IsoTkMu27_v',
+				'HLT_Mu45_eta2p1_v',
 				'HLT_Mu50_v',
-				'HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v',
+				'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v',
+				'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v',
 				'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v',
 				'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v',
+				## ELECTRONS-MUONS
+				'HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v',
+				'HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v',
+				'HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v',
+				'HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v',
 				'HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v',
-				'HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v', # unprescaled, SingleElectron 
+				'HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ_v',
+				'HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v',
+				'HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v',
 				'HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v',
+				'HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v',
+				## LEPTON FAKES
+				'HLT_Mu8_TrkIsoVVL_v',
+				'HLT_Mu17_TrkIsoVVL_v',
+				'HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v',
+				'HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v',
+				'HLT_Ele17_CaloIdL_TrackIdL_IsoVL_PFJet30_v',
+				'HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v',
 				## MET
                                 'HLT_PFMET170_NoiseCleaned',
                                 'HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight',
@@ -131,12 +156,17 @@ nero = cms.EDAnalyzer("Nero",
 			        'HLT_PFMETNoMu100_PFMHTNoMu100_IDTight',
 			        'HLT_PFMETNoMu110_PFMHTNoMu110_IDTight',
 			        'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight',
-			        'HLT_Photon120_R9Id90_HE10_IsoM',
 				#### Control triggers, extra
 				'HLT_Ele15_IsoVVL_PFHT350_PFMET70',  ## Unprescaled, SingleElectron
 				'HLT_Mu15_IsoVVVL_PFHT350_PFMET70',  ## Unprescaled ,SingleMuon
 				'HLT_PFMET120_PFMHT120_IDTight',## unprescaled, MET, control on tau turn on
 				#### Photon triggers
+			        'HLT_Photon36_R9Id90_HE10_IsoM_v',
+			        'HLT_Photon50_R9Id90_HE10_IsoM_v',
+			        'HLT_Photon75_R9Id90_HE10_IsoM_v',
+			        'HLT_Photon90_R9Id90_HE10_IsoM_v',
+			        'HLT_Photon120_R9Id90_HE10_IsoM_v',
+			        'HLT_Photon165_R9Id90_HE10_IsoM_v',
 				'HLT_Photon175',
 				'HLT_Photon165_HE10',
 				### DoubleMu / DoubleE cross check and sync with Z
