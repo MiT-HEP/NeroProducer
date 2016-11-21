@@ -12,6 +12,7 @@ parser.add_option("-y","--yes",dest="yes",type="int",help="Should I assume yes a
 parser.add_option("-t","--token",dest="token",type="string",help="token [Default=%default]",default="");
 parser.add_option("-f","--token-file",dest="tokenfile",type="string",help="tokenfile [Default=%default]",default=os.environ["HOME"]+"/.ssh/id_status_token");
 parser.add_option("-o","--override",dest="override",type="string",help="setup file to be parser instead of the PR one [Default=%default]",default="");
+parser.add_option("","--pr",dest="pr",type="string",help="PR number to force check [Default=%default]",default="");
 
 (opts,args) = parser.parse_args()
 
@@ -123,7 +124,8 @@ def TryPullReq(sha, origin):
 		if l.startswith('git cms-init') and not dangerous.search(l)  : continue
 		if l.startswith('echo') and not dangerous.search(l)  : continue
 		if l.startswith('git') and not dangerous.search(l)  : continue
-		if l.startswith('mv RecoEgamma/ElectronIdentification ') and not dangerous.search(l)  : continue
+		if l.startswith('mv RecoEgamma') and not dangerous.search(l)  : continue
+		if l.startswith('rsync') and not dangerous.search(l)  : continue
 		if l == '$1' : continue # execute argument, checked that CMSSW release is not dangerous
 		if l.startswith('[ "X$1" == "X" ] && $1=$CMSSW_VERSION') : continue # execute argument, checked that CMSSW release is not dangerous
 		if l == 'true' : continue # execute argument, checked that CMSSW release is not dangerous
@@ -307,13 +309,14 @@ if __name__ == "__main__":
 			if key['description'] not in available:
 				available[key['description'] ] = key['state']
 
-		if 'run' in available and 'build' in available and 'core' in available : ## 
+		if 'run' in available and 'build' in available and 'core' in available: ## 
 			print "PR:" +dict[id]["title"]+ " already checked:"
 			print "\t* build: " + available['build'] 
 			print "\t* run: "+ available['run'] 
 			print "\t* core: "+ available['core'] 
 			if 'size' in available: print "\t* size: "+ available['size'] 
-			continue
+			if id != opts.pr:
+				continue
 
 		## if failed to build, continue
 		if 'build' in available and ('success' not in available['build'] and 'pending' not in available['build']): 
@@ -323,7 +326,8 @@ if __name__ == "__main__":
 				print 
 				ans=raw_input("Do you want to re-test Pull Req. " +id+": "+ dict[id]['title'] + "? [y/n]" )
 				if ans.lower() != "y"  and ans.lower() != "yes" :  continue;
-			else: continue
+			elif id != opts.pr:
+			   continue
 
 		## if failed to run, continue
 		if 'run' in available and 'success' not in available['run']:
@@ -334,7 +338,8 @@ if __name__ == "__main__":
 				print 
 				ans=raw_input("Do you want to re-test Pull Req. " +id+": "+ dict[id]['title'] + "? [y/n]" )
 				if ans.lower() != "y"  and ans.lower() != "yes" :  continue;
-			else: continue
+			elif id != opts.pr:
+			   continue
 
 		## if failed to core, continue
 		if 'core' in available and 'success' not in available['core']: 
@@ -346,7 +351,8 @@ if __name__ == "__main__":
 				print 
 				ans=raw_input("Do you want to re-test Pull Req. " +id+": "+ dict[id]['title'] + "? [y/n]" )
 				if ans.lower() != "y"  and ans.lower() != "yes" :  continue;
-			else: continue
+			elif id != opts.pr:
+			   continue
 
 		if opts.yes<1:
 			ans=raw_input("Do you want to test Pull Req. " +id+": "+ dict[id]['title'] + "? [y/n]" )
