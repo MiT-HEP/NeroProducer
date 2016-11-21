@@ -6,6 +6,7 @@ print " ------- LOADING LEPTON RECO CONFIGURATION -------- "
 nero.info = cms.string("NeroLeptonReco")
 nero.minPhoPt  = cms.double (10.),
 nero.minPhoId  = cms.string ('none'),
+nero.minLepId  = cms.string ('none'),
 
 # right now these are the defaults, but enforce the values
 nero.minPhoEta = cms.double (2.5),

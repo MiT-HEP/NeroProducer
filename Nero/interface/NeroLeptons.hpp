@@ -103,6 +103,10 @@ class NeroLeptons : virtual public NeroCollection,
         float mMaxIso_mu;
 
         int mMinNleptons;
+        string mMinId;
+        unsigned kMinId;
+
+        unsigned idStringToEnum(std::string idString);
 
         // --- EGTools
         //EnergyScaleCorrection_class *EleCorr{0};
