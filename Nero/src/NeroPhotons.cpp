@@ -34,6 +34,7 @@ unsigned NeroPhotons::idStringToEnum(std::string idString)
     else if (idString == "vloose25") { idEnum = PhoVLoose25; }
     else if (idString == "highpt") { idEnum = PhoHighPt; }
     else if (idString == "monoph") { idEnum = PhoMonophBaseline; }
+    else if (idString == "none")   { idEnum = PhoBaseline; }
     return idEnum;
 }
 
@@ -130,6 +131,7 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
 
         unsigned bits=0;
 
+        bits |= 1; // baseline bit
         bits |= isPassTight * PhoTight;
         bits |= isPassMedium * PhoMedium;
         bits |= isPassLoose * PhoLoose;
