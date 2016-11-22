@@ -38,6 +38,8 @@ unsigned NeroLeptons::idStringToEnum(std::string idString)
     else if (idString == "medium")   { idEnum = LepMedium;   }
     else if (idString == "tight")    { idEnum = LepTight;    }
     else if (idString == "none")     { idEnum = LepBaseline; }
+    // ask for any other id except Lep Baseline
+    else if (idString == "any" )     { idEnum = ~LepBaseline; } 
     return idEnum;
 }
 int NeroLeptons::analyze(const edm::Event & iEvent)
@@ -57,8 +59,8 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
     iEvent.getByToken(el_tightid_token,el_tight_id);
     iEvent.getByToken(el_vetoid_token,el_veto_id);
     iEvent.getByToken(el_looseid_token,el_loose_id);
+    iEvent.getByToken(el_mva_token,el_mva);
     iEvent.getByToken(el_hltid_token,el_hlt_id);
-    //iEvent.getByToken(el_mva_token,el_mva);
 
     if ( not mu_handle.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] mu_handle is not valid"<<endl;
     if ( not el_handle.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_handle is not valid"<<endl;
@@ -67,7 +69,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
     if ( not el_veto_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_veto_id is not valid"<<endl;
     if ( not el_loose_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_loose_id is not valid"<<endl;
     if ( not el_hlt_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_hlt_id is not valid"<<endl;
-    //if ( not el_mva.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_mva is not valid"<<endl;
+    if ( not el_mva.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_mva is not valid"<<endl;
 
     vector<myLepton> leptons;
 
@@ -90,6 +92,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         l.iso = totiso;
         l.p4.SetPxPyPzE( mu.px(),mu.py(),mu.pz(),mu.energy());
         l.selBits =  0 ;
+            l.selBits |= LepBaseline;  
             l.selBits |= unsigned(mu.isLooseMuon()) * LepVeto;  // fill veto bit with loose info
             l.selBits |= unsigned(mu.isLooseMuon()) * LepLoose;
             l.selBits |= unsigned(mu.isTightMuon( * vtx_->GetPV() ))*LepTight ;
@@ -128,16 +131,16 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 
         edm::RefToBase<pat::Electron> ref ( edm::Ref< pat::ElectronCollection >(el_handle, iEle) ) ;
 
-        bool isPassVeto = (*el_veto_id)[ref] && el.passConversionVeto();
-        bool isPassTight = (*el_tight_id)[ref];
-        bool isPassMedium = (*el_medium_id)[ref];
-        bool isPassLoose = (*el_loose_id)[ref];
-        bool isPassHLT = (*el_hlt_id)[ref];
+        bool isPassVeto = (*el_veto_id)[ref] and el.passConversionVeto();
+        bool isPassTight = (*el_tight_id)[ref] and el.passConversionVeto();
+        bool isPassMedium = (*el_medium_id)[ref] and el.passConversionVeto();
+        bool isPassLoose = (*el_loose_id)[ref] and el.passConversionVeto();
+        bool isPassHLT = (*el_hlt_id)[ref] and el.passConversionVeto();
 
         myLepton l;
         l.pdgId = -el.charge()*11;
 
-        //l.mva = (*el_mva)[ref];
+        l.mva = (*el_mva)[ref];
         l.etasc = el.superCluster()->eta();
         l.sieie = el.full5x5_sigmaIetaIeta();
         l.sipip = el.full5x5_sigmaIphiIphi();
@@ -233,7 +236,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         iso     -> push_back(l.iso);
         selBits -> push_back(l.selBits);
         pdgId   -> push_back(l.pdgId);
-        //mva     -> push_back(l.mva);
+        mva     -> push_back(l.mva);
         lepPfPt -> push_back(l.pfPt);
 
         chIso	-> push_back(l.chiso);
