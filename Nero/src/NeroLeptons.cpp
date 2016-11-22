@@ -38,6 +38,8 @@ unsigned NeroLeptons::idStringToEnum(std::string idString)
     else if (idString == "medium")   { idEnum = LepMedium;   }
     else if (idString == "tight")    { idEnum = LepTight;    }
     else if (idString == "none")     { idEnum = LepBaseline; }
+    // ask for any other id except Lep Baseline
+    else if (idString == "any" )     { idEnum = ~LepBaseline; } 
     return idEnum;
 }
 int NeroLeptons::analyze(const edm::Event & iEvent)
@@ -90,6 +92,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         l.iso = totiso;
         l.p4.SetPxPyPzE( mu.px(),mu.py(),mu.pz(),mu.energy());
         l.selBits =  0 ;
+            l.selBits |= LepBaseline;  
             l.selBits |= unsigned(mu.isLooseMuon()) * LepVeto;  // fill veto bit with loose info
             l.selBits |= unsigned(mu.isLooseMuon()) * LepLoose;
             l.selBits |= unsigned(mu.isTightMuon( * vtx_->GetPV() ))*LepTight ;
@@ -128,11 +131,11 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 
         edm::RefToBase<pat::Electron> ref ( edm::Ref< pat::ElectronCollection >(el_handle, iEle) ) ;
 
-        bool isPassVeto = (*el_veto_id)[ref] && el.passConversionVeto();
-        bool isPassTight = (*el_tight_id)[ref];
-        bool isPassMedium = (*el_medium_id)[ref];
-        bool isPassLoose = (*el_loose_id)[ref];
-        bool isPassHLT = (*el_hlt_id)[ref];
+        bool isPassVeto = (*el_veto_id)[ref] and el.passConversionVeto();
+        bool isPassTight = (*el_tight_id)[ref] and el.passConversionVeto();
+        bool isPassMedium = (*el_medium_id)[ref] and el.passConversionVeto();
+        bool isPassLoose = (*el_loose_id)[ref] and el.passConversionVeto();
+        bool isPassHLT = (*el_hlt_id)[ref] and el.passConversionVeto();
 
         myLepton l;
         l.pdgId = -el.charge()*11;

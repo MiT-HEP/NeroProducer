@@ -242,7 +242,7 @@ nero = cms.EDAnalyzer("Nero",
     minMuPt   = cms.double (10.),
     minMuEta  = cms.double (2.4),
     maxMuIso  = cms.double (-1),
-    minLepId  = cms.string ('veto'),
+    minLepId  = cms.string ('any'), 
    
     minLepN   = cms.int32 (0),
     matchLep  = cms.bool (True),
