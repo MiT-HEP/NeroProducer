@@ -16,10 +16,13 @@ class BareLeptons : virtual public BareP4
           LepMedium   = 1UL<<5,
           LepTight    = 1UL<<6,
           // 1 -- 6 POG
-          LepEBEE = 1UL <<7, // lepton (electron) is not in the EB-EE crack
+          LepEBEE     = 1UL<<7, // lepton (electron) is not in the EB-EE crack
           LepMediumIP = 1UL<<8,
           LepTightIP  = 1UL<<9,
           LepSoftIP   = 1UL<<10,
+          MuStandalone = 1UL<<11,
+          MuGlobal     = 1UL<<12,
+          MuTracker    = 1UL<<13,
           EleTripleCharge = 1UL<<15, // charge is in agreement between different measurements
           EleNoMissingHits = 1UL<<16
         };

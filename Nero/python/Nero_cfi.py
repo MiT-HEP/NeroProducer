@@ -233,7 +233,8 @@ nero = cms.EDAnalyzer("Nero",
     minCA15PuppiN   = cms.int32  (0),
     minCA15PuppiId  = cms.string ('loose'),
     CA15PuppiName   = cms.string ('CA15Puppi'),
-
+    
+    ## LEPTONS
     minElePt  = cms.double (10.),
     minEleEta = cms.double (2.5),
     maxEleIso = cms.double (-1.),
@@ -241,6 +242,7 @@ nero = cms.EDAnalyzer("Nero",
     minMuPt   = cms.double (10.),
     minMuEta  = cms.double (2.4),
     maxMuIso  = cms.double (-1),
+    minLepId  = cms.string ('any'), 
    
     minLepN   = cms.int32 (0),
     matchLep  = cms.bool (True),
