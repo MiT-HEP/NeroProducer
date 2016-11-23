@@ -66,7 +66,15 @@ int NeroTrigger::analyze(const edm::Event& iEvent){
 
     // L1
     iEvent.getByToken(token_l1EtSum,handle_l1EtSum);
-    if ( not handle_l1EtSum.isValid() ) cout<<"[NeroTrigger]::[analyze]::[ERROR] handle for l1 Et Sum is not valid"<<endl;
+
+    if ( not handle_l1EtSum.isValid() ) {
+        static int counter =0 ;
+        if (counter <10 ){
+            counter++;
+            cout<<"[NeroTrigger]::[analyze]::[ERROR] handle for l1 Et Sum is not valid"<<endl;
+        }
+    }
+
     if (handle_l1EtSum.isValid() and not handle_l1EtSum.failedToGet()){
         int bx=0; // we want only the bx =0 
         size_t size = handle_l1EtSum->size(bx);
