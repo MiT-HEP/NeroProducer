@@ -443,7 +443,7 @@ if process.nero.doReclustering:
 
 # ------------------------QG-----------------------------------------------
 # after jec, because need to be run on the corrected (latest) jet collection
-qgDatabaseVersion = '80X'
+qgDatabaseVersion = 'cmssw8020_v1'
 
 # to use the database, see https://twiki.cern.ch/twiki/bin/view/CMS/QuarkGluonLikelihood
 #connect = cms.string('frontier://FrontierProd/CMS_COND_PAT_000'),
