@@ -78,13 +78,13 @@ void BareMonteCarlo::defineBranches(TTree *t){
     t->Branch("pdfId1",&pdf1Id,"pdfId1/I");
     t->Branch("pdfId2",&pdf2Id,"pdfId2/I");
     t->Branch("pdfScalePdf",&scalePdf,"pdfScalePdf/F");
+    t->Branch("r2f1", &r2f1, "r2f1/F");
+    t->Branch("r5f1", &r5f1, "r5f1/F");
+    t->Branch("r1f2", &r1f2, "r1f2/F");
+    t->Branch("r2f2", &r2f2, "r2f2/F");
+    t->Branch("r1f5", &r1f5, "r1f5/F");
+    t->Branch("r5f5", &r5f5, "r5f5/F");
     if (IsExtend()) {
-        t->Branch("r2f1", &r2f1, "r2f1/F");
-        t->Branch("r5f1", &r5f1, "r5f1/F");
-        t->Branch("r1f2", &r1f2, "r1f2/F");
-        t->Branch("r2f2", &r2f2, "r2f2/F");
-        t->Branch("r1f5", &r1f5, "r1f5/F");
-        t->Branch("r5f5", &r5f5, "r5f5/F");
         t->Branch("pdfRwgt", "vector<float>", &pdfRwgt);
     }
     t->Branch("genIso","vector<float>", &genIso);
