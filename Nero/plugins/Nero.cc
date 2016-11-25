@@ -124,7 +124,6 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     //--
     bool doReclustering= iConfig.getParameter<bool>("doReclustering");
     bool doAK8 = iConfig.getParameter<bool>("doAK8");
-    bool doCA15 = iConfig.getParameter<bool>("doCA15");
     bool doPuppi = iConfig.getParameter<bool>("doPuppi");
 
     NeroFatJets *chsAK8 = new NeroFatJets();
@@ -163,38 +162,6 @@ Nero::Nero(const edm::ParameterSet& iConfig)
            }
         }
 
-        if (doCA15) {
-
-           if (doPuppi) {
-               NeroPuppiFatJets *puppiCA15= new NeroPuppiFatJets();
-               puppiCA15 -> mOnlyMc = onlyMc;
-               puppiCA15 -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("puppiCA15"));
-               puppiCA15 -> rho_token = evt->rho_token;
-               puppiCA15 -> mMinPt = iConfig.getParameter<double>("minCA15PuppiPt");
-               puppiCA15 -> mMaxEta = iConfig.getParameter<double>("minCA15PuppiEta");
-               puppiCA15 -> mMinId = iConfig.getParameter<string>("minCA15PuppiId");
-               puppiCA15 -> cachedPrefix = iConfig.getParameter<string>("CA15PuppiName");
-               puppiCA15 -> jetRadius = 1.5;
-               puppiCA15 -> subjets_token = mayConsume<reco::PFJetCollection>(edm::InputTag("PFJetsSoftDrop"+puppiCA15 -> cachedPrefix ,"SubJets"));
-               puppiCA15 -> btags_token = mayConsume<reco::JetTagCollection>(edm::InputTag(puppiCA15->cachedPrefix + "PFCombinedInclusiveSecondaryVertexV2BJetTags") ) ;
-               obj.push_back(puppiCA15);
-           } else {
-               NeroFatJets *chsCA15 = new NeroFatJets();
-               chsCA15 -> mRunJEC = true; 
-               chsCA15 -> mOnlyMc = onlyMc;
-               chsCA15 -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("chsCA15"));
-               chsCA15 -> rho_token = evt->rho_token;
-               chsCA15 -> mMinPt = iConfig.getParameter<double>("minCA15CHSPt");
-               chsCA15 -> mMaxEta = iConfig.getParameter<double>("minCA15CHSEta");
-               chsCA15 -> mMinId = iConfig.getParameter<string>("minCA15CHSId");
-               chsCA15 -> cachedPrefix = iConfig.getParameter<string>("CA15CHSName");
-               chsCA15 -> jetRadius = 1.5;
-               chsCA15 -> subjets_token = mayConsume<reco::PFJetCollection>(edm::InputTag("PFJetsSoftDrop"+chsCA15 -> cachedPrefix ,"SubJets"));
-               chsCA15 -> btags_token = mayConsume<reco::JetTagCollection>(edm::InputTag(chsCA15->cachedPrefix + "PFCombinedInclusiveSecondaryVertexV2BJetTags") ) ;
-               obj.push_back(chsCA15);
-
-           }
-        }
     }
 
     // --- 
