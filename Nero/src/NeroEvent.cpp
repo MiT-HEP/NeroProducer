@@ -13,7 +13,6 @@ NeroEvent::NeroEvent():
     metNameToBit["FullRecommendation"] = FullRecommendation;
     metNameToBit["Flag_HBHENoiseFilter"] = HBHENoiseFilter;
     metNameToBit["Flag_HBHENoiseIsoFilter"] = HBHENoiseIsoFilter;
-    metNameToBit["Flag_CSCTightHalo2015Filter"] = CSCTightHalo2015Filter;
     metNameToBit["Flag_EcalDeadCellTriggerPrimitiveFilter"] = EcalDeadCellTriggerPrimitiveFilter;
     metNameToBit["Flag_goodVertices"] = goodVertices;
     metNameToBit["Flag_eeBadScFilter" ] = eeBadScFilter;

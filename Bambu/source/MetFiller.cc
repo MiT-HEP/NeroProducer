@@ -21,11 +21,11 @@ mithep::nero::MetFiller::fill()
 
   if (jesUpMetName_.Length() != 0) {
     auto& jesUpMet(*getSource<mithep::PFMetCol>(jesUpMetName_)->At(0));
-    out_.ptJESUP->push_back(jesUpMet.Pt());
+    //out_.ptJESUP->push_back(jesUpMet.Pt());
   }
   if (jesDownMetName_.Length() != 0) {
     auto& jesDownMet(*getSource<mithep::PFMetCol>(jesDownMetName_)->At(0));
-    out_.ptJESDOWN->push_back(jesDownMet.Pt());
+    //out_.ptJESDOWN->push_back(jesDownMet.Pt());
   }
 
   if (muonsName_.Length() != 0) {

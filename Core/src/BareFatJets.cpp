@@ -21,6 +21,11 @@ BareFatJets::~BareFatJets(){
     BareFunctions::Delete(firstSubjet    );
     BareFunctions::Delete(subjet_btag    );
     BareFunctions::Delete(topMVA         );
+    BareFunctions::Delete(puppiAK8       );
+    BareFunctions::Delete(puppi_tau1     );
+    BareFunctions::Delete(puppi_tau2     );
+    BareFunctions::Delete(puppi_softdrop_masscorr);
+
 }
 
 void BareFatJets::init(){
@@ -42,6 +47,11 @@ void BareFatJets::init(){
     BareFunctions::New(subjet_btag    );
     BareFunctions::New(topMVA         );
     BareFunctions::New(hbb         );
+    BareFunctions::New(puppiAK8       );
+    BareFunctions::New(puppi_tau1     );
+    BareFunctions::New(puppi_tau2     );
+    BareFunctions::New(puppi_softdrop_masscorr);
+
 }
 
 void BareFatJets::clear(){
@@ -63,6 +73,10 @@ void BareFatJets::clear(){
     subjet_btag ->clear();
     hbb -> clear();
     topMVA->clear();
+    puppiAK8->Clear();
+    puppi_tau1->clear();
+    puppi_tau2->clear();
+    puppi_softdrop_masscorr->clear();
 }
 
 void BareFatJets::defineBranches(TTree *t){
@@ -92,6 +106,13 @@ void BareFatJets::defineBranches(TTree *t){
     t->Branch(jetName + "Hbb","vector<float>",&hbb);
 
     t->Branch(jetName + "topMVA","vector<float>",&topMVA);
+
+    //puppi
+    t->Branch("puppiAK8","TClonesArray", &puppiAK8, 128000, 0);
+    t->Branch("puppi_tau1","vector<float>",&puppi_tau1);
+    t->Branch("puppi_tau2","vector<float>",&puppi_tau2);
+    t->Branch("puppi_softdrop_masscorr","vector<float>",&puppi_softdrop_masscorr);
+
 }
 
 void BareFatJets::setBranchAddresses(TTree *t, std::string prefix){
