@@ -24,7 +24,6 @@ Implementation:
 #include "NeroProducer/Nero/interface/NeroEvent.hpp"
 #include "NeroProducer/Nero/interface/NeroFatJets.hpp"
 #include "NeroProducer/Nero/interface/NeroPuppiJets.hpp"
-#include "NeroProducer/Nero/interface/NeroPuppiFatJets.hpp"
 #include "NeroProducer/Nero/interface/NeroVertex.hpp"
 #include "NeroProducer/Nero/interface/NeroMet.hpp"
 #include "NeroProducer/Nero/interface/NeroPhotons.hpp"
@@ -121,10 +120,6 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     obj.push_back(puppijets);
     
     //--
-    bool doReclustering= iConfig.getParameter<bool>("doReclustering");
-    bool doAK8 = iConfig.getParameter<bool>("doAK8");
-    bool doPuppi = iConfig.getParameter<bool>("doPuppi");
-
     NeroFatJets *chsAK8 = new NeroFatJets();
     chsAK8 -> mRunJEC = false; // these jets are already corrected in MiniAOD
     chsAK8 -> mOnlyMc = onlyMc;
@@ -140,28 +135,6 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     chsAK8 -> btags_token = mayConsume<reco::JetTagCollection>(edm::InputTag(chsAK8->cachedPrefix + "PFCombinedInclusiveSecondaryVertexV2BJetTags") ) ;
     chsAK8 -> jecBasePath= iConfig.getParameter<string>("chsAK8JEC");
     obj.push_back(chsAK8);
-
-
-    //--
-    if (doReclustering){
-        if (doAK8) {
-           if (doPuppi) {
-               NeroPuppiFatJets *puppiAK8= new NeroPuppiFatJets();
-               puppiAK8 -> mOnlyMc = onlyMc;
-               puppiAK8 -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("puppiAK8"));
-               puppiAK8 -> rho_token = evt->rho_token;
-               puppiAK8 -> mMinPt = iConfig.getParameter<double>("minAK8PuppiPt");
-               puppiAK8 -> mMaxEta = iConfig.getParameter<double>("minAK8PuppiEta");
-               puppiAK8 -> mMinId = iConfig.getParameter<string>("minAK8PuppiId");
-               puppiAK8 -> cachedPrefix = iConfig.getParameter<string>("AK8PuppiName");
-               puppiAK8 -> jetRadius = 0.8;
-               puppiAK8 -> subjets_token = mayConsume<reco::PFJetCollection>(edm::InputTag("PFJetsSoftDrop"+puppiAK8 -> cachedPrefix ,"SubJets"));
-               puppiAK8 -> btags_token = mayConsume<reco::JetTagCollection>(edm::InputTag(puppiAK8->cachedPrefix + "PFCombinedInclusiveSecondaryVertexV2BJetTags") ) ;
-               obj.push_back(puppiAK8);
-           }
-        }
-
-    }
 
     // --- 
     NeroTaus *taus = new NeroTaus();

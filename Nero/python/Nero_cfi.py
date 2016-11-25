@@ -31,14 +31,6 @@ nero = cms.EDAnalyzer("Nero",
     ## Mass Corrections
     chsAK8JEC = cms.string("jec/Spring16_25nsV8"),
 
-    ############### RECLUSTERED JETS and MET ##########
-    ##### DO NOT USE / TOUCH
-    doReclustering = cms.bool(False),
-    doAK8 = cms.bool(False),
-    doPuppi = cms.bool(False),
-    puppiAK8 = cms.InputTag("packedPatJetsPFAK8Puppi"),
-    ##################################################
-
     pfCands = cms.InputTag("packedPFCandidates"),
                       
     # gen
