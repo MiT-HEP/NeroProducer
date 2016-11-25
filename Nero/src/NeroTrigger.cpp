@@ -50,23 +50,23 @@ int NeroTrigger::analyze(const edm::Event& iEvent){
                       << std::endl;
             }
             string name = names.triggerName(i);
-            for(unsigned int j=0;j< triggerNames->size() ;++j) // destination loop
-            {
-                // 30% faster than string::find, but match only at the beginning of the line
-                bool match=true;
-                if ((*triggerNames)[j].size() > name.size() ) match=false;
-                for(unsigned k=0;k< (*triggerNames)[j].size() and match;++k) if (name[k] !=  (*triggerNames)[j][k] ) match=false;
-
-                //if (name.find( (*triggerNames)[j]) != string::npos)
-                if (match)
+            if (handle->accept(i)){
+                for(unsigned int j=0;j< triggerNames->size() ;++j) // destination loop
                 {
-                    if (handle->accept(i)){
-                        ((*triggerFired)[j]) = 1;
-                    }
-                    (*triggerPrescale)[j] = prescale_handle -> getPrescaleForIndex(i) ; // TODO: what if already set ? 
-                }
+                    // 30% faster than string::find, but match only at the beginning of the line
+                    bool match=true;
+                    if ((*triggerNames)[j].size() > name.size() ) match=false;
+                    for(unsigned k=0;k< (*triggerNames)[j].size() and match;++k) if (name[k] !=  (*triggerNames)[j][k] ) match=false;
 
-            } // my trigger end
+                    //if (name.find( (*triggerNames)[j]) != string::npos)
+                    if (match)
+                    {
+                        ((*triggerFired)[j]) = 1;
+                        (*triggerPrescale)[j] = prescale_handle -> getPrescaleForIndex(i) ; // TODO: what if already set ? 
+                    }
+
+                } // my trigger end
+            }
         } // trigger loop
     } // handle is valid
 
