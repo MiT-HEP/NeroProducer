@@ -147,6 +147,7 @@ nero = cms.EDAnalyzer("Nero",
 				## MET
                                 'HLT_PFMET170_NoiseCleaned',
                                 'HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight',
+                                'HLT_PFMETNoMu110_NoiseCleaned_PFMHTNoMu110_IDTight',
                                 'HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight',
 				'HLT_PFMET170_HBHECleaned',
 				'HLT_PFMET170_JetIdCleaned',
@@ -156,6 +157,8 @@ nero = cms.EDAnalyzer("Nero",
 			        'HLT_PFMETNoMu100_PFMHTNoMu100_IDTight',
 			        'HLT_PFMETNoMu110_PFMHTNoMu110_IDTight',
 			        'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight',
+                                ## VBF Trigger
+                                'HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu140_v',
 				#### Control triggers, extra
 				'HLT_Ele15_IsoVVL_PFHT350_PFMET70',  ## Unprescaled, SingleElectron
 				'HLT_Mu15_IsoVVVL_PFHT350_PFMET70',  ## Unprescaled ,SingleMuon
