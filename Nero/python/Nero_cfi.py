@@ -110,6 +110,8 @@ nero = cms.EDAnalyzer("Nero",
 				'HLT_Ele23_WPLoose_Gsf_v',
 				'HLT_Ele27_WP85_Gsf_v',
 				'HLT_Ele27_WPLoose_Gsf_v',
+                                'HLT_Ele105_CaloIdVT_GsfTrkIdT_v',
+                                'HLT_ECALHT800_v',
 				## MUONS
 				'HLT_Mu17_v',
 				'HLT_IsoMu20_v',
