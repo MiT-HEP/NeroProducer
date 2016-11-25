@@ -27,7 +27,6 @@ Implementation:
 #include "NeroProducer/Nero/interface/NeroPuppiFatJets.hpp"
 #include "NeroProducer/Nero/interface/NeroVertex.hpp"
 #include "NeroProducer/Nero/interface/NeroMet.hpp"
-#include "NeroProducer/Nero/interface/NeroMetRecluster.hpp"
 #include "NeroProducer/Nero/interface/NeroPhotons.hpp"
 #include "NeroProducer/Nero/interface/NeroMonteCarlo.hpp"
 #include "NeroProducer/Nero/interface/NeroAll.hpp"
@@ -227,14 +226,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     met -> mOnlyMc = onlyMc;
     met -> token = consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("mets"));
     met -> pf = pf;
-    if (doPuppi) {
-        met -> rerunPuppi = true;
-        met -> token_puppiRerun = consumes<reco::PFMETCollection>(iConfig.getParameter<edm::InputTag>("metsPuppi"));
-        met -> token_puppiRerunUncorr = consumes<reco::PFMETCollection>(iConfig.getParameter<edm::InputTag>("metsPuppiUncorrected"));
-    } else {
-        met -> rerunPuppi = false;
-        met -> token_puppi = consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("metsPuppi"));
-    }
+    met -> token_puppi = consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("metsPuppi"));
     met -> SetExtend (iConfig.getParameter<bool>("extendMet"));
     obj.push_back(met);
 

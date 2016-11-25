@@ -21,16 +21,8 @@ int NeroMet::analyze(const edm::Event& iEvent){
     iEvent.getByToken(token, handle);
     if ( not handle.isValid() ) cout<<"[NeroMet]::[analyze]::[ERROR] handle is not valid"<<endl;
 
-    if (rerunPuppi) {
-        iEvent.getByToken(token_puppiRerun,handle_puppiRerun);
-        if ( not handle_puppiRerun.isValid() ) cout<<"[NeroMetRecluster]::[analyze]::[ERROR] handle_puppiRerun is not valid"<<endl;
-
-        iEvent.getByToken(token_puppiRerunUncorr,handle_puppiRerunUncorr);
-        if ( not handle_puppiRerunUncorr.isValid() ) cout<<"[NeroMetRecluster]::[analyze]::[ERROR] handle_puppiRerunUncorr is not valid"<<endl;
-    } else {
-        iEvent.getByToken(token_puppi,handle_puppi);
-        if ( not handle_puppi.isValid() ) cout<<"[NeroMet]::[analyze]::[ERROR] handle_puppi is not valid"<<endl;
-    }
+    iEvent.getByToken(token_puppi,handle_puppi);
+    if ( not handle_puppi.isValid() ) cout<<"[NeroMet]::[analyze]::[ERROR] handle_puppi is not valid"<<endl;
 
 
     // -- iEvent.getByToken(token_puppiUncorr,handle_puppiUncorr);
@@ -103,16 +95,10 @@ int NeroMet::analyze(const edm::Event& iEvent){
         *photonMet = TLorentzVector( -phoMet );
         *HFMet = TLorentzVector( -hfMet );
 
-        if (rerunPuppi) {
-            auto &puppi = handle_puppiRerun->front(); 
-            *metPuppi =  TLorentzVector( puppi.px(), puppi.py(),puppi.pz(),puppi.energy() );
-            sumEtRawPuppi = handle_puppiRerunUncorr->front().sumEt();
-        } else {
-            auto &puppi = handle_puppi->front(); 
-            *metPuppi =  TLorentzVector( puppi.px(), puppi.py(),puppi.pz(),puppi.energy() );
-            //sumEtRawPuppi = handle_puppiUncorr->front().sumEt();
-            sumEtRawPuppi = puppi.uncorSumEt();
-        }
+        auto &puppi = handle_puppi->front(); 
+        *metPuppi =  TLorentzVector( puppi.px(), puppi.py(),puppi.pz(),puppi.energy() );
+        //sumEtRawPuppi = handle_puppiUncorr->front().sumEt();
+        sumEtRawPuppi = puppi.uncorSumEt();
 
         // saving only Jes, Jer, Uncluster
         for(Syst mysyst = (Syst)0; mysyst < TauUp and mysyst < MaxSyst  ; mysyst = (Syst)((int)mysyst +1 ) )

@@ -36,8 +36,6 @@ nero = cms.EDAnalyzer("Nero",
     doAK8 = cms.bool(False),
     doPuppi = cms.bool(False),
     puppiAK8 = cms.InputTag("packedPatJetsPFAK8Puppi"),
-    #metsPuppi = cms.InputTag("type1PuppiMET"),  ## RECLUSTERING
-    #metsPuppiUncorrected = cms.InputTag("pfMETPuppi"), ## RECLUSTERING
 
     pfCands = cms.InputTag("packedPFCandidates"),
                       

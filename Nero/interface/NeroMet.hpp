@@ -16,19 +16,13 @@ class NeroMet : virtual public NeroCollection,
         int analyze(const edm::Event& iEvent);
         virtual inline string name(){return "NeroMet";};
 
-        bool rerunPuppi=false;
-
         // --- Handle
         edm::Handle<pat::METCollection> handle;	
         edm::Handle<pat::METCollection> handle_puppi;
-        edm::Handle<reco::PFMETCollection> handle_puppiRerun;
-        edm::Handle<reco::PFMETCollection> handle_puppiRerunUncorr;
 
         // --- Token
         edm::EDGetTokenT<pat::METCollection> token;
         edm::EDGetTokenT<pat::METCollection> token_puppi;
-        edm::EDGetTokenT<reco::PFMETCollection> token_puppiRerun;
-        edm::EDGetTokenT<reco::PFMETCollection> token_puppiRerunUncorr;
         //
         NeroPF * pf;
 };
