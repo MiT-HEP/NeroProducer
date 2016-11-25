@@ -41,9 +41,6 @@ int NeroMet::analyze(const edm::Event& iEvent){
 
     sumEtRaw = met.uncorSumEt();
 
-    ptJESUP -> push_back( met.shiftedPt(pat::MET::JetEnUp) );
-    ptJESDOWN -> push_back( met.shiftedPt(pat::MET::JetEnDown) );
-
     rawMet_Pt = met.uncorPt(); 
     rawMet_Phi = met.uncorPhi();
 
