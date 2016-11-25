@@ -790,14 +790,14 @@ if analysis.isRealData:
     badEventsFilterMod.SetFilter('HBHENoiseFilter')
     badEventsFilterMod.SetFilter('EEBadScFilter')
     if int(analysis.book.split('/')[2]) < 43: # e.g. t2mit/filefi/042
-        badEventsFilterMod.AddEventList('CSCTightHaloFilter', mitdata + '/eventlist/csc2015_Dec01.txt')
+        #badEventsFilterMod.AddEventList('CSCTightHaloFilter', mitdata + '/eventlist/csc2015_Dec01.txt')
         badEventsFilterMod.AddEventList('EEBadScFilter', mitdata + '/eventlist/ecalscn1043093_Dec01.txt')
         badEventsFilterMod.AddEventList('CHTrackResolutionFilter', mitdata + '/eventlist/badResolutionTrack_Jan13.txt')
         badEventsFilterMod.AddEventList('MuBadTrackFilter', mitdata + '/eventlist/muonBadTrack_Jan13.txt')
         badEventsFilterMod.AddEventList('HBHENoiseIsoFilter', mitdata + '/eventlist/hbheiso_Jan13.txt')
 
     else:
-        badEventsFilterMod.SetFilter('CSCTightHaloFilter')
+        #badEventsFilterMod.SetFilter('CSCTightHaloFilter')
         badEventsFilterMod.SetFilter('CHTrackResolutionFilter')
         badEventsFilterMod.SetFilter('MuBadTrackFilter')
         badEventsFilterMod.SetFilter('HBHENoiseIsoFilter')

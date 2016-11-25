@@ -11,11 +11,10 @@ class BareEvent : virtual public BareCollection
             FullRecommendation     = 1UL << 0,
             HBHENoiseFilter        = 1UL << 1,
             HBHENoiseIsoFilter     = 1UL << 2,
-            CSCTightHalo2015Filter = 1UL << 3,
-            EcalDeadCellTriggerPrimitiveFilter = 1UL << 4,
-            goodVertices           = 1UL << 5,
-            eeBadScFilter          = 1UL << 6,
-            GlobalTightHalo2016    = 1UL << 7,
+            EcalDeadCellTriggerPrimitiveFilter = 1UL << 3,
+            goodVertices           = 1UL << 4,
+            eeBadScFilter          = 1UL << 5,
+            GlobalTightHalo2016    = 1UL << 6,
             Unknown                = 1UL << 31 // if matching do not work, put it here, but keep the full correct
         };
 
