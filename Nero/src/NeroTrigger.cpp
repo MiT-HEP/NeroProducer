@@ -52,7 +52,13 @@ int NeroTrigger::analyze(const edm::Event& iEvent){
             string name = names.triggerName(i);
             for(unsigned int j=0;j< triggerNames->size() ;++j) // destination loop
             {
-                if (name.find( (*triggerNames)[j]) != string::npos)
+                // 30% faster than string::find, but match only at the beginning of the line
+                bool match=true;
+                if ((*triggerNames)[j].size() > name.size() ) match=false;
+                for(unsigned k=0;k< (*triggerNames)[j].size() and match;++k) if (name[k] !=  (*triggerNames)[j][k] ) match=false;
+
+                //if (name.find( (*triggerNames)[j]) != string::npos)
+                if (match)
                 {
                     if (handle->accept(i)){
                         ((*triggerFired)[j]) = 1;
