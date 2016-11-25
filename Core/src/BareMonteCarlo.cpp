@@ -110,13 +110,14 @@ void BareMonteCarlo::setBranchAddresses(TTree *t){
     BareFunctions::SetBranchAddress(t,"pdfId2"	,&pdf2Id	);
     BareFunctions::SetBranchAddress(t,"pdfScalePdf"	,&scalePdf	);
 
+    BareFunctions::SetBranchAddress(t, "r2f1", &r2f1);
+    BareFunctions::SetBranchAddress(t, "r5f1", &r5f1);
+    BareFunctions::SetBranchAddress(t, "r1f2", &r1f2);
+    BareFunctions::SetBranchAddress(t, "r2f2", &r2f2);
+    BareFunctions::SetBranchAddress(t, "r1f5", &r1f5);
+    BareFunctions::SetBranchAddress(t, "r5f5", &r5f5);
+	
     if (IsExtend()) {
-        BareFunctions::SetBranchAddress(t, "r2f1", &r2f1);
-        BareFunctions::SetBranchAddress(t, "r5f1", &r5f1);
-        BareFunctions::SetBranchAddress(t, "r1f2", &r1f2);
-        BareFunctions::SetBranchAddress(t, "r2f2", &r2f2);
-        BareFunctions::SetBranchAddress(t, "r1f5", &r1f5);
-        BareFunctions::SetBranchAddress(t, "r5f5", &r5f5);
         BareFunctions::SetBranchAddress(t,"pdfRwgt", &pdfRwgt);
     }
     BareFunctions::SetBranchAddress(t,"genIso", &genIso);
