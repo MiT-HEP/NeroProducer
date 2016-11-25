@@ -10,13 +10,17 @@ NeroFatJets::NeroFatJets() :
         mMinId("loose"),
         jetRadius(0.8),
         mMCJetCorrector(0),
-        mDataJetCorrector(0)
+        mDataJetCorrector(0),
+        mMCJetCorrectorPuppi(0),
+        mDataJetCorrectorPuppi(0)
 {
 }
 
 NeroFatJets::~NeroFatJets(){
   BareFunctions::Delete(mMCJetCorrector);
   BareFunctions::Delete(mDataJetCorrector);
+  BareFunctions::Delete(mMCJetCorrectorPuppi);
+  BareFunctions::Delete(mDataJetCorrectorPuppi);
 }
 
 void NeroFatJets::init()
@@ -35,6 +39,18 @@ void NeroFatJets::init()
   dataParams.push_back(JetCorrectorParameters(jecBasePath + "_DATA_L3Absolute_AK8PFchs.txt"));
   dataParams.push_back(JetCorrectorParameters(jecBasePath + "_DATA_L2L3Residual_AK8PFchs.txt"));
   mDataJetCorrector = new FactorizedJetCorrector(dataParams);
+
+  //Puppi
+  std::vector<JetCorrectorParameters> mcParamsPuppi;
+  mcParamsPuppi.push_back(JetCorrectorParameters(jecBasePath+"_MC_L2Relative_AK8PFPuppi.txt"));
+  mcParamsPuppi.push_back(JetCorrectorParameters(jecBasePath+"_MC_L3Absolute_AK8PFPuppi.txt"));
+  mMCJetCorrectorPuppi = new FactorizedJetCorrector(mcParamsPuppi);
+  
+  std::vector<JetCorrectorParameters> dataParamsPuppi;
+  dataParamsPuppi.push_back(JetCorrectorParameters(jecBasePath + "_DATA_L2Relative_AK8PFPuppi.txt"));
+  dataParamsPuppi.push_back(JetCorrectorParameters(jecBasePath + "_DATA_L3Absolute_AK8PFPuppi.txt"));
+  dataParamsPuppi.push_back(JetCorrectorParameters(jecBasePath + "_DATA_L2L3Residual_AK8PFPuppi.txt"));
+  mDataJetCorrectorPuppi = new FactorizedJetCorrector(dataParamsPuppi);
 
 }
 
@@ -105,6 +121,42 @@ int NeroFatJets::analyze(const edm::Event& iEvent){
             nsubjet++;
         }
         nSubjets->push_back(nsubjetThisJet);
+
+        /////////////////////////////////////
+        // Fill Puppi
+        /////////////////////////////////////
+
+        TLorentzVector puppi_jet;
+        puppi_jet.SetPtEtaPhiM(j.userFloat("ak8PFJetsPuppiValueMap:pt"),j.userFloat("ak8PFJetsPuppiValueMap:eta"),j.userFloat("ak8PFJetsPuppiValueMap:phi"),j.userFloat("ak8PFJetsPuppiValueMap:mass"));
+        
+        new ( (*puppiAK8)[puppiAK8->GetEntriesFast()]) TLorentzVector(puppi_jet);
+
+        //puppiAK8   ->push_back(puppi_jet);
+        puppi_tau1 ->push_back(j.userFloat("ak8PFJetsPuppiValueMap:NjettinessAK8PuppiTau1"));
+        puppi_tau2 ->push_back(j.userFloat("ak8PFJetsPuppiValueMap:NjettinessAK8PuppiTau2"));
+
+        TLorentzVector puppi_softdrop, puppi_softdrop_subjet;
+        auto const & sdSubjetsPuppi = j.subjets("SoftDropPuppi");
+        for ( auto const & it : sdSubjetsPuppi ) {
+            puppi_softdrop_subjet.SetPtEtaPhiM(it->correctedP4(0).pt(),it->correctedP4(0).eta(),it->correctedP4(0).phi(),it->correctedP4(0).mass());
+            puppi_softdrop+=puppi_softdrop_subjet;
+        }
+        
+
+        //L2L3 Corrected Jet only for the pruned mass correction
+        double corrpuppi=0.;              
+        FactorizedJetCorrector *jecAK8Puppi_ = ( iEvent.isRealData() ) ? mDataJetCorrectorPuppi : mMCJetCorrectorPuppi;
+        
+        jecAK8Puppi_->setJetEta( puppi_softdrop.Eta() );
+        jecAK8Puppi_->setJetPt ( puppi_softdrop.Pt() );
+        jecAK8Puppi_->setJetE  ( puppi_softdrop.Energy() );
+        jecAK8Puppi_->setJetA  ( j.jetArea() );
+        jecAK8Puppi_->setRho   ( *rho_handle );
+        jecAK8Puppi_->setNPV   ( vertex_handle->size() );
+        corrpuppi = jecAK8Puppi_->getCorrection();
+        
+        puppi_softdrop_masscorr->push_back(corrpuppi*puppi_softdrop.M());
+
     }
         
     return 0;

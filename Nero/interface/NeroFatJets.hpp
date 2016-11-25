@@ -39,6 +39,8 @@ class NeroFatJets : virtual public NeroCollection,
         float jetRadius; // used for subjet matching
         FactorizedJetCorrector *mMCJetCorrector;   // needed for reclustered jets
         FactorizedJetCorrector *mDataJetCorrector; 
+        FactorizedJetCorrector *mMCJetCorrectorPuppi;   // needed for reclustered jets
+        FactorizedJetCorrector *mDataJetCorrectorPuppi; 
 
         // --- location of the jec
         string jecBasePath;
