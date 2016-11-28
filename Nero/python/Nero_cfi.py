@@ -79,7 +79,7 @@ nero = cms.EDAnalyzer("Nero",
 
     #
     ## TRIGGER
-    triggerNMatch = cms.int32(10),
+    triggerNMatch = cms.int32(18),
     triggerNames = cms.vstring([
 				## TAU
                                 'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET80', ## not always available, Tau, NOT _v because there is noise cleaned
@@ -90,9 +90,19 @@ nero = cms.EDAnalyzer("Nero",
 				'HLT_VLooseIsoPFTau120_Trk50_eta2p1_v', ## partially prescaled, Match
 				'HLT_VLooseIsoPFTau140_Trk50_eta2p1_v', ## unprescaled, Match
 				'HLT_CaloMHTNoPU90_PFMET90_PFMHT90_IDTight_BTagCSV_p067_v',
-	    			## ELECTRONS
+				## LEPTON FAKES
+				'HLT_Mu8_TrkIsoVVL_v',
+				'HLT_Mu17_TrkIsoVVL_v',
+				'HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v',
+				'HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v',
+				'HLT_Ele17_CaloIdL_TrackIdL_IsoVL_PFJet30_v',
+				'HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v',
+				## TAG-AND-PROBE STUDIES
 				'HLT_Ele25_eta2p1_WPTight_Gsf_v',
 				'HLT_Ele27_eta2p1_WPLoose_Gsf_v',
+				'HLT_IsoMu24_v',
+				'HLT_IsoTkMu24_v',
+	    			## ELECTRONS
 				'HLT_Ele27_WPTight_Gsf_v',
 				'HLT_Ele30_WPTight_Gsf_v',
 				'HLT_Ele35_WPLoose_Gsf_v',
@@ -108,11 +118,9 @@ nero = cms.EDAnalyzer("Nero",
 				'HLT_Mu17_v',
 				'HLT_IsoMu20_v',
 				'HLT_IsoMu22_v',
-				'HLT_IsoMu24_v',
 				'HLT_IsoMu27_v',
 	    			'HLT_IsoTkMu20_v',
 	    			'HLT_IsoTkMu22_v',
-				'HLT_IsoTkMu24_v',
 				'HLT_IsoTkMu27_v',
 				'HLT_Mu45_eta2p1_v',
 				'HLT_Mu50_v',
@@ -131,13 +139,6 @@ nero = cms.EDAnalyzer("Nero",
 				'HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v',
 				'HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v',
 				'HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v',
-				## LEPTON FAKES
-				'HLT_Mu8_TrkIsoVVL_v',
-				'HLT_Mu17_TrkIsoVVL_v',
-				'HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v',
-				'HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v',
-				'HLT_Ele17_CaloIdL_TrackIdL_IsoVL_PFJet30_v',
-				'HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v',
 				## MET
                                 'HLT_PFMET170_NoiseCleaned',
                                 'HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight',
