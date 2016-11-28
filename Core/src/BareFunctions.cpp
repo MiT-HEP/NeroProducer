@@ -15,6 +15,15 @@ void BareFunctions::Compress(TLorentzVector &a)
 
 }
 
+void BareFunctions::CompressForMet(TLorentzVector &a)
+{
+	float x = a.Px();
+	float y = a.Py();
+	float z = 0.0;
+	float e = 0.0;
+	a.SetPxPyPzE( x, y, z, e);
+}
+
 template<>
 void BareFunctions::New<TClonesArray>(TClonesArray* &x)
 {
