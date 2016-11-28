@@ -8,6 +8,9 @@ nero.minPhoPt  = cms.double (10.),
 nero.minPhoId  = cms.string ('none'),
 nero.minLepId  = cms.string ('none'),
 
+# Match all the triggers
+nero.triggerNMatch = cms.int32(32),
+
 # right now these are the defaults, but enforce the values
 nero.minPhoEta = cms.double (2.5),
 nero.minMuPt   = cms.double (10.),
