@@ -183,7 +183,7 @@ nero = cms.EDAnalyzer("Nero",
 				'L1_ET100',
 				]),
     prescales = cms.InputTag('patTrigger'),
-    trigger = cms.InputTag("TriggerResults"),
+    trigger = cms.InputTag("TriggerResults","","HLT"),
     objects = cms.InputTag('selectedPatTrigger'),
     ## CUSTOM CONFIGURATION
     onlyMc = cms.bool (False),  ## not completely supported yet
