@@ -132,28 +132,30 @@ void BareMet::setBranchAddresses(TTree *t){
 
 void BareMet::compress(){
 
-    BareP4::compress();
+    //BareP4::compress(); // use compress for met instead
+    for(int i=0;i<p4->GetEntries();++i)
+        BareFunctions::CompressForMet( * (TLorentzVector*) p4->At(i)  );
 
 	for(int i=0;i<genP4->GetEntries();++i)
-		BareFunctions::Compress( * (TLorentzVector*) genP4->At(i)  );
+		BareFunctions::CompressForMet( * (TLorentzVector*) genP4->At(i)  );
 
-    BareFunctions::Compress(*metPuppi);
+    BareFunctions::CompressForMet(*metPuppi);
 
 	for(int i=0;i<metPuppiSyst->GetEntries();++i)
-		BareFunctions::Compress( * (TLorentzVector*) metPuppiSyst->At(i)  );
+		BareFunctions::CompressForMet( * (TLorentzVector*) metPuppiSyst->At(i)  );
 
 	for(int i=0;i<metSyst->GetEntries();++i)
-		BareFunctions::Compress( * (TLorentzVector*) metSyst->At(i)  );
+		BareFunctions::CompressForMet( * (TLorentzVector*) metSyst->At(i)  );
 
     if ( IsExtend() ) 
     {
-        BareFunctions::Compress(*metNoMu);
-        BareFunctions::Compress(*metNoHF);
-        BareFunctions::Compress(*pfMet_e3p0);
-        BareFunctions::Compress(*trackMet);
-        BareFunctions::Compress(*neutralMet);
-        BareFunctions::Compress(*photonMet);
-        BareFunctions::Compress(*HFMet);
+        BareFunctions::CompressForMet(*metNoMu);
+        BareFunctions::CompressForMet(*metNoHF);
+        BareFunctions::CompressForMet(*pfMet_e3p0);
+        BareFunctions::CompressForMet(*trackMet);
+        BareFunctions::CompressForMet(*neutralMet);
+        BareFunctions::CompressForMet(*photonMet);
+        BareFunctions::CompressForMet(*HFMet);
     }
 
 }

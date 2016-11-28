@@ -11,6 +11,7 @@ namespace BareFunctions{
     // Compress to float precision, 
     // zeroing  double precision elements
     void Compress(TLorentzVector &a);
+    void CompressForMet(TLorentzVector &a);
 
     template< typename TYPE >
         void SetBranchAddress(TTree *t,const char *name, TYPE *x)
