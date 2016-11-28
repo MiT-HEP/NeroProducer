@@ -99,7 +99,6 @@ process.load("RecoEgamma/ElectronIdentification/ElectronIDValueMapProducer_cfi")
 
 
 ############################### JEC #####################
-        ##TODO: ADD AK* Puppi 
 #### Load from a sqlite db, if not read from the global tag
 #process.load("CondCore.DBCommon.CondDBCommon_cfi")
 from CondCore.DBCommon.CondDBSetup_cfi import *
@@ -290,8 +289,8 @@ print "-> Updating the met collection to run on to 'slimmedMETs with nero' with 
 process.nero.mets=cms.InputTag('slimmedMETs','','nero')
 
 ## TO DO this is production specific, when testing on relval it works with RECO, maybe we should leave it empty
-#if not options.isData:
-#            process.nero.metFilterToken=cms.InputTag("TriggerResults","","PAT")
+##if not options.isData:
+##            process.nero.metFilterToken=cms.InputTag("TriggerResults","","PAT")
 
 ############ RUN Puppi MET CLUSTERING ##########################
 
@@ -306,6 +305,12 @@ runMetCorAndUncFromMiniAOD(process,
                               jetFlavor="AK4PFPuppi",
                               postfix="Puppi"
                               )
+
+## turn off the existing weight usage for the spring16 monte carlo
+## this slows the computation, but is necessary
+
+process.puppiNoLep.useExistingWeights = False
+process.puppi.useExistingWeights = False
 
 print "-> Updating the puppi met collection to run on to 'slimmedMETsPuppi with nero' with the new jec in the GT for Type1"
 process.nero.metsPuppi=cms.InputTag('slimmedMETsPuppi','','nero')
