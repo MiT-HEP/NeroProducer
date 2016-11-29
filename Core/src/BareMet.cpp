@@ -130,6 +130,9 @@ void BareMet::compress(){
 	for(int i=0;i<metSyst->GetEntries();++i)
 		BareFunctions::Compress( * (TLorentzVector*) metSyst->At(i)  );
 
+    BareFunctions::Compress(*RawMet);
+    BareFunctions::Compress(*CaloMet);
+
     if ( IsExtend() ) 
     {
         BareFunctions::Compress(*metNoMu);
