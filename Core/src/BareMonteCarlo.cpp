@@ -10,7 +10,6 @@ BareMonteCarlo::~BareMonteCarlo(){
     BareFunctions::Delete(pdfRwgt);
     BareFunctions::Delete(flags);
     BareFunctions::Delete(genIso);
-    BareFunctions::Delete(genIsoFrixione);
     BareFunctions::Delete(parent);
 }
 
@@ -24,7 +23,6 @@ void BareMonteCarlo::init(){
     }
     BareFunctions::New(flags);
     BareFunctions::New(genIso);
-    BareFunctions::New(genIsoFrixione);
     BareFunctions::New(parent);
 }
 
@@ -51,7 +49,6 @@ void BareMonteCarlo::clear(){
     r1f5 = -1.;
     r5f5 = -1.;
     genIso -> clear();
-    genIsoFrixione -> clear();
     parent -> clear();
 
     if (IsExtend()) {
@@ -90,7 +87,6 @@ void BareMonteCarlo::defineBranches(TTree *t){
         t->Branch("pdfRwgt", "vector<float>", &pdfRwgt);
     }
     t->Branch("genIso","vector<float>", &genIso);
-    t->Branch("genIsoFrixione","vector<float>", &genIsoFrixione);
     t->Branch("genParent","vector<int>", &parent);
 }
 
@@ -126,7 +122,6 @@ void BareMonteCarlo::setBranchAddresses(TTree *t){
         BareFunctions::SetBranchAddress(t,"pdfRwgt", &pdfRwgt);
     }
     BareFunctions::SetBranchAddress(t,"genIso", &genIso);
-    BareFunctions::SetBranchAddress(t,"genIsoFrixione", &genIsoFrixione);
 
     BareFunctions::SetBranchAddress(t,"genParent", &parent);
 }
