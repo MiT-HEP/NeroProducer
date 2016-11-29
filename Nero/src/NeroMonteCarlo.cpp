@@ -21,12 +21,6 @@ NeroMonteCarlo::NeroMonteCarlo() :
 NeroMonteCarlo::~NeroMonteCarlo(){
 }
 
-// -- void NeroMonteCarlo::defineBranches(TTree *t)
-// -- {
-// -- 	//if (I know it is data return;
-// -- 	return BareMonteCarlo::defineBranches(t);
-// -- }
-
 int NeroMonteCarlo::analyze(const edm::Event& iEvent){
 
     if ( iEvent.isRealData() ) return 0;
@@ -92,7 +86,6 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
         pdf2Id   = info_handle -> pdf() -> id.second;
         scalePdf = info_handle -> pdf() -> scalePDF;
     }
-    if(VERBOSE>1) cout<<"                                     PDF="<<qScale<<" "<< alphaQED<<endl;
 
     //PU
     if(VERBOSE>1){ cout<<endl<<"[NeroMonteCarlo]::[analyze] PU LOOP"<<endl;}
@@ -147,13 +140,11 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
             savedParticles.push_back(gen);     // so we can associate mothers later
             // compute ISOLATION
             float iso=0;
-            float isoFx=0;
 
             if (apdg == 22 or apdg ==11 or apdg ==13)
             {
 
                     TLorentzVector g1(gen->px(),gen->py(),gen->pz(),gen->energy());
-                    vector< pair<float,float> > inIsoFx ; //isoFx, dR, pT
                     for ( unsigned int j=0;j < packed_handle->size() ;++j)
                     {
                         if (i==j) continue;
@@ -163,29 +154,10 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
                         TLorentzVector g2(gen2->px(),gen2->py(),gen2->pz(),gen2->energy());
                         if (g2.DeltaR(g1) <0.4){
                             iso += g2.Pt();
-                            // isoFx containes the epsilon 
-                            inIsoFx.push_back( pair<float,float>(g2.DeltaR(g1) ,g2.Pt() ) );
                          }
                     }
-
-                    if (apdg==22){ // ONLY for photon Frixione isolation
-                        sort(inIsoFx.begin(), inIsoFx.end() );  // sort in DR, first entry
-
-                        float sumEtFx=0;
-                        for( const auto & p : inIsoFx )
-                        {
-                               const float& pt= p.second ;
-                               const float& delta = p.first;
-                               sumEtFx += pt / gen->pt(); // relative iso
-                               if (delta == 0 ) continue; // guard
-                               float isoCandidate = sumEtFx * TMath::Power(  (1. - TMath::Cos(0.4) ) / (1. - TMath::Cos(delta ) ), 2) ;// n=2
-                               if (isoFx < isoCandidate) isoFx = isoCandidate;
-                        }
-                    }
-            
             }
             genIso -> push_back(iso);
-            genIsoFrixione -> push_back(isoFx);
             // computed dressed objects
             //
 
@@ -205,7 +177,6 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
                     genIndices[gen] = pdgId->size()-1; // save gen particle pointers
                     savedParticles.push_back(gen);     // so we can associate mothers later
                     genIso -> push_back (0.) ;
-                    genIsoFrixione -> push_back (0.) ;
                     // --- end of dressing
             }
              
@@ -249,9 +220,9 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
             genIndices[gen] = pdgId->size()-1; // save gen particle pointers
             savedParticles.push_back(gen);     // so we can associate mothers later
             genIso -> push_back (0.) ;
-            genIsoFrixione -> push_back (0.) ;
         }
     }
+
     for ( unsigned int i=0;i < savedParticles.size() ;++i) // repeat loop to associate parents
                                                            // this loop is O(N*logN) where N is the number of saved particles
     {

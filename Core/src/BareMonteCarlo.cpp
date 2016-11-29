@@ -70,14 +70,16 @@ void BareMonteCarlo::defineBranches(TTree *t){
     //
     t->Branch("puTrueInt",&puTrueInt,"puTrueInt/I");
     t->Branch("mcWeight",&mcWeight,"mcWeight/F");
-    t->Branch("pdfQscale",&qScale,"pdfQscale/F");
-    t->Branch("pdfAlphaQED",&alphaQED,"pdfAlphaQED/F");
-    t->Branch("pdfAlphaQCD",&alphaQCD,"pdfAlphaQCD/F");
-    t->Branch("pdfX1",&x1,"pdfX1/F");
-    t->Branch("pdfX2",&x2,"pdfX2/F");
-    t->Branch("pdfId1",&pdf1Id,"pdfId1/I");
-    t->Branch("pdfId2",&pdf2Id,"pdfId2/I");
-    t->Branch("pdfScalePdf",&scalePdf,"pdfScalePdf/F");
+    if (IsExtend()){
+        t->Branch("pdfQscale",&qScale,"pdfQscale/F");
+        t->Branch("pdfAlphaQED",&alphaQED,"pdfAlphaQED/F");
+        t->Branch("pdfAlphaQCD",&alphaQCD,"pdfAlphaQCD/F");
+        t->Branch("pdfX1",&x1,"pdfX1/F");
+        t->Branch("pdfX2",&x2,"pdfX2/F");
+        t->Branch("pdfId1",&pdf1Id,"pdfId1/I");
+        t->Branch("pdfId2",&pdf2Id,"pdfId2/I");
+        t->Branch("pdfScalePdf",&scalePdf,"pdfScalePdf/F");
+    }
     t->Branch("r2f1", &r2f1, "r2f1/F");
     t->Branch("r5f1", &r5f1, "r5f1/F");
     t->Branch("r1f2", &r1f2, "r1f2/F");
@@ -101,14 +103,17 @@ void BareMonteCarlo::setBranchAddresses(TTree *t){
 
     BareFunctions::SetBranchAddress(t,"puTrueInt"	,&puTrueInt	);
     BareFunctions::SetBranchAddress(t,"mcWeight"	,&mcWeight	);
-    BareFunctions::SetBranchAddress(t,"pdfQscale"	,&qScale	);
-    BareFunctions::SetBranchAddress(t,"pdfAlphaQED"	,&alphaQED	);
-    BareFunctions::SetBranchAddress(t,"pdfAlphaQCD"	,&alphaQCD	);
-    BareFunctions::SetBranchAddress(t,"pdfX1"	,&x1		);
-    BareFunctions::SetBranchAddress(t,"pdfX2"	,&x2		);
-    BareFunctions::SetBranchAddress(t,"pdfId1"	,&pdf1Id	);
-    BareFunctions::SetBranchAddress(t,"pdfId2"	,&pdf2Id	);
-    BareFunctions::SetBranchAddress(t,"pdfScalePdf"	,&scalePdf	);
+
+    if (IsExtend()){
+        BareFunctions::SetBranchAddress(t,"pdfQscale"	,&qScale	);
+        BareFunctions::SetBranchAddress(t,"pdfAlphaQED"	,&alphaQED	);
+        BareFunctions::SetBranchAddress(t,"pdfAlphaQCD"	,&alphaQCD	);
+        BareFunctions::SetBranchAddress(t,"pdfX1"	,&x1		);
+        BareFunctions::SetBranchAddress(t,"pdfX2"	,&x2		);
+        BareFunctions::SetBranchAddress(t,"pdfId1"	,&pdf1Id	);
+        BareFunctions::SetBranchAddress(t,"pdfId2"	,&pdf2Id	);
+        BareFunctions::SetBranchAddress(t,"pdfScalePdf"	,&scalePdf	);
+    }
 
     BareFunctions::SetBranchAddress(t, "r2f1", &r2f1);
     BareFunctions::SetBranchAddress(t, "r5f1", &r5f1);
