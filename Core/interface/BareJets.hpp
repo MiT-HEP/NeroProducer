@@ -37,7 +37,7 @@ class BareJets : virtual public BareP4
         vector<float> *rawPt{0};
         vector<float> *refPt{0}; // as in MINIAOD->pt()
         vector<float> *bDiscr{0};
-        vector<float> *bDiscrLegacy{0};
+        //vector<float> *bDiscrLegacy{0};
         vector<float> *puId{0};
         vector<float> *unc{0};
         // JER:
@@ -53,7 +53,6 @@ class BareJets : virtual public BareP4
         vector<unsigned> *selBits{0};
 
         vector<float> *Q{0};
-        vector<float> *QnoPU{0};
 
         // QGL variables
         vector<int>   *qglMult{0};

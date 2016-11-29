@@ -8,7 +8,7 @@ BareJets::BareJets(): BareP4(){
 BareJets::~BareJets(){
     BareFunctions::Delete(rawPt);
     BareFunctions::Delete(bDiscr);
-    BareFunctions::Delete(bDiscrLegacy);
+    //BareFunctions::Delete(bDiscrLegacy);
     BareFunctions::Delete(puId);
     BareFunctions::Delete(unc);
     BareFunctions::Delete(qgl);
@@ -18,7 +18,6 @@ BareJets::~BareJets(){
     BareFunctions::Delete(grMotherPdgId);
     BareFunctions::Delete(selBits);
     BareFunctions::Delete(Q);
-    BareFunctions::Delete(QnoPU);
     // QGL variables
     BareFunctions::Delete(qglMult);
     BareFunctions::Delete(qglPtD);
@@ -36,7 +35,7 @@ void BareJets::init(){
     BareFunctions::New(rawPt);
     BareFunctions::New(refPt);
     BareFunctions::New(bDiscr);
-    BareFunctions::New(bDiscrLegacy);
+    //BareFunctions::New(bDiscrLegacy);
     BareFunctions::New(puId);
     BareFunctions::New(unc);
     BareFunctions::New(qgl);
@@ -46,7 +45,6 @@ void BareJets::init(){
     BareFunctions::New(grMotherPdgId);
     BareFunctions::New(selBits);
     BareFunctions::New(Q);
-    BareFunctions::New(QnoPU);
     // QGL vars
     BareFunctions::New(qglMult);
     BareFunctions::New(qglPtD);
@@ -63,7 +61,7 @@ void BareJets::clear(){
     BareP4::clear();
     rawPt -> clear();
     bDiscr -> clear();
-    bDiscrLegacy -> clear();
+    //bDiscrLegacy -> clear();
     puId -> clear();
     unc -> clear();
     qgl -> clear();
@@ -76,7 +74,6 @@ void BareJets::clear(){
     selBits -> clear();
 
     Q->clear();
-    QnoPU->clear();
     
     // QGL vars
     qglMult->clear();
@@ -101,7 +98,7 @@ void BareJets::defineBranches(TTree *t){
     //
     t->Branch(jetName + "Bdiscr","vector<float>",&bDiscr);
     //
-    t->Branch(jetName + "BdiscrLegacy","vector<float>",&bDiscrLegacy);
+    //t->Branch(jetName + "BdiscrLegacy","vector<float>",&bDiscrLegacy);
     //	
     t->Branch(jetName + "PuId","vector<float>",&puId);
     // -- JES uncertainty
@@ -124,7 +121,6 @@ void BareJets::defineBranches(TTree *t){
 
     t->Branch(jetName + "Q","vector<float>",&Q);
 
-    t->Branch(jetName + "QnoPU","vector<float>",&QnoPU);
     //
     t->Branch(jetName + "PtResUncCentral","vector<float>",&ptResUncCentral);
     t->Branch(jetName + "PtResUncUp","vector<float>",&ptResUncUp);
@@ -140,7 +136,7 @@ void BareJets::setBranchAddresses(TTree* t, std::string prefix)
     BareFunctions::SetBranchAddress(t,jetName + "RawPt"	,&rawPt);
     BareFunctions::SetBranchAddress(t,jetName + "RefPt"	,&refPt);
     BareFunctions::SetBranchAddress(t,jetName + "Bdiscr"	,&bDiscr);
-    BareFunctions::SetBranchAddress(t,jetName + "BdiscrLegacy"	,&bDiscrLegacy);
+    //BareFunctions::SetBranchAddress(t,jetName + "BdiscrLegacy"	,&bDiscrLegacy);
     BareFunctions::SetBranchAddress(t,jetName + "PuId"	,&puId);
     BareFunctions::SetBranchAddress(t,jetName + "Unc"	,&unc);
     BareFunctions::SetBranchAddress(t,jetName + "QGL"	,&qgl);
@@ -156,7 +152,6 @@ void BareJets::setBranchAddresses(TTree* t, std::string prefix)
 
     // ---
     BareFunctions::SetBranchAddress(t,jetName + "Q",&Q);
-    BareFunctions::SetBranchAddress(t,jetName + "QnoPU",&QnoPU);
     // ---
     BareFunctions::SetBranchAddress(t,jetName + "PtResUncCentral"	,&ptResUncCentral);
     BareFunctions::SetBranchAddress(t,jetName + "PtResUncUp"	,&ptResUncUp);

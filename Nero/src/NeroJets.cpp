@@ -179,7 +179,7 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
         rawPt  -> push_back (j.pt()*j.jecFactor("Uncorrected"));
         puId   -> push_back (j.userFloat("pileupJetId:fullDiscriminant") );
         bDiscr -> push_back( j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") );
-        bDiscrLegacy -> push_back( j.bDiscriminator("combinedSecondaryVertexBJetTags") );
+        //bDiscrLegacy -> push_back( j.bDiscriminator("combinedSecondaryVertexBJetTags") );
         qgl     -> push_back( qgLikelihood );
         // if the token was not valid, this will simply not be filled
         if (qg_handle_Mult.isValid()) qglMult->push_back(  (*qg_handle_Mult)[jetRef] );
@@ -200,7 +200,6 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
 
         selBits -> push_back( bits);
         Q      -> push_back( charge/charge_den);
-        QnoPU  -> push_back( charge_nopu/charge_nopu_den);
         unc -> push_back( jecunc );
     }
 
