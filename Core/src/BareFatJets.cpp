@@ -141,6 +141,14 @@ void BareFatJets::setBranchAddresses(TTree *t, std::string prefix){
 
     BareFunctions::SetBranchAddress(t,jetName + "Hbb",&hbb);
     BareFunctions::SetBranchAddress(t,jetName + "topMVA",&topMVA);
+
+    //puppi
+
+    BareFunctions::SetBranchAddress(t,"puppiAK8", &puppiAK8);
+    BareFunctions::SetBranchAddress(t,"puppi_tau1",&puppi_tau1);
+    BareFunctions::SetBranchAddress(t,"puppi_tau2",&puppi_tau2);
+    BareFunctions::SetBranchAddress(t,"puppi_softdrop_masscorr",&puppi_softdrop_masscorr);
+
 }
 void BareFatJets::compress(){
     BareP4::compress();
