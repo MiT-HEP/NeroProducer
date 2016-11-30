@@ -29,7 +29,7 @@ nero = cms.EDAnalyzer("Nero",
     ## Directly taken from miniaod
     chsAK8 = cms.InputTag("slimmedJetsAK8"),
     ## Mass Corrections
-    chsAK8JEC = cms.string("jec/Spring16_25nsV8"),
+    chsAK8JEC = cms.string("jec/Spring16_25nsV10"),
 
     pfCands = cms.InputTag("packedPFCandidates"),
                       

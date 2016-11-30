@@ -31,11 +31,11 @@ process.load("FWCore.MessageService.MessageLogger_cfi")
 # the size of the output by prescaling the report of the event number
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 if isData:
    fileList = [
-        '/store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v3/60000/3A6A80A6-D797-E611-B571-0CC47A04CFF6.root'
+       '/store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v3/60000/3A6A80A6-D797-E611-B571-0CC47A04CFF6.root'
        ]
 else:
    fileList = [
@@ -104,29 +104,13 @@ process.load("RecoEgamma/ElectronIdentification/ElectronIDValueMapProducer_cfi")
 from CondCore.DBCommon.CondDBSetup_cfi import *
 
 if options.isData:
-    connectString = cms.string('sqlite:jec/Spring16_25nsV8BCD_DATA.db')
-    tagName = 'Spring16_25nsV8BCD_DATA_AK4PFchs'
-    ## use the first to check run, TODO, check that this work with crab
-    if 'Run2016E' in process.source.fileNames[0]:
-        connectString = cms.string('sqlite:jec/Spring16_25nsV8E_DATA.db')
-        tagName = 'Spring16_25nsV8E_DATA_AK4PFchs'
-        tagNamePuppi = 'Spring16_25nsV8E_DATA_AK4PFPuppi'
-    if 'Run2016F' in process.source.fileNames[0]:
-        connectString = cms.string('sqlite:jec/Spring16_25nsV8F_DATA.db')
-        tagName = 'Spring16_25nsV8F_DATA_AK4PFchs'
-        tagNamePuppi = 'Spring16_25nsV8F_DATA_AK4PFPuppi'
-        print "TODO: FIX JEC for A PART OF F->G run>=278802"
-    if 'Run2016G' in process.source.fileNames[0] or 'Run2016H' in process.source.fileNames[0]:
-        connectString = cms.string('sqlite:jec/Spring16_25nsV8p2_DATA.db')
-        tagName = 'Spring16_25nsV8G_DATA_AK4PFchs'
-        tagNamePuppi = 'Spring16_25nsV8G_DATA_AK4PFPuppi'
-    print "JEC SUMMARY FOR DATA: using file",connectString
+    connectString = cms.string('sqlite:jec/Spring16_25nsV10All_DATA.db')
+    tagName = 'Spring16_25nsV10All_DATA_AK4PFchs'
+    tagNamePuppi = 'Spring16_25nsV10All_DATA_AK4PFPuppi'
 else:
-    #connectString = cms.string('sqlite:jec/Spring16_25nsV8_MC.db')
-    #tagName = 'Spring16_25nsV8_MC_AK4PFchs'
-    connectString = cms.string('sqlite:jec/Spring16_25nsV8BCD_MC.db')
-    tagName = 'Spring16_25nsV8BCD_MC_AK4PFchs'
-    tagNamePuppi = 'Spring16_25nsV8BCD_MC_AK4PFPuppi'
+    connectString = cms.string('sqlite:jec/Spring16_25nsV10_MC.db')
+    tagName = 'Spring16_25nsV10_MC_AK4PFchs'
+    tagNamePuppi = 'Spring16_25nsV10_MC_AK4PFPuppi'
 
 
 process.jec = cms.ESSource("PoolDBESSource",
@@ -307,7 +291,7 @@ runMetCorAndUncFromMiniAOD(process,
                               )
 
 ## turn off the existing weight usage for the spring16 monte carlo
-## this slows the computation, but is necessary
+## this slows the computation by x2, but is necessary
 
 process.puppiNoLep.useExistingWeights = False
 process.puppi.useExistingWeights = False

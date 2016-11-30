@@ -136,14 +136,14 @@ mithep::nero::JetsFiller::fill()
       }
 
       out_.Q->push_back(sumQW / sumW);
-      out_.QnoPU->push_back(sumQWPV / sumWPV);
+      //out_.QnoPU->push_back(sumQWPV / sumWPV);
     }
     else {
       out_.selBits->push_back(0);
       out_.puId->push_back(-999.);
 
       out_.Q->push_back(0.);
-      out_.QnoPU->push_back(0.);
+      //out_.QnoPU->push_back(0.);
     }
   }
 }
