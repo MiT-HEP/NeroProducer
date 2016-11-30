@@ -53,7 +53,8 @@ config.Data.outLFNDirBase = '/store/user/%s/Nero/%s/' % (getUsernameFromSiteDB()
 config.Data.publication = False
 config.Data.outputDatasetTag ='NeroNtuples'
 
-config.Site.storageSite = 'T2_CH_CERN'
+#config.Site.storageSite = 'T2_CH_CERN'
+config.Site.storageSite = 'T3_US_MIT'
 #config.Site.blacklist = [ 'T2_US_Florida','T2_US_Vanderbilt']
 
 
@@ -90,7 +91,8 @@ if __name__ == '__main__':
 
     def setdata(value="True"):
         if value == "True":
-            url = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions15/13TeV/"
+            url = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/ReReco"
+            
             #config.Data.lumiMask= url + "Cert_246908-258159_13TeV_PromptReco_Collisions15_25ns_JSON_v3.txt"
             # GOLDEN
             ##Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt
@@ -98,7 +100,8 @@ if __name__ == '__main__':
             #config.Data.lumiMask = url + "Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_Silver_v2.txt"
             ## SILVER REPROCESSING
             #config.Data.lumiMask = url + "Reprocessing/Cert_13TeV_16Dec2015ReReco_Collisions15_25ns_JSON_Silver_v2.txt"
-            config.Data.lumiMask = None
+            #config.Data.lumiMask = None
+            config.Data.lumiMask = url + "/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
             config.Data.splitting = 'LumiBased'
         else:
             config.Data.lumiMask = None
