@@ -25,8 +25,8 @@ It is designed to run on MiniAOD within the CMSSW framework.
 * Notice that cmssw should be init when the src directory is empty.
 Currently the supported version are CMSSW\_7\_4\_15\_patch1 (checking out the branch 74X) and CMSSW\_7\_6\_4 (master).
 ```
-cmsrel CMSSW_7_6_4
-cd CMSSW_7_6_4/src
+cmsrel CMSSW_8_0_20
+cd CMSSW_8_0_20/src
 cmsenv
 wget --no-check-certificate 'https://raw.githubusercontent.com/MiT-HEP/NeroProducer/master/Nero/script/setup.sh' -O /tmp/$USER/setup.sh
 source /tmp/$USER/setup.sh $CMSSW_VERSION
@@ -46,7 +46,7 @@ scram b -j 16
 * Fast setup from an other area:
 ```
 cd ${CMSSW_BASE}/src/NeroProducer/Nero
-python fastsetup.py -v CMSSW_7_6_4 -t tag -d where
+python fastsetup.py -v CMSSW_8_0_20 -t tag -d where
 ```
 if fastsetup is not yet avaliable:
 ```
@@ -57,7 +57,7 @@ touch NeroProducer/Nero/__init__.py
 wget https://raw.githubusercontent.com/MiT-HEP/NeroProducer/master/Nero/script/fastsetup.py
 wget -O NeroProducer/Nero/CMSSWHandler.py https://raw.githubusercontent.com/MiT-HEP/NeroProducer/master/Nero/python/CMSSWHandler.py
 PYTHONPATH=.:$PYTHONPATH
-python fastsetup.py -v CMSSW_7_6_4
+python fastsetup.py -v CMSSW_8_0_20
 ```
 
 ### How to Run
