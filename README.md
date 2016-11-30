@@ -53,6 +53,7 @@ python fastsetup.py -v CMSSW_8_0_20 -t tag -d where
 if fastsetup is not yet avaliable:
 ```
 cd /tmp/$USER
+SCRAM_ARCH=slc6_amd64_gcc530
 mkdir -p NeroProducer/Nero
 touch NeroProducer/__init__.py
 touch NeroProducer/Nero/__init__.py
