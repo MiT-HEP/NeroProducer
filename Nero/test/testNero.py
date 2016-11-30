@@ -70,7 +70,7 @@ if (isData):
     process.GlobalTag.globaltag = '80X_dataRun2_2016SeptRepro_v3'
 else:
     ## tranch IV v6
-        process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_TrancheIV_v6'
+    process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_TrancheIV_v6'
 
 ### LOAD DATABASE
 from CondCore.DBCommon.CondDBSetup_cfi import *
