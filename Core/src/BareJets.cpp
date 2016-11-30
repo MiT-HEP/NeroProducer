@@ -12,6 +12,10 @@ BareJets::~BareJets(){
     BareFunctions::Delete(puId);
     BareFunctions::Delete(unc);
     BareFunctions::Delete(qgl);
+    BareFunctions::Delete(chef);
+    BareFunctions::Delete(nhef);
+    BareFunctions::Delete(nemf);
+    BareFunctions::Delete(cemf);
     BareFunctions::Delete(flavour);
     BareFunctions::Delete(matchedPartonPdgId);
     BareFunctions::Delete(motherPdgId);
@@ -39,6 +43,10 @@ void BareJets::init(){
     BareFunctions::New(puId);
     BareFunctions::New(unc);
     BareFunctions::New(qgl);
+    BareFunctions::New(chef);
+    BareFunctions::New(nhef);
+    BareFunctions::New(nemf);
+    BareFunctions::New(cemf);
     BareFunctions::New(flavour);
     BareFunctions::New(matchedPartonPdgId);
     BareFunctions::New(motherPdgId);
@@ -65,6 +73,10 @@ void BareJets::clear(){
     puId -> clear();
     unc -> clear();
     qgl -> clear();
+    chef -> clear();
+    nhef -> clear();
+    nemf -> clear();
+    cemf -> clear();
     // gen matching
     flavour -> clear();
     matchedPartonPdgId -> clear();
@@ -103,6 +115,11 @@ void BareJets::defineBranches(TTree *t){
     t->Branch(jetName + "PuId","vector<float>",&puId);
     // -- JES uncertainty
     t->Branch(jetName + "Unc","vector<float>",&unc);
+    // -- energy fractions
+    t->Branch(jetName + "chef","vector<float>",&chef);
+    t->Branch(jetName + "nhef","vector<float>",&nhef);
+    t->Branch(jetName + "nemf","vector<float>",&nemf);
+    t->Branch(jetName + "cemf","vector<float>",&cemf);
     // --QGL
     t->Branch(jetName + "QGL","vector<float>",&qgl);
     t->Branch(jetName + "QglMult","vector<int>",&qglMult);
@@ -139,6 +156,12 @@ void BareJets::setBranchAddresses(TTree* t, std::string prefix)
     //BareFunctions::SetBranchAddress(t,jetName + "BdiscrLegacy"	,&bDiscrLegacy);
     BareFunctions::SetBranchAddress(t,jetName + "PuId"	,&puId);
     BareFunctions::SetBranchAddress(t,jetName + "Unc"	,&unc);
+
+    BareFunctions::SetBranchAddress(t,jetName + "chef"	,&chef);
+    BareFunctions::SetBranchAddress(t,jetName + "nhef"	,&nhef);
+    BareFunctions::SetBranchAddress(t,jetName + "nemf"	,&nemf);
+    BareFunctions::SetBranchAddress(t,jetName + "cemf"	,&cemf);
+
     BareFunctions::SetBranchAddress(t,jetName + "QGL"	,&qgl);
 
     BareFunctions::SetBranchAddress(t,jetName + "QglMult"	,&qglMult);
