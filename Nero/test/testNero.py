@@ -346,8 +346,8 @@ if options.isParticleGun:
 #------------------------------------------------------
 process.p = cms.Path(
                 process.infoProducerSequence *
-                process.egmGsfElectronIDSequence *
-                process.egmPhotonIDSequence *
+                #process.egmGsfElectronIDSequence *
+                #process.egmPhotonIDSequence *
                 process.photonIDValueMapProducer * ## ISO MAP FOR PHOTONS
                 process.electronIDValueMapProducer *  ## ISO MAP FOR PHOTONS
                 process.selectedElectrons *
@@ -357,7 +357,6 @@ process.p = cms.Path(
                 process.QGTagger    * ## after jec, because it will produce the new jet collection
                 process.fullPatMetSequence *## no puppi
                 process.puppiMETSequence * #puppi candidate producer
-                process.egmPhotonIDSequence * ##needed for puppi photon removal
                 process.fullPatMetSequencePuppi * ## full puppi sequence
                 process.BadPFMuonFilter *
                 process.BadChargedCandidateFilter * 
