@@ -67,7 +67,6 @@ class BareMonteCarlo : virtual public BareP4
 
         // Iso and Iso Frixione
         std::vector<float> *genIso{0};
-        std::vector<float> *genIsoFrixione{0};
 
         // Parent index
         std::vector<int> *parent{0};
