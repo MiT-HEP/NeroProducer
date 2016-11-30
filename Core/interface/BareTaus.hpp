@@ -20,20 +20,22 @@ class BareTaus : virtual public BareP4
             AgainstMuTight = 1UL<<11,
 
             //--- MVA ISO
-            byLooseIsolationMVArun2v1DBoldDMwLT = 1UL <<12,
-            byMediumIsolationMVArun2v1DBoldDMwLT= 1UL <<13,
-            byTightIsolationMVArun2v1DBoldDMwLT = 1UL <<14,
-            byVTightIsolationMVArun2v1DBoldDMwLT= 1UL <<15,
+            byVLooseIsolationMVArun2v1DBoldDMwLT = 1UL <<12,
+            byLooseIsolationMVArun2v1DBoldDMwLT = 1UL <<13,
+            byMediumIsolationMVArun2v1DBoldDMwLT= 1UL <<14,
+            byTightIsolationMVArun2v1DBoldDMwLT = 1UL <<15,
+            byVTightIsolationMVArun2v1DBoldDMwLT= 1UL <<16,
 
-            byLooseIsolationMVArun2v1DBnewDMwLT = 1UL <<16,
-            byMediumIsolationMVArun2v1DBnewDMwLT= 1UL <<17,
-            byTightIsolationMVArun2v1DBnewDMwLT = 1UL <<18, 
-            byVTightIsolationMVArun2v1DBnewDMwLT= 1UL <<19,
+            byVLooseIsolationMVArun2v1DBnewDMwLT = 1UL <<17,
+            byLooseIsolationMVArun2v1DBnewDMwLT = 1UL <<18,
+            byMediumIsolationMVArun2v1DBnewDMwLT= 1UL <<19,
+            byTightIsolationMVArun2v1DBnewDMwLT = 1UL <<20, 
+            byVTightIsolationMVArun2v1DBnewDMwLT= 1UL <<21,
 
             // --- DB ISO  WP 
-            byLooseCombinedIsolationDeltaBetaCorr3Hits  = 1UL <<20,
-            byMediumCombinedIsolationDeltaBetaCorr3Hits  = 1UL <<21,
-            byTightCombinedIsolationDeltaBetaCorr3Hits  = 1UL <<22,
+            byLooseCombinedIsolationDeltaBetaCorr3Hits  = 1UL <<22,
+            byMediumCombinedIsolationDeltaBetaCorr3Hits  = 1UL <<23,
+            byTightCombinedIsolationDeltaBetaCorr3Hits  = 1UL <<24,
 
             // NProng
             OneProng = 1UL << 25,

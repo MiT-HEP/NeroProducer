@@ -44,6 +44,11 @@ class BareJets : virtual public BareP4
         vector<float> *ptResUncCentral{0};
         vector<float> *ptResUncUp{0};
         vector<float> *ptResUncDown{0};
+        // energy fractions
+        vector<float> *chef{0};
+        vector<float> *nhef{0};
+        vector<float> *nemf{0};
+        vector<float> *cemf{0};
         //
         vector<float> *qgl{0};
         vector<int>   *flavour{0};

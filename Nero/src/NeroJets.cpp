@@ -186,6 +186,14 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
         if (qg_handle_PtD.isValid()) qglPtD->push_back(  (*qg_handle_PtD)[jetRef] );
         if (qg_handle_Axis2.isValid()) qglAxis2->push_back(  (*qg_handle_Axis2)[jetRef] );
 
+
+        // saving the energy fractions
+        chef -> push_back(j.chargedHadronEnergyFraction());
+        nhef -> push_back(j.neutralHadronEnergyFraction());
+        nemf -> push_back(j.neutralEmEnergyFraction());
+        cemf -> push_back(j.chargedEmEnergyFraction());
+
+
         flavour -> push_back( jetFlavour_I );
         matchedPartonPdgId -> push_back( jetMatchedPartonPdgId_I );
         motherPdgId -> push_back( motherPdgId_I );
