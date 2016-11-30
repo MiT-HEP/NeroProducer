@@ -43,6 +43,8 @@ cd ${CMSSW_BASE}/src/NeroProducer/Core
 scram b -j 16
 ```
 
+### Fast Setup
+this script will set up a new and consistent are from scratch
 * Fast setup from an other area:
 ```
 cd ${CMSSW_BASE}/src/NeroProducer/Nero
