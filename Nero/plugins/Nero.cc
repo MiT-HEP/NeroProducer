@@ -33,7 +33,7 @@ Implementation:
 #include "NeroProducer/Nero/interface/NeroMatching.hpp"
 
 //#define VERBOSE 2
-//#define VERBOSE 1
+#define VERBOSE 1
 //#define PROFILE 1
 
 #ifdef PROFILE
