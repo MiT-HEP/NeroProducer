@@ -17,20 +17,22 @@ EOSLS="/afs/cern.ch/project/eos/installation/0.3.84-aquamarine/bin/eos.select %(
 GFAL="env -i X509_USER_PROXY="+proxy +" gfal-ls -t 180"
 GFAL_EOS="gsiftp://eoscmsftp.cern.ch//eos/cms/store/user/%(user)s"
 EOS="/eos/cms/store/user/%(user)s"
+EOSData="/eos/cms/store/group/phys_higgs/%(user)s/setup80x_ichep/Data"
+EOSMoriond="/eos/cms/store/group/phys_exotica/monojet/%(user)s/moriond80x"
 MIT="srm://t3serv006.mit.edu:8443/srm/v2/server?SFN=/mnt/hadoop/cms/store/user/%(user)s"
 GFAL_BOX="gsiftp://eosuserftp.cern.ch/eos/user/%(firstletter)s/%(user)s"
 BOX="root://eosuser /eos/user/%(firstletter)s/%(user)s"
 GFAL_HIGGS="gsiftp://eoscmsftp.cern.ch//eos/cms/store/group/phys_higgs/%(user)s"
 HIGGS="/eos/cms/store/group/phys_higgs/%(user)s"
 
-sites={"mit":MIT,"eos":EOS,"eosuser":BOX,"higgs":HIGGS}
+sites={"mit":MIT,"eos":EOS,"eosuser":BOX,"higgs":HIGGS,"eos-data":EOSData,"eos-moriond80x":EOSMoriond}
 
 
 ## association is USER -> SITES 
 store={ 
 	"amarini":["mit","eos","eosuser"],
-	"zdemirag":["mit","eos","eosuser"],
-	"ceballos":["mit","eos","eosuser","higgs"],
+	"zdemirag":["mit","eos","eosuser","eos-moriond80x"],
+	"ceballos":["mit","eos","eosuser","higgs","eos-data"],
 	"dhsu":["mit","eos","eosuser"],
 	"mpedraza":["eos","eosuser"],
 	"jaeyserm":["eos","eosuser"],
