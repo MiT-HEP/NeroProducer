@@ -52,6 +52,10 @@ function CMSSW_8_0_20 {
 	rsync -avP RecoEgamma/ElectronIdentification/data.new/* RecoEgamma/ElectronIdentification/data/
 }
 
+function CMSSW_9_0_0_pre1 {
+	git cms-init
+}
+
 # expected default
 [ "X$1" == "X" ] && $1=$CMSSW_VERSION
 $1
