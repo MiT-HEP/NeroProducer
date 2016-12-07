@@ -48,43 +48,43 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
     iEvent.getByToken(token, handle);
 
     // ID and ISO
-    iEvent.getByToken(loose_id_token,loose_id);
-    iEvent.getByToken(medium_id_token,medium_id);
-    iEvent.getByToken(tight_id_token,tight_id);
-    iEvent.getByToken(iso_ch_token, iso_ch);
-    iEvent.getByToken(iso_nh_token, iso_nh);
-    iEvent.getByToken(iso_pho_token, iso_pho);
+    //iEvent.getByToken(loose_id_token,loose_id);
+    //iEvent.getByToken(medium_id_token,medium_id);
+    //iEvent.getByToken(tight_id_token,tight_id);
+    //iEvent.getByToken(iso_ch_token, iso_ch);
+    //iEvent.getByToken(iso_nh_token, iso_nh);
+    //iEvent.getByToken(iso_pho_token, iso_pho);
     
     if ( not handle.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] handle is not valid"<<endl;
-    if ( not loose_id.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] loose_id is not valid"<<endl;
-    if ( not medium_id.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] medium_id is not valid"<<endl;
-    if ( not tight_id.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] tight_id is not valid"<<endl;
-    if ( not iso_ch.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] iso_ch is not valid"<<endl;
-    if ( not iso_nh.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] iso_nh is not valid"<<endl;
-    if ( not iso_pho.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] iso_pho is not valid"<<endl;
+    //if ( not loose_id.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] loose_id is not valid"<<endl;
+    //if ( not medium_id.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] medium_id is not valid"<<endl;
+    //if ( not tight_id.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] tight_id is not valid"<<endl;
+    //if ( not iso_ch.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] iso_ch is not valid"<<endl;
+    //if ( not iso_nh.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] iso_nh is not valid"<<endl;
+    //if ( not iso_pho.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] iso_pho is not valid"<<endl;
     
     if (IsExtend() ) {
-        iEvent.getByToken(iso_wch_token, iso_wch);
-        if ( not iso_wch.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] iso_wch is not valid"<<endl;
+        //iEvent.getByToken(iso_wch_token, iso_wch);
+        //if ( not iso_wch.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] iso_wch is not valid"<<endl;
     }
 
     // SMEARED & SCALED ##############
-    iEvent.getByToken(token_smear, handle_smear);
-    int iPho_smear = -1;
-    for (auto &pho_smear : *handle_smear)
-    {
-        ++iPho_smear;
-        #ifdef VERBOSE
-        if (VERBOSE>0) cout<<"[NeroPhotons]::[analyze]::[DEBUG] analyzing smeared photon"<<iPho_smear<<" pt="<<pho_smear.pt() <<" pz"<<pho_smear.pz() <<endl;
-        #endif
+    //iEvent.getByToken(token_smear, handle_smear);
+    //int iPho_smear = -1;
+    //for (auto &pho_smear : *handle_smear)
+    //{
+    //    ++iPho_smear;
+    //    #ifdef VERBOSE
+    //    if (VERBOSE>0) cout<<"[NeroPhotons]::[analyze]::[DEBUG] analyzing smeared photon"<<iPho_smear<<" pt="<<pho_smear.pt() <<" pz"<<pho_smear.pz() <<endl;
+    //    #endif
 
-        if (pho_smear.pt() <15 or pho_smear.chargedHadronIso()/pho_smear.pt() > 0.3) continue; // 10 -- 14  GeV photons are saved if chargedHadronIso()<10                  
-        if (fabs(pho_smear.eta()) > mMaxEta ) continue;
-        if (pho_smear.pt() < mMinPt) continue;
+    //    if (pho_smear.pt() <15 or pho_smear.chargedHadronIso()/pho_smear.pt() > 0.3) continue; // 10 -- 14  GeV photons are saved if chargedHadronIso()<10                  
+    //    if (fabs(pho_smear.eta()) > mMaxEta ) continue;
+    //    if (pho_smear.pt() < mMinPt) continue;
 
-        new ( (*phoP4_smear)[phoP4_smear->GetEntriesFast()]) TLorentzVector(pho_smear.px(),pho_smear.py(),pho_smear.pz(),pho_smear.energy());
-        
-    }
+    //    new ( (*phoP4_smear)[phoP4_smear->GetEntriesFast()]) TLorentzVector(pho_smear.px(),pho_smear.py(),pho_smear.pz(),pho_smear.energy());
+    //    
+    //}
     //#################################
 
     int iPho = -1;	
@@ -112,29 +112,29 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         #endif
 
         edm::RefToBase<pat::Photon> ref ( edm::Ref< pat::PhotonCollection >(handle, iPho) ) ;
-        float _chIso_ =  (*iso_ch) [ref];
-        float _nhIso_ =  (*iso_nh) [ref];
-        float _phIso_ =  (*iso_pho)[ref];	
+        //float _chIso_ =  (*iso_ch) [ref];
+        //float _nhIso_ =  (*iso_nh) [ref];
+        //float _phIso_ =  (*iso_pho)[ref];	
         
         float _puIso_ =  pho.puChargedHadronIso() ;  // the other are eff area corrected, no need for this correction
-        float totIso = _chIso_ + _nhIso_ + _phIso_;
+        //float totIso = _chIso_ + _nhIso_ + _phIso_;
 
-        bool isPassLoose  = (*loose_id)[ref];	
-        bool isPassMedium = (*medium_id)[ref];	
-        bool isPassTight  = (*tight_id)[ref];	
+        //bool isPassLoose  = (*loose_id)[ref];	
+        //bool isPassMedium = (*medium_id)[ref];	
+        //bool isPassTight  = (*tight_id)[ref];	
         bool isPassVLoose50 = cutBasedPhotonId( pho, "loose_50ns", false, false); // no pho iso , no sieie
         bool isPassVLoose25 = cutBasedPhotonId( pho, "loose_25ns", false, false); // no pho iso , no sieie
         bool isPassMonophBaseline = cutBasedPhotonId( pho, "monoph_baseline", true, false); // iso bool does nothing right now, sieie false allows events with sieie > 0.015
 
         //if (not isPassVLoose) continue;
-        if (mMaxIso >=0 and totIso > mMaxIso) continue;
+        //if (mMaxIso >=0 and totIso > mMaxIso) continue;
 
         unsigned bits=0;
 
         bits |= 1; // baseline bit
-        bits |= isPassTight * PhoTight;
-        bits |= isPassMedium * PhoMedium;
-        bits |= isPassLoose * PhoLoose;
+        //bits |= isPassTight * PhoTight;
+        //bits |= isPassMedium * PhoMedium;
+        //bits |= isPassLoose * PhoLoose;
         bits |= isPassVLoose50 * PhoVLoose50;
         bits |= isPassVLoose25 * PhoVLoose25;
         bits |= isPassMonophBaseline * PhoMonophBaseline;
@@ -266,14 +266,14 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
 
         //
         new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(phoP4);
-        iso->push_back(totIso);	
+        //iso->push_back(totIso);	
         sieie -> push_back( pho. full5x5_sigmaIetaIeta() );
 
         selBits -> push_back( bits);
 
-        chIso -> push_back( _chIso_);
-        phoIso -> push_back( _phIso_ ) ;
-        nhIso -> push_back ( _nhIso_ ) ;
+        //chIso -> push_back( _chIso_);
+        //phoIso -> push_back( _phIso_ ) ;
+        //nhIso -> push_back ( _nhIso_ ) ;
         puIso -> push_back ( _puIso_ ) ;
 
         etaSC -> push_back(  pho.superCluster()->eta() ) ;

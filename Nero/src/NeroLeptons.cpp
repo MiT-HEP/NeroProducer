@@ -55,21 +55,21 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
     iEvent.getByToken(mu_token,mu_handle);	
     iEvent.getByToken(el_token,el_handle);	
 
-    iEvent.getByToken(el_mediumid_token,el_medium_id);
-    iEvent.getByToken(el_tightid_token,el_tight_id);
-    iEvent.getByToken(el_vetoid_token,el_veto_id);
-    iEvent.getByToken(el_looseid_token,el_loose_id);
-    iEvent.getByToken(el_mva_token,el_mva);
-    iEvent.getByToken(el_hltid_token,el_hlt_id);
+    //iEvent.getByToken(el_mediumid_token,el_medium_id);
+    //iEvent.getByToken(el_tightid_token,el_tight_id);
+    //iEvent.getByToken(el_vetoid_token,el_veto_id);
+    //iEvent.getByToken(el_looseid_token,el_loose_id);
+    //iEvent.getByToken(el_mva_token,el_mva);
+    //iEvent.getByToken(el_hltid_token,el_hlt_id);
 
     if ( not mu_handle.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] mu_handle is not valid"<<endl;
     if ( not el_handle.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_handle is not valid"<<endl;
-    if ( not el_medium_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_medium_id is not valid"<<endl;
-    if ( not el_tight_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_tight_id is not valid"<<endl;
-    if ( not el_veto_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_veto_id is not valid"<<endl;
-    if ( not el_loose_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_loose_id is not valid"<<endl;
-    if ( not el_hlt_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_hlt_id is not valid"<<endl;
-    if ( not el_mva.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_mva is not valid"<<endl;
+    //if ( not el_medium_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_medium_id is not valid"<<endl;
+    //if ( not el_tight_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_tight_id is not valid"<<endl;
+    //if ( not el_veto_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_veto_id is not valid"<<endl;
+    //if ( not el_loose_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_loose_id is not valid"<<endl;
+    //if ( not el_hlt_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_hlt_id is not valid"<<endl;
+    //if ( not el_mva.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_mva is not valid"<<endl;
 
     vector<myLepton> leptons;
 
@@ -131,16 +131,16 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 
         edm::RefToBase<pat::Electron> ref ( edm::Ref< pat::ElectronCollection >(el_handle, iEle) ) ;
 
-        bool isPassVeto = (*el_veto_id)[ref] and el.passConversionVeto();
-        bool isPassTight = (*el_tight_id)[ref] and el.passConversionVeto();
-        bool isPassMedium = (*el_medium_id)[ref] and el.passConversionVeto();
-        bool isPassLoose = (*el_loose_id)[ref] and el.passConversionVeto();
-        bool isPassHLT = (*el_hlt_id)[ref] and el.passConversionVeto();
+        //bool isPassVeto = (*el_veto_id)[ref] and el.passConversionVeto();
+        //bool isPassTight = (*el_tight_id)[ref] and el.passConversionVeto();
+        //bool isPassMedium = (*el_medium_id)[ref] and el.passConversionVeto();
+        //bool isPassLoose = (*el_loose_id)[ref] and el.passConversionVeto();
+        //bool isPassHLT = (*el_hlt_id)[ref] and el.passConversionVeto();
 
         myLepton l;
         l.pdgId = -el.charge()*11;
 
-        l.mva = (*el_mva)[ref];
+        //l.mva = (*el_mva)[ref];
         l.etasc = el.superCluster()->eta();
         l.sieie = el.full5x5_sigmaIetaIeta();
         l.sipip = el.full5x5_sigmaIphiIphi();
@@ -168,7 +168,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         // effective area from
         // https://indico.cern.ch/event/369239/contribution/4/attachments/1134761/1623262/talk_effective_areas_25ns.pdf
         double ea = 0.;
-        ea = ea_->getEffectiveArea(el.eta() ) ;
+        //ea = ea_->getEffectiveArea(el.eta() ) ;
 
         l.iso = chIso + TMath::Max( nhIso + phoIso - evt_->rho * ea , 0. ) ; 
 
@@ -198,15 +198,15 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         l.selBits = 0 ;
 
         l.selBits |= unsigned(LepBaseline);
-        l.selBits |= unsigned(isPassTight) * LepTight;
-        l.selBits |= unsigned(isPassMedium) * LepMedium;
-        l.selBits |= unsigned(isPassVeto) * LepVeto;
-        l.selBits |= unsigned(isPassLoose) * LepLoose;
+        //l.selBits |= unsigned(isPassTight) * LepTight;
+        //l.selBits |= unsigned(isPassMedium) * LepMedium;
+        //l.selBits |= unsigned(isPassVeto) * LepVeto;
+        //l.selBits |= unsigned(isPassLoose) * LepLoose;
 
         l.selBits |= unsigned(isEB and (not isEBEEGap and not isEBEtaGap and not isEBPhiGap)  ) * LepEBEE;
         l.selBits |= unsigned(isEE and (not isEBEEGap and not isEERingGap and not isEEDeeGap)  ) * LepEBEE;
 
-        l.selBits |= unsigned(isPassHLT) * LepFake;
+        //l.selBits |= unsigned(isPassHLT) * LepFake;
 
         if (el.chargeInfo().isGsfCtfConsistent and el.chargeInfo().isGsfCtfScPixConsistent and el.chargeInfo().isGsfScPixConsistent) l.selBits |= EleTripleCharge;
         if (el.gsfTrack()->numberOfLostHits () == 0 ) l.selBits |=EleNoMissingHits;
@@ -254,14 +254,14 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 
 
     // SMEARED & SCALED ##############                                                                                                                                          
-    iEvent.getByToken(token_smear, handle_smear);
-    int iEle_smear = -1;
-    for (auto &ele_smear : *handle_smear)
-    {
-        ++iEle_smear;
-        new ( (*eleP4_smear)[eleP4_smear->GetEntriesFast()]) TLorentzVector(ele_smear.px(),ele_smear.py(),ele_smear.pz(),ele_smear.energy());
+    //iEvent.getByToken(token_smear, handle_smear);
+    //int iEle_smear = -1;
+    //for (auto &ele_smear : *handle_smear)
+    //{
+    //    ++iEle_smear;
+    //    new ( (*eleP4_smear)[eleP4_smear->GetEntriesFast()]) TLorentzVector(ele_smear.px(),ele_smear.py(),ele_smear.pz(),ele_smear.energy());
 
-    }
+    //}
     //################################# 
 
 

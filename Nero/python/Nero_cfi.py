@@ -71,11 +71,11 @@ nero = cms.EDAnalyzer("Nero",
                                   'Flag_eeBadScFilter',
                                   'Flag_globalTightHalo2016Filter'
                                   ]),
-    metFilterToken = cms.InputTag("TriggerResults"),          
+    metFilterToken = cms.InputTag("TriggerResults","","RECO"),
     #metFilterToken = cms.InputTag("TriggerResults","","RECO"),          
 
-    BadChCandFilterToken = cms.InputTag("BadChargedCandidateFilter"),                    
-    BadPFMuonToken = cms.InputTag("BadPFMuonFilter"),  
+    #BadChCandFilterToken = cms.InputTag("BadChargedCandidateFilter"),                    
+    #BadPFMuonToken = cms.InputTag("BadPFMuonFilter"),  
 
     #
     ## TRIGGER
