@@ -93,6 +93,22 @@ from NeroProducer.Nero.egammavid_cfi import *
 
 initEGammaVID(process,options)
 
+## met configuration will overwrite this 
+##seq=[]
+##for x in [ 'egmPhotonIDs' ]:
+##    print "Executing:",'process.MY'+x+"=process." + x + ".clone()"
+##    exec( 'process.MY'+x+"=process." + x + ".clone()")
+##    seq.append( "process.MY" + x )
+##print "Excuting:","process.MYegmPhotonIDSequence = cms.Sequence("+ '*'.join(seq) +" )" 
+##exec( "process.MYegmPhotonIDSequence = cms.Sequence("+ '*'.join(seq) +" )" )
+process.MYegmPhotonIDs = process.egmPhotonIDs.clone()
+process.MYegmPhotonIDSequence = cms.Sequence(process.MYegmPhotonIDs)
+process.nero.phoLooseIdMap  = cms.InputTag("MYegmPhotonIDs:cutBasedPhotonID-Spring16-V2p2-loose")
+process.nero.phoMediumIdMap = cms.InputTag("MYegmPhotonIDs:cutBasedPhotonID-Spring16-V2p2-medium")
+process.nero.phoTightIdMap  = cms.InputTag("MYegmPhotonIDs:cutBasedPhotonID-Spring16-V2p2-tight")
+############### end of met conf avoid overwriting
+
+
 ### ##ISO
 process.load("RecoEgamma/PhotonIdentification/PhotonIDValueMapProducer_cfi")
 process.load("RecoEgamma/ElectronIdentification/ElectronIDValueMapProducer_cfi")
@@ -347,7 +363,7 @@ if options.isParticleGun:
 process.p = cms.Path(
                 process.infoProducerSequence *
                 process.egmGsfElectronIDSequence *
-                process.egmPhotonIDSequence *
+                #process.egmPhotonIDSequence * ## this is overwritten by puppi/met configuration
                 process.photonIDValueMapProducer * ## ISO MAP FOR PHOTONS
                 process.electronIDValueMapProducer *  ## ISO MAP FOR PHOTONS
                 process.selectedElectrons *
@@ -358,6 +374,7 @@ process.p = cms.Path(
                 process.fullPatMetSequence *## no puppi
                 process.puppiMETSequence * #puppi candidate producer
                 process.egmPhotonIDSequence * ##needed for puppi photon removal
+                process.MYegmPhotonIDSequence*
                 process.fullPatMetSequencePuppi * ## full puppi sequence
                 process.BadPFMuonFilter *
                 process.BadChargedCandidateFilter * 
