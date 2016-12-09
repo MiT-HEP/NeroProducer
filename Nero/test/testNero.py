@@ -223,7 +223,7 @@ process.calibratedPatPhotons = cms.EDProducer("CalibratedPatPhotonProducerRun2",
                                               photons = cms.InputTag('slimmedPhotons'),
                                               isMC = cms.bool(not isData), 
                                               isSynchronization = cms.bool(False),
-                                              correctionFile = cms.string("EgammaAnalysis/ElectronTools/data/ScalesSmearings/Winter_2016_reReco_v1_ele_scales") 
+                                              correctionFile = cms.string("EgammaAnalysis/ElectronTools/data/ScalesSmearings/Winter_2016_reReco_v1_ele") 
                                               )
 
 ################ end sqlite connection
