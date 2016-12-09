@@ -13,14 +13,13 @@ nero = cms.EDAnalyzer("Nero",
     vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
     rho = cms.InputTag("fixedGridRhoFastjetAll"),
     muons = cms.InputTag("slimmedMuons"),
-    electrons = cms.InputTag("slimmedElectrons"),
+    #electrons = cms.InputTag("slimmedElectrons"),
+    electrons = cms.InputTag("calibratedPatElectrons"),
     taus = cms.InputTag("slimmedTaus"),
-    photons = cms.InputTag("slimmedPhotons"),
+    #photons = cms.InputTag("slimmedPhotons"),
+    photons = cms.InputTag("calibratedPatPhotons"),
     jets = cms.InputTag("slimmedJets"),
     puppijets = cms.InputTag("slimmedJetsPuppi"),
-
-    calibratedelectrons = cms.InputTag("calibratedPatElectrons"),
-    calibratedphotons = cms.InputTag("calibratedPatPhotons"),                      
 
     ## Always re-corrected therefore re-run
     mets = cms.InputTag("slimmedMETs"),

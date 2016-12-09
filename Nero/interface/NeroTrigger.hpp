@@ -12,7 +12,7 @@
 #include "DataFormats/L1Trigger/interface/EtSum.h"
 #include "DataFormats/L1Trigger/interface/Tau.h"
 
-#define VERBOSE_TRIGGER 0
+#define DEBUG_TRIGGER 0
 
 class NeroTrigger : virtual public NeroCollection, virtual public BareTrigger
 {
@@ -70,7 +70,7 @@ int NeroTrigger::match(T *coll, pat::TriggerObjectStandAlone& obj)
 {
     if ( coll == NULL ) return -1;
 
-    if(VERBOSE_TRIGGER)cout<<"[NeroTrigger]::[match] start matching for "<<coll->name()<<endl;
+    if(DEBUG_TRIGGER)cout<<"[NeroTrigger]::[match] start matching for "<<coll->name()<<endl;
 
     int index=-1;
     float minDr=100.;
@@ -85,7 +85,7 @@ int NeroTrigger::match(T *coll, pat::TriggerObjectStandAlone& obj)
             minDr = dr;
         }
     }
-    if(VERBOSE_TRIGGER)cout<<"\tIndex for coll"<< coll->name() <<" is "<< index <<endl;
+    if(DEBUG_TRIGGER)cout<<"\tIndex for coll"<< coll->name() <<" is "<< index <<endl;
     return index;
 }
 
@@ -94,7 +94,7 @@ int NeroTrigger::match(T *coll, pat::TriggerObjectStandAlone& obj,int pdgId)
 {
     if (coll==NULL) return -1;	
 
-    if(VERBOSE_TRIGGER)cout<<"[NeroTrigger]::[match] pdgId matching for " <<coll->name()<<endl;
+    if(DEBUG_TRIGGER)cout<<"[NeroTrigger]::[match] pdgId matching for " <<coll->name()<<endl;
 
     int index=-1;
     float minDr=100.;
@@ -109,7 +109,7 @@ int NeroTrigger::match(T *coll, pat::TriggerObjectStandAlone& obj,int pdgId)
             minDr = dr;
         }
     }
-    if(VERBOSE_TRIGGER)cout<<"\t[NeroTrigger]::[match] Index for coll"<< coll->name() <<" is "<< index <<endl;
+    if(DEBUG_TRIGGER)cout<<"\t[NeroTrigger]::[match] Index for coll"<< coll->name() <<" is "<< index <<endl;
     return index;
 
 }
