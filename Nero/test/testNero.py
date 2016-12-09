@@ -93,19 +93,6 @@ from NeroProducer.Nero.egammavid_cfi import *
 
 initEGammaVID(process,options)
 
-## met configuration will overwrite this 
-##seq=[]
-##for x in [ 'egmPhotonIDs' ]:
-##    print "Executing:",'process.MY'+x+"=process." + x + ".clone()"
-##    exec( 'process.MY'+x+"=process." + x + ".clone()")
-##    seq.append( "process.MY" + x )
-##print "Excuting:","process.MYegmPhotonIDSequence = cms.Sequence("+ '*'.join(seq) +" )" 
-##exec( "process.MYegmPhotonIDSequence = cms.Sequence("+ '*'.join(seq) +" )" )
-process.MYegmPhotonIDs = process.egmPhotonIDs.clone()
-process.MYegmPhotonIDSequence = cms.Sequence(process.MYegmPhotonIDs)
-process.nero.phoLooseIdMap  = cms.InputTag("MYegmPhotonIDs:cutBasedPhotonID-Spring16-V2p2-loose")
-process.nero.phoMediumIdMap = cms.InputTag("MYegmPhotonIDs:cutBasedPhotonID-Spring16-V2p2-medium")
-process.nero.phoTightIdMap  = cms.InputTag("MYegmPhotonIDs:cutBasedPhotonID-Spring16-V2p2-tight")
 ############### end of met conf avoid overwriting
 
 
@@ -311,6 +298,8 @@ runMetCorAndUncFromMiniAOD(process,
 
 process.puppiNoLep.useExistingWeights = False
 process.puppi.useExistingWeights = False
+process.puppiForMET.photonId = process.nero.phoLooseIdMap
+#cms.InputTag("egmPhotonIDs","cutBasedPhotonID-Spring15-25ns-V1-standalone-loose")
 
 print "-> Updating the puppi met collection to run on to 'slimmedMETsPuppi with nero' with the new jec in the GT for Type1"
 process.nero.metsPuppi=cms.InputTag('slimmedMETsPuppi','','nero')
@@ -374,7 +363,6 @@ process.p = cms.Path(
                 process.fullPatMetSequence *## no puppi
                 process.puppiMETSequence * #puppi candidate producer
                 process.egmPhotonIDSequence * ##needed for puppi photon removal
-                process.MYegmPhotonIDSequence*
                 process.fullPatMetSequencePuppi * ## full puppi sequence
                 process.BadPFMuonFilter *
                 process.BadChargedCandidateFilter * 
