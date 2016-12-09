@@ -23,7 +23,7 @@ namespace NeroFunctions{
             else{
                 if(rh->energy() > 200 && rh->energy()<300)  Ecorr=1.0199;
                 else if(rh->energy()>300 && rh->energy()<400) Ecorr=  1.052;
-                else if(rh->energy()>400) Ecorr = 1.015 ;
+                else if(rh->energy()>400 && rh->energy()<500) Ecorr = 1.015; 
             }
             return Ecorr;
         }
