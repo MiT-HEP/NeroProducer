@@ -12,7 +12,7 @@
 #include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
 
 // Electron corrector
-//#include "EgammaAnalysis/ElectronTools/interface/EnergyScaleCorrection_class.hh"
+#include "EgammaAnalysis/ElectronTools/interface/EnergyScaleCorrection_class.h"
 #include "TRandom3.h"
 
 
@@ -83,8 +83,8 @@ class NeroPhotons : virtual public NeroCollection,
         float cutBasedPhotonIdEffArea( const pat::Photon&pho, string type="ch_50ns");
 
         // --- EGTools
-        //EnergyScaleCorrection_class *PhoCorr{0};
-        //TRandom3 *rnd_{0};
+        EnergyScaleCorrection_class *PhoCorr{0};
+        TRandom3 *rnd_{0};
 
 };
 

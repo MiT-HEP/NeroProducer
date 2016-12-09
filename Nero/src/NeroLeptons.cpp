@@ -23,12 +23,12 @@ NeroLeptons::NeroLeptons():
 
     mMinNleptons = 0;    
 
-    //rnd_ = new TRandom3( (unsigned)time(NULL) ) ;
+    rnd_ = new TRandom3( ) ;
 }
 
 NeroLeptons::~NeroLeptons(){
-    //delete EleCorr; 
-    //delete rnd_; 
+    delete EleCorr; 
+    delete rnd_; 
 }
 
 unsigned NeroLeptons::idStringToEnum(std::string idString)
@@ -179,7 +179,30 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         l.iso = chIso + TMath::Max( nhIso + phoIso - evt_->rho * ea , 0. ) ; 
 
         double Ecorr=NeroFunctions::getEGSeedCorrections(el,ebRecHits,eeRecHits); 
-        l.p4.SetPxPyPzE( el.px()*Ecorr,el.py()*Ecorr,el.pz()*Ecorr,el.energy()*Ecorr);
+
+        float smear = 0.0, scale = 1.0;
+        float aeta = std::abs(el.eta());
+        float et = el.energy()/cosh(aeta);
+
+        if (iEvent.isRealData() )
+        {
+                
+                scale = EleCorr->ScaleCorrection(iEvent.id().run(), el.isEB(), el.r9(), aeta, et);
+                Ecorr *= scale;
+        }
+        else
+        {
+                 // the kNone refers to systematcis changes
+                 // arbitrary func of run,lumi, event
+                 rnd_->SetSeed(iEvent.id().run()*1000000+iEvent.luminosityBlock()*100 + iEvent.id().event()) ;
+                 smear = EleCorr->getSmearingSigma((int) iEvent.id().run(), el.isEB(), el.r9(), aeta, et, 0.,0.);
+                 float corr = 1.0  + smear * rnd_->Gaus(0,1);
+                 Ecorr *= corr;
+        
+        }
+        
+        l.ecorr = Ecorr;
+        l.p4.SetPxPyPzE( el.px(),el.py(),el.pz(),el.energy());
 
         l.selBits = 0 ;
 
@@ -220,6 +243,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
     {
         new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(l.p4);
         iso     -> push_back(l.iso);
+        corr    -> push_back(l.ecorr);
         selBits -> push_back(l.selBits);
         pdgId   -> push_back(l.pdgId);
         mva     -> push_back(l.mva);

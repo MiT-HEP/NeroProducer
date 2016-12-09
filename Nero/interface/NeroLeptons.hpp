@@ -11,9 +11,9 @@
 #include <memory>
 
 // Electron corrector
-//#include "EgammaAnalysis/ElectronTools/interface/EnergyScaleCorrection_class.hh"
+#include "EgammaAnalysis/ElectronTools/interface/EnergyScaleCorrection_class.h"
 
-//#include "TRandom3.h"
+#include "TRandom3.h"
 
 class NeroLeptons : virtual public NeroCollection,
     virtual public BareLeptons
@@ -28,7 +28,7 @@ class NeroLeptons : virtual public NeroCollection,
         class myLepton{
             public:
                 myLepton(){ chiso=-999; nhiso=-999; phoiso=-999; puiso=-999;mva = -999; miniiso=-999;
-                            etasc=0; sieie=0; sipip=0; sieip=0; r9=0; }
+                            etasc=0; sieie=0; sipip=0; sieip=0; r9=0; ecorr=1; }
                 float iso;
                 TLorentzVector p4;
                 unsigned selBits;
@@ -48,6 +48,7 @@ class NeroLeptons : virtual public NeroCollection,
                 float sipip;
                 float sieip;
                 float r9;
+                float ecorr;
             
         };
 
@@ -109,8 +110,8 @@ class NeroLeptons : virtual public NeroCollection,
         unsigned idStringToEnum(std::string idString);
 
         // --- EGTools
-        //EnergyScaleCorrection_class *EleCorr{0};
-        //TRandom3 *rnd_{0};
+        EnergyScaleCorrection_class *EleCorr{0};
+        TRandom3 *rnd_{0};
         
 };
 

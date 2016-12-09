@@ -60,8 +60,10 @@ class BareLeptons : virtual public BareP4
 
         //add miniIsolation
         vector<float>    *miniIso{0};
+
+        // ele scale and smear corrections
+        vector<float>    *corr{0};
     
-        TClonesArray *eleP4_smear{0};
 
 };
 

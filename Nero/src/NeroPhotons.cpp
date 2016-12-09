@@ -17,12 +17,12 @@ NeroPhotons::NeroPhotons() :
     mMinId = "loose";
 
     pf = NULL;
-    //rnd_ = new TRandom3( (unsigned)time(NULL) ) ;
+    rnd_ = new TRandom3() ;
 }
 
 NeroPhotons::~NeroPhotons(){
-    //delete PhoCorr; 
-    //delete rnd_; 
+    delete PhoCorr; 
+    delete rnd_; 
 }
 
 unsigned NeroPhotons::idStringToEnum(std::string idString)
@@ -133,12 +133,33 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         bits |= !pho.hasPixelSeed() * PhoPixelSeedVeto;
 
         double Ecorr=NeroFunctions::getEGSeedCorrections(pho,ebRecHits,eeRecHits); 
-        TLorentzVector phoP4=TLorentzVector(
-                Ecorr*pho.px(),Ecorr*pho.py(),Ecorr*pho.pz(),Ecorr*pho.energy());
+        TLorentzVector phoP4=TLorentzVector(pho.px(),pho.py(),pho.pz(),pho.energy());
+        
+        float smear = 0.0, scale = 1.0;
+        float aeta = std::abs(pho.eta());
+        float et = pho.energy()/cosh(aeta);
+
+        if (iEvent.isRealData() )
+        {
+                
+                scale = PhoCorr->ScaleCorrection(iEvent.id().run(), pho.isEB(), pho.r9(), aeta, et);
+                Ecorr *= scale;
+        }
+        else
+        {
+                 // the  kNone refers to syst changes
+                 // arbitrary func of run,lumi, event
+                 rnd_->SetSeed(iEvent.id().run()*1000000+iEvent.luminosityBlock()*100 + iEvent.id().event()) ;
+                 smear = PhoCorr->getSmearingSigma((int) iEvent.id().run(), pho.isEB(), pho.r9(), aeta, pho.energy(), 0,0);  
+                 float corr = 1.0  + smear * rnd_->Gaus(0,1);
+                 Ecorr *= corr;
+        
+        }
         
 
         //
         new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(phoP4);
+        corr->push_back(Ecorr);
         iso->push_back(totIso);	
         sieie -> push_back( pho. full5x5_sigmaIetaIeta() );
 

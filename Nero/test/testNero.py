@@ -88,12 +88,6 @@ if isData and not options.isGrid and False: ## dont load the lumiMaks, will be c
 process.load('NeroProducer.Skim.infoProducerSequence_cff')
 process.load('NeroProducer.Nero.Nero_cfi')
 
-#-----------------------ELECTRON ID-------------------------------
-from NeroProducer.Nero.egammavid_cfi import *
-
-initEGammaVID(process,options)
-
-############### end of met conf avoid overwriting
 
 
 ### ##ISO
@@ -193,38 +187,6 @@ process.jer = cms.ESSource("PoolDBESSource",
 
 process.es_prefer_jer = cms.ESPrefer('PoolDBESSource', 'jer')
 
-# Electron Smear/Scale                                                                                                                                                          
-process.selectedElectrons = cms.EDFilter("PATElectronSelector", 
-                                         src = cms.InputTag("slimmedElectrons"), 
-                                         cut = cms.string("pt > 5 && abs(eta)<2.5") 
-                                         ) 
- 
-process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService", 
-                                                   calibratedPatElectrons = cms.PSet(initialSeed = cms.untracked.uint32(123456), 
-                                                                                     engineName = cms.untracked.string('TRandom3') 
-                                                                                     ) ,
-                                                   calibratedPatPhotons = cms.PSet(initialSeed = cms.untracked.uint32(654321), 
-                                                                                   engineName = cms.untracked.string('TRandom3') 
-                                                                                   ) 
-                                                   ) 
- 
-process.load('EgammaAnalysis.ElectronTools.calibratedElectronsRun2_cfi') 
-process.calibratedPatElectrons = cms.EDProducer("CalibratedPatElectronProducerRun2", 
-                                                electrons = cms.InputTag('selectedElectrons'), 
-                                                gbrForestName = cms.string("gedelectron_p4combination_25ns"), 
-                                                isMC = cms.bool(not isData), 
-                                                isSynchronization = cms.bool(False), 
-                                                correctionFile = cms.string("EgammaAnalysis/ElectronTools/data/ScalesSmearings/Winter_2016_reReco_v1_ele") 
-                                                )
-
-#Photons
-process.load('EgammaAnalysis.ElectronTools.calibratedPhotonsRun2_cfi') 
-process.calibratedPatPhotons = cms.EDProducer("CalibratedPatPhotonProducerRun2", 
-                                              photons = cms.InputTag('slimmedPhotons'),
-                                              isMC = cms.bool(not isData), 
-                                              isSynchronization = cms.bool(False),
-                                              correctionFile = cms.string("EgammaAnalysis/ElectronTools/data/ScalesSmearings/Winter_2016_reReco_v1_ele") 
-                                              )
 
 ################ end sqlite connection
 #### RECOMPUTE JEC From GT ###
@@ -292,6 +254,12 @@ runMetCorAndUncFromMiniAOD(process,
                               jetFlavor="AK4PFPuppi",
                               postfix="Puppi"
                               )
+#-----------------------ELECTRON ID-------------------------------
+from NeroProducer.Nero.egammavid_cfi import *
+
+initEGammaVID(process,options)
+
+############### end of met conf avoid overwriting
 
 ## turn off the existing weight usage for the spring16 monte carlo
 ## this slows the computation by x2, but is necessary
@@ -352,17 +320,13 @@ if options.isParticleGun:
 process.p = cms.Path(
                 process.infoProducerSequence *
                 process.egmGsfElectronIDSequence *
-                #process.egmPhotonIDSequence * ## this is overwritten by puppi/met configuration
+                process.egmPhotonIDSequence * ## this is overwritten by puppi/met configuration
                 process.photonIDValueMapProducer * ## ISO MAP FOR PHOTONS
                 process.electronIDValueMapProducer *  ## ISO MAP FOR PHOTONS
-                process.selectedElectrons *
-                process.calibratedPatElectrons *
-                process.calibratedPatPhotons *
                 process.jecSequence *
                 process.QGTagger    * ## after jec, because it will produce the new jet collection
                 process.fullPatMetSequence *## no puppi
                 process.puppiMETSequence * #puppi candidate producer
-                process.egmPhotonIDSequence * ##needed for puppi photon removal
                 process.fullPatMetSequencePuppi * ## full puppi sequence
                 process.BadPFMuonFilter *
                 process.BadChargedCandidateFilter * 
