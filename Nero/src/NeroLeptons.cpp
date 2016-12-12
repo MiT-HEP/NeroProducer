@@ -2,6 +2,7 @@
 #include "NeroProducer/Nero/interface/Nero.hpp"
 #include "NeroProducer/Core/interface/BareFunctions.hpp"
 #include "NeroProducer/Nero/interface/MiniIsolation.hpp"
+#include "NeroProducer/Nero/interface/NeroFunctions.hpp"
 #include <time.h>
 
 // -- Electron Isolation
@@ -22,12 +23,12 @@ NeroLeptons::NeroLeptons():
 
     mMinNleptons = 0;    
 
-    //rnd_ = new TRandom3( (unsigned)time(NULL) ) ;
+    rnd_ = new TRandom3( ) ;
 }
 
 NeroLeptons::~NeroLeptons(){
-    //delete EleCorr; 
-    //delete rnd_; 
+    delete EleCorr; 
+    delete rnd_; 
 }
 
 unsigned NeroLeptons::idStringToEnum(std::string idString)
@@ -61,6 +62,11 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
     iEvent.getByToken(el_looseid_token,el_loose_id);
     iEvent.getByToken(el_mva_token,el_mva);
     iEvent.getByToken(el_hltid_token,el_hlt_id);
+
+    edm::Handle<EcalRecHitCollection> ebRecHits;
+    edm::Handle<EcalRecHitCollection> eeRecHits;
+    iEvent.getByToken(ebRecHits_token,ebRecHits);
+    iEvent.getByToken(eeRecHits_token,eeRecHits);
 
     if ( not mu_handle.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] mu_handle is not valid"<<endl;
     if ( not el_handle.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_handle is not valid"<<endl;
@@ -172,9 +178,8 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 
         l.iso = chIso + TMath::Max( nhIso + phoIso - evt_->rho * ea , 0. ) ; 
 
-        l.p4.SetPxPyPzE( el.px(),el.py(),el.pz(),el.energy());
+        double Ecorr=NeroFunctions::getEGSeedCorrections(el,ebRecHits,eeRecHits); 
 
-        /* Smearing and corrections have not been computed yet
         float smear = 0.0, scale = 1.0;
         float aeta = std::abs(el.eta());
         float et = el.energy()/cosh(aeta);
@@ -183,17 +188,21 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         {
                 
                 scale = EleCorr->ScaleCorrection(iEvent.id().run(), el.isEB(), el.r9(), aeta, et);
-                l.p4 *= scale;
+                Ecorr *= scale;
         }
         else
         {
                  // the kNone refers to systematcis changes
+                 // arbitrary func of run,lumi, event
+                 rnd_->SetSeed(iEvent.id().run()*1000000+iEvent.luminosityBlock()*100 + iEvent.id().event()) ;
                  smear = EleCorr->getSmearingSigma((int) iEvent.id().run(), el.isEB(), el.r9(), aeta, et, 0.,0.);
                  float corr = 1.0  + smear * rnd_->Gaus(0,1);
-                 l.p4 *= corr;
+                 Ecorr *= corr;
         
         }
-        */
+        
+        l.ecorr = Ecorr;
+        l.p4.SetPxPyPzE( el.px(),el.py(),el.pz(),el.energy());
 
         l.selBits = 0 ;
 
@@ -234,6 +243,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
     {
         new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(l.p4);
         iso     -> push_back(l.iso);
+        corr    -> push_back(l.ecorr);
         selBits -> push_back(l.selBits);
         pdgId   -> push_back(l.pdgId);
         mva     -> push_back(l.mva);
@@ -251,18 +261,6 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         sieip	-> push_back(l.sieip);
         r9  	-> push_back(l.r9);
     }
-
-
-    // SMEARED & SCALED ##############                                                                                                                                          
-    iEvent.getByToken(token_smear, handle_smear);
-    int iEle_smear = -1;
-    for (auto &ele_smear : *handle_smear)
-    {
-        ++iEle_smear;
-        new ( (*eleP4_smear)[eleP4_smear->GetEntriesFast()]) TLorentzVector(ele_smear.px(),ele_smear.py(),ele_smear.pz(),ele_smear.energy());
-
-    }
-    //################################# 
 
 
     return 0;

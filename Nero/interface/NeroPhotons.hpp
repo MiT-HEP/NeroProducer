@@ -12,7 +12,7 @@
 #include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
 
 // Electron corrector
-//#include "EgammaAnalysis/ElectronTools/interface/EnergyScaleCorrection_class.hh"
+#include "EgammaAnalysis/ElectronTools/interface/EnergyScaleCorrection_class.h"
 #include "TRandom3.h"
 
 
@@ -28,9 +28,7 @@ class NeroPhotons : virtual public NeroCollection,
 
         // --- specific fuctions
         // --- Handle
-        edm::Handle<pat::PhotonCollection> handle;	
-        edm::Handle<pat::PhotonCollection> handle_smear;	
-
+        edm::Handle<pat::PhotonCollection> handle;
         edm::Handle<edm::ValueMap<bool> > loose_id;  
         edm::Handle<edm::ValueMap<bool> > medium_id;  
         edm::Handle<edm::ValueMap<bool> > tight_id;  
@@ -42,7 +40,6 @@ class NeroPhotons : virtual public NeroCollection,
 
         // --- Token
         edm::EDGetTokenT<pat::PhotonCollection> token;
-        edm::EDGetTokenT<pat::PhotonCollection> token_smear;
         edm::EDGetTokenT<edm::ValueMap<bool> > loose_id_token;
         edm::EDGetTokenT<edm::ValueMap<bool> > medium_id_token;
         edm::EDGetTokenT<edm::ValueMap<bool> > tight_id_token;
@@ -86,8 +83,8 @@ class NeroPhotons : virtual public NeroCollection,
         float cutBasedPhotonIdEffArea( const pat::Photon&pho, string type="ch_50ns");
 
         // --- EGTools
-        //EnergyScaleCorrection_class *PhoCorr{0};
-        //TRandom3 *rnd_{0};
+        EnergyScaleCorrection_class *PhoCorr{0};
+        TRandom3 *rnd_{0};
 
 };
 

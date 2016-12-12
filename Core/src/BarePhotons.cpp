@@ -7,6 +7,7 @@ BarePhotons::BarePhotons():BareP4(){
 
 BarePhotons::~BarePhotons(){
     BareFunctions::Delete(iso);
+    BareFunctions::Delete(corr);
     BareFunctions::Delete(sieie);
     BareFunctions::Delete(selBits);
     BareFunctions::Delete(chIso);
@@ -31,20 +32,19 @@ BarePhotons::~BarePhotons(){
     BareFunctions::Delete(timeSpan);
     BareFunctions::Delete(genMatched);
     BareFunctions::Delete(etaSC);
-    BareFunctions::Delete(phoP4_smear);
 }
 
 void BarePhotons::init(){
     BareP4::init();
 
     BareFunctions::New(iso);
+    BareFunctions::New(corr);
     BareFunctions::New(sieie);
     BareFunctions::New(selBits);
     BareFunctions::New(chIso);
     BareFunctions::New(nhIso);
     BareFunctions::New(phoIso);
     BareFunctions::New(puIso);
-    BareFunctions::New(phoP4_smear);
 
     if (IsExtend()) {
         BareFunctions::New(rawpt);
@@ -72,6 +72,7 @@ void BarePhotons::clear(){
     // This function clear all the internal storage and init it to an arbitrary value
     BareP4::clear();
     iso -> clear();
+    corr -> clear();
     sieie -> clear();
     selBits -> clear();
 
@@ -80,7 +81,6 @@ void BarePhotons::clear(){
     phoIso -> clear();
     puIso -> clear();
 
-    phoP4_smear->Clear();
 
     if (extend_) {
         rawpt->clear();
@@ -109,6 +109,7 @@ void BarePhotons::defineBranches(TTree *t){
     BareP4::defineBranches(t, "photon" );
     //
     t->Branch("photonIso","vector<float>",&iso);
+    t->Branch("photonCorrections","vector<float>",&corr);
     //
     t->Branch("photonSieie","vector<float>",&sieie);
     //
@@ -120,7 +121,6 @@ void BarePhotons::defineBranches(TTree *t){
     t->Branch("photonPhoIso","vector<float>",&phoIso);
     t->Branch("photonPuIso","vector<float>",&puIso);
 
-    t->Branch("phoP4_smear","TClonesArray", &phoP4_smear, 128000, 0);
 
     if (IsExtend()) {
         t->Branch("photonRawPt", "vector<float>", &rawpt);
@@ -149,6 +149,7 @@ void BarePhotons::setBranchAddresses(TTree *t){
     BareP4::setBranchAddresses(t,"photon");
 
     BareFunctions::SetBranchAddress(t,"photonIso"	,&iso);
+    BareFunctions::SetBranchAddress(t,"photonCorrections"	,&corr);
     BareFunctions::SetBranchAddress(t,"photonSieie"	,&sieie);
     BareFunctions::SetBranchAddress(t,"photonSelBits"	,&selBits);
 
@@ -157,7 +158,6 @@ void BarePhotons::setBranchAddresses(TTree *t){
     BareFunctions::SetBranchAddress(t,"photonPhoIso",&phoIso);
     BareFunctions::SetBranchAddress(t,"photonPuIso",&puIso);
 
-    BareFunctions::SetBranchAddress(t,"phoP4_smear", &phoP4_smear);
 
     if (IsExtend()) {
         BareFunctions::SetBranchAddress(t, "photonRawPt", &rawpt);

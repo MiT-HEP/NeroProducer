@@ -7,6 +7,7 @@ BareLeptons::BareLeptons():BareP4(){
 BareLeptons::~BareLeptons(){
     BareFunctions::Delete(pdgId);
     BareFunctions::Delete(iso);
+    BareFunctions::Delete(corr);
     BareFunctions::Delete(selBits);
     BareFunctions::Delete(lepPfPt);
     BareFunctions::Delete(mva);
@@ -20,7 +21,6 @@ BareLeptons::~BareLeptons(){
     BareFunctions::Delete(sipip);
     BareFunctions::Delete(sieip);
     BareFunctions::Delete(r9);
-    BareFunctions::Delete(eleP4_smear);
 }
 
 void BareLeptons::init(){
@@ -28,6 +28,7 @@ void BareLeptons::init(){
 
     BareFunctions::New(pdgId);
     BareFunctions::New(iso);
+    BareFunctions::New(corr);
     BareFunctions::New(selBits);
     BareFunctions::New(lepPfPt);
     BareFunctions::New(mva);
@@ -41,7 +42,6 @@ void BareLeptons::init(){
     BareFunctions::New(sipip);
     BareFunctions::New(sieip);
     BareFunctions::New(r9);
-    BareFunctions::New(eleP4_smear);
 }
 
 void BareLeptons::clear(){
@@ -49,6 +49,7 @@ void BareLeptons::clear(){
 
     pdgId -> clear();
     iso -> clear();
+    corr -> clear();
     selBits ->clear();
     lepPfPt->clear();    
 
@@ -65,7 +66,6 @@ void BareLeptons::clear(){
     puIso->clear();
     miniIso->clear();
     
-    eleP4_smear->Clear();
 
 }
 
@@ -76,6 +76,8 @@ void BareLeptons::defineBranches(TTree*t){
     t->Branch("lepPdgId","vector<int>",&pdgId);
     //
     t->Branch("lepIso","vector<float>",&iso);
+    //
+    t->Branch("lepCorrections","vector<float>",&corr);
     //
     t->Branch("lepSelBits","vector<unsigned>",&selBits);
     //
@@ -95,7 +97,6 @@ void BareLeptons::defineBranches(TTree*t){
     t->Branch("lepSieip","vector<float>",&sieip);
     t->Branch("lepR9","vector<float>",&r9);
 
-    t->Branch("eleP4_smear","TClonesArray", &eleP4_smear, 128000, 0);
 
 }
 
@@ -105,6 +106,7 @@ void BareLeptons::setBranchAddresses(TTree*t){
 
     BareFunctions::SetBranchAddress(t,"lepPdgId"	,&pdgId);
     BareFunctions::SetBranchAddress(t,"lepIso"	,&iso);
+    BareFunctions::SetBranchAddress(t,"lepCorrections"	,&corr);
     BareFunctions::SetBranchAddress(t,"lepSelBits"	,&selBits);
     BareFunctions::SetBranchAddress(t,"lepPfPt"	,&lepPfPt);
 
@@ -120,7 +122,6 @@ void BareLeptons::setBranchAddresses(TTree*t){
     BareFunctions::SetBranchAddress(t,"lepSipip",&sipip);
     BareFunctions::SetBranchAddress(t,"lepSieip",&sieip);
     BareFunctions::SetBranchAddress(t,"lepR9",&r9);
-    BareFunctions::SetBranchAddress(t,"eleP4_smear", &eleP4_smear);
 }
 
 BAREREGISTER(BareLeptons);

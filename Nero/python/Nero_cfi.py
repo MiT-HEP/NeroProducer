@@ -19,9 +19,6 @@ nero = cms.EDAnalyzer("Nero",
     jets = cms.InputTag("slimmedJets"),
     puppijets = cms.InputTag("slimmedJetsPuppi"),
 
-    calibratedelectrons = cms.InputTag("calibratedPatElectrons"),
-    calibratedphotons = cms.InputTag("calibratedPatPhotons"),                      
-
     ## Always re-corrected therefore re-run
     mets = cms.InputTag("slimmedMETs"),
     metsPuppi = cms.InputTag("slimmedMETsPuppi"),
@@ -49,9 +46,9 @@ nero = cms.EDAnalyzer("Nero",
     eleHLTIdMap    = cms.InputTag("egmGsfElectronIDs:cutBasedElectronHLTPreselection-Summer16-V1"),
     eleMvaMap = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring16GeneralPurposeV1Values"),
 
-    phoLooseIdMap  = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-%(bx)s-%(vs)s-standalone-loose"),
-    phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-%(bx)s-%(vs)s-standalone-medium"),
-    phoTightIdMap  = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-%(bx)s-%(vs)s-standalone-tight"),
+    phoLooseIdMap  = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring16-%(vs)s-loose"),
+    phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring16-%(vs)s-medium"),
+    phoTightIdMap  = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring16-%(vs)s-tight"),
     ### ISO MAP
     phoChargedIsolation = cms.InputTag("photonIDValueMapProducer:phoChargedIsolation"),
     phoNeutralHadronIsolation = cms.InputTag("photonIDValueMapProducer:phoNeutralHadronIsolation"),

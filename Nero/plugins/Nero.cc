@@ -32,14 +32,8 @@ Implementation:
 #include "NeroProducer/Nero/interface/NeroTrigger.hpp"
 #include "NeroProducer/Nero/interface/NeroMatching.hpp"
 
-//#define VERBOSE 2
-//#define VERBOSE 1
-//#define PROFILE 1
-
-#ifdef PROFILE
-    #include "TBenchmark.h"
-    TBenchmark profile;
-#endif
+//#define NERO_VERBOSE 2
+//#define NERO_VERBOSE 1
 
 //
 // constants, enums and typedefs
@@ -158,7 +152,6 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     leps -> ea_ . reset (new EffectiveAreas( edm::FileInPath(iConfig.getParameter<std::string>("eleEA")).fullPath () ) );
     leps -> mu_token = consumes<pat::MuonCollection>(iConfig.getParameter<edm::InputTag>("muons"));
     leps -> el_token = consumes<pat::ElectronCollection>(iConfig.getParameter<edm::InputTag>("electrons"));
-    leps -> token_smear = consumes<pat::ElectronCollection>(iConfig.getParameter<edm::InputTag>("calibratedelectrons"));
     leps -> el_vetoid_token = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleVetoIdMap"));
     leps -> el_looseid_token = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleLooseIdMap"));
     leps -> el_mediumid_token = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMediumIdMap"));
@@ -184,12 +177,14 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     leps -> mMinNleptons = iConfig.getParameter<int>("minLepN");
     leps -> SetMatch( iConfig.getParameter<bool>("matchLep") );
 
+    leps -> ebRecHits_token = mayConsume<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("ebRecHits"));
+    leps -> eeRecHits_token = mayConsume<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("eeRecHits"));
+
     // eventually configure
-    /* Not derived yet
-    leps -> EleCorr = new EnergyScaleCorrection_class("EgammaAnalysis/ElectronTools/data/76X_16DecRereco_2015");
+    leps -> EleCorr = new EnergyScaleCorrection_class("EgammaAnalysis/ElectronTools/data/ScalesSmearings/Winter_2016_reReco_v1_ele");
         leps->EleCorr -> doSmearings= true;
         leps->EleCorr -> doScale= true;
-    */
+    
 
     obj. push_back(leps);
 
@@ -208,7 +203,6 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     NeroPhotons *phos = new NeroPhotons();
     phos -> mOnlyMc = onlyMc;
     phos -> token = consumes<pat::PhotonCollection>(iConfig.getParameter<edm::InputTag>("photons"));
-    phos -> token_smear = consumes<pat::PhotonCollection>(iConfig.getParameter<edm::InputTag>("calibratedphotons"));
     phos -> loose_id_token = consumes<edm::ValueMap<bool>>(iConfig.getParameter<edm::InputTag>("phoLooseIdMap"));
     phos -> medium_id_token = consumes<edm::ValueMap<bool>>(iConfig.getParameter<edm::InputTag>("phoMediumIdMap"));
     phos -> tight_id_token = consumes<edm::ValueMap<bool>>(iConfig.getParameter<edm::InputTag>("phoTightIdMap"));
@@ -232,10 +226,11 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     phos -> SetExtend (iConfig.getParameter<bool>("extendPhotons"));
     /*
     phos -> fpr = new SuperClusterFootprintRemovalMiniAOD( consumesCollector() );
-    phos -> PhoCorr = new EnergyScaleCorrection_class("EgammaAnalysis/ElectronTools/data/76X_16DecRereco_2015");
-        phos->PhoCorr -> doSmearings= true;
-        phos->PhoCorr -> doScale= true;
     */
+    phos -> PhoCorr = new EnergyScaleCorrection_class("EgammaAnalysis/ElectronTools/data/ScalesSmearings/Winter_2016_reReco_v1_ele");
+    phos->PhoCorr -> doSmearings= true;
+    phos->PhoCorr -> doScale= true;
+    
     obj.push_back(phos);
 
     NeroMonteCarlo *mc = new NeroMonteCarlo();
@@ -323,44 +318,38 @@ Nero::~Nero()
 Nero::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
     using namespace edm;
-    #ifdef VERBOSE
-        if (VERBOSE>1) cout<<"------- begin event --------"<<endl;
+    #ifdef NERO_VERBOSE
+        if (NERO_VERBOSE>1) cout<<"------- begin event --------"<<endl;
     #endif
 
     for(auto o : obj)
         o->clear();
 
-    #ifdef VERBOSE
-        if (VERBOSE>1) cout<<"------- analyze event --------"<<endl;
+    #ifdef NERO_VERBOSE
+        if (NERO_VERBOSE>1) cout<<"------- analyze event --------"<<endl;
     #endif
 
     for(auto o : obj)
     {
-        #ifdef VERBOSE
-            if (VERBOSE > 1) { cout<<"[Nero]::[analyze] going to analyze "<<o->name() <<endl; }
-            if (VERBOSE){sw_.Reset(); sw_.Start();}
-        #endif
-        #ifdef PROFILE
-            if (PROFILE>0)profile.Start(o->name().c_str());
+        #ifdef NERO_VERBOSE
+            if (NERO_VERBOSE > 1) { cout<<"[Nero]::[analyze] going to analyze "<<o->name() <<endl; }
+            if (NERO_VERBOSE){sw_.Reset(); sw_.Start();}
         #endif
 
         if (o->analyze(iEvent, iSetup) ) return; // analyze return 0 on success (VTX ..)
 
-        #ifdef VERBOSE
-            if (VERBOSE)
+        #ifdef NERO_VERBOSE
+            if (NERO_VERBOSE)
             {
                 sw_.Stop(); 
                 times_[o->name()] += sw_.CpuTime() ;
             }
-            if(VERBOSE>1)
+            if(NERO_VERBOSE>1)
             {
                 cout<< "[Nero]::[analyze] object "<<o->name()
                     <<" took:"<< sw_.CpuTime()<< "CPU Time and "
                     <<sw_.RealTime()<<"RealTime"<<endl;
             }
-        #endif
-        #ifdef PROFILE
-            if (PROFILE>0)profile.Stop(o->name().c_str());
         #endif
     }
 
@@ -370,14 +359,14 @@ Nero::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
         o->compress();
     }
 
-    #ifdef VERBOSE
-        if (VERBOSE>1) cout<<"------- fill event --------"<<endl;
+    #ifdef NERO_VERBOSE
+        if (NERO_VERBOSE>1) cout<<"------- fill event --------"<<endl;
     #endif
 
     tree_->Fill();
-    #ifdef VERBOSE
-        if (VERBOSE>1) cout<<"------- end event (success) --------"<<endl;
-        if (VERBOSE){
+    #ifdef NERO_VERBOSE
+        if (NERO_VERBOSE>1) cout<<"------- end event (success) --------"<<endl;
+        if (NERO_VERBOSE){
             times_[ "counter" ] +=1;
             if(times_[ "counter"] > 3000 )
             {
@@ -390,7 +379,7 @@ Nero::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
                 cout<< " ------------" <<endl;
                 times_[ "counter"] = 0;
             }
-        } // end VERBOSE
+        } // end NERO_VERBOSE
     #endif
 
 }
@@ -400,8 +389,8 @@ Nero::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     void 
 Nero::beginJob()
 {
-    #ifdef VERBOSE
-        if(VERBOSE) cout<<" >>>>>>> BEGIN JOB <<<<<<<<<"<<endl;
+    #ifdef NERO_VERBOSE
+        if(NERO_VERBOSE) cout<<" >>>>>>> BEGIN JOB <<<<<<<<<"<<endl;
     #endif
 
     tree_    = fileService_ -> make<TTree>("events", "events");
@@ -442,16 +431,16 @@ Nero::beginJob()
     for(auto o : obj)
     {
         if (dynamic_cast<NeroAll*> (o) !=NULL ) { continue ; }  // otherwise I will have also the branch in the main tree.
-        #ifdef VERBOSE
-            if(VERBOSE) cout<<" -> Calling defineBranch for "<<o->name()<<endl;
+        #ifdef NERO_VERBOSE
+            if(NERO_VERBOSE) cout<<" -> Calling defineBranch for "<<o->name()<<endl;
         #endif
         o -> defineBranches(tree_);
     }
 
     for(auto o : lumiObj)
     {
-        #ifdef VERBOSE
-            if(VERBOSE) cout<<" -> Calling defineBranch for "<<o->name()<<endl;
+        #ifdef NERO_VERBOSE
+            if(NERO_VERBOSE) cout<<" -> Calling defineBranch for "<<o->name()<<endl;
         #endif
         o -> defineBranches(all_);
     }
@@ -459,8 +448,8 @@ Nero::beginJob()
     //set histogram map
     for(auto o : lumiObj){
         if (dynamic_cast<NeroAll*> (o) !=NULL ) {
-            #ifdef VERBOSE
-                if(VERBOSE) cout<<" -> Setting Histograms in "<<o->name()<<endl;
+            #ifdef NERO_VERBOSE
+                if(NERO_VERBOSE) cout<<" -> Setting Histograms in "<<o->name()<<endl;
             #endif
             NeroAll * na = dynamic_cast<NeroAll*> (o);
             na->hDEvents =  hD_["Events"];
@@ -470,8 +459,8 @@ Nero::beginJob()
             na->hDpdfReweightSums = hD_["pdfReweightSums"];
         } // end if
         } // end for o in lumiObj
-    #ifdef VERBOSE
-        if(VERBOSE) cout<<" -- end of begin job "<<endl;
+    #ifdef NERO_VERBOSE
+        if(NERO_VERBOSE) cout<<" -- end of begin job "<<endl;
     #endif
 } //end beginJob
 
@@ -480,14 +469,8 @@ Nero::beginJob()
     void 
 Nero::endJob() 
 {
-    #ifdef PROFILE
-        for(auto o : obj)
-        {
-            if (PROFILE>0)profile.Show(o->name().c_str());
-        }   
-    #endif
-    #ifdef VERBOSE
-        if(VERBOSE) cout<<" >>>>>>> END JOB <<<<<<<<<"<<endl;
+    #ifdef NERO_VERBOSE
+        if(NERO_VERBOSE) cout<<" >>>>>>> END JOB <<<<<<<<<"<<endl;
     #endif
 }
 
@@ -496,8 +479,8 @@ Nero::endJob()
     void 
 Nero::beginRun(edm::Run const&iRun, edm::EventSetup const&)
 {
-    #ifdef VERBOSE
-        if(VERBOSE) cout<<" ======= BEGIN RUN ======="<<endl;
+    #ifdef NERO_VERBOSE
+        if(NERO_VERBOSE) cout<<" ======= BEGIN RUN ======="<<endl;
     #endif
 }
 
@@ -517,13 +500,13 @@ Nero::endRun(edm::Run const&iRun, edm::EventSetup const&iSetup)
 
     for(auto o : runObj )
     {
-        #ifdef VERBOSE
-            if(VERBOSE> 1) cout<<"[Nero]::[endRun]::[DEBUG] calling object"<<o->name()<<endl;
+        #ifdef NERO_VERBOSE
+            if(NERO_VERBOSE> 1) cout<<"[Nero]::[endRun]::[DEBUG] calling object"<<o->name()<<endl;
         #endif
         o->analyzeRun(iRun, hXsec_);
     }
-    #ifdef VERBOSE
-        if(VERBOSE) cout <<" ======== END RUN ======="<<endl;
+    #ifdef NERO_VERBOSE
+        if(NERO_VERBOSE) cout <<" ======== END RUN ======="<<endl;
     #endif
 
 }
@@ -534,8 +517,8 @@ Nero::endRun(edm::Run const&iRun, edm::EventSetup const&iSetup)
     void 
 Nero::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
 {
-    #ifdef VERBOSE
-        if(VERBOSE) cout <<" -------- BEGIN LUMI --------"<<endl;
+    #ifdef NERO_VERBOSE
+        if(NERO_VERBOSE) cout <<" -------- BEGIN LUMI --------"<<endl;
     #endif
 
 }
@@ -548,15 +531,15 @@ Nero::endLuminosityBlock(edm::LuminosityBlock const&iLumi, edm::EventSetup const
 {
     for(auto o :lumiObj)
     {
-        #ifdef VERBOSE
-            if(VERBOSE>1) cout<<"[Nero]::[endLuminosityBlock]::[DEBUG] calling object"<<o->name()<<endl;
+        #ifdef NERO_VERBOSE
+            if(NERO_VERBOSE>1) cout<<"[Nero]::[endLuminosityBlock]::[DEBUG] calling object"<<o->name()<<endl;
         #endif
 
         o->analyzeLumi(iLumi,all_);
     }
 
-    #ifdef VERBOSE
-        if(VERBOSE) cout <<" -------- END LUMI --------"<<endl;
+    #ifdef NERO_VERBOSE
+        if(NERO_VERBOSE) cout <<" -------- END LUMI --------"<<endl;
     #endif
 }
 
