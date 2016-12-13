@@ -142,6 +142,7 @@ int NeroFatJets::analyze(const edm::Event& iEvent){
             puppi_softdrop+=puppi_softdrop_subjet;
         }
         
+        puppi_softdrop_mass->push_back(puppi_softdrop.M());
 
         //L2L3 Corrected Jet only for the pruned mass correction
         double corrpuppi=0.;              
