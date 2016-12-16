@@ -218,7 +218,10 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         l.selBits |= unsigned(isPassHLT) * LepFake;
 
         if (el.chargeInfo().isGsfCtfConsistent and el.chargeInfo().isGsfCtfScPixConsistent and el.chargeInfo().isGsfScPixConsistent) l.selBits |= EleTripleCharge;
-        if (el.gsfTrack()->numberOfLostHits () == 0 ) l.selBits |=EleNoMissingHits;
+        constexpr reco::HitPattern::HitCategory missingHitType = reco::HitPattern::MISSING_INNER_HITS;
+        const unsigned mHits = el.gsfTrack()->hitPattern().numberOfHits(missingHitType);
+
+        if (mHits == 0 ) l.selBits |=EleNoMissingHits;
 
         l.pfPt = el.pt();
     
