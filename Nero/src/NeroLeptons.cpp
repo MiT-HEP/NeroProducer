@@ -215,6 +215,22 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         l.selBits |= unsigned(isEB and (not isEBEEGap and not isEBEtaGap and not isEBPhiGap)  ) * LepEBEE;
         l.selBits |= unsigned(isEE and (not isEBEEGap and not isEERingGap and not isEEDeeGap)  ) * LepEBEE;
 
+        const double dz = ( vtx_->size() ? 
+                            el.gsfTrack()->dz((*vtx_->GetPV()).position()) : 
+                            el.gsfTrack()->dz());
+        
+        const double dxy = ( vtx_->size() ? 
+                             el.gsfTrack()->dxy((*vtx_->GetPV()).position()) : 
+                             el.gsfTrack()->dxy());
+
+        bool dz_cut  = isEB ? 0.10 : 0.20;
+        bool dxy_cut = isEB ? 0.05 : 0.10;
+
+        if ( dz<dz_cut && dxy<dxy_cut ){
+            l.selBits |= unsigned(isPassMedium) * LepMediumIP;
+            l.selBits |= unsigned(isPassTight)  * LepTightIP;
+        }
+        
         l.selBits |= unsigned(isPassHLT) * LepFake;
 
         if (el.chargeInfo().isGsfCtfConsistent and el.chargeInfo().isGsfCtfScPixConsistent and el.chargeInfo().isGsfScPixConsistent) l.selBits |= EleTripleCharge;
