@@ -74,7 +74,7 @@ class NeroLeptons : virtual public NeroCollection,
         edm::EDGetTokenT<edm::ValueMap<float> > el_mva_token;
 
         edm::EDGetTokenT<EcalRecHitCollection> ebRecHits_token;
-        edm::EDGetTokenT<EcalRecHitCollection> eeRecHits_token;
+        //edm::EDGetTokenT<EcalRecHitCollection> eeRecHits_token;
 
         //edm::EDGetTokenT<edm::ValueMap<float> > 	el_iso_ch_token;
         //edm::EDGetTokenT<edm::ValueMap<float> > 	el_iso_nh_token;
