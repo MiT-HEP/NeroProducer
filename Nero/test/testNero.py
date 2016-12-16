@@ -67,10 +67,12 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condD
 
 if (isData):
     # sept reprocessing
-    process.GlobalTag.globaltag = '80X_dataRun2_2016SeptRepro_v3'
+    process.GlobalTag.globaltag = '80X_dataRun2_2016SeptRepro_v6'
+    print "FIXME for H"
 else:
     ## tranch IV v6
-    process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_TrancheIV_v6'
+    #process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_TrancheIV_v6'
+    process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_TrancheIV_v7'
 
 ### LOAD DATABASE
 from CondCore.DBCommon.CondDBSetup_cfi import *
@@ -254,6 +256,8 @@ runMetCorAndUncFromMiniAOD(process,
                               jetFlavor="AK4PFPuppi",
                               postfix="Puppi"
                               )
+# --------------- REGRESSION EGM -----------------
+process.load('EgammaAnalysis.ElectronTools.regressionApplication_cff')
 #-----------------------ELECTRON ID-------------------------------
 from NeroProducer.Nero.egammavid_cfi import *
 
@@ -319,6 +323,7 @@ if options.isParticleGun:
 #------------------------------------------------------
 process.p = cms.Path(
                 process.infoProducerSequence *
+                process.regressionApplication *
                 process.egmGsfElectronIDSequence *
                 process.egmPhotonIDSequence * ## this is overwritten by puppi/met configuration
                 process.photonIDValueMapProducer * ## ISO MAP FOR PHOTONS
