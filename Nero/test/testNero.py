@@ -67,10 +67,12 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condD
 
 if (isData):
     # sept reprocessing
-    process.GlobalTag.globaltag = '80X_dataRun2_2016SeptRepro_v3'
+    process.GlobalTag.globaltag = '80X_dataRun2_2016SeptRepro_v6'
+    print "FIXME for H"
 else:
     ## tranch IV v6
-    process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_TrancheIV_v6'
+    #process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_TrancheIV_v6'
+    process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_TrancheIV_v7'
 
 ### LOAD DATABASE
 from CondCore.DBCommon.CondDBSetup_cfi import *
@@ -254,10 +256,15 @@ runMetCorAndUncFromMiniAOD(process,
                               jetFlavor="AK4PFPuppi",
                               postfix="Puppi"
                               )
+# --------------- REGRESSION EGM -----------------
+process.load('EgammaAnalysis.ElectronTools.regressionApplication_cff')
+#process.nero.photons=cms.InputTag("regressionPhotons")
+#process.nero.electrons=cms.InputTag("regressionElectrons")
 #-----------------------ELECTRON ID-------------------------------
 from NeroProducer.Nero.egammavid_cfi import *
 
 initEGammaVID(process,options)
+##
 
 ############### end of met conf avoid overwriting
 
@@ -267,6 +274,18 @@ initEGammaVID(process,options)
 process.puppiNoLep.useExistingWeights = False
 process.puppi.useExistingWeights = False
 process.puppiForMET.photonId = process.nero.phoLooseIdMap
+
+process.egmGsfElectronIDs.physicsObjectSrc = process.nero.electrons
+process.electronIDValueMapProducer.srcMiniAOD= process.nero.electrons
+process.electronMVAValueMapProducer.srcMiniAOD= process.nero.electrons
+
+process.egmPhotonIDs.physicsObjectSrc = process.nero.photons
+process.photonIDValueMapProducer.srcMiniAOD= process.nero.photons
+process.photonMVAValueMapProducer.srcMiniAOD= process.nero.photons 
+process.puppiForMET.photonName  = process.nero.photons
+process.puppiPhoton.photonName = process.nero.photons 
+## this are slimmedPhotons
+process.modifiedPhotons.src  = process.nero.photons
 #cms.InputTag("egmPhotonIDs","cutBasedPhotonID-Spring15-25ns-V1-standalone-loose")
 
 print "-> Updating the puppi met collection to run on to 'slimmedMETsPuppi with nero' with the new jec in the GT for Type1"
@@ -315,10 +334,11 @@ if options.isParticleGun:
 	process.nero.extendEvent = cms.untracked.bool(False)
 
 ##DEBUG
-##print "Process=",process, process.__dict__.keys()
+#print "Process=",process, process.__dict__.keys()
 #------------------------------------------------------
 process.p = cms.Path(
                 process.infoProducerSequence *
+                process.regressionApplication *
                 process.egmGsfElectronIDSequence *
                 process.egmPhotonIDSequence * ## this is overwritten by puppi/met configuration
                 process.photonIDValueMapProducer * ## ISO MAP FOR PHOTONS

@@ -64,9 +64,9 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
     iEvent.getByToken(el_hltid_token,el_hlt_id);
 
     edm::Handle<EcalRecHitCollection> ebRecHits;
-    edm::Handle<EcalRecHitCollection> eeRecHits;
+    //edm::Handle<EcalRecHitCollection> eeRecHits;
     iEvent.getByToken(ebRecHits_token,ebRecHits);
-    iEvent.getByToken(eeRecHits_token,eeRecHits);
+    //iEvent.getByToken(eeRecHits_token,eeRecHits);
 
     if ( not mu_handle.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] mu_handle is not valid"<<endl;
     if ( not el_handle.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_handle is not valid"<<endl;
@@ -178,28 +178,27 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 
         l.iso = chIso + TMath::Max( nhIso + phoIso - evt_->rho * ea , 0. ) ; 
 
-        double Ecorr=NeroFunctions::getEGSeedCorrections(el,ebRecHits,eeRecHits); 
+        double Ecorr=NeroFunctions::getEGSeedCorrections(el,ebRecHits); 
 
-        float smear = 0.0, scale = 1.0;
-        float aeta = std::abs(el.eta());
-        float et = el.energy()/cosh(aeta);
+        //float smear = 0.0, scale = 1.0;
+        //float aeta = std::abs(el.eta());
+        //float et = el.energy()/cosh(aeta);
 
-        if (iEvent.isRealData() )
-        {
-                
-                scale = EleCorr->ScaleCorrection(iEvent.id().run(), el.isEB(), el.r9(), aeta, et);
-                Ecorr *= scale;
-        }
-        else
-        {
-                 // the kNone refers to systematcis changes
-                 // arbitrary func of run,lumi, event
-                 rnd_->SetSeed(iEvent.id().run()*1000000+iEvent.luminosityBlock()*100 + iEvent.id().event()) ;
-                 smear = EleCorr->getSmearingSigma((int) iEvent.id().run(), el.isEB(), el.r9(), aeta, et, 0.,0.);
-                 float corr = 1.0  + smear * rnd_->Gaus(0,1);
-                 Ecorr *= corr;
-        
-        }
+        //if (iEvent.isRealData() )
+        //{
+        //        
+        //        scale = EleCorr->ScaleCorrection(iEvent.id().run(), el.isEB(), el.r9(), aeta, et);
+        //        Ecorr *= scale;  // no scale and smear for new regression
+        //}
+        //else
+        //{
+        //         // the kNone refers to systematcis changes
+        //         // arbitrary func of run,lumi, event
+        //         rnd_->SetSeed(iEvent.id().run()*1000000+iEvent.luminosityBlock()*100 + iEvent.id().event()) ;
+        //         smear = EleCorr->getSmearingSigma((int) iEvent.id().run(), el.isEB(), el.r9(), aeta, et, 0.,0.);
+        //         float corr = 1.0  + smear * rnd_->Gaus(0,1);
+        //         Ecorr *= corr;
+        //}
         
         l.ecorr = Ecorr;
         l.p4.SetPxPyPzE( el.px(),el.py(),el.pz(),el.energy());
