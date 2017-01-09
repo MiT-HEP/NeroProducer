@@ -4,7 +4,9 @@
 
 namespace NeroFunctions{
     template<typename T> 
-        double getEGSeedCorrections(const T& electron,const edm::Handle<EcalRecHitCollection>& ebRecHits,const edm::Handle<EcalRecHitCollection>& eeRecHits )
+        double getEGSeedCorrections(const T& electron,const edm::Handle<EcalRecHitCollection>& ebRecHits
+                //const edm::Handle<EcalRecHitCollection>& eeRecHits 
+                )
         {
 
             DetId detid = electron.superCluster()->seed()->seed();
@@ -14,11 +16,13 @@ namespace NeroFunctions{
                 auto rh_i =  ebRecHits->find(detid);
                 if( rh_i != ebRecHits->end()) rh =  &(*rh_i);
                 else rh = NULL;
-            } else {
-                auto rh_i =  eeRecHits->find(detid);
-                if( rh_i != eeRecHits->end()) rh =  &(*rh_i);
-                else rh = NULL;
-            }
+            } 
+            // No correction for the EE
+            //else {
+            //    auto rh_i =  eeRecHits->find(detid);
+            //    if( rh_i != eeRecHits->end()) rh =  &(*rh_i);
+            //    else rh = NULL;
+            //}
             if(rh==NULL) Ecorr=1;
             else{
                 if(rh->energy() > 200 && rh->energy()<300)  Ecorr=1.0199;

@@ -132,7 +132,7 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         bits |= pho.passElectronVeto() * PhoElectronVeto;
         bits |= !pho.hasPixelSeed() * PhoPixelSeedVeto;
 
-        double Ecorr=NeroFunctions::getEGSeedCorrections(pho,ebRecHits,eeRecHits); 
+        double Ecorr=NeroFunctions::getEGSeedCorrections(pho,ebRecHits); 
         TLorentzVector phoP4=TLorentzVector(pho.px(),pho.py(),pho.pz(),pho.energy());
         
         float smear = 0.0, scale = 1.0;
