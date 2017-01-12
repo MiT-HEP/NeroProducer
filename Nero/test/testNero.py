@@ -39,7 +39,7 @@ if isData:
        ]
 else:
    fileList = [
-       '/store/relval/CMSSW_8_0_20/RelValTTbar_13/MINIAODSIM/PU25ns_80X_mcRun2_asymptotic_2016_TrancheIV_v4_Tr4GT_v4-v1/00000/A8C282AE-D37A-E611-8603-0CC47A4C8ECE.root'
+       '/store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_backup_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/10000/FAF828EF-1EBB-E611-9151-848F69FD483E.root'
        ]
 ### do not remove the line below!
 ###FILELIST###
@@ -303,7 +303,31 @@ process.QGTagger.srcJets             = process.nero.jets   # Could be reco::PFJe
 process.QGTagger.srcVertexCollection = process.nero.vertices
 process.QGTagger.useQualityCuts = cms.bool(False)
 
-###############################
+# ----------------------- GenHFHadronMatcher -----------------
+
+process.load("PhysicsTools.JetMCAlgos.GenHFHadronMatcher_cff")
+
+from PhysicsTools.JetMCAlgos.HadronAndPartonSelector_cfi import selectedHadronsAndPartons
+process.selectedHadronsAndPartons = selectedHadronsAndPartons.clone(
+            particles = process.nero.prunedgen
+            )
+from PhysicsTools.JetMCAlgos.AK4PFJetsMCFlavourInfos_cfi import ak4JetFlavourInfos
+process.genJetFlavourInfos = ak4JetFlavourInfos.clone(
+            jets = process.nero.genjets
+            )
+
+from PhysicsTools.JetMCAlgos.GenHFHadronMatcher_cff import matchGenBHadron
+process.matchGenBHadron = matchGenBHadron.clone(
+            genParticles = process.nero.prunedgen,
+            jetFlavourInfos = "genJetFlavourInfos"
+            )
+from PhysicsTools.JetMCAlgos.GenHFHadronMatcher_cff import matchGenCHadron
+process.matchGenCHadron = matchGenCHadron.clone(
+            genParticles = process.nero.prunedgen,
+            jetFlavourInfos = "genJetFlavourInfos"
+            )
+
+###############################################################
 
 if options.isGrid:
 	process.nero.head=options.nerohead ##'git rev-parse HEAD'
@@ -330,6 +354,7 @@ process.p = cms.Path(
                 process.fullPatMetSequencePuppi * ## full puppi sequence
                 process.BadPFMuonFilter *
                 process.BadChargedCandidateFilter * 
+                process.selectedHadronsAndPartons * process.genJetFlavourInfos * process.matchGenBHadron * process.matchGenCHadron* ## gen HF flavour matching
                 process.nero
                 )
 

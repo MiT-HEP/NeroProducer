@@ -36,11 +36,18 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
     iEvent.getByToken(pu_token, pu_handle);
     iEvent.getByToken(jet_token, jet_handle);
 
+    iEvent.getByToken(genBHadFlavour_token,genBHadFlavour_handle);
+    iEvent.getByToken(genCHadJetIndex_token,genCHadJetIndex_handle);
+    iEvent.getByToken(genCHadBHadronId_token,genCHadBHadronId_handle);
+
     if ( not info_handle.isValid() ) cout<<"[NeroMonteCarlo]::[analyze]::[ERROR] info_handle is not valid"<<endl;
     if ( not packed_handle.isValid() ) cout<<"[NeroMonteCarlo]::[analyze]::[ERROR] packed_handle is not valid"<<endl;
     if ( not pruned_handle.isValid() ) cout<<"[NeroMonteCarlo]::[analyze]::[ERROR] pruned_handle is not valid"<<endl;
     if ( not pu_handle.isValid() ) cout<<"[NeroMonteCarlo]::[analyze]::[ERROR] pu_handle is not valid"<<endl;
     if ( not jet_handle.isValid() ) cout<<"[NeroMonteCarlo]::[analyze]::[ERROR] jet_handle is not valid"<<endl;
+    if (not genBHadFlavour_handle.isValid() ) cout<<"[NeroMonteCarlo]::[analyze]::ERROR genBHadFlavour_handle is not valid"<<endl;
+    if (not genCHadJetIndex_handle.isValid() ) cout<<"[NeroMonteCarlo]::[analyze]::ERROR genCHadJetIndex_handle is not valid"<<endl;
+    if (not genCHadBHadronId_handle.isValid() ) cout<<"[NeroMonteCarlo]::[analyze]::ERROR genCHadBHadronId_handle is not valid"<<endl;
 
     if(VERBOSE){ sw.Stop() ; cout<<"[NeroMonteCarlo]::[analyze] getToken took "<<sw.CpuTime()<<" Cpu and "<<sw.RealTime()<<" RealTime"<<endl; sw.Reset(); sw.Start();}
     // INFO
@@ -253,6 +260,25 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
         // --- FILL
         new ( (*jetP4)[jetP4->GetEntriesFast()]) TLorentzVector(j.px(), j.py(), j.pz(), j.energy());
     }
+
+    // Counting number of different b hadrons https://github.com/cms-sw/cmssw/blob/CMSSW_8_0_20_patchX/PhysicsTools/JetMCAlgos/test/matchGenHFHadrons.cc#L216
+    for(size_t hadronId = 0; hadronId < genBHadFlavour_handle->size(); ++hadronId) {
+        const int flavour = genBHadFlavour_handle->at(hadronId);
+        const int flavourAbs = std::abs(flavour);
+    // 0 - not from top decay; 1 - from top decay; 2 - not identified;
+        nBHadrons++;
+        if(flavourAbs==25) nBHadronsHiggs++;
+        if(flavourAbs==37) nBHadronsHiggs++; // I consider higgs both H and H+
+        if(flavourAbs==6) nBHadronsTop++;
+    }
+    // Counting number of different c hadrons
+    for(size_t hadronId = 0; hadronId < genCHadJetIndex_handle->size(); ++hadronId) {
+        // Skipping c hadrons that are coming from b hadrons
+        if(genCHadBHadronId_handle->at(hadronId) >= 0) continue;
+        nCHadrons++;
+        
+    }
+
     if(VERBOSE){ sw.Stop() ; cout<<"[NeroMonteCarlo]::[analyze] jets took "<<sw.CpuTime()<<" Cpu and "<<sw.RealTime()<<" RealTime"<<endl; sw.Reset();}
     return 0;
 }

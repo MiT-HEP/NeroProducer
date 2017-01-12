@@ -61,6 +61,10 @@ class BareMonteCarlo : virtual public BareP4
         float r2f2;
         float r1f5;
         float r5f5;
+
+        // nBHadrons
+        int nBHadronsHiggs{0},nBHadronsTop{0},nBHadrons{0};
+        int nCHadrons{0};
     
         // PDF reweights
         std::vector<float> *pdfRwgt{0};
