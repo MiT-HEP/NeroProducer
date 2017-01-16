@@ -246,6 +246,11 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     mc -> mMinGenParticlePt = iConfig.getParameter<double>("minGenParticlePt");
     mc -> mMinGenJetPt = iConfig.getParameter<double>("minGenJetPt");
     mc -> mParticleGun = iConfig.getUntrackedParameter<bool>("particleGun",false);
+    // match
+    mc -> genBHadFlavour_token = consumes<std::vector<int> > (edm::InputTag("matchGenBHadron", "genBHadFlavour"));
+    mc -> genCHadJetIndex_token = consumes<std::vector<int> > (edm::InputTag("matchGenCHadron", "genCHadJetIndex"));
+    mc -> genCHadBHadronId_token = consumes<std::vector<int> > (edm::InputTag("matchGenCHadron", "genCHadBHadronId"));
+    mc -> genTtbarId_token = consumes<int> (edm::InputTag("categorizeGenTtbar", "genTtbarId"));
 
     obj.push_back(mc);
     runObj.push_back(mc);
