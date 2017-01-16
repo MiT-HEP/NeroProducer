@@ -32,6 +32,7 @@ class NeroMonteCarlo : virtual public NeroCollection,
         edm::Handle<std::vector<int> > genBHadFlavour_handle;
         edm::Handle<std::vector<int> > genCHadJetIndex_handle;
         edm::Handle<std::vector<int> > genCHadBHadronId_handle;
+        edm::Handle<int > genTtbarId_handle;
 
         // --- Token
         edm::EDGetTokenT<edm::View<pat::PackedGenParticle> > packed_token;
@@ -45,6 +46,7 @@ class NeroMonteCarlo : virtual public NeroCollection,
         edm::EDGetTokenT<std::vector<int> > genBHadFlavour_token;
         edm::EDGetTokenT<std::vector<int> > genCHadJetIndex_token;
         edm::EDGetTokenT<std::vector<int> > genCHadBHadronId_token;
+        edm::EDGetTokenT<int > genTtbarId_token;
 
         // --- configuration
         float mMinGenParticlePt;

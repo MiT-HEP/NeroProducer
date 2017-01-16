@@ -40,6 +40,8 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
     iEvent.getByToken(genCHadJetIndex_token,genCHadJetIndex_handle);
     iEvent.getByToken(genCHadBHadronId_token,genCHadBHadronId_handle);
 
+    iEvent.getByToken(genTtbarId_token,genTtbarId_handle);
+
     if ( not info_handle.isValid() ) cout<<"[NeroMonteCarlo]::[analyze]::[ERROR] info_handle is not valid"<<endl;
     if ( not packed_handle.isValid() ) cout<<"[NeroMonteCarlo]::[analyze]::[ERROR] packed_handle is not valid"<<endl;
     if ( not pruned_handle.isValid() ) cout<<"[NeroMonteCarlo]::[analyze]::[ERROR] pruned_handle is not valid"<<endl;
@@ -48,6 +50,7 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
     if (not genBHadFlavour_handle.isValid() ) cout<<"[NeroMonteCarlo]::[analyze]::ERROR genBHadFlavour_handle is not valid"<<endl;
     if (not genCHadJetIndex_handle.isValid() ) cout<<"[NeroMonteCarlo]::[analyze]::ERROR genCHadJetIndex_handle is not valid"<<endl;
     if (not genCHadBHadronId_handle.isValid() ) cout<<"[NeroMonteCarlo]::[analyze]::ERROR genCHadBHadronId_handle is not valid"<<endl;
+    if (not genTtbarId_handle.isValid() ) cout<<"[NeroMonteCarlo]::[analyze]::ERROR genTtbarId_handle is not valid"<<endl;
 
     if(VERBOSE){ sw.Stop() ; cout<<"[NeroMonteCarlo]::[analyze] getToken took "<<sw.CpuTime()<<" Cpu and "<<sw.RealTime()<<" RealTime"<<endl; sw.Reset(); sw.Start();}
     // INFO
@@ -278,6 +281,8 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
         nCHadrons++;
         
     }
+
+    genTtbarId = *genTtbarId_handle ;
 
     if(VERBOSE){ sw.Stop() ; cout<<"[NeroMonteCarlo]::[analyze] jets took "<<sw.CpuTime()<<" Cpu and "<<sw.RealTime()<<" RealTime"<<endl; sw.Reset();}
     return 0;

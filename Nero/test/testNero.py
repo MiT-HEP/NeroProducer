@@ -326,6 +326,8 @@ process.matchGenCHadron = matchGenCHadron.clone(
             genParticles = process.nero.prunedgen,
             jetFlavourInfos = "genJetFlavourInfos"
             )
+process.load("TopQuarkAnalysis.TopTools.GenTtbarCategorizer_cfi")
+process.categorizeGenTtbar.genJets = process.nero.genjets
 
 ###############################################################
 
@@ -355,6 +357,7 @@ process.p = cms.Path(
                 process.BadPFMuonFilter *
                 process.BadChargedCandidateFilter * 
                 process.selectedHadronsAndPartons * process.genJetFlavourInfos * process.matchGenBHadron * process.matchGenCHadron* ## gen HF flavour matching
+                process.categorizeGenTtbar * ## return already a categorization id for tt
                 process.nero
                 )
 
