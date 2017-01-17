@@ -118,18 +118,19 @@ MatrixElementHT::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
     for(unsigned i=0; i<hepeup.IDUP.size(); ++i)
     {
+        if (hepeup.ISTUP[i] != 1) continue; //Outgoing final state particle
         TLorentzVector x; 
         // px,py,pz,e,m
         x.SetPxPyPzE( hepeup.PUP[i][0],hepeup.PUP[i][1],hepeup.PUP[i][2],hepeup.PUP[i][3]) ;
-        if ((abs(hepeup.IDUP[i]) <=6)  or hepeup.IDUP[i] ==21) ht+= x.Pt();
+        if ((abs(hepeup.IDUP[i]) <=6)  or hepeup.IDUP[i] ==21) {ht+= x.Pt();}
         if ((abs(hepeup.IDUP[i]) >=11) and (abs(hepeup.IDUP[i]) <=16)) Q += x;
     }
-    std::cout <<"HT is "<<ht<<" QT is "<<Q.Pt()<<std::endl;
+    //std::cout <<"HT is "<<ht<<" R="<<H.Pt()<<" QT is "<<Q.Pt()<<std::endl;
 
     if ( htMin >0 and ht<htMin) return false;
-    if ( htMax >0 and ht>htMax) return false;
+    if ( htMax >0 and ht>=htMax) return false;
     if ( qtMin >0 and Q.Pt()<qtMin) return false;
-    if ( qtMax >0 and Q.Pt()>qtMax) return false;
+    if ( qtMax >0 and Q.Pt()>=qtMax) return false;
 
     return true;
 }
