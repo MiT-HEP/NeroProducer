@@ -274,7 +274,7 @@ process.nero.metsPuppi=cms.InputTag('slimmedMETsPuppi','','nero')
 
 # ------------------------QG-----------------------------------------------
 # after jec, because need to be run on the corrected (latest) jet collection
-qgDatabaseVersion = 'cmssw8020_v1'
+qgDatabaseVersion = 'cmssw8020_v2'
 
 # to use the database, see https://twiki.cern.ch/twiki/bin/view/CMS/QuarkGluonLikelihood
 #connect = cms.string('frontier://FrontierProd/CMS_COND_PAT_000'),
