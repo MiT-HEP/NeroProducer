@@ -95,6 +95,7 @@ nero = cms.EDAnalyzer("Nero",
 	    			## ELECTRONS
 				'HLT_Ele27_WPTight_Gsf_v',
 				'HLT_Ele30_WPTight_Gsf_v',
+				'HLT_Ele32_eta2p1_WPTight_Gsf_v',
 				'HLT_Ele35_WPLoose_Gsf_v',
 				'HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v',
 				'HLT_DoubleEle24_22_eta2p1_WPLoose_Gsf_v',
