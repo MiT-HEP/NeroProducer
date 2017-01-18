@@ -329,6 +329,12 @@ process.matchGenCHadron = matchGenCHadron.clone(
 process.load("TopQuarkAnalysis.TopTools.GenTtbarCategorizer_cfi")
 process.categorizeGenTtbar.genJets = process.nero.genjets
 
+process.ttbarcat = cms.Sequence()
+if not isData:
+    process.ttbarcat = cms.Sequence( 
+                    process.selectedHadronsAndPartons * process.genJetFlavourInfos * process.matchGenBHadron * process.matchGenCHadron* ## gen HF flavour matching
+                    process.categorizeGenTtbar * ## return already a categorization id for tt
+                )
 ###############################################################
 
 if options.isGrid:
@@ -356,8 +362,7 @@ process.p = cms.Path(
                 process.fullPatMetSequencePuppi * ## full puppi sequence
                 process.BadPFMuonFilter *
                 process.BadChargedCandidateFilter * 
-                process.selectedHadronsAndPartons * process.genJetFlavourInfos * process.matchGenBHadron * process.matchGenCHadron* ## gen HF flavour matching
-                process.categorizeGenTtbar * ## return already a categorization id for tt
+                process.ttbarcat *
                 process.nero
                 )
 
