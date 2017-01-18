@@ -333,8 +333,8 @@ process.ttbarcat = cms.Sequence()
 if not isData:
     process.ttbarcat = cms.Sequence( 
                     process.selectedHadronsAndPartons * process.genJetFlavourInfos * process.matchGenBHadron * process.matchGenCHadron* ## gen HF flavour matching
-                    process.categorizeGenTtbar * ## return already a categorization id for tt
-                )
+                    process.categorizeGenTtbar  ## return already a categorization id for tt
+                    )
 ###############################################################
 
 if options.isGrid:
