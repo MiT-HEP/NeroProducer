@@ -68,7 +68,7 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
         r5f5 = double(lhe_handle -> weights() . at(8) . wgt);  
     }
 
-    if (IsExtend() and lhe_handle.isValid() and  lhe_handle->weights().size() >109)
+    if (lhe_handle.isValid() and  lhe_handle->weights().size() >109)
         for( int pdfw = 9 ; pdfw<109 ;++pdfw)
         {
         pdfRwgt -> push_back( double(lhe_handle -> weights() . at(pdfw) . wgt ) );    
