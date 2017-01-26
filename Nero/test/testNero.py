@@ -1,22 +1,24 @@
 import FWCore.ParameterSet.Config as cms
-import FWCore.ParameterSet.VarParsing as VarParsing
+from FWCore.ParameterSet.VarParsing import VarParsing
 import re
 import os
+
+print sys.argv
 
 process = cms.Process("nero")
 cmssw_base = os.environ['CMSSW_BASE']
 
-options = VarParsing.VarParsing ('analysis')
+options = VarParsing ('analysis')
 options.register('isData',
         False,
-        VarParsing.VarParsing.multiplicity.singleton,
-        VarParsing.VarParsing.varType.bool,
+        VarParsing.multiplicity.singleton,
+        VarParsing.varType.bool,
         "True if running on Data, False if running on MC")
 
-options.register('isGrid', False, VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Set it to true if running on Grid")
-options.register('nerohead', "XXX", VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.string,"Set to the head of the repository. use check_output 'git rev-parse HEAD' in the crab py file. active only if isGrid.")
-options.register("nerotag", "YYY", VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.string,"Set to the tag of the repository. use check_output 'git rev-parse HEAD' in the crab py file. active only if isGrid.")
-options.register('isParticleGun', False, VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Set it to true if MonteCarlo is ParticleGun")
+options.register('isGrid', False, VarParsing.multiplicity.singleton,VarParsing.varType.bool,"Set it to true if running on Grid")
+options.register('nerohead', "XXX", VarParsing.multiplicity.singleton,VarParsing.varType.string,"Set to the head of the repository. use check_output 'git rev-parse HEAD' in the crab py file. active only if isGrid.")
+options.register("nerotag", "YYY", VarParsing.multiplicity.singleton,VarParsing.varType.string,"Set to the tag of the repository. use check_output 'git rev-parse HEAD' in the crab py file. active only if isGrid.")
+options.register('isParticleGun', False, VarParsing.multiplicity.singleton,VarParsing.varType.bool,"Set it to true if MonteCarlo is ParticleGun")
 
 options.parseArguments()
 isData = options.isData
@@ -31,29 +33,31 @@ process.load("FWCore.MessageService.MessageLogger_cfi")
 # the size of the output by prescaling the report of the event number
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxEvents) )
 
-if isData:
-   fileList = [
-       '/store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v3/60000/3A6A80A6-D797-E611-B571-0CC47A04CFF6.root'
-       ]
-else:
-   fileList = [
-       '/store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_backup_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/10000/FAF828EF-1EBB-E611-9151-848F69FD483E.root'
-       ]
+if len(options.inputFiles) == 0:
+    if isData:
+        options.inputFiles = [
+            '/store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v3/60000/3A6A80A6-D797-E611-B571-0CC47A04CFF6.root'
+        ]
+    else:
+        options.inputFiles = [
+            '/store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_backup_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/10000/FAF828EF-1EBB-E611-9151-848F69FD483E.root'
+        ]
+
 ### do not remove the line below!
 ###FILELIST###
 
 process.source = cms.Source("PoolSource",
 	skipEvents = cms.untracked.uint32(0),
-    	fileNames = cms.untracked.vstring(fileList)
-        )
+    fileNames = cms.untracked.vstring(options.inputFiles)
+)
 
 # ---- define the output file -------------------------------------------
 process.TFileService = cms.Service("TFileService",
-        closeFileFast = cms.untracked.bool(True),
-        fileName = cms.string("NeroNtuples.root"),
-        )
+    closeFileFast = cms.untracked.bool(True),
+    fileName = cms.string("NeroNtuples.root"),
+)
 
 ##----------------GLOBAL TAG ---------------------------
 # used by photon id and jets
@@ -87,8 +91,6 @@ if isData and not options.isGrid and False: ## dont load the lumiMaks, will be c
 ## SKIM INFO
 process.load('NeroProducer.Skim.infoProducerSequence_cff')
 process.load('NeroProducer.Nero.Nero_cfi')
-
-
 
 ### ##ISO
 process.load("RecoEgamma/PhotonIdentification/PhotonIDValueMapProducer_cfi")
@@ -340,6 +342,11 @@ if not isData:
 if options.isGrid:
 	process.nero.head=options.nerohead ##'git rev-parse HEAD'
 	process.nero.tag=options.nerotag ## git describe --tags
+else:
+    # runs git
+    from NeroProducer.Nero.NeroTag_cfi import neroTag
+    process.nero.head = neroTag.head
+    process.nero.tag = neroTag.tag
 
 if options.isParticleGun:
 	process.nero.particleGun = cms.untracked.bool(True)
@@ -378,7 +385,7 @@ process.p = cms.Path(
 ##		process.output_step)
 
 # Local Variables:
-# mode:c++
+# mode:python
 # indent-tabs-mode:nil
 # tab-width:4
 # c-basic-offset:4

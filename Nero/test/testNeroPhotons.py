@@ -293,8 +293,13 @@ process.hcalNoiseFilter = cms.Sequence(
 ###############################
 
 if options.isGrid:
-	process.nero.head=options.nerohead ##'git rev-parse HEAD'
-	process.nero.tag=options.nerotag ## git describe --tags
+        process.nero.head=options.nerohead ##'git rev-parse HEAD'
+        process.nero.tag=options.nerotag ## git describe --tags
+else:
+        # runs git
+        from NeroProducer.Nero.NeroTag_cfi import neroTag
+        process.nero.head = neroTag.head
+        process.nero.tag = neroTag.tag
 
 if options.isParticleGun:
 	process.nero.particleGun = cms.untracked.bool(True)
