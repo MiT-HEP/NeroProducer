@@ -12,7 +12,13 @@ cmdopts._tagOrder.remove('numEvent%d')
 
 cmdopts.parseArguments()
 
-sys.argv = sys.argv[:1] + [
+ithis = 0
+for a in sys.argv:
+    if a.endswith('.py'):
+        break
+    ithis += 1
+
+sys.argv = sys.argv[:ithis + 1] + [
     'isGrid=True',
     'isData=' + str(cmdopts.isData),
     'nerohead=' + cmdopts.nerohead,
