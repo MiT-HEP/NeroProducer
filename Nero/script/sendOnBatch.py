@@ -328,7 +328,8 @@ for idx0,fl in enumerate(fileChunks):
 	#print "---------------------------------------------------------"
 	#print "FileChunks is", fl
 	#print "---------------------------------------------------------"
-	flStr = "fileList = [ "+ ",".join(fl) + "]";
+	#flStr = "fileList = [ "+ ",".join(fl) + "]";
+	flStr = "options.inputFiles = [ "+ ",".join(fl) + "]";
 	#replace
 	cmd = "sed -i'' 's:###FILELIST###:"+flStr+":g' " + pset 
 	call(cmd,shell=True)
