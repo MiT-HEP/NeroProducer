@@ -1,7 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 from FWCore.ParameterSet.VarParsing import VarParsing
 import re
-import os
+import os,sys
 
 print sys.argv
 
