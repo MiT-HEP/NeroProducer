@@ -103,11 +103,11 @@ process.load("RecoEgamma/ElectronIdentification/ElectronIDValueMapProducer_cfi")
 from CondCore.DBCommon.CondDBSetup_cfi import *
 
 if options.isData:
-    connectString = cms.string('sqlite:jec/Spring16_23Sep2016AllV1_DATA.db')
+    connectString = cms.string('sqlite:jec/Spring16_23Sep2016AllV3_DATA.db')
     tagName = 'Spring16_23Sep2016AllV1_DATA_AK4PFchs'
     tagNamePuppi = 'Spring16_23Sep2016AllV1_DATA_AK4PFPuppi'
 else:
-    connectString = cms.string('sqlite:jec/Spring16_23Sep2016V1_MC.db')
+    connectString = cms.string('sqlite:jec/Spring16_23Sep2016V3_MC.db')
     tagName = 'Spring16_23Sep2016V1_MC_AK4PFchs'
     tagNamePuppi = 'Spring16_23Sep2016V1_MC_AK4PFPuppi'
 
