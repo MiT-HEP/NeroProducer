@@ -33,6 +33,9 @@ process.TFileService = cms.Service("TFileService",
 #process.load('NeroProducer.Nero.Nero_cfi')
 process.load('NeroProducer.Nero.NeroChargedHiggs_cfi')
 #process.load('NeroProducer.Nero.NeroMonojet_cfi')
+from NeroProducer.Nero.NeroTag_cfi import neroTag
+process.nero.head = neroTag.head
+process.nero.tag = neroTag.tag
 
 process.p = cms.Path(
                 process.nero
