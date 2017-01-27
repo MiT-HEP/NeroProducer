@@ -159,6 +159,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     leps -> el_hltid_token = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleHLTIdMap"));
     leps -> el_mva_token = consumes<edm::ValueMap<float> > (iConfig.getParameter<edm::InputTag>("eleMvaMap"));
     leps -> SetMatch( iConfig.getParameter<bool>("matchLep") );
+    leps -> rho_token = consumes<double> (edm::InputTag("fixedGridRhoFastjetCentralNeutral")); // for miniIso
 
     //leps -> el_iso_ch_token  = consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("eleChargedIsolation") );
     //leps -> el_iso_nh_token  = consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("eleNeutralHadronIsolation") );

@@ -79,6 +79,8 @@ class NeroLeptons : virtual public NeroCollection,
         //edm::EDGetTokenT<edm::ValueMap<float> > 	el_iso_ch_token;
         //edm::EDGetTokenT<edm::ValueMap<float> > 	el_iso_nh_token;
         //edm::EDGetTokenT<edm::ValueMap<float> > 	el_iso_pho_token;
+        //for miniiso
+        edm::EDGetTokenT<double> rho_token;
 
         // Handle
         edm::Handle<pat::MuonCollection> mu_handle;
@@ -93,6 +95,10 @@ class NeroLeptons : virtual public NeroCollection,
         //edm::Handle<edm::ValueMap<float> > el_iso_ch;
         //edm::Handle<edm::ValueMap<float> > el_iso_nh;
         //edm::Handle<edm::ValueMap<float> > el_iso_pho;
+
+        // for miniiso
+        edm::Handle<double> rho_handle;
+
 
         //configuration
         float mMinPt_el;
