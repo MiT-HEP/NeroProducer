@@ -218,11 +218,11 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         l.selBits |= unsigned(isEB and (not isEBEEGap and not isEBEtaGap and not isEBPhiGap)  ) * LepEBEE;
         l.selBits |= unsigned(isEE and (not isEBEEGap and not isEERingGap and not isEEDeeGap)  ) * LepEBEE;
 
-        const double dz = ( vtx_->size() ? 
+        const double dz = fabs( vtx_->size() ? 
                             el.gsfTrack()->dz((*vtx_->GetPV()).position()) : 
                             el.gsfTrack()->dz());
         
-        const double dxy = ( vtx_->size() ? 
+        const double dxy = fabs( vtx_->size() ? 
                              el.gsfTrack()->dxy((*vtx_->GetPV()).position()) : 
                              el.gsfTrack()->dxy());
 
