@@ -27,11 +27,15 @@ void NeroFatJets::init()
 {
   BareFatJets::init();
   // set up jet energy corrections
+  string jecBasePathMC="jec/Summer16_23Sep2016V3";
+  //
+  cout<<"[NeroFatJets]::[init]::[INFO] Taking JEC for MC="<<jecBasePathMC<<"_MC_L2Relative_AK8PFchs.txt [..]"<<endl;
+  cout<<"[NeroFatJets]::[init]::[INFO] Taking JEC for DATA="<<jecBasePath<<"_DATA_L2Relative_AK8PFchs.txt [..]"<<endl;
  
   //no L1 for mass  
   std::vector<JetCorrectorParameters> mcParams;
-  mcParams.push_back(JetCorrectorParameters(jecBasePath+"_MC_L2Relative_AK8PFchs.txt"));
-  mcParams.push_back(JetCorrectorParameters(jecBasePath+"_MC_L3Absolute_AK8PFchs.txt"));
+  mcParams.push_back(JetCorrectorParameters(jecBasePathMC+"_MC_L2Relative_AK8PFchs.txt"));
+  mcParams.push_back(JetCorrectorParameters(jecBasePathMC+"_MC_L3Absolute_AK8PFchs.txt"));
   mMCJetCorrector = new FactorizedJetCorrector(mcParams);
   
   std::vector<JetCorrectorParameters> dataParams;
@@ -42,8 +46,8 @@ void NeroFatJets::init()
 
   //Puppi
   std::vector<JetCorrectorParameters> mcParamsPuppi;
-  mcParamsPuppi.push_back(JetCorrectorParameters(jecBasePath+"_MC_L2Relative_AK8PFPuppi.txt"));
-  mcParamsPuppi.push_back(JetCorrectorParameters(jecBasePath+"_MC_L3Absolute_AK8PFPuppi.txt"));
+  mcParamsPuppi.push_back(JetCorrectorParameters(jecBasePathMC+"_MC_L2Relative_AK8PFPuppi.txt"));
+  mcParamsPuppi.push_back(JetCorrectorParameters(jecBasePathMC+"_MC_L3Absolute_AK8PFPuppi.txt"));
   mMCJetCorrectorPuppi = new FactorizedJetCorrector(mcParamsPuppi);
   
   std::vector<JetCorrectorParameters> dataParamsPuppi;

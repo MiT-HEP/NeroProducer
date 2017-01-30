@@ -157,29 +157,49 @@ double getPFMiniIsolation_EffectiveArea(edm::Handle<pat::PackedCandidateCollecti
   if(ptcl->isMuon())
     em = 1;
   
-  double Aeff[2][5] = {{ 0.1013, 0.0988, 0.0572, 0.0842, 0.1530 },{ 0.0913, 0.0765, 0.0546, 0.0728, 0.1177 }};
-  
-  double Aeff_Fall15Anal[2][7] = {{ 0.1752, 0.1862, 0.1411, 0.1534, 0.1903 , 0.2243, 0.2687 },{ 0.0735, 0.0619, 0.0465, 0.0433, 0.0577 , 0.0,0.0}};
-  
+  //double Aeff[2][5] = {{ 0.1013, 0.0988, 0.0572, 0.0842, 0.1530 },{ 0.0913, 0.0765, 0.0546, 0.0728, 0.1177 }};
+  //double Aeff_Fall15Anal[2][7] = {{ 0.1752, 0.1862, 0.1411, 0.1534, 0.1903 , 0.2243, 0.2687 },{ 0.0735, 0.0619, 0.0465, 0.0433, 0.0577 , 0.0,0.0}};
+
+  double Aeff_Moriond17[2][7] = 
+         {{ 0.1752,0.1862,0.1411,0.1534,0.1903,0.2243,0.2687 }, // electrons
+	  { 0.0735, 0.0619, 0.0465, 0.0433, 0.0577,0.0,0.0 } // muons
+  	};
+  /*muons https://twiki.cern.ch/twiki/bin/view/CMS/SUSLeptonSF#Muons
+   * Spring15 25ns EA for R=0.3 (values are divided by (0.3/R)^2), rho = fixedGridRhoFastjetCentralNeutral  OK
+      0 ≤ abs(eta) < 0.8 : 0.0735
+      0.8 ≤ abs(eta) < 1.3 : 0.0619
+      1.3 ≤ abs(eta) < 2.0 : 0.0465
+      2.0 ≤ abs(eta) < 2.2 : 0.0433
+      2.2 ≤ abs(eta) ≤ 2.5 : 0.0577 
+      electrons
+
+       0 ≤ abs(eta) < 1 : 0.1752
+       1 ≤ abs(eta) < 1.479 : 0.1862
+       1.479 ≤ abs(eta) < 2.0 : 0.1411
+       2.0 ≤ abs(eta) < 2.2 : 0.1534
+       2.2 ≤ abs(eta) ≤ 2.3 : 0.1903
+       2.3 ≤ abs(eta) ≤ 2.4 : 0.2243
+       2.4 ≤ abs(eta) ≤ 2.5 : 0.2687 
+      */
   
   double CorrectedTerm=0.0;
   double riso2 = r_iso*r_iso;
   
-  if(em){
-    if( TMath::Abs( ptcl->eta() ) < 0.8 ) CorrectedTerm = rho * Aeff_Fall15Anal[1][ 0 ]*(riso2/0.09);
-    else if( TMath::Abs( ptcl->eta() ) > 0.8 && TMath::Abs( ptcl->eta() ) < 1.3  )   CorrectedTerm = rho * Aeff_Fall15Anal[1][ 1 ]*(riso2/0.09);
-    else if( TMath::Abs( ptcl->eta() ) > 1.3 && TMath::Abs( ptcl->eta() ) < 2.0  )   CorrectedTerm = rho * Aeff_Fall15Anal[1][ 2 ]*(riso2/0.09);
-    else if( TMath::Abs( ptcl->eta() ) > 2.0 && TMath::Abs( ptcl->eta() ) < 2.2  )   CorrectedTerm = rho * Aeff_Fall15Anal[1][ 3 ]*(riso2/0.09);
-    else if( TMath::Abs( ptcl->eta() ) > 2.2 && TMath::Abs( ptcl->eta() ) < 2.5  )   CorrectedTerm = rho * Aeff_Fall15Anal[1][ 4 ]*(riso2/0.09);
+  if(em){ // muon
+    if( TMath::Abs( ptcl->eta() ) < 0.8 ) CorrectedTerm = rho * Aeff_Moriond17[1][ 0 ]*(riso2/0.09);
+    else if( TMath::Abs( ptcl->eta() ) > 0.8 && TMath::Abs( ptcl->eta() ) < 1.3  )   CorrectedTerm = rho * Aeff_Moriond17[1][ 1 ]*(riso2/0.09);
+    else if( TMath::Abs( ptcl->eta() ) > 1.3 && TMath::Abs( ptcl->eta() ) < 2.0  )   CorrectedTerm = rho * Aeff_Moriond17[1][ 2 ]*(riso2/0.09);
+    else if( TMath::Abs( ptcl->eta() ) > 2.0 && TMath::Abs( ptcl->eta() ) < 2.2  )   CorrectedTerm = rho * Aeff_Moriond17[1][ 3 ]*(riso2/0.09);
+    else if( TMath::Abs( ptcl->eta() ) > 2.2 && TMath::Abs( ptcl->eta() ) < 2.5  )   CorrectedTerm = rho * Aeff_Moriond17[1][ 4 ]*(riso2/0.09);
   }
   else{
-    if( TMath::Abs( dynamic_cast<const pat::Electron *>(ptcl)->superCluster()->eta() ) < 1.0 ) CorrectedTerm = rho * Aeff_Fall15Anal[0][ 0 ]*(riso2/0.09);
-    else if( TMath::Abs( dynamic_cast<const pat::Electron *>(ptcl)->superCluster()->eta() ) > 1.0 && TMath::Abs( dynamic_cast<const pat::Electron *>(ptcl)->superCluster()->eta() ) < 1.479  )   CorrectedTerm = rho * Aeff_Fall15Anal[0][ 1 ]*(riso2/0.09);
-    else if( TMath::Abs( dynamic_cast<const pat::Electron *>(ptcl)->superCluster()->eta() ) > 1.479 && TMath::Abs( dynamic_cast<const pat::Electron *>(ptcl)->superCluster()->eta() ) < 2.0  )   CorrectedTerm = rho * Aeff_Fall15Anal[0][ 2 ]*(riso2/0.09);
-    else if( TMath::Abs( dynamic_cast<const pat::Electron *>(ptcl)->superCluster()->eta() ) > 2.0 && TMath::Abs( dynamic_cast<const pat::Electron *>(ptcl)->superCluster()->eta() ) < 2.2  )   CorrectedTerm = rho * Aeff_Fall15Anal[0][ 3 ]*(riso2/0.09);
-    else if( TMath::Abs( dynamic_cast<const pat::Electron *>(ptcl)->superCluster()->eta() ) > 2.2 && TMath::Abs( dynamic_cast<const pat::Electron *>(ptcl)->superCluster()->eta() ) < 2.3  )   CorrectedTerm = rho * Aeff_Fall15Anal[0][ 4 ]*(riso2/0.09);
-    else if( TMath::Abs( dynamic_cast<const pat::Electron *>(ptcl)->superCluster()->eta() ) > 2.3 && TMath::Abs( dynamic_cast<const pat::Electron *>(ptcl)->superCluster()->eta() ) < 2.4  )   CorrectedTerm = rho * Aeff_Fall15Anal[0][ 5 ]*(riso2/0.09);
-    else if( TMath::Abs( dynamic_cast<const pat::Electron *>(ptcl)->superCluster()->eta() ) > 2.4 && TMath::Abs( dynamic_cast<const pat::Electron *>(ptcl)->superCluster()->eta() ) > 2.4 && TMath::Abs( dynamic_cast<const pat::Electron *>(ptcl)->superCluster()->eta() ) < 2.5  )   CorrectedTerm = rho * Aeff_Fall15Anal[0][ 6 ]*(riso2/0.09);
+    if( TMath::Abs( dynamic_cast<const pat::Electron *>(ptcl)->superCluster()->eta() ) < 1.0 ) CorrectedTerm = rho * Aeff_Moriond17[0][ 0 ]*(riso2/0.09);
+    else if( TMath::Abs( dynamic_cast<const pat::Electron *>(ptcl)->superCluster()->eta() ) > 1.0 && TMath::Abs( dynamic_cast<const pat::Electron *>(ptcl)->superCluster()->eta() ) < 1.479  )   CorrectedTerm = rho * Aeff_Moriond17[0][ 1 ]*(riso2/0.09);
+    else if( TMath::Abs( dynamic_cast<const pat::Electron *>(ptcl)->superCluster()->eta() ) > 1.479 && TMath::Abs( dynamic_cast<const pat::Electron *>(ptcl)->superCluster()->eta() ) < 2.0  )   CorrectedTerm = rho * Aeff_Moriond17[0][ 2 ]*(riso2/0.09);
+    else if( TMath::Abs( dynamic_cast<const pat::Electron *>(ptcl)->superCluster()->eta() ) > 2.0 && TMath::Abs( dynamic_cast<const pat::Electron *>(ptcl)->superCluster()->eta() ) < 2.2  )   CorrectedTerm = rho * Aeff_Moriond17[0][ 3 ]*(riso2/0.09);
+    else if( TMath::Abs( dynamic_cast<const pat::Electron *>(ptcl)->superCluster()->eta() ) > 2.2 && TMath::Abs( dynamic_cast<const pat::Electron *>(ptcl)->superCluster()->eta() ) < 2.3  )   CorrectedTerm = rho * Aeff_Moriond17[0][ 4 ]*(riso2/0.09);
+    else if( TMath::Abs( dynamic_cast<const pat::Electron *>(ptcl)->superCluster()->eta() ) > 2.3 && TMath::Abs( dynamic_cast<const pat::Electron *>(ptcl)->superCluster()->eta() ) < 2.4  )   CorrectedTerm = rho * Aeff_Moriond17[0][ 5 ]*(riso2/0.09);
+    else if( TMath::Abs( dynamic_cast<const pat::Electron *>(ptcl)->superCluster()->eta() ) > 2.4 && TMath::Abs( dynamic_cast<const pat::Electron *>(ptcl)->superCluster()->eta() ) > 2.4 && TMath::Abs( dynamic_cast<const pat::Electron *>(ptcl)->superCluster()->eta() ) < 2.5  )   CorrectedTerm = rho * Aeff_Moriond17[0][ 6 ]*(riso2/0.09);
   }
   //std::cout<<"riso = "<<r_iso<<", iso_nh = "<<iso_nh<<", iso_ch = "<<iso_ch<<", iso_ph = "<<iso_ph<<",rho = "<<rho<<" adn CTerm = "<<CorrectedTerm<<"\n";  
    

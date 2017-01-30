@@ -62,6 +62,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
     iEvent.getByToken(el_looseid_token,el_loose_id);
     iEvent.getByToken(el_mva_token,el_mva);
     iEvent.getByToken(el_hltid_token,el_hlt_id);
+    iEvent.getByToken(rho_token,rho_handle);
 
     edm::Handle<EcalRecHitCollection> ebRecHits;
     //edm::Handle<EcalRecHitCollection> eeRecHits;
@@ -76,6 +77,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
     if ( not el_loose_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_loose_id is not valid"<<endl;
     if ( not el_hlt_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_hlt_id is not valid"<<endl;
     if ( not el_mva.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_mva is not valid"<<endl;
+    if ( not rho_handle.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] rho_handle is not valid"<<endl;
 
     vector<myLepton> leptons;
 
@@ -120,7 +122,8 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         l.nhiso  = niso;
         l.phoiso = phoiso;
         l.puiso  = puiso;
-        l.miniiso = getPFMiniIsolation_DeltaBeta(pf_->handle, dynamic_cast<const reco::Candidate *>(&mu), 0.05, 0.2, 10., false);
+        //l.miniiso = getPFMiniIsolation_DeltaBeta(pf_->handle, dynamic_cast<const reco::Candidate *>(&mu), 0.05, 0.2, 10., false);
+        l.miniiso = getPFMiniIsolation_EffectiveArea(pf_->handle, dynamic_cast<const reco::Candidate *>(&mu), 0.05, 0.2, 10., false, false, *rho_handle );
         
         if ( not (l.selBits & kMinId) ) continue;
         leptons.push_back(l);
@@ -245,7 +248,8 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         l.nhiso  = nhIso;
         l.phoiso = phoIso;
         l.puiso  = puChIso;
-        l.miniiso = getPFMiniIsolation_DeltaBeta(pf_->handle, dynamic_cast<const reco::Candidate *>(&el), 0.05, 0.2, 10., false) ;
+        //l.miniiso = getPFMiniIsolation_DeltaBeta(pf_->handle, dynamic_cast<const reco::Candidate *>(&el), 0.05, 0.2, 10., false) ;
+        l.miniiso = getPFMiniIsolation_EffectiveArea(pf_->handle, dynamic_cast<const reco::Candidate *>(&el), 0.05, 0.2, 10., false, false, *rho_handle );
 
         if ( not (l.selBits & kMinId) ) continue;
         leptons.push_back(l);

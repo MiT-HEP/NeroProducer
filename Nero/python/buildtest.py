@@ -102,7 +102,9 @@ def TryPullReq(sha, origin):
 				if parts[i] == "[fileList]":
 					inStr=parts[i+1]
 			fl = [ '"' + f + '"' for f in inStr.split(',') ]
-			flStr = "fileList = [ "+ ','.join(fl) + "]";
+			#flStr = "fileList = [ "+ ','.join(fl) + "]";
+			#flStr = "options.inputFiles = [ "+ ','.join(fl) + "]";
+			options += ' inputFiles=' + " ".join(inStr.split(','))
 			#replace
 			#cmd = "sed -i'' 's:###FILELIST###:"+flStr+":g' " + pset 
 			#call(cmd,shell=True)
