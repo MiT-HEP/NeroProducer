@@ -70,6 +70,7 @@ function CMSSW_8_0_24_patch1 {
 	git cms-merge-topic shervin86:Moriond2017_JEC_energyScales
 	git clone git@github.com:ECALELFS/ScalesSmearings.git EgammaAnalysis/ElectronTools/data/ScalesSmearings.new
 	rsync -avP EgammaAnalysis/ElectronTools/data/ScalesSmearings.new/* EgammaAnalysis/ElectronTools/data/ScalesSmearings/
+	git cms-merge-topic amarini:topic_qgmorevar
 }
 
 function CMSSW_8_0_25 {
@@ -89,6 +90,7 @@ function CMSSW_8_0_25 {
 	git cms-merge-topic shervin86:Moriond2017_JEC_energyScales
 	git clone git@github.com:ECALELFS/ScalesSmearings.git EgammaAnalysis/ElectronTools/data/ScalesSmearings.new
 	rsync -avP EgammaAnalysis/ElectronTools/data/ScalesSmearings.new/* EgammaAnalysis/ElectronTools/data/ScalesSmearings/
+	git cms-merge-topic amarini:topic_qgmorevar
 }
 
 # expected default

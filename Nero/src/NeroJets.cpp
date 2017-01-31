@@ -54,6 +54,10 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
     iEvent.getByToken(qg_token_Mult,qg_handle_Mult);
     iEvent.getByToken(qg_token_Axis2,qg_handle_Axis2);
     iEvent.getByToken(qg_token_PtD,qg_handle_PtD);
+    iEvent.getByToken(qg_token_Axis1,qg_handle_Axis1);
+    iEvent.getByToken(qg_token_cmult,qg_handle_cmult);
+    iEvent.getByToken(qg_token_nmult,qg_handle_nmult);
+    iEvent.getByToken(qg_token_pt_dr_log,qg_handle_pt_dr_log);
 
     // -- need to init JES here, where there is the iSetup
     InitJes(iSetup);
@@ -185,6 +189,10 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
         if (qg_handle_Mult.isValid()) qglMult->push_back(  (*qg_handle_Mult)[jetRef] );
         if (qg_handle_PtD.isValid()) qglPtD->push_back(  (*qg_handle_PtD)[jetRef] );
         if (qg_handle_Axis2.isValid()) qglAxis2->push_back(  (*qg_handle_Axis2)[jetRef] );
+        if (qg_handle_Axis1.isValid()) qglAxis1->push_back(  (*qg_handle_Axis1)[jetRef] );
+        if (qg_handle_cmult.isValid()) qglCMult->push_back(  (*qg_handle_cmult)[jetRef] );
+        if (qg_handle_nmult.isValid()) qglNMult->push_back(  (*qg_handle_nmult)[jetRef] );
+        if (qg_handle_pt_dr_log.isValid()) qglPtDrLog->push_back(  (*qg_handle_pt_dr_log)[jetRef] );
 
 
         // saving the energy fractions

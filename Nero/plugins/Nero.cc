@@ -99,6 +99,10 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     jets -> qg_token_Mult = consumes<edm::ValueMap<int>>(edm::InputTag("QGTagger", "mult"));
     jets -> qg_token_PtD = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "ptD"));
     jets -> qg_token_Axis2 = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "axis2"));
+    jets -> qg_token_Axis1 = mayConsume<edm::ValueMap<float>>(edm::InputTag("QGTagger", "axis1"));
+    jets -> qg_token_pt_dr_log = mayConsume<edm::ValueMap<float>>(edm::InputTag("QGTagger", "ptDrLog"));
+    jets -> qg_token_cmult = mayConsume<edm::ValueMap<int>>(edm::InputTag("QGTagger", "cmult"));
+    jets -> qg_token_nmult = mayConsume<edm::ValueMap<int>>(edm::InputTag("QGTagger", "nmult"));
 
     obj.push_back(jets);
 

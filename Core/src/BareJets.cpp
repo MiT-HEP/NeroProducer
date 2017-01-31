@@ -26,6 +26,10 @@ BareJets::~BareJets(){
     BareFunctions::Delete(qglMult);
     BareFunctions::Delete(qglPtD);
     BareFunctions::Delete(qglAxis2);
+    BareFunctions::Delete(qglAxis1);
+    BareFunctions::Delete(qglCMult);
+    BareFunctions::Delete(qglNMult);
+    BareFunctions::Delete(qglPtDrLog);
     //JER
     BareFunctions::Delete(refPt);
     BareFunctions::Delete(ptResUncCentral);
@@ -57,6 +61,10 @@ void BareJets::init(){
     BareFunctions::New(qglMult);
     BareFunctions::New(qglPtD);
     BareFunctions::New(qglAxis2);
+    BareFunctions::New(qglAxis1);
+    BareFunctions::New(qglCMult);
+    BareFunctions::New(qglNMult);
+    BareFunctions::New(qglPtDrLog);
     //
     BareFunctions::New(ptResUncCentral);
     BareFunctions::New(ptResUncUp);
@@ -91,6 +99,10 @@ void BareJets::clear(){
     qglMult->clear();
     qglPtD->clear();
     qglAxis2->clear();
+    qglAxis1->clear();
+    qglCMult->clear();
+    qglNMult->clear();
+    qglPtDrLog->clear();
 
     //
     refPt->clear();
@@ -125,6 +137,11 @@ void BareJets::defineBranches(TTree *t){
     t->Branch(jetName + "QglMult","vector<int>",&qglMult);
     t->Branch(jetName + "QglPtD","vector<float>",&qglPtD);
     t->Branch(jetName + "QglAxis2","vector<float>",&qglAxis2);
+    //--
+    t->Branch(jetName + "QglAxis1","vector<float>",&qglAxis1);
+    t->Branch(jetName + "QglCMult","vector<int>",&qglCMult);
+    t->Branch(jetName + "QglNMult","vector<int>",&qglNMult);
+    t->Branch(jetName + "QglPtDrLog","vector<float>",&qglPtDrLog);
     // -- Jet Flavour by PAT
     t->Branch(jetName + "Flavour","vector<int>",&flavour);
 
