@@ -185,6 +185,10 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
         if (qg_handle_Mult.isValid()) qglMult->push_back(  (*qg_handle_Mult)[jetRef] );
         if (qg_handle_PtD.isValid()) qglPtD->push_back(  (*qg_handle_PtD)[jetRef] );
         if (qg_handle_Axis2.isValid()) qglAxis2->push_back(  (*qg_handle_Axis2)[jetRef] );
+        if (qg_handle_Axis1.isValid()) qglAxis1->push_back(  (*qg_handle_Axis1)[jetRef] );
+        if (qg_handle_cmult.isValid()) qglCMult->push_back(  (*qg_handle_cmult)[jetRef] );
+        if (qg_handle_nmult.isValid()) qglNMult->push_back(  (*qg_handle_nmult)[jetRef] );
+        if (qg_handle_pt_dr_log.isValid()) qglPtDrLog->push_back(  (*qg_handle_pt_dr_log)[jetRef] );
 
 
         // saving the energy fractions
