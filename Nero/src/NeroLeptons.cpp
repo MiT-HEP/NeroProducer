@@ -198,9 +198,9 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 
         l.iso = chIso + TMath::Max( nhIso + phoIso - evt_->rho * ea , 0. ) ; 
 
-        /*
+        
         double Ecorr=NeroFunctions::getEGSeedCorrections(el,ebRecHits); 
-
+        /*
         float smear = 0.0, scale = 1.0;
         float aeta = std::abs(el.eta());
         float et = el.energy()/cosh(aeta);
@@ -221,10 +221,9 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
                  Ecorr *= corr;
         
         }
-        
-        
-        l.ecorr = Ecorr;
         */
+
+        l.ecorr = Ecorr;
         l.p4.SetPxPyPzE( el.px(),el.py(),el.pz(),el.energy());
 
         l.selBits = 0 ;
