@@ -23,8 +23,10 @@ class BareLeptons : virtual public BareP4
           MuStandalone = 1UL<<11,
           MuGlobal     = 1UL<<12,
           MuTracker    = 1UL<<13,
+          MuMediumB2F    = 1UL<<14,
           EleTripleCharge = 1UL<<15, // charge is in agreement between different measurements
-          EleNoMissingHits = 1UL<<16
+          EleNoMissingHits = 1UL<<16,
+          LepIP    = 1UL<<17
         };
 
         BareLeptons();
