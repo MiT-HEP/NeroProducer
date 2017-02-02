@@ -132,8 +132,9 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         bits |= pho.passElectronVeto() * PhoElectronVeto;
         bits |= !pho.hasPixelSeed() * PhoPixelSeedVeto;
 
-        double Ecorr=NeroFunctions::getEGSeedCorrections(pho,ebRecHits); 
         TLorentzVector phoP4=TLorentzVector(pho.px(),pho.py(),pho.pz(),pho.energy());
+        /*
+        double Ecorr=NeroFunctions::getEGSeedCorrections(pho,ebRecHits); 
         
         float smear = 0.0, scale = 1.0;
         float aeta = std::abs(pho.eta());
@@ -155,11 +156,13 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
                  Ecorr *= corr;
         
         }
+        corr->push_back(Ecorr);
+        */
+        corr->push_back(1.0);
         
 
         //
         new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(phoP4);
-        corr->push_back(Ecorr);
         iso->push_back(totIso);	
         sieie -> push_back( pho. full5x5_sigmaIetaIeta() );
 

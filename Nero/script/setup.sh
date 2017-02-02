@@ -64,13 +64,14 @@ function CMSSW_8_0_24_patch1 {
         git clone -b egm_id_80X_v1 https://github.com/ikrav/RecoEgamma-ElectronIdentification.git RecoEgamma/ElectronIdentification/data.new
         rsync -avP RecoEgamma/ElectronIdentification/data.new/* RecoEgamma/ElectronIdentification/data/
         git cms-merge-topic ikrav:egm_id_80X_v3_photons
-	    git clone -b egm_id_80X_v1 https://github.com/ikrav/RecoEgamma-PhotonIdentification.git RecoEgamma/PhotonIdentification/data.new
-	    rsync -avP RecoEgamma/PhotonIdentification/data.new/* RecoEgamma/PhotonIdentification/data/
-	    git cms-add-pkg EgammaAnalysis/ElectronTools
-	    git cms-merge-topic shervin86:Moriond2017_JEC_energyScales
-	    git clone git@github.com:ECALELFS/ScalesSmearings.git EgammaAnalysis/ElectronTools/data/ScalesSmearings.new
-	    rsync -avP EgammaAnalysis/ElectronTools/data/ScalesSmearings.new/* EgammaAnalysis/ElectronTools/data/ScalesSmearings/
-	    git cms-merge-topic amarini:topic_qgmorevar
+	git clone -b egm_id_80X_v1 https://github.com/ikrav/RecoEgamma-PhotonIdentification.git RecoEgamma/PhotonIdentification/data.new
+	rsync -avP RecoEgamma/PhotonIdentification/data.new/* RecoEgamma/PhotonIdentification/data/
+	git cms-add-pkg EgammaAnalysis/ElectronTools
+	git cms-merge-topic shervin86:Moriond2017_JEC_energyScales
+	git clone git@github.com:ECALELFS/ScalesSmearings.git EgammaAnalysis/ElectronTools/data/ScalesSmearings.new
+	rsync -avP EgammaAnalysis/ElectronTools/data/ScalesSmearings.new/* EgammaAnalysis/ElectronTools/data/ScalesSmearings/
+	git cms-merge-topic amarini:topic_qgmorevar
+	git cms-merge-topic rafaellopesdesa:Regression80XEgammaAnalysis_v2
 }
 
 function CMSSW_8_0_25 {
@@ -91,6 +92,7 @@ function CMSSW_8_0_25 {
 	git clone git@github.com:ECALELFS/ScalesSmearings.git EgammaAnalysis/ElectronTools/data/ScalesSmearings.new
 	rsync -avP EgammaAnalysis/ElectronTools/data/ScalesSmearings.new/* EgammaAnalysis/ElectronTools/data/ScalesSmearings/
 	git cms-merge-topic amarini:topic_qgmorevar
+	git cms-merge-topic rafaellopesdesa:Regression80XEgammaAnalysis_v2
 }
 
 function CMSSW_8_0_26_patch1 {
@@ -109,6 +111,7 @@ function CMSSW_8_0_26_patch1 {
         git clone git@github.com:ECALELFS/ScalesSmearings.git EgammaAnalysis/ElectronTools/data/ScalesSmearings.new
         rsync -avP EgammaAnalysis/ElectronTools/data/ScalesSmearings.new/* EgammaAnalysis/ElectronTools/data/ScalesSmearings/
         git cms-merge-topic amarini:topic_qgmorevar
+	git cms-merge-topic rafaellopesdesa:Regression80XEgammaAnalysis_v2
 }
 
 

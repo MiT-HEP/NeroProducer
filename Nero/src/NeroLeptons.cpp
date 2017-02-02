@@ -5,6 +5,21 @@
 #include "NeroProducer/Nero/interface/NeroFunctions.hpp"
 #include <time.h>
 
+namespace myid{
+bool isMediumMuon(const reco::Muon & recoMu) 
+    { // medium id for B->F
+      // https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideMuonIdRun2#MediumID2016_to_be_used_with_Run
+          bool goodGlob = recoMu.isGlobalMuon() && 
+                          recoMu.globalTrack()->normalizedChi2() < 3 && 
+                          recoMu.combinedQuality().chi2LocalPosition < 12 && 
+                          recoMu.combinedQuality().trkKink < 20; 
+          bool isMedium = muon::isLooseMuon(recoMu) && 
+                          recoMu.innerTrack()->validFraction() > 0.49 && 
+                          muon::segmentCompatibility(recoMu) > (goodGlob ? 0.303 : 0.451); 
+          return isMedium; 
+    }
+};
+
 // -- Electron Isolation
 NeroLeptons::NeroLeptons(): 
         NeroCollection(),
@@ -105,8 +120,10 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
             l.selBits |= unsigned(mu.isLooseMuon()) * LepLoose;
             l.selBits |= unsigned(mu.isTightMuon( * vtx_->GetPV() ))*LepTight ;
             l.selBits |= unsigned(mu.isMediumMuon() * LepMedium);
+            l.selBits |= unsigned(myid::isMediumMuon(mu) * MuMediumB2F);
 
             if ( fabs((mu.muonBestTrack()->dz((*vtx_->GetPV()).position())))<0.1 and (mu.dB()< 0.02) ){
+                l.selBits |= LepIP;
                 l.selBits |= unsigned(mu.isMediumMuon() * LepMediumIP);
                 l.selBits |= unsigned(mu.isTightMuon( * vtx_->GetPV() ))*LepTightIP ;
                 l.selBits |= unsigned(mu.isSoftMuon(* vtx_->GetPV())) * LepSoftIP;
@@ -181,6 +198,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 
         l.iso = chIso + TMath::Max( nhIso + phoIso - evt_->rho * ea , 0. ) ; 
 
+        /*
         double Ecorr=NeroFunctions::getEGSeedCorrections(el,ebRecHits); 
 
         float smear = 0.0, scale = 1.0;
@@ -204,7 +222,9 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         
         }
         
+        
         l.ecorr = Ecorr;
+        */
         l.p4.SetPxPyPzE( el.px(),el.py(),el.pz(),el.energy());
 
         l.selBits = 0 ;
@@ -230,6 +250,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         bool dxy_cut = isEB ? 0.05 : 0.10;
 
         if ( dz<dz_cut && dxy<dxy_cut ){
+            l.selBits |= LepIP;
             l.selBits |= unsigned(isPassMedium) * LepMediumIP;
             l.selBits |= unsigned(isPassTight)  * LepTightIP;
         }
