@@ -70,6 +70,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 
     iEvent.getByToken(mu_token,mu_handle);	
     iEvent.getByToken(el_token,el_handle);	
+    iEvent.getByToken(el_uncalib_token,el_uncalib_handle);	
 
     iEvent.getByToken(el_mediumid_token,el_medium_id);
     iEvent.getByToken(el_tightid_token,el_tight_id);
@@ -83,9 +84,24 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
     //edm::Handle<EcalRecHitCollection> eeRecHits;
     iEvent.getByToken(ebRecHits_token,ebRecHits);
     //iEvent.getByToken(eeRecHits_token,eeRecHits);
+    //
+    iEvent.getByToken(el_uncalib_token,el_uncalib_handle);
+
+    /*
+    for(unsigned i=0;i<el_uncalib_handle->size();++i)
+    {
+        cout<<"I="<<i<<"PT="<<(*el_uncalib_handle)[i].pt()
+            <<(*el_handle)[i].pt()
+            <<"ETA = "<<(*el_uncalib_handle)[i].eta()<<":"<<(*el_handle)[i].eta()
+            <<"ID = "<<edm::Ref<pat::ElectronCollection>(el_uncalib_handle,i).id().id()
+            <<": "   <<edm::Ref<pat::ElectronCollection>(el_handle,i).id().id()
+            <<endl;
+    }
+    */
 
     if ( not mu_handle.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] mu_handle is not valid"<<endl;
     if ( not el_handle.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_handle is not valid"<<endl;
+    if ( not el_uncalib_handle.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_uncalib_handle is not valid"<<endl;
     if ( not el_medium_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_medium_id is not valid"<<endl;
     if ( not el_tight_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_tight_id is not valid"<<endl;
     if ( not el_veto_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_veto_id is not valid"<<endl;
@@ -262,7 +278,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 
         if (mHits == 0 ) l.selBits |=EleNoMissingHits;
 
-        l.pfPt = el.pt();
+        l.pfPt = (*el_uncalib_handle)[iEle].pt();
     
         l.chiso  = chIso;
         l.nhiso  = nhIso;
