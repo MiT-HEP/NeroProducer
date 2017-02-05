@@ -64,13 +64,13 @@ function CMSSW_8_0_24_patch1 {
         git clone -b egm_id_80X_v1 https://github.com/ikrav/RecoEgamma-ElectronIdentification.git RecoEgamma/ElectronIdentification/data.new
         rsync -avP RecoEgamma/ElectronIdentification/data.new/* RecoEgamma/ElectronIdentification/data/
         git cms-merge-topic ikrav:egm_id_80X_v3_photons
-	git clone -b egm_id_80X_v1 https://github.com/ikrav/RecoEgamma-PhotonIdentification.git RecoEgamma/PhotonIdentification/data.new
-	rsync -avP RecoEgamma/PhotonIdentification/data.new/* RecoEgamma/PhotonIdentification/data/
-	git cms-add-pkg EgammaAnalysis/ElectronTools
-	git cms-merge-topic shervin86:Moriond2017_JEC_energyScales
-	git clone git@github.com:ECALELFS/ScalesSmearings.git EgammaAnalysis/ElectronTools/data/ScalesSmearings.new
-	rsync -avP EgammaAnalysis/ElectronTools/data/ScalesSmearings.new/* EgammaAnalysis/ElectronTools/data/ScalesSmearings/
-	git cms-merge-topic amarini:topic_qgmorevar
+	    git clone -b egm_id_80X_v1 https://github.com/ikrav/RecoEgamma-PhotonIdentification.git RecoEgamma/PhotonIdentification/data.new
+	    rsync -avP RecoEgamma/PhotonIdentification/data.new/* RecoEgamma/PhotonIdentification/data/
+	    git cms-add-pkg EgammaAnalysis/ElectronTools
+	    git cms-merge-topic shervin86:Moriond2017_JEC_energyScales
+	    git clone git@github.com:ECALELFS/ScalesSmearings.git EgammaAnalysis/ElectronTools/data/ScalesSmearings.new
+	    rsync -avP EgammaAnalysis/ElectronTools/data/ScalesSmearings.new/* EgammaAnalysis/ElectronTools/data/ScalesSmearings/
+	    git cms-merge-topic amarini:topic_qgmorevar
 }
 
 function CMSSW_8_0_25 {
@@ -92,6 +92,27 @@ function CMSSW_8_0_25 {
 	rsync -avP EgammaAnalysis/ElectronTools/data/ScalesSmearings.new/* EgammaAnalysis/ElectronTools/data/ScalesSmearings/
 	git cms-merge-topic amarini:topic_qgmorevar
 }
+
+function CMSSW_8_0_26_patch1 {
+        git cms-init
+        git cms-merge-topic zdemirag:resolved_met
+        git cms-merge-topic -u cms-met:fromCMSSW_8_0_20_postICHEPfilter
+        git cms-merge-topic ahinzmann:METRecipe_8020_Moriond17
+        git cms-merge-topic emanueledimarco:ecal_smear_fix_80X
+        #git clone -b ICHEP2016_v2 https://github.com/ECALELFS/ScalesSmearings.git EgammaAnalysis/ElectronTools/data/ScalesSmearings
+        git cms-merge-topic ikrav:egm_id_80X_v2
+        git clone -b egm_id_80X_v1 https://github.com/ikrav/RecoEgamma-ElectronIdentification.git RecoEgamma/ElectronIdentification/data.new
+        rsync -avP RecoEgamma/ElectronIdentification/data.new/* RecoEgamma/ElectronIdentification/data/
+        git cms-merge-topic ikrav:egm_id_80X_v3_photons
+        git clone -b egm_id_80X_v1 https://github.com/ikrav/RecoEgamma-PhotonIdentification.git RecoEgamma/PhotonIdentification/data.new
+        rsync -avP RecoEgamma/PhotonIdentification/data.new/* RecoEgamma/PhotonIdentification/data/
+        git cms-addpkg EgammaAnalysis/ElectronTools
+        git cms-merge-topic shervin86:Moriond2017_JEC_energyScales
+        git clone git@github.com:ECALELFS/ScalesSmearings.git EgammaAnalysis/ElectronTools/data/ScalesSmearings.new
+        rsync -avP EgammaAnalysis/ElectronTools/data/ScalesSmearings.new/* EgammaAnalysis/ElectronTools/data/ScalesSmearings/
+        git cms-merge-topic amarini:topic_qgmorevar
+}
+
 
 # expected default
 [ "X$1" == "X" ] && $1=$CMSSW_VERSION
