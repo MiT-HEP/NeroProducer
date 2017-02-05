@@ -31,7 +31,7 @@ else:
 process.load("FWCore.MessageService.MessageLogger_cfi")
 # If you run over many samples and you save the log, remember to reduce
 # the size of the output by prescaling the report of the event number
-process.MessageLogger.cerr.FwkReport.reportEvery = 1000
+process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxEvents) )
 
@@ -250,6 +250,30 @@ process.nero.mets=cms.InputTag('slimmedMETs','','nero')
 ##if not options.isData:
 ##            process.nero.metFilterToken=cms.InputTag("TriggerResults","","PAT")
 
+############ RUN Muon Fixed MET CLUSTERING ##########################                                                                                                         
+from PhysicsTools.PatUtils.tools.muonRecoMitigation import muonRecoMitigation
+muonRecoMitigation(process,
+                   pfCandCollection="packedPFCandidates",
+                   runOnMiniAOD=True,
+                   muonCollection="",
+                   selection="",
+                   cleaningScheme="all",
+                   postfix="")
+
+runMetCorAndUncFromMiniAOD(process,
+                           isData=isData,
+                           pfCandColl="cleanMuonsPFCandidates",
+                           recoMetFromPFCs=True,
+                           postfix="MuClean"
+                           )
+
+process.mucorMET = cms.Sequence(                     
+    process.badGlobalMuonTaggerMAOD *
+    process.cloneGlobalMuonTaggerMAOD *
+    process.badMuons * # If you are using cleaning mode "all", uncomment this line
+    process.cleanMuonsPFCandidates
+)
+
 ############ RUN Puppi MET CLUSTERING ##########################
 
 from PhysicsTools.PatAlgos.slimming.puppiForMET_cff import makePuppiesFromMiniAOD
@@ -371,7 +395,9 @@ process.p = cms.Path(
                 process.electronIDValueMapProducer *  ## ISO MAP FOR PHOTONS
                 process.jecSequence *
                 process.QGTagger    * ## after jec, because it will produce the new jet collection
+                process.mucorMET *
                 process.fullPatMetSequence *## no puppi
+                process.fullPatMetSequenceMuClean *
                 process.puppiMETSequence * #puppi candidate producer
                 process.fullPatMetSequencePuppi * ## full puppi sequence
                 process.BadPFMuonFilter *
@@ -381,15 +407,15 @@ process.p = cms.Path(
                 )
 
 ## DEBUG -- dump the event content with all the value maps ..
-##process.output = cms.OutputModule(
-##                "PoolOutputModule",
-##                      fileName = cms.untracked.string('output.root'),
-##                      )
-##process.output_step = cms.EndPath(process.output)
-##
-##process.schedule = cms.Schedule(
-##		process.p,
-##		process.output_step)
+process.output = cms.OutputModule(
+                "PoolOutputModule",
+                      fileName = cms.untracked.string('output.root'),
+                      )
+process.output_step = cms.EndPath(process.output)
+
+process.schedule = cms.Schedule(
+		process.p,
+		process.output_step)
 
 # Local Variables:
 # mode:python
