@@ -47,7 +47,6 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
 
     // maybe handle should be taken before
     iEvent.getByToken(token, handle);
-    iEvent.getByToken(uncalib_token, uncalib_handle);
 
     // ID and ISO
     iEvent.getByToken(loose_id_token,loose_id);
@@ -64,7 +63,6 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
 
     
     if ( not handle.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] handle is not valid"<<endl;
-    if ( not uncalib_handle.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] uncalib_handle is not valid"<<endl;
     if ( not loose_id.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] loose_id is not valid"<<endl;
     if ( not medium_id.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] medium_id is not valid"<<endl;
     if ( not tight_id.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] tight_id is not valid"<<endl;
@@ -134,11 +132,9 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         bits |= pho.passElectronVeto() * PhoElectronVeto;
         bits |= !pho.hasPixelSeed() * PhoPixelSeedVeto;
 
+        double Ecorr=NeroFunctions::getEGSeedCorrections(pho,ebRecHits); 
         TLorentzVector phoP4=TLorentzVector(pho.px(),pho.py(),pho.pz(),pho.energy());
         
-        double Ecorr=NeroFunctions::getEGSeedCorrections(pho,ebRecHits); 
-       
-        /* 
         float smear = 0.0, scale = 1.0;
         float aeta = std::abs(pho.eta());
         float et = pho.energy()/cosh(aeta);
@@ -159,7 +155,7 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
                  Ecorr *= corr;
         
         }
-        */
+        
 
         //
         new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(phoP4);
@@ -184,8 +180,7 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         */
 
         if (IsExtend() ){
-            //rawpt->push_back(pho.pt());
-            rawpt->push_back( (*uncalib_handle)[iPho].pt());
+            rawpt->push_back(pho.pt());
             rawScEnergy->push_back(pho.superCluster()->rawEnergy());
             
             hOverE->push_back(pho.hadTowOverEm()); //pho.hadronicOverEm());

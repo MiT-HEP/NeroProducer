@@ -71,7 +71,6 @@ function CMSSW_8_0_24_patch1 {
 	git clone git@github.com:ECALELFS/ScalesSmearings.git EgammaAnalysis/ElectronTools/data/ScalesSmearings.new
 	rsync -avP EgammaAnalysis/ElectronTools/data/ScalesSmearings.new/* EgammaAnalysis/ElectronTools/data/ScalesSmearings/
 	git cms-merge-topic amarini:topic_qgmorevar
-	git cms-merge-topic rafaellopesdesa:Regression80XEgammaAnalysis_v2
 }
 
 function CMSSW_8_0_25 {
@@ -92,7 +91,6 @@ function CMSSW_8_0_25 {
 	git clone git@github.com:ECALELFS/ScalesSmearings.git EgammaAnalysis/ElectronTools/data/ScalesSmearings.new
 	rsync -avP EgammaAnalysis/ElectronTools/data/ScalesSmearings.new/* EgammaAnalysis/ElectronTools/data/ScalesSmearings/
 	git cms-merge-topic amarini:topic_qgmorevar
-	git cms-merge-topic rafaellopesdesa:Regression80XEgammaAnalysis_v2
 }
 
 # expected default

@@ -165,8 +165,6 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     leps -> SetMatch( iConfig.getParameter<bool>("matchLep") );
     leps -> rho_token = consumes<double> (edm::InputTag("fixedGridRhoFastjetCentralNeutral")); // for miniIso
 
-    leps -> el_uncalib_token = consumes<pat::ElectronCollection>(edm::InputTag("slimmedElectrons"));
-
     //leps -> el_iso_ch_token  = consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("eleChargedIsolation") );
     //leps -> el_iso_nh_token  = consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("eleNeutralHadronIsolation") );
     //leps -> el_iso_pho_token = consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("elePhotonIsolation") );
@@ -210,7 +208,6 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     NeroPhotons *phos = new NeroPhotons();
     phos -> mOnlyMc = onlyMc;
     phos -> token = consumes<pat::PhotonCollection>(iConfig.getParameter<edm::InputTag>("photons"));
-    phos -> uncalib_token = consumes<pat::PhotonCollection>(edm::InputTag("slimmedPhotons"));
     phos -> loose_id_token = consumes<edm::ValueMap<bool>>(iConfig.getParameter<edm::InputTag>("phoLooseIdMap"));
     phos -> medium_id_token = consumes<edm::ValueMap<bool>>(iConfig.getParameter<edm::InputTag>("phoMediumIdMap"));
     phos -> tight_id_token = consumes<edm::ValueMap<bool>>(iConfig.getParameter<edm::InputTag>("phoTightIdMap"));
