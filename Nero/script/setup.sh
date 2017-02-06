@@ -95,8 +95,7 @@ function CMSSW_8_0_25 {
 
 function CMSSW_8_0_26_patch1 {
         git cms-init
-        git cms-merge-topic zdemirag:conflict_resolve
-        git cms-merge-topic ahinzmann:METRecipe_8020_Moriond17
+        git cms-merge-topic zdemirag:conflict_met_resolved
         git cms-merge-topic emanueledimarco:ecal_smear_fix_80X
         git cms-merge-topic ikrav:egm_id_80X_v2
         git clone -b egm_id_80X_v1 https://github.com/ikrav/RecoEgamma-ElectronIdentification.git RecoEgamma/ElectronIdentification/data.new
