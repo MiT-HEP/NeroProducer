@@ -138,8 +138,13 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
         if (not iEvent.isRealData())
         {
             // https://github.com/blinkseb/cmssw/blob/jer_fix_76x/JetMETCorrections/Modules/plugins/JetResolutionDemo.cc#L74
+            /* this is from db
             JME::JetResolution resolution = JME::JetResolution::get(iSetup, "AK4PFchs_pt");
             JME::JetResolutionScaleFactor resolution_sf = JME::JetResolutionScaleFactor::get(iSetup, "AK4PFchs");
+            */
+            /* this is from text files Spring16_25nsV10_MC_PtResolution_AK8PFchs.txt  Spring16_25nsV10_MC_SF_AK4PFchs.txt */
+            JME::JetResolution resolution = JME::JetResolution("jer/Spring16_25nsV10_MC_PtResolution_AK8PFchs.txt");
+            JME::JetResolutionScaleFactor resolution_sf = JME::JetResolutionScaleFactor("jer/Spring16_25nsV10_MC_SF_AK4PFchs.txt");
             JME::JetParameters jpar;
             jpar.setJetPt( j.pt()).setJetEta( j.eta() ).setRho( evt->rho)  ;
             float res = resolution.getResolution(jpar);
