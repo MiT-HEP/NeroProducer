@@ -31,7 +31,7 @@ else:
 process.load("FWCore.MessageService.MessageLogger_cfi")
 # If you run over many samples and you save the log, remember to reduce
 # the size of the output by prescaling the report of the event number
-process.MessageLogger.cerr.FwkReport.reportEvery = 1000
+process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxEvents) )
 
@@ -69,12 +69,17 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 #process.load("CondCore.DBCommon.CondDBCommon_cfi")
 
+
+## https://twiki.cern.ch/twiki/bin/viewauth/CMS/JECDataMC
+## Technically we don't have to correct the jets/met on the
+## fly any more, because jec is in the release.
+
 if (isData):
     # sept reprocessing
-    process.GlobalTag.globaltag = '80X_dataRun2_2016SeptRepro_v3'
+    process.GlobalTag.globaltag = '80X_dataRun2_2016SeptRepro_v7'
 else:
     ## tranch IV v6
-    process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_TrancheIV_v6'
+    process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_TrancheIV_v8'
 
 ### LOAD DATABASE
 from CondCore.DBCommon.CondDBSetup_cfi import *
@@ -103,15 +108,15 @@ process.load("RecoEgamma/ElectronIdentification/ElectronIDValueMapProducer_cfi")
 from CondCore.DBCommon.CondDBSetup_cfi import *
 
 if options.isData:
-    connectString = cms.string('sqlite:jec/Summer16_23Sep2016AllV3_DATA.db')
-    tagName = 'Summer16_23Sep2016AllV3_DATA_AK4PFchs'
-    tagNamePuppi = 'Summer16_23Sep2016AllV3_DATA_AK4PFPuppi'
+    connectString = cms.string('sqlite:jec/Summer16_23Sep2016AllV4_DATA.db')
+    tagName = 'Summer16_23Sep2016AllV4_DATA_AK4PFchs'
+    tagNamePuppi = 'Summer16_23Sep2016AllV4_DATA_AK4PFPuppi'
 else:
-    connectString = cms.string('sqlite:jec/Summer16_23Sep2016V3_MC.db')
-    tagName = 'Summer16_23Sep2016V3_MC_AK4PFchs'
-    tagNamePuppi = 'Summer16_23Sep2016V3_MC_AK4PFPuppi'
+    connectString = cms.string('sqlite:jec/Summer16_23Sep2016V4_MC.db')
+    tagName = 'Summer16_23Sep2016V4_MC_AK4PFchs'
+    tagNamePuppi = 'Summer16_23Sep2016V4_MC_AK4PFPuppi'
 #data only, mc hard coded
-process.nero.chsAK8JEC = cms.string("jec/Summer16_23Sep2016BCDV3")
+process.nero.chsAK8JEC = cms.string("jec/Summer16_23Sep2016BCDV4")
 
 
 process.jec = cms.ESSource("PoolDBESSource",
@@ -245,6 +250,35 @@ process.nero.mets=cms.InputTag('slimmedMETs','','nero')
 ##if not options.isData:
 ##            process.nero.metFilterToken=cms.InputTag("TriggerResults","","PAT")
 
+############ RUN Muon Fixed MET CLUSTERING ##########################                                                                                                         
+from PhysicsTools.PatUtils.tools.muonRecoMitigation import muonRecoMitigation
+
+process.load('RecoMET.METFilters.badGlobalMuonTaggersMiniAOD_cff')
+process.badGlobalMuonTaggerMAOD.taggingMode = cms.bool(True)
+process.cloneGlobalMuonTaggerMAOD.taggingMode = cms.bool(True)
+
+muonRecoMitigation(process,
+                   pfCandCollection="packedPFCandidates",
+                   runOnMiniAOD=True,
+                   muonCollection="",
+                   selection="",
+                   cleaningScheme="all",
+                   postfix="")
+
+runMetCorAndUncFromMiniAOD(process,
+                           isData=isData,
+                           pfCandColl="cleanMuonsPFCandidates",
+                           recoMetFromPFCs=True,
+                           postfix="MuClean"
+                           )
+
+process.mucorMET = cms.Sequence(                     
+    process.badGlobalMuonTaggerMAOD *
+    process.cloneGlobalMuonTaggerMAOD *
+    process.badMuons * # If you are using cleaning mode "all", uncomment this line
+    process.cleanMuonsPFCandidates
+)
+
 ############ RUN Puppi MET CLUSTERING ##########################
 
 from PhysicsTools.PatAlgos.slimming.puppiForMET_cff import makePuppiesFromMiniAOD
@@ -366,7 +400,9 @@ process.p = cms.Path(
                 process.electronIDValueMapProducer *  ## ISO MAP FOR PHOTONS
                 process.jecSequence *
                 process.QGTagger    * ## after jec, because it will produce the new jet collection
+                process.mucorMET *
                 process.fullPatMetSequence *## no puppi
+                process.fullPatMetSequenceMuClean *
                 process.puppiMETSequence * #puppi candidate producer
                 process.fullPatMetSequencePuppi * ## full puppi sequence
                 process.BadPFMuonFilter *
@@ -376,15 +412,15 @@ process.p = cms.Path(
                 )
 
 ## DEBUG -- dump the event content with all the value maps ..
-##process.output = cms.OutputModule(
-##                "PoolOutputModule",
-##                      fileName = cms.untracked.string('output.root'),
-##                      )
-##process.output_step = cms.EndPath(process.output)
-##
-##process.schedule = cms.Schedule(
-##		process.p,
-##		process.output_step)
+#process.output = cms.OutputModule(
+#                "PoolOutputModule",
+#                      fileName = cms.untracked.string('output.root'),
+#                      )
+#process.output_step = cms.EndPath(process.output)
+
+#process.schedule = cms.Schedule(
+#		process.p,
+#		process.output_step)
 
 # Local Variables:
 # mode:python

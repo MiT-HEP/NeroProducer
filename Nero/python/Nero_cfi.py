@@ -20,11 +20,12 @@ nero = cms.EDAnalyzer("Nero",
     ## Always re-corrected therefore re-run
     mets = cms.InputTag("slimmedMETs"),
     metsPuppi = cms.InputTag("slimmedMETsPuppi"),
+    metscleanmu = cms.InputTag("slimmedMETsMuClean"),
 
     ## Directly taken from miniaod
     chsAK8 = cms.InputTag("slimmedJetsAK8"),
     ## Mass Corrections
-    chsAK8JEC = cms.string("jec/Spring16_25nsV10"),
+    chsAK8JEC = cms.string("jec/Summer16_23Sep2016V4"),
 
     pfCands = cms.InputTag("packedPFCandidates"),
                       
