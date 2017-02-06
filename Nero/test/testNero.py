@@ -252,6 +252,11 @@ process.nero.mets=cms.InputTag('slimmedMETs','','nero')
 
 ############ RUN Muon Fixed MET CLUSTERING ##########################                                                                                                         
 from PhysicsTools.PatUtils.tools.muonRecoMitigation import muonRecoMitigation
+
+process.load('RecoMET.METFilters.badGlobalMuonTaggersMiniAOD_cff')
+process.badGlobalMuonTaggerMAOD.taggingMode = cms.bool(True)
+process.cloneGlobalMuonTaggerMAOD.taggingMode = cms.bool(True)
+
 muonRecoMitigation(process,
                    pfCandCollection="packedPFCandidates",
                    runOnMiniAOD=True,
@@ -407,15 +412,15 @@ process.p = cms.Path(
                 )
 
 ## DEBUG -- dump the event content with all the value maps ..
-process.output = cms.OutputModule(
-                "PoolOutputModule",
-                      fileName = cms.untracked.string('output.root'),
-                      )
-process.output_step = cms.EndPath(process.output)
+#process.output = cms.OutputModule(
+#                "PoolOutputModule",
+#                      fileName = cms.untracked.string('output.root'),
+#                      )
+#process.output_step = cms.EndPath(process.output)
 
-process.schedule = cms.Schedule(
-		process.p,
-		process.output_step)
+#process.schedule = cms.Schedule(
+#		process.p,
+#		process.output_step)
 
 # Local Variables:
 # mode:python
