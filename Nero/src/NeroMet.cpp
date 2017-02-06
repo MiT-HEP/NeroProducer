@@ -24,6 +24,9 @@ int NeroMet::analyze(const edm::Event& iEvent){
     iEvent.getByToken(token_puppi,handle_puppi);
     if ( not handle_puppi.isValid() ) cout<<"[NeroMet]::[analyze]::[ERROR] handle_puppi is not valid"<<endl;
 
+    iEvent.getByToken(token_cleanmu,handle_cleanmu);
+    if ( not handle_cleanmu.isValid() ) cout<<"[NeroMet]::[analyze]::[ERROR] handle_cleanmu is not valid"<<endl;
+
     const pat::MET &met = handle->front();
 
     TLorentzVector caloMet(0,0,0,0);
@@ -40,6 +43,10 @@ int NeroMet::analyze(const edm::Event& iEvent){
     // FILL Puppi MET
     auto &puppi = handle_puppi->front(); 
     *metPuppi =  TLorentzVector( puppi.px(), puppi.py(),puppi.pz(),puppi.energy() );
+
+    // FILL cleanmu MET
+    auto &cleanmu = handle_cleanmu->front(); 
+    *metCleanMu =  TLorentzVector( cleanmu.px(), cleanmu.py(),cleanmu.pz(),cleanmu.energy() );
        
     // saving only Jes, Jer, Uncluster
     for(Syst mysyst = (Syst)0; mysyst < TauUp and mysyst < MaxSyst  ; mysyst = (Syst)((int)mysyst +1 ) )
