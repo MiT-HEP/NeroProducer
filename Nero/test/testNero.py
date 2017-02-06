@@ -271,10 +271,48 @@ initEGammaVID(process,options)
 process.puppiNoLep.useExistingWeights = False
 process.puppi.useExistingWeights = False
 process.puppiForMET.photonId = process.nero.phoLooseIdMap
-#cms.InputTag("egmPhotonIDs","cutBasedPhotonID-Spring15-25ns-V1-standalone-loose")
 
 print "-> Updating the puppi met collection to run on to 'slimmedMETsPuppi with nero' with the new jec in the GT for Type1"
 process.nero.metsPuppi=cms.InputTag('slimmedMETsPuppi','','nero')
+
+############### REGRESSION EGM #############
+process.load('EgammaAnalysis.ElectronTools.regressionApplication_cff')
+from EgammaAnalysis.ElectronTools.regressionWeights_cfi import regressionWeights
+process = regressionWeights(process)
+
+########## EGM Smear and Scale ###
+process.load('Configuration.StandardSequences.Services_cff')
+process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService",
+        calibratedPatElectrons  = cms.PSet( initialSeed = cms.untracked.uint32(81),
+            engineName = cms.untracked.string('TRandom3'),
+            ),
+        calibratedPatPhotons  = cms.PSet( initialSeed = cms.untracked.uint32(81),
+            engineName = cms.untracked.string('TRandom3'),
+            ),
+        )
+process.load('EgammaAnalysis.ElectronTools.calibratedElectronsRun2_cfi')
+process.load('EgammaAnalysis.ElectronTools.calibratedPhotonsRun2_cfi')
+process.calibratedPatElectrons.electrons=process.nero.electrons
+process.calibratedPatPhotons.photons= process.nero.photons
+process.nero.electrons =  cms.InputTag("calibratedPatElectrons")
+process.nero.photons = cms.InputTag("calibratedPatPhotons")
+print "-> Updating slimmedElectrons and slimmedPhotons to calibratedPatElectrons and calibratedPatPhotons"
+print "   ",process.nero.photons, process.nero.electrons
+#######################################
+
+# modify electrons Input Tags
+process.egmGsfElectronIDs.physicsObjectSrc = process.nero.electrons
+process.electronIDValueMapProducer.srcMiniAOD= process.nero.electrons
+process.electronMVAValueMapProducer.srcMiniAOD= process.nero.electrons
+
+# modify photons Input Tags
+process.egmPhotonIsolation.srcToIsolate = process.nero.photons
+process.egmPhotonIDs.physicsObjectSrc = process.nero.photons
+process.photonIDValueMapProducer.srcMiniAOD= process.nero.photons
+process.photonMVAValueMapProducer.srcMiniAOD= process.nero.photons 
+process.puppiForMET.photonName  = process.nero.photons
+process.puppiPhoton.photonName = process.nero.photons 
+process.modifiedPhotons.src  = process.nero.photons
 
 # ------------------------QG-----------------------------------------------
 # after jec, because need to be run on the corrected (latest) jet collection
@@ -360,6 +398,9 @@ if options.isParticleGun:
 #------------------------------------------------------
 process.p = cms.Path(
                 process.infoProducerSequence *
+                process.regressionApplication *
+                process.calibratedPatElectrons  *
+                process.calibratedPatPhotons *
                 process.egmGsfElectronIDSequence *
                 process.egmPhotonIDSequence * ## this is overwritten by puppi/met configuration
                 process.photonIDValueMapProducer * ## ISO MAP FOR PHOTONS
