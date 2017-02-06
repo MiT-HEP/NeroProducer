@@ -19,6 +19,7 @@ options.register('isGrid', False, VarParsing.multiplicity.singleton,VarParsing.v
 options.register('nerohead', "XXX", VarParsing.multiplicity.singleton,VarParsing.varType.string,"Set to the head of the repository. use check_output 'git rev-parse HEAD' in the crab py file. active only if isGrid.")
 options.register("nerotag", "YYY", VarParsing.multiplicity.singleton,VarParsing.varType.string,"Set to the tag of the repository. use check_output 'git rev-parse HEAD' in the crab py file. active only if isGrid.")
 options.register('isParticleGun', False, VarParsing.multiplicity.singleton,VarParsing.varType.bool,"Set it to true if MonteCarlo is ParticleGun")
+options.register('isRun', "All", VarParsing.multiplicity.singleton,VarParsing.varType.string,"Set DATA JEC corresponding to that run period All, BCD, EF, G, H ")
 
 options.parseArguments()
 isData = options.isData
@@ -103,15 +104,19 @@ process.load("RecoEgamma/ElectronIdentification/ElectronIDValueMapProducer_cfi")
 from CondCore.DBCommon.CondDBSetup_cfi import *
 
 if options.isData:
-    connectString = cms.string('sqlite:jec/Summer16_23Sep2016AllV3_DATA.db')
-    tagName = 'Summer16_23Sep2016AllV3_DATA_AK4PFchs'
-    tagNamePuppi = 'Summer16_23Sep2016AllV3_DATA_AK4PFPuppi'
+    connectString = cms.string('sqlite:jec/Summer16_23Sep2016'+(options.isRun)+'V3_DATA.db')
+    tagName = 'Summer16_23Sep2016'+(options.isRun)+'V3_DATA_AK4PFchs'
+    tagNamePuppi = 'Summer16_23Sep2016'+(options.isRun)+'V3_DATA_AK4PFPuppi'
 else:
     connectString = cms.string('sqlite:jec/Summer16_23Sep2016V3_MC.db')
     tagName = 'Summer16_23Sep2016V3_MC_AK4PFchs'
     tagNamePuppi = 'Summer16_23Sep2016V3_MC_AK4PFPuppi'
-#data only, mc hard coded
-process.nero.chsAK8JEC = cms.string("jec/Summer16_23Sep2016BCDV3")
+
+#data only, mc hard coded, but needs to be ok also here
+print "TagName=",tagName,"Puppi",tagNamePuppi
+process.nero.chsAK8JEC = cms.string("jec/Summer16_23Sep2016"+(options.isRun)+"V3")
+if options.isRun=="All":
+    process.nero.chsAK8JEC = cms.string("jec/Summer16_23Sep2016BCDV3")
 
 
 process.jec = cms.ESSource("PoolDBESSource",
