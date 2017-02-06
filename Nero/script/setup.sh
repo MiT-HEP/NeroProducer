@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Instruct builder to use a particular CMSSW release
-# [CMSSW] CMSSW_8_0_24_patch1
+# [CMSSW] CMSSW_8_0_26_patch1
 # [Options] isData=False
 # [fileList] /store/mc/RunIISummer16MiniAODv2/QCD_Pt-15to7000_TuneCUETP8M1_Flat_13TeV_pythia8/MINIAODSIM/PUFlat0to70_magnetOn_80X_mcRun2_asymptotic_2016_TrancheIV_v4-v1/90000/FEB7D1E4-6987-E611-B656-0090FAA57B40.root 
 # [MaxEvents] 5000

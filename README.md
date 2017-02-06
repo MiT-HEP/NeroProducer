@@ -23,7 +23,7 @@ It is designed to run on MiniAOD within the CMSSW framework.
 
 ### CMSSW compile
 * Notice that cmssw should be init when the src directory is empty.
-Currently the supported version are CMSSW\_8\_0\_24\_patch1(master).
+Currently the supported version are CMSSW\_8\_0\_26\_patch1(master).
 ```
 cmsrel CMSSW_8_0_26_patch1
 cd CMSSW_8_0_26_patch1/src
