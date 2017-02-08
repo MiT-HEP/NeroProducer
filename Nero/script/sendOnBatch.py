@@ -46,6 +46,7 @@ parser.add_option("","--mc",dest="data",action="store_false",help="run on mc");
 #parser.add_option("","--50ns",dest="is25ns",action="store_false",help="50ns ");
 parser.add_option("-d","--dir",dest="dir",type="string",help="working directory",default="test/mydir");
 parser.add_option("-e","--eos",dest="eos",type="string",help="eos directory to scout, will not read the files in the pSet",default="");
+parser.add_option("","--query",dest="query",action='store_true',help="Use DAS for scouting. Ignore locality",default=False);
 parser.add_option("","--put-in",dest="put",type="string",help="eos directory to cp the results ",default="");
 parser.add_option("-q","--queue",dest="queue",type="string",help="batch Queue",default="");
 parser.add_option("","--instance",dest="instance",type="string",help="eos instance eg root://eoscms root://eosusr",default="");
@@ -189,10 +190,17 @@ def submit(list, queue = "1nh", name = "job"):
 	call(cmd, shell = True)
     
 if opts.onlysubmit:
-	if opts.jobId != "" and opts.jobId != "all" and opts.jobId != "fail" and opts.jobId != "run":
+	if opts.jobId != "" and opts.jobId != "all" and opts.jobId != "fail" and opts.jobId != "run" and opts.jobId != "pend":
 		toBeSubmitted = []
-		for num in opts.jobId.split(","):
-			toBeSubmitted.append( os.environ['PWD'] + "/" + opts.dir + "/sub_%s.sh"%num )
+		for job in opts.jobId.split(","):
+                	if '-' in job:
+                	   iBegin= int(job.split('-')[0])
+                	   iEnd = int(job.split('-')[1])
+                	else:
+                	   iBegin= int(job)
+                	   iEnd = int(job)
+                	for num in range(iBegin,iEnd+1):
+				toBeSubmitted.append( os.environ['PWD'] + "/" + opts.dir + "/sub_%s.sh"%num )
 	elif opts.jobId == "fail":
 		list = glob(os.environ['PWD'] + "/" + opts.dir + "/*.fail" )
 		toBeSubmitted = [ re.sub('.fail','.sh',f) for f in list ]
@@ -205,6 +213,15 @@ if opts.onlysubmit:
 	elif opts.jobId == "run":
 		list = glob(os.environ['PWD'] + "/" + opts.dir + "/*.run" )
 		toBeSubmitted = [ re.sub('.run','.sh',f) for f in list ]
+		# promptly remove .run
+		if len(toBeSubmitted) == 0 :
+			print "Nothing to submit"
+			exit(0)
+		cmd = "rm -v " + " ".join(list)
+		call(cmd, shell= True)
+	elif opts.jobId == "pend":
+		list = glob(os.environ['PWD'] + "/" + opts.dir + "/*.pend" )
+		toBeSubmitted = [ re.sub('.pend','.sh',f) for f in list ]
 		# promptly remove .run
 		if len(toBeSubmitted) == 0 :
 			print "Nothing to submit"
@@ -229,6 +246,10 @@ call(cmd)
 ## get list of files from pset
 if opts.eos == "":
 	exec( re.sub('/','.',"from "+opts.input+" import fileList") )
+elif opts.query:
+        cmd = 'das_client.py --query="file dataset=' + opts.eos+'" --idx=0 --limit=10000  | grep -v "Showing" | grep -v \'^$\' '
+        outputList = check_output(cmd,shell=True);
+        fileList = [ '"'+ f + '"' for f in outputList.split() if '/store' in f ]
 else:	
 	cmd = EOS+ " find -f " + opts.eos
 	print "Going to call cmd:",cmd
