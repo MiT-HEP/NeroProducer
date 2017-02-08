@@ -18,9 +18,17 @@ nero = cms.EDAnalyzer("Nero",
     puppijets = cms.InputTag("slimmedJetsPuppi"),
 
     ## Always re-corrected therefore re-run
-    mets = cms.InputTag("slimmedMETs"),
+
+    ## default met for nero is the mu+eg cleaned
+    mets = cms.InputTag("slimmedMETsMuEGClean"),
     metsPuppi = cms.InputTag("slimmedMETsPuppi"),
-    metscleanmu = cms.InputTag("slimmedMETsMuClean"),
+
+    #This is unclean only in reminiaod data
+    metsunclean = cms.InputTag("slimmedMETsUncorrected"),
+    #This is mu clean only in reminiaod data
+    metscleanmu = cms.InputTag("slimmedMETs"),
+    #This is eg clean only in reminiaod data
+    metscleaneg = cms.InputTag("slimmedMETsEGClean"),
 
     ## Directly taken from miniaod
     chsAK8 = cms.InputTag("slimmedJetsAK8"),
