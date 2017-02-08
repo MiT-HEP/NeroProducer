@@ -27,6 +27,25 @@ int NeroMet::analyze(const edm::Event& iEvent){
     iEvent.getByToken(token_cleanmu,handle_cleanmu);
     if ( not handle_cleanmu.isValid() ) cout<<"[NeroMet]::[analyze]::[ERROR] handle_cleanmu is not valid"<<endl;
 
+
+    if ( iEvent.isRealData () ){            
+        iEvent.getByToken(token_cleaneg,handle_cleaneg);
+        if ( not handle_cleaneg.isValid() ) cout<<"[NeroMet]::[analyze]::[ERROR] handle_cleaneg is not valid"<<endl;
+
+        iEvent.getByToken(token_unclean,handle_unclean);
+        if ( not handle_unclean.isValid() ) cout<<"[NeroMet]::[analyze]::[ERROR] handle_unclean is not valid"<<endl;
+
+        // FILL cleaneg MET
+        auto &cleaneg = handle_cleaneg->front(); 
+        *metCleanEG =  TLorentzVector( cleaneg.px(), cleaneg.py(),cleaneg.pz(),cleaneg.energy() );
+               
+        // FILL unclean MET
+        auto &unclean = handle_unclean->front(); 
+        *metUnClean =  TLorentzVector( unclean.px(), unclean.py(),unclean.pz(),unclean.energy() );
+       
+    }
+
+
     const pat::MET &met = handle->front();
 
     TLorentzVector caloMet(0,0,0,0);

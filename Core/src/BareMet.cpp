@@ -9,6 +9,8 @@ BareMet::~BareMet(){
     BareFunctions::Delete(genP4);
     BareFunctions::Delete(metNoMu);
     BareFunctions::Delete(metCleanMu);
+    BareFunctions::Delete(metCleanEG);
+    BareFunctions::Delete(metUnClean);
     BareFunctions::Delete(metPuppi);
     BareFunctions::Delete(metPuppiSyst);
     BareFunctions::Delete(metSyst);
@@ -28,6 +30,8 @@ void BareMet::init(){
 
     BareFunctions::New(genP4);
     BareFunctions::New(metCleanMu);
+    BareFunctions::New(metCleanEG);
+    BareFunctions::New(metUnClean);
     BareFunctions::New(metPuppi);
     BareFunctions::New(metPuppiSyst);
     BareFunctions::New(metSyst);
@@ -53,6 +57,8 @@ void BareMet::clear(){
     genP4 -> Clear();
     *metPuppi *= 0;
     *metCleanMu *= 0;
+    *metCleanEG *= 0;
+    *metUnClean *= 0;
     metPuppiSyst->Clear();
     metSyst->Clear();
     *CaloMet *= 0.;
@@ -76,6 +82,8 @@ void BareMet::defineBranches(TTree *t){
     t->Branch("metP4_GEN","TClonesArray", &genP4, 128000, 0);
     //
     t->Branch("metCleanMu","TLorentzVector",&metCleanMu);
+    t->Branch("metCleanEG","TLorentzVector",&metCleanEG);
+    t->Branch("metUnClean","TLorentzVector",&metUnClean);
     t->Branch("metPuppi","TLorentzVector",&metPuppi);
     t->Branch("metPuppiSyst","TClonesArray",&metPuppiSyst,128000,0);
     t->Branch("metSyst","TClonesArray",&metSyst,128000,0);
@@ -102,6 +110,8 @@ void BareMet::setBranchAddresses(TTree *t){
 
     BareFunctions::SetBranchAddress(t,"metP4_GEN"	, &genP4 );
     BareFunctions::SetBranchAddress(t,"metCleanMu", &metCleanMu);
+    BareFunctions::SetBranchAddress(t,"metCleanEG", &metCleanEG);
+    BareFunctions::SetBranchAddress(t,"metUnClean", &metUnClean);
     BareFunctions::SetBranchAddress(t,"metPuppi", &metPuppi);
     BareFunctions::SetBranchAddress(t,"metPuppiSyst", &metPuppiSyst);
     BareFunctions::SetBranchAddress(t,"metSyst", &metSyst);
@@ -128,6 +138,8 @@ void BareMet::compress(){
 		BareFunctions::Compress( * (TLorentzVector*) genP4->At(i)  );
 
     BareFunctions::Compress(*metCleanMu);
+    BareFunctions::Compress(*metCleanEG);
+    BareFunctions::Compress(*metUnClean);
 
     BareFunctions::Compress(*metPuppi);
 

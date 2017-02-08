@@ -38,7 +38,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxE
 if len(options.inputFiles) == 0:
     if isData:
         options.inputFiles = [
-            '/store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v3/60000/3A6A80A6-D797-E611-B571-0CC47A04CFF6.root'
+            '/store/data/Run2016G/DoubleMuon/MINIAOD/03Feb2017-v1/100000/C244C67E-21EB-E611-B964-001E67E0061C.root'
         ]
     else:
         options.inputFiles = [
@@ -243,41 +243,53 @@ runMetCorAndUncFromMiniAOD(process,
            isData=isData,
            )
 
-print "-> Updating the met collection to run on to 'slimmedMETs with nero' with the new jec in the GT for Type1"
-process.nero.mets=cms.InputTag('slimmedMETs','','nero')
+#We no longer need to do this as the input collection needs to be change and is properly corrected out of the box. 
+#We do the above mention thing for the sake of the puppi met. (it has some small dependence in scheduled mode)
+#print "-> Updating the met collection to run on to 'slimmedMETs with nero' with the new jec in the GT for Type1"
+#process.nero.mets=cms.InputTag('slimmedMETs','','nero')
 
 ## TO DO this is production specific, when testing on relval it works with RECO, maybe we should leave it empty
 ##if not options.isData:
 ##            process.nero.metFilterToken=cms.InputTag("TriggerResults","","PAT")
 
-############ RUN Muon Fixed MET CLUSTERING ##########################                                                                                                         
-from PhysicsTools.PatUtils.tools.muonRecoMitigation import muonRecoMitigation
+############ RUN Muon Fixed MET CLUSTERING ##########################                                                                    
 
 process.load('RecoMET.METFilters.badGlobalMuonTaggersMiniAOD_cff')
 process.badGlobalMuonTaggerMAOD.taggingMode = cms.bool(True)
 process.cloneGlobalMuonTaggerMAOD.taggingMode = cms.bool(True)
 
-muonRecoMitigation(process,
-                   pfCandCollection="packedPFCandidates",
-                   runOnMiniAOD=True,
-                   muonCollection="",
-                   selection="",
-                   cleaningScheme="all",
-                   postfix="")
+process.mucorMET = cms.Sequence()
 
-runMetCorAndUncFromMiniAOD(process,
-                           isData=isData,
-                           pfCandColl="cleanMuonsPFCandidates",
-                           recoMetFromPFCs=True,
-                           postfix="MuClean"
-                           )
+if not isData:
+    from PhysicsTools.PatUtils.tools.muonRecoMitigation import muonRecoMitigation
 
-process.mucorMET = cms.Sequence(                     
-    process.badGlobalMuonTaggerMAOD *
-    process.cloneGlobalMuonTaggerMAOD *
-    process.badMuons * # If you are using cleaning mode "all", uncomment this line
-    process.cleanMuonsPFCandidates
-)
+
+    muonRecoMitigation(process,
+                       pfCandCollection="packedPFCandidates",
+                       runOnMiniAOD=True,
+                       muonCollection="",
+                       selection="",
+                       cleaningScheme="all",
+                       postfix="")
+    
+    runMetCorAndUncFromMiniAOD(process,
+                               isData=isData,
+                               pfCandColl="cleanMuonsPFCandidates",
+                               recoMetFromPFCs=True,
+                               postfix="MuClean"
+                               )
+    
+    process.mucorMET = cms.Sequence(                     
+        process.badGlobalMuonTaggerMAOD *
+        process.cloneGlobalMuonTaggerMAOD *
+        process.badMuons * # If you are using cleaning mode "all", uncomment this line
+        process.cleanMuonsPFCandidates *
+        process.fullPatMetSequenceMuClean
+        )
+    
+    
+    process.nero.metscleanmu=cms.InputTag('slimmedMETsMuClean','','nero')
+    process.nero.mets=cms.InputTag("slimmedMETs")
 
 ############ RUN Puppi MET CLUSTERING ##########################
 
@@ -441,9 +453,8 @@ process.p = cms.Path(
                 process.electronIDValueMapProducer *  ## ISO MAP FOR PHOTONS
                 process.jecSequence *
                 process.QGTagger    * ## after jec, because it will produce the new jet collection
-                process.mucorMET *
                 process.fullPatMetSequence *## no puppi
-                process.fullPatMetSequenceMuClean *
+                process.mucorMET * 
                 process.puppiMETSequence * #puppi candidate producer
                 process.fullPatMetSequencePuppi * ## full puppi sequence
                 process.BadPFMuonFilter *
