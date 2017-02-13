@@ -47,6 +47,8 @@ parser.add_option("","--mc",dest="data",action="store_false",help="run on mc");
 parser.add_option("-d","--dir",dest="dir",type="string",help="working directory",default="test/mydir");
 parser.add_option("-e","--eos",dest="eos",type="string",help="eos directory to scout, will not read the files in the pSet",default="");
 parser.add_option("","--query",dest="query",action='store_true',help="Use DAS for scouting. Ignore locality",default=False);
+parser.add_option("","--proxy",dest="proxy",action='store_true',help="Copy voms proxy",default=False);
+parser.add_option("","--xrdcp",dest="xrdcp",action='store_true',help="xrdcp file",default=False);
 parser.add_option("","--put-in",dest="put",type="string",help="eos directory to cp the results ",default="");
 parser.add_option("-q","--queue",dest="queue",type="string",help="batch Queue",default="");
 parser.add_option("","--instance",dest="instance",type="string",help="eos instance eg root://eoscms root://eosusr",default="");
@@ -302,6 +304,13 @@ for idx0,fl in enumerate(fileChunks):
 	print >> sh, 'touch sub_%d.run'%idx
 	print >> sh, 'cd $WORKDIR'
 	print >> sh, 'echo "entering $WORKDIR"'
+	if opts.proxy: print >> sh, 'rsync -avP '+os.environ["HOSTNAME"]+":/tmp/x509up_u"+ check_output("id -u",shell=True).split()[0] + " ./"
+	if opts.xrdcp:
+		fl2=[]
+		for f in fl:
+			print >>sh, "xrdcp root://xrootd-cms.infn.it//"+ re.sub('"','',f) + " ./"
+			fl2.append( '"file:' +re.sub('.*/','',f)) ## f = "/store/..."
+		fl = fl2[:]
 	testDir = re.sub('/[^/]*.py', '', opts.input)
 	if testDir[0] != "/" : testDir = os.environ['PWD'] +"/"+ testDir
 	print >> sh, 'cp -va %s/jec ./'%testDir
@@ -312,6 +321,8 @@ for idx0,fl in enumerate(fileChunks):
 	#else : print >>sh," is25ns=False is50ns=True",
 	if opts.data: print >> sh, " isData=True",
 	else: print >>sh, " isData=False",
+
+	print >> sh, " inputFiles=" + ",".join(fl),
 	## print additional options and endl
 	print >>sh," %s"%opts.options
 
@@ -350,10 +361,10 @@ for idx0,fl in enumerate(fileChunks):
 	#print "FileChunks is", fl
 	#print "---------------------------------------------------------"
 	#flStr = "fileList = [ "+ ",".join(fl) + "]";
-	flStr = "options.inputFiles = [ "+ ",".join(fl) + "]";
+	#flStr = "options.inputFiles = [ "+ ",".join(fl) + "]";
 	#replace
-	cmd = "sed -i'' 's:###FILELIST###:"+flStr+":g' " + pset 
-	call(cmd,shell=True)
+	#cmd = "sed -i'' 's!###FILELIST###!"+flStr+"!g' " + pset 
+	#call(cmd,shell=True)
 	#re.sub('###FILELIST###')
 
 print "MY LEN is ", mylen ,"==",len(fileList)

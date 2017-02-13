@@ -98,7 +98,17 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
             <<" \t chargedHadronIso() (20) "<<pho.chargedHadronIso()<<endl
             <<" \t r9 (0.8) "<<pho.r9()<<endl
             <<" \t SC is non null? "<< pho.superCluster().isNonnull()<<endl
+            <<" \t SEED is non null ? "<<pho.superCluster()->seed().isNonnull()<<endl
             <<endl;
+            DetId id =  pho.superCluster()->seed() -> seed();
+            if ( id.subdetId() == EcalBarrel ) {
+                EcalRecHitCollection::const_iterator theSeedHit = ebRecHits->find (id); 
+                cout<<" \t IS BARRELL SEED in RECHITS list? "<<int(theSeedHit != ebRecHits->end() )<<endl;
+            }
+            else if ( id.subdetId() == EcalEndcap ) {
+                EcalRecHitCollection::const_iterator theSeedHit = eeRecHits->find (id); 
+                cout<<" \t IS ENDCAP SEED in RECHITS list? "<<int(theSeedHit != eeRecHits->end() )<<endl;
+            }
         #endif
 
         edm::RefToBase<pat::Photon> ref ( edm::Ref< pat::PhotonCollection >(handle, iPho) ) ;
@@ -185,9 +195,15 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
 
         if (IsExtend() ){
             //rawpt->push_back(pho.pt());
+            #ifdef VERBOSE
+            if (VERBOSE>0) cout<<"[NeroPhotons]::[analyze]::[DEBUG] Extend"<<endl;
+            #endif
             rawpt->push_back( (*uncalib_handle)[iPho].pt());
             rawScEnergy->push_back(pho.superCluster()->rawEnergy());
             
+            #ifdef VERBOSE
+            if (VERBOSE>0) cout<<"[NeroPhotons]::[analyze]::[DEBUG] ShowerShapes"<<endl;
+            #endif
             hOverE->push_back(pho.hadTowOverEm()); //pho.hadronicOverEm());
             chWorstIso->push_back( (*iso_wch)[ref] );
             // chIsoMax->push_back( ??? );
@@ -199,19 +215,57 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
             sieip->push_back(pho.full5x5_showerShapeVariables().sigmaIetaIphi);
             r9->push_back(pho.r9());
             s4->push_back(pho.eMax()/(pho.eMax()+pho.eTop()+pho.eBottom()+pho.eLeft()+pho.eRight()));
-            
+
             mipEnergy->push_back(pho.mipTotEnergy());
 
+            #ifdef VERBOSE
+            if (VERBOSE>0) cout<<"[NeroPhotons]::[analyze]::[DEBUG] CLUSTER TOOLS"<<endl;
+            #endif
+
             clusterTools = new EcalClusterLazyTools(iEvent, iSetup, ebRecHits_token, eeRecHits_token);
-            time->push_back(clusterTools->SuperClusterSeedTime(*pho.superCluster()));
-            emax->push_back(clusterTools->eMax(*pho.superCluster()));
-            e2nd->push_back(clusterTools->e2nd(*pho.superCluster()));
+
+            #ifdef VERBOSE
+            if (VERBOSE>0) cout<<"[NeroPhotons]::[analyze]::[DEBUG] TIME"<<endl;
+            #endif
+
+            /* miniAOD requirements are based on miniAOD pt. Rare case can switch only due to pT. 
+             * Time requires recHit seed to be present.
+             * It may throw invalidCluster, otherwise
+             */
+            bool seedInRecHits=false;
+            DetId id =  pho.superCluster()->seed() -> seed();
+            if ( id.subdetId() == EcalBarrel ) {
+                EcalRecHitCollection::const_iterator theSeedHit = ebRecHits->find (id); 
+                seedInRecHits= (theSeedHit != ebRecHits->end() );
+            }
+            else if ( id.subdetId() == EcalEndcap ) {
+                EcalRecHitCollection::const_iterator theSeedHit = eeRecHits->find (id); 
+                seedInRecHits= (theSeedHit != eeRecHits->end() );
+            }
+
+            if (seedInRecHits)
+            {
+                time->push_back(clusterTools->SuperClusterSeedTime(*pho.superCluster()));
+                emax->push_back(clusterTools->eMax(*pho.superCluster()));
+                e2nd->push_back(clusterTools->e2nd(*pho.superCluster()));
+            }
+            else
+            {
+                time->push_back(-999.);
+                emax->push_back(-999.);
+                e2nd->push_back(-999.);
+            }
+
+
 
             // timeSpan->push_back( ??? );
             delete clusterTools;
             
             // genMatched->push_back( ??? );
         }
+        #ifdef VERBOSE
+        if (VERBOSE>0) cout<<"[NeroPhotons]::[analyze]::[DEBUG] DONE With this photon"<<endl;
+        #endif
     }
    
     if ( int(selBits -> size()) < mMinNpho  ) return 1;
