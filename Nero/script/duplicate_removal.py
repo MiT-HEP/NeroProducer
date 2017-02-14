@@ -12,7 +12,18 @@ import re
 import math
 EOS = "/afs/cern.ch/project/eos/installation/0.3.84-aquamarine/bin/eos.select"
 
-parser = OptionParser()
+usage = '''
+	script to remove duplicates when running on data. The script is meant for multiple submission, 
+	when the new set of files will completely contain the luminosity processed in one old file.
+	Assumptions: 
+	* No duplicates inside a single processed file (CMSSW do it).
+	* Data inside a luminosity block are full processed by each job.
+	Output:
+	* the output file contains a list of file to be removed (fname)
+	* a list of file with only some duplicate (XXX fname (ONLY SOME DUPLICATE))
+	'''
+
+parser = OptionParser(usage = usage)
 parser.add_option("-e","--eos",dest="eos",type="string",help="eos directory to scout [%default]",default="/store/group/phys_higgs/ceballos/Data/Nero/v2.2/MuonEG/MuonEG_Run2016H_ver2");
 parser.add_option("-o","--output",dest="output",type="string",help="output file [%default]",default="toremove.txt");
 parser.add_option("-v","--verbose",dest="verbose",action="store_true",help="Print More",default=False);
