@@ -63,6 +63,10 @@ class BareLeptons : virtual public BareP4
         //add miniIsolation
         vector<float>    *miniIso{0};
 
+        // muon
+        vector<float>    *resolution{0};
+        vector<int >     *nLayers{0};
+
         // ele scale and smear corrections
         vector<float>    *corr{0};
     

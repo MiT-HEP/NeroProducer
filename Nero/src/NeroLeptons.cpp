@@ -157,6 +157,12 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         l.puiso  = puiso;
         //l.miniiso = getPFMiniIsolation_DeltaBeta(pf_->handle, dynamic_cast<const reco::Candidate *>(&mu), 0.05, 0.2, 10., false);
         l.miniiso = getPFMiniIsolation_EffectiveArea(pf_->handle, dynamic_cast<const reco::Candidate *>(&mu), 0.05, 0.2, 10., false, false, *rho_handle );
+
+        if (not mu.innerTrack().isNull()){
+            l.nlayers = mu.innerTrack() -> hitPattern().trackerLayersWithMeasurement();
+            l.resolution = mu.innerTrack() ->ptError() / mu.innerTrack()->pt();
+        }
+        //l.resolution = mu.bestTrack() ->ptError() / mu.bestTrack()->pt();
         
         if ( not (l.selBits & kMinId) ) continue;
         leptons.push_back(l);
@@ -319,6 +325,9 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         sipip	-> push_back(l.sipip);
         sieip	-> push_back(l.sieip);
         r9  	-> push_back(l.r9);
+
+        resolution -> push_back(l.resolution);
+        nLayers -> push_back(l.nlayers);
     }
 
 
