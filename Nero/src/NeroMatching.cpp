@@ -1,4 +1,5 @@
 #include "NeroProducer/Nero/interface/NeroMatching.hpp"
+#include <cmath>
 
 //#define VERBOSE 1
 
@@ -21,9 +22,23 @@ void Matcher::match(TClonesArray*a,TClonesArray*b,vector<int>&r, vector<int> *pd
     {
         int  match = -1;
         TLorentzVector* Ap4 =  (TLorentzVector*) ( (*a)[i] );
-        for(int j=0;j<sizeB;++j)
+        bool zeroPt=false;
+        if (Ap4->Pt()<1e-8) zeroPt=true;
+        if (std::isnan(Ap4->Pt())) zeroPt=true;
+
+#ifdef VERBOSE
+        if(VERBOSE>0)cout<<"[Matcher]::[match]::[DEBUG] A Pt is = "<<Ap4->Pt()<<" zeroPt="<<zeroPt<<endl;
+#endif
+
+        for(int j=0;j<sizeB and not zeroPt;++j)
         {
             TLorentzVector* Bp4 =  (TLorentzVector*) ( (*b)[j] );
+            
+            if (Bp4->Pt() <1.e-8) continue;
+            if (std::isnan(Bp4->Pt())) continue;
+#ifdef VERBOSE
+        if(VERBOSE>0)cout<<"[Matcher]::[match]::[DEBUG] B Pt is = "<<Bp4->Pt()<<endl;
+#endif
             if (Ap4->DeltaR(*Bp4) >= dR_ ) continue;
 
             if (pdgIdB != NULL and pdgId !=0 )
@@ -36,6 +51,9 @@ void Matcher::match(TClonesArray*a,TClonesArray*b,vector<int>&r, vector<int> *pd
         }
         r.push_back(match);
     }
+#ifdef VERBOSE
+        if(VERBOSE>0)cout<<"[Matcher]::[match]::[DEBUG] returning  "<<endl;
+#endif
     return;
 }
 
