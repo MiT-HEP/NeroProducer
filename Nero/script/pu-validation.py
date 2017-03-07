@@ -24,7 +24,7 @@ if opts.batch:
 	ROOT.gROOT.SetBatch()
 
 
-version="v1.3.1"
+version="v2.2"
 
 disks={}
 xsections={}
@@ -38,18 +38,22 @@ book=['DY','TTJets'] ## WJets is very big with low eff for double muon
 datasets=['SingleMuon']
 ##configure
 if True:
-	#### Asympt 50 ns v2
-	base='/store/user/amarini/Nero/' + version + "/"
-	disks['DY']=base+'DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/'
+	#### reMiniAOD Moriond17
+	#base='/store/user/amarini/Nero/' + version + "/"
+	base='/store/group/phys_higgs/ceballos/Nero/' + version + "/"
+	#disks['DY']=base+'DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/'
+	disks['DY']=base+'DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8'
 	disks['WZ']=base+'WZ_TuneCUETP8M1_13TeV-pythia8/'
 	disks['ZZ']=base+'ZZ_TuneCUETP8M1_13TeV-pythia8/'
 	### 50ns v1
 	disks['WW']=base+'WW_TuneCUETP8M1_13TeV-pythia8/'
 	disks['WJets']=base+'WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/'
 	#disks['TTJets']=base+'TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/'
-	disks['TTJets']=base+'TT_TuneCUETP8M1_13TeV-amcatnlo-pythia8/'
+	#disks['TTJets']=base+'TT_TuneCUETP8M1_13TeV-amcatnlo-pythia8/'
+	disks['TTJets']=base+'TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/'
 	### DATA -- promptReco
-	base='/store/user/amarini/Nero/' + version + "/"
+	#base='/store/user/amarini/Nero/' + version + "/"
+	base='/store/group/phys_higgs/ceballos/Data/Nero/' + version + "/"
 	disks['SingleMuon']=base+'SingleMuon'
 	disks['SingleElectron']=base+'SingleElectron'
 	disks['SinglePhoton']=base+'SinglePhoton'
@@ -374,14 +378,29 @@ for data in datasets:
 	t=ROOT.TChain("nero/events")
 	DeactivateBranches(t)
 	n=0
-	for f in ReadFromEos( disks[data] ):
-	      t.Add(f)
-	      n += 1
+	
+	files= ReadFromEos( disks[data] )
+	n = len(files)
+
+	#for f in ReadFromEos( disks[data] ):
+	#      t.Add(f)
+	#      n += 1
+
 	stdout += " "+ str(n) + " files"
 	print '\r' + stdout,
 	sys.stdout.flush()
-
-	for i in range(0,t.GetEntries() ):
+	fNumber=-1;
+	
+	for ifile,f in enumerate(files):
+	    print "\n * openinig file",f,ifile,"of",n
+	    t=ROOT.TChain("nero/events")
+	    DeactivateBranches(t)
+	    t.Add(f)
+	    for i in range(0,t.GetEntries() ):
+		#if fNumber != t.GetTreeNumber():
+		#	## new file
+		#	fNumber=t.GetTreeNumber()
+		#	print "\n * openinig file",t.GetFile().GetName()
 
 		if i&1023 == 1:
 			print "\r"+stdout ,i,"/",t.GetEntriesFast(), "%.2f%%"%(float(i)/t.GetEntriesFast())
