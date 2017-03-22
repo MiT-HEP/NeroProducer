@@ -21,6 +21,8 @@ BareLeptons::~BareLeptons(){
     BareFunctions::Delete(sipip);
     BareFunctions::Delete(sieip);
     BareFunctions::Delete(r9);
+    BareFunctions::Delete(resolution);
+    BareFunctions::Delete(nLayers);
 }
 
 void BareLeptons::init(){
@@ -42,6 +44,8 @@ void BareLeptons::init(){
     BareFunctions::New(sipip);
     BareFunctions::New(sieip);
     BareFunctions::New(r9);
+    BareFunctions::New(resolution);
+    BareFunctions::New(nLayers);
 }
 
 void BareLeptons::clear(){
@@ -65,7 +69,9 @@ void BareLeptons::clear(){
     phoIso->clear();
     puIso->clear();
     miniIso->clear();
-    
+   
+    resolution->clear() ;
+    nLayers->clear();
 
 }
 
@@ -96,6 +102,9 @@ void BareLeptons::defineBranches(TTree*t){
     t->Branch("lepSipip","vector<float>",&sipip);
     t->Branch("lepSieip","vector<float>",&sieip);
     t->Branch("lepR9","vector<float>",&r9);
+    //
+    t->Branch("lepResolution","vector<float>",&resolution);
+    t->Branch("lepNLayers","vector<int>",&nLayers);
 
 
 }
@@ -122,6 +131,9 @@ void BareLeptons::setBranchAddresses(TTree*t){
     BareFunctions::SetBranchAddress(t,"lepSipip",&sipip);
     BareFunctions::SetBranchAddress(t,"lepSieip",&sieip);
     BareFunctions::SetBranchAddress(t,"lepR9",&r9);
+
+    BareFunctions::SetBranchAddress(t,"lepResolution",&resolution);
+    BareFunctions::SetBranchAddress(t,"lepNLayers",&nLayers);
 }
 
 BAREREGISTER(BareLeptons);

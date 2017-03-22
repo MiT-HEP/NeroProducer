@@ -188,9 +188,9 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     //leps -> eeRecHits_token = mayConsume<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("eeRecHits"));
 
     // eventually configure
-    leps -> EleCorr = new EnergyScaleCorrection_class("EgammaAnalysis/ElectronTools/data/ScalesSmearings/Winter_2016_reReco_v1_ele");
-        leps->EleCorr -> doSmearings= true;
-        leps->EleCorr -> doScale= true;
+    //leps -> EleCorr = new EnergyScaleCorrection_class("EgammaAnalysis/ElectronTools/data/ScalesSmearings/Winter_2016_reReco_v1_ele");
+    // leps->EleCorr -> doSmearings= true;
+    // leps->EleCorr -> doScale= true;
     
 
     obj. push_back(leps);
@@ -238,9 +238,9 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     /*
     phos -> fpr = new SuperClusterFootprintRemovalMiniAOD( consumesCollector() );
     */
-    phos -> PhoCorr = new EnergyScaleCorrection_class("EgammaAnalysis/ElectronTools/data/ScalesSmearings/Winter_2016_reReco_v1_ele");
-    phos->PhoCorr -> doSmearings= true;
-    phos->PhoCorr -> doScale= true;
+    //phos -> PhoCorr = new EnergyScaleCorrection_class("EgammaAnalysis/ElectronTools/data/ScalesSmearings/Winter_2016_reReco_v1_ele");
+    //phos->PhoCorr -> doSmearings= true;
+    //phos->PhoCorr -> doScale= true;
     
     obj.push_back(phos);
 

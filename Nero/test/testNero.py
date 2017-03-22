@@ -342,6 +342,12 @@ process.calibratedPatElectrons.electrons=process.nero.electrons
 process.calibratedPatPhotons.photons= process.nero.photons
 process.nero.electrons =  cms.InputTag("calibratedPatElectrons")
 process.nero.photons = cms.InputTag("calibratedPatPhotons")
+if isData:
+    process.calibratedPatElectrons.isMC = cms.bool(False)
+    process.calibratedPatPhotons.isMC = cms.bool(False)
+else:
+    process.calibratedPatElectrons.isMC = cms.bool(True)
+    process.calibratedPatPhotons.isMC = cms.bool(True)
 print "-> Updating slimmedElectrons and slimmedPhotons to calibratedPatElectrons and calibratedPatPhotons"
 print "   ",process.nero.photons, process.nero.electrons
 #######################################

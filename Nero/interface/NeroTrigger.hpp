@@ -78,7 +78,9 @@ int NeroTrigger::match(T *coll, pat::TriggerObjectStandAlone& obj)
 
     for(int l = 0 ;l< coll -> p4 -> GetEntries() ;++l)
     {
-        float dr = ((TLorentzVector*)(*coll -> p4)[l]) ->DeltaR( TLorentzVector(obj.px(),obj.py(),obj.pz(),obj.energy()) );
+
+        if ( ((TLorentzVector*)(*coll -> p4)[l] )->Pt() <1e-8 or std::isnan(((TLorentzVector*)(*coll -> p4)[l] )->Pt()) ) continue;
+        float dr =  ((TLorentzVector*)(*coll -> p4)[l]) ->DeltaR( TLorentzVector(obj.px(),obj.py(),obj.pz(),obj.energy()) );
         if ( dr < mDr and minDr >= dr)
         {
             index = l;
@@ -101,6 +103,7 @@ int NeroTrigger::match(T *coll, pat::TriggerObjectStandAlone& obj,int pdgId)
 
     for(int l = 0 ;l< coll -> p4 -> GetEntries() ;++l)
     {
+        if ( ((TLorentzVector*)(*coll -> p4)[l] )->Pt() <1e-8 or std::isnan(((TLorentzVector*)(*coll -> p4)[l] )->Pt()) ) continue;
         float dr = ((TLorentzVector*)(*coll -> p4)[l]) ->DeltaR( TLorentzVector(obj.px(),obj.py(),obj.pz(),obj.energy()) );
         //cout <<"[NeroTrigger]::[match] dr = "<<dr<<" mDr"<<mDr<<" minDr "<<minDr<<" pdgId = "<< coll -> pdgId -> at(l) <<endl;
         if ( abs(coll -> pdgId -> at(l)) == abs(pdgId)  and  dr < mDr and minDr >= dr)

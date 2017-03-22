@@ -28,7 +28,9 @@ class NeroLeptons : virtual public NeroCollection,
         class myLepton{
             public:
                 myLepton(){ chiso=-999; nhiso=-999; phoiso=-999; puiso=-999;mva = -999; miniiso=-999;
-                            etasc=0; sieie=0; sipip=0; sieip=0; r9=0; ecorr=1; }
+                            etasc=0; sieie=0; sipip=0; sieip=0; r9=0; ecorr=1; 
+                            resolution =-999; nlayers=-999;
+                }
                 float iso;
                 TLorentzVector p4;
                 unsigned selBits;
@@ -49,6 +51,9 @@ class NeroLeptons : virtual public NeroCollection,
                 float sieip;
                 float r9;
                 float ecorr;
+
+                float resolution;
+                int nlayers;
             
         };
 

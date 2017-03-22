@@ -3,7 +3,7 @@
 
 #include "DataFormats/HLTReco/interface/TriggerTypeDefs.h"
 
-#define VERBOSE 0
+#define VERBOSE 0 
 
 NeroTrigger::NeroTrigger() : 
         NeroCollection(),
