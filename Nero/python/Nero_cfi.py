@@ -83,7 +83,7 @@ nero = cms.EDAnalyzer("Nero",
 
     #
     ## TRIGGER
-    triggerNMatch = cms.int32(7),
+    triggerNMatch = cms.int32(12),
     triggerNames = cms.vstring([
 				## LEPTON FAKES
 				'HLT_Mu8_TrkIsoVVL_v',
@@ -92,14 +92,14 @@ nero = cms.EDAnalyzer("Nero",
 				'HLT_Ele17_CaloIdL_TrackIdL_IsoVL_PFJet30_v',
 				'HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v',
 				## TAU WITH MATCHING
-                                'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET110',
+                'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET110',
 				'HLT_VLooseIsoPFTau140_Trk50_eta2p1_v',
 				## TAG-AND-PROBE STUDIES
 				'HLT_Ele25_eta2p1_WPTight_Gsf_v',
 				'HLT_Ele27_eta2p1_WPLoose_Gsf_v',
 				'HLT_IsoMu24_v',
 				'HLT_IsoTkMu24_v',
-	    			## ELECTRONS
+	    		## ELECTRONS
 				'HLT_Ele27_WPTight_Gsf_v',
 				'HLT_Ele30_WPTight_Gsf_v',
 				'HLT_Ele27_eta2p1_WPTight_Gsf_v',
@@ -109,7 +109,7 @@ nero = cms.EDAnalyzer("Nero",
 				'HLT_DoubleEle24_22_eta2p1_WPLoose_Gsf_v',
 				## MUONS
 				'HLT_IsoMu22_v',
-	    			'HLT_IsoTkMu22_v',
+	    		'HLT_IsoTkMu22_v',
 				'HLT_Mu45_eta2p1_v',
 				'HLT_Mu50_v',
 				'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v',
