@@ -177,6 +177,11 @@ nero = cms.EDAnalyzer("Nero",
 			        'HLT_Photon165_R9Id90_HE10_IsoM_v',
 				'HLT_Photon175',
 				'HLT_Photon165_HE10',
+                ### Hadronic Triggers
+                'HLT_PFHT_475_v',
+                'HLT_PFHT_800_v',
+                'HLT_AK8PFJet360_TrimMass30_v',
+                'HLT_AK8PFHT650_TrimR0p1PT0p3Mass50_v',
 				### DoubleMu / DoubleE cross check and sync with Z
 				'HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v',
                                 'HLT_CaloMET200_NoiseCleaned',
