@@ -188,6 +188,7 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
         rawPt  -> push_back (j.pt()*j.jecFactor("Uncorrected"));
         puId   -> push_back (j.userFloat("pileupJetId:fullDiscriminant") );
         bDiscr -> push_back( j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") );
+        bMva -> push_back( j.bDiscriminator("pfCombinedMVAV2BJetTags ") );
         //bDiscrLegacy -> push_back( j.bDiscriminator("combinedSecondaryVertexBJetTags") );
         qgl     -> push_back( qgLikelihood );
         // if the token was not valid, this will simply not be filled
