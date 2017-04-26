@@ -8,6 +8,7 @@ BareJets::BareJets(): BareP4(){
 BareJets::~BareJets(){
     BareFunctions::Delete(rawPt);
     BareFunctions::Delete(bDiscr);
+    BareFunctions::Delete(bMva);
     //BareFunctions::Delete(bDiscrLegacy);
     BareFunctions::Delete(puId);
     BareFunctions::Delete(unc);
@@ -43,6 +44,7 @@ void BareJets::init(){
     BareFunctions::New(rawPt);
     BareFunctions::New(refPt);
     BareFunctions::New(bDiscr);
+    BareFunctions::New(bMva);
     //BareFunctions::New(bDiscrLegacy);
     BareFunctions::New(puId);
     BareFunctions::New(unc);
@@ -77,6 +79,7 @@ void BareJets::clear(){
     BareP4::clear();
     rawPt -> clear();
     bDiscr -> clear();
+    bMva -> clear();
     //bDiscrLegacy -> clear();
     puId -> clear();
     unc -> clear();
@@ -121,6 +124,7 @@ void BareJets::defineBranches(TTree *t){
     t->Branch(jetName + "RefPt","vector<float>",&refPt);
     //
     t->Branch(jetName + "Bdiscr","vector<float>",&bDiscr);
+    t->Branch(jetName + "BMva","vector<float>",&bMva);
     //
     //t->Branch(jetName + "BdiscrLegacy","vector<float>",&bDiscrLegacy);
     //	
@@ -170,6 +174,7 @@ void BareJets::setBranchAddresses(TTree* t, std::string prefix)
     BareFunctions::SetBranchAddress(t,jetName + "RawPt"	,&rawPt);
     BareFunctions::SetBranchAddress(t,jetName + "RefPt"	,&refPt);
     BareFunctions::SetBranchAddress(t,jetName + "Bdiscr"	,&bDiscr);
+    BareFunctions::SetBranchAddress(t,jetName + "BMva"	,&bMva);
     //BareFunctions::SetBranchAddress(t,jetName + "BdiscrLegacy"	,&bDiscrLegacy);
     BareFunctions::SetBranchAddress(t,jetName + "PuId"	,&puId);
     BareFunctions::SetBranchAddress(t,jetName + "Unc"	,&unc);

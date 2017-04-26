@@ -37,6 +37,7 @@ class BareJets : virtual public BareP4
         vector<float> *rawPt{0};
         vector<float> *refPt{0}; // as in MINIAOD->pt()
         vector<float> *bDiscr{0};
+        vector<float> *bMva{0};
         //vector<float> *bDiscrLegacy{0};
         vector<float> *puId{0};
         vector<float> *unc{0};
