@@ -24,26 +24,9 @@ int NeroMet::analyze(const edm::Event& iEvent){
     iEvent.getByToken(token_puppi,handle_puppi);
     if ( not handle_puppi.isValid() ) cout<<"[NeroMet]::[analyze]::[ERROR] handle_puppi is not valid"<<endl;
 
-    iEvent.getByToken(token_cleanmu,handle_cleanmu);
-    if ( not handle_cleanmu.isValid() ) cout<<"[NeroMet]::[analyze]::[ERROR] handle_cleanmu is not valid"<<endl;
+    //iEvent.getByToken(token_cleanmu,handle_cleanmu);
+    //if ( not handle_cleanmu.isValid() ) cout<<"[NeroMet]::[analyze]::[ERROR] handle_cleanmu is not valid"<<endl;
 
-
-    if ( iEvent.isRealData () ){            
-        iEvent.getByToken(token_cleaneg,handle_cleaneg);
-        if ( not handle_cleaneg.isValid() ) cout<<"[NeroMet]::[analyze]::[ERROR] handle_cleaneg is not valid"<<endl;
-
-        iEvent.getByToken(token_unclean,handle_unclean);
-        if ( not handle_unclean.isValid() ) cout<<"[NeroMet]::[analyze]::[ERROR] handle_unclean is not valid"<<endl;
-
-        // FILL cleaneg MET
-        auto &cleaneg = handle_cleaneg->front(); 
-        *metCleanEG =  TLorentzVector( cleaneg.px(), cleaneg.py(),cleaneg.pz(),cleaneg.energy() );
-               
-        // FILL unclean MET
-        auto &unclean = handle_unclean->front(); 
-        *metUnClean =  TLorentzVector( unclean.px(), unclean.py(),unclean.pz(),unclean.energy() );
-       
-    }
 
 
     const pat::MET &met = handle->front();
@@ -63,10 +46,6 @@ int NeroMet::analyze(const edm::Event& iEvent){
     auto &puppi = handle_puppi->front(); 
     *metPuppi =  TLorentzVector( puppi.px(), puppi.py(),puppi.pz(),puppi.energy() );
 
-    // FILL cleanmu MET
-    auto &cleanmu = handle_cleanmu->front(); 
-    *metCleanMu =  TLorentzVector( cleanmu.px(), cleanmu.py(),cleanmu.pz(),cleanmu.energy() );
-       
     // saving only Jes, Jer, Uncluster
     for(Syst mysyst = (Syst)0; mysyst < TauUp and mysyst < MaxSyst  ; mysyst = (Syst)((int)mysyst +1 ) )
     {
