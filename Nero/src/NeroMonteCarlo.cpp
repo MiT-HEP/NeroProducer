@@ -206,7 +206,8 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
         int pdg = gen->pdgId();
         int apdg = abs(pdg);
         int mpdg = gen->mother(0)->pdgId();
-        if (pdg==mpdg)          continue;
+        float mpt = gen->mother(0)->pt();
+        if (pdg==mpdg and mpt>5)continue;
         if (gen->status() == 1) continue; //packed
 
         unsigned flag = ComputeFlags(*gen);
