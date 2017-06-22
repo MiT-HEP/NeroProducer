@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Instruct builder to use a particular CMSSW release
-# [CMSSW] CMSSW_8_0_26_patch1
+# [CMSSW] CMSSW_9_2_3_patch1
 # [Options] isData=False
-# [fileList] /store/mc/RunIISummer16MiniAODv2/QCD_Pt-15to7000_TuneCUETP8M1_Flat_13TeV_pythia8/MINIAODSIM/PUFlat0to70_magnetOn_80X_mcRun2_asymptotic_2016_TrancheIV_v4-v1/90000/FEB7D1E4-6987-E611-B656-0090FAA57B40.root 
+# [fileList] /store/data/Run2017B/SingleMuon/MINIAOD/PromptReco-v1/000/297/046/00000/4EF129BD-4956-E711-A2A2-02163E01369E.root
 # [MaxEvents] 5000
 
 function CMSSW_7_6_4 {
@@ -121,6 +121,12 @@ function CMSSW_8_0_28_patch1 {
         git cms-init
         git cms-merge-topic ikrav:egm_id_80X_v3_photons_rebasedTo_8026patch2
         git cms-merge-topic ikrav:egm_id_80X_v2
+}
+
+function CMSSW_9_2_3_patch1 {
+        git cms-init
+        git cms-merge-topic ikrav:egm_id_80X_v3_photons_rebasedTo_CMSSW_9_2_X_2017-05-08-1100
+        git cms-merge-topic ikrav:egm_id_80X_v2_rebasedTo_CMSSW_9_2_X_2017-05-08-1100
 }
 
 
