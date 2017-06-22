@@ -146,8 +146,8 @@ void InfoProducer::endLuminosityBlock(edm::LuminosityBlock const&, const edm::Ev
 void InfoProducer::endLuminosityBlockProduce(edm::LuminosityBlock &iLumi, const edm::EventSetup&)
 {
     // ---
-    auto_ptr<edm::MergeableCounter> numEventsPtr(new edm::MergeableCounter);
-    auto_ptr<edm::MergeableCounter> sumMcWeights(new edm::MergeableCounter);
+    unique_ptr<edm::MergeableCounter> numEventsPtr(new edm::MergeableCounter);
+    unique_ptr<edm::MergeableCounter> sumMcWeights(new edm::MergeableCounter);
 
     numEventsPtr->value = eventsProcessedInLumi_;
     sumMcWeights->value = mcWeights_;
@@ -156,9 +156,9 @@ void InfoProducer::endLuminosityBlockProduce(edm::LuminosityBlock &iLumi, const 
     iLumi.put(sumMcWeights,"sumMcWeights");
 
     // ---
-    auto_ptr<std::vector<long> > vecEventsPtr( new vector<long> );
-    auto_ptr<std::vector<float> > vecMcWeightsPtr( new vector<float> );
-    auto_ptr<std::vector<int> > vecPuTrueIntPtr( new vector<int> );
+    unique_ptr<std::vector<long> > vecEventsPtr( new vector<long> );
+    unique_ptr<std::vector<float> > vecMcWeightsPtr( new vector<float> );
+    unique_ptr<std::vector<int> > vecPuTrueIntPtr( new vector<int> );
 
     copyVector(vecEvents_, *vecEventsPtr.get());
     copyVector(vecMcWeights_, *vecMcWeightsPtr.get());
