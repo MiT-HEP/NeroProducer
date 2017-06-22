@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Instruct builder to use a particular CMSSW release
-# [CMSSW] CMSSW_9_2_3_patch1
+# [CMSSW] CMSSW_9_2_3_patch2
 # [Options] isData=False
 # [fileList] /store/data/Run2017B/SingleMuon/MINIAOD/PromptReco-v1/000/297/046/00000/4EF129BD-4956-E711-A2A2-02163E01369E.root
 # [MaxEvents] 5000
@@ -123,10 +123,10 @@ function CMSSW_8_0_28_patch1 {
         git cms-merge-topic ikrav:egm_id_80X_v2
 }
 
-function CMSSW_9_2_3_patch1 {
+function CMSSW_9_2_3_patch2 {
         git cms-init
-        git cms-merge-topic ikrav:egm_id_80X_v3_photons_rebasedTo_CMSSW_9_2_X_2017-05-08-1100
-        git cms-merge-topic ikrav:egm_id_80X_v2_rebased_CMSSW_9_0_X_2016-12-07-2300
+        #git cms-merge-topic ikrav:egm_id_80X_v3_photons_rebasedTo_CMSSW_9_2_X_2017-05-08-1100
+        #git cms-merge-topic ikrav:egm_id_80X_v2_rebased_CMSSW_9_0_X_2016-12-07-2300
 }
 
 

@@ -152,8 +152,8 @@ void InfoProducer::endLuminosityBlockProduce(edm::LuminosityBlock &iLumi, const 
     numEventsPtr->value = eventsProcessedInLumi_;
     sumMcWeights->value = mcWeights_;
 
-    iLumi.put(numEventsPtr,"numberEvents");
-    iLumi.put(sumMcWeights,"sumMcWeights");
+    iLumi.put(std::move(numEventsPtr),"numberEvents");
+    iLumi.put(std::move(sumMcWeights),"sumMcWeights");
 
     // ---
     unique_ptr<std::vector<long> > vecEventsPtr( new vector<long> );
@@ -164,9 +164,9 @@ void InfoProducer::endLuminosityBlockProduce(edm::LuminosityBlock &iLumi, const 
     copyVector(vecMcWeights_, *vecMcWeightsPtr.get());
     copyVector(vecPuTrueInt_, *vecPuTrueIntPtr.get());
     //
-    iLumi.put(vecEventsPtr,"vecEvents");
-    iLumi.put(vecMcWeightsPtr,"vecMcWeights");
-    iLumi.put(vecPuTrueIntPtr,"vecPuTrueInt");
+    iLumi.put(std::move(vecEventsPtr),"vecEvents");
+    iLumi.put(std::move(vecMcWeightsPtr),"vecMcWeights");
+    iLumi.put(std::move(vecPuTrueIntPtr),"vecPuTrueInt");
 }
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
 
