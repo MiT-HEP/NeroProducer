@@ -46,62 +46,27 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     cmssw_ = iConfig.getParameter<string>("cmssw");
 
     auto&& cc = consumesCollector();
-    // not push_back inline because he needs to know the class type for init
-    NeroEvent *evt = new NeroEvent(cc , iConfig.getParameterSet("NeroEvent"));
-    obj.push_back(evt);
 
-    // eventually reject events w/ no PV
-    NeroVertex *vtx = new NeroVertex(cc,iConfig.getParameterSet("NeroVertex"));
-    obj.push_back(vtx);
-
-    //--
-    NeroFatJets *chsAK8 = new NeroFatJets(cc,iConfig.getParameterSet("NeroFatJets"));
-    obj.push_back(chsAK8);
-
-    // --- 
-    NeroTaus *taus = new NeroTaus( cc, iConfig.getParameterSet("NeroTaus"));
-    obj.push_back(taus);
-
-    //--
-    NeroLeptons *leps = new NeroLeptons( cc, iConfig.getParameterSet("NeroTaus") );
-
-    obj. push_back(leps);
-
-    //--
-
-    NeroMet *met = new NeroMet(cc, iConfig.getParameterSet("NeroMet"));
-    obj.push_back(met);
+    std::vector<string> objName{"NeroAll","NeroEvents","NeroVertex","NeroFatJets","NeroTaus","NeroLeptons","NeroMet","NeroMonteCarlo","NeroTrigger","NeroJets","NeroPhotons"};
+    for (const auto& name : objName)
+    {
+        NeroCollection *o = NeroFactory::get().create( name, cc, iConfig.getParameterSet(name) );
+        obj.push_back(o);
+        if (name=="NeroMet") runObj.push_back(dynamic_cast<NeroRun*>(o));
+        if (name=="NeroAll") lumiObj.push_back(dynamic_cast<NeroLumi*>(o));
+        if (name == "NeroTrigger") {
+            NeroTrigger *tr = dynamic_cast<NeroTrigger*>(o); // TODO what if these are not in the list?
+            tr -> leps_    = dynamic_cast<NeroLeptons*>( obj[std::find (objName.begin(),objName.end(),"NeroLeptons")-objName.begin()] );
+            tr -> jets_    = dynamic_cast<NeroJets*>   ( obj[std::find (objName.begin(),objName.end(),"NeroJets")-objName.begin()] ) ;
+            tr -> taus_    = dynamic_cast<NeroTaus*>   ( obj[std::find (objName.begin(),objName.end(),"NeroTaus")-objName.begin()] );
+            tr -> photons_ = dynamic_cast<NeroPhotons*>( obj[std::find (objName.begin(),objName.end(),"NeroPhotons")-objName.begin()] );
+        }
+    }
 
 
-
-    NeroMonteCarlo *mc = new NeroMonteCarlo(cc,iConfig.getParameterSet("NeroMonteCarlo"));
-
-    obj.push_back(mc);
-    runObj.push_back(mc);
-
-    //now do what ever initialization is needed
-    NeroJets *jets = new NeroJets(cc,iConfig.getParameterSet("NeroJets"));
-    obj.push_back(jets);
-
-    // --
-    NeroPhotons *phos = new NeroPhotons(cc,iConfig.getParameterSet("NeroPhotons"));
-    obj.push_back(phos);
-
-    NeroTrigger *tr = new NeroTrigger();
     // set the collection it needs to be awared of
     // this step is needed in order to insure trigger matching is done on the saved collection
-    tr -> leps_ = leps;
-    tr -> jets_ = jets;
-    tr -> taus_ = taus;
-    tr -> photons_ = phos;
     //
-    obj.push_back(tr);
-
-    // ----------------- Collection to be run at the Lumi Block ----
-    NeroAll *info = new NeroAll(cc, iConfig.getParameterSet("NeroAll") );
-    obj.insert(obj.begin(),info);
-    lumiObj.push_back(info);
-
 
 }
 
