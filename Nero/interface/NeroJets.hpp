@@ -54,6 +54,9 @@ class NeroJets : virtual public NeroCollection, virtual public BareJets
         edm::EDGetTokenT<edm::ValueMap<int>> qg_token_nmult;
         edm::EDGetTokenT<edm::ValueMap<float>> qg_token_pt_dr_log;
 
+        edm::EDGetTokenT<reco::GenJetCollection> gen_token;
+        map<string, edm::EDGetTokenT<edm::ValueMap<float> > > qg_dR_tokens_f;
+        map<string, edm::EDGetTokenT<edm::ValueMap<int> > > qg_dR_tokens_i;
         // --- configuration
         float mMinPt;
         int   mMinNjets;

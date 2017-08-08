@@ -445,6 +445,10 @@ if options.isParticleGun:
 	## this option is for the embedding informations
 	process.nero.extendEvent = cms.untracked.bool(False)
 
+process.load('NeroProducer.Skim.QGVariablesSequence_cff')
+process.QGVariables.srcJets = process.nero.jets
+process.QGVariables.srcGenJets = cms.InputTag("slimmedGenJets")
+process.QGVariables.isData = cms.bool(isData)
 ##DEBUG
 ##print "Process=",process, process.__dict__.keys()
 #------------------------------------------------------
@@ -466,6 +470,7 @@ process.p = cms.Path(
                 process.BadPFMuonFilter *
                 process.BadChargedCandidateFilter * 
                 process.ttbarcat *
+                process.QGVariablesSequence*
                 process.nero
                 )
 

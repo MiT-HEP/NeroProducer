@@ -228,6 +228,20 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     jets -> qg_token_pt_dr_log = mayConsume<edm::ValueMap<float>>(edm::InputTag("QGTagger", "ptDrLog"));
     jets -> qg_token_cmult = mayConsume<edm::ValueMap<int>>(edm::InputTag("QGTagger", "cmult"));
     jets -> qg_token_nmult = mayConsume<edm::ValueMap<int>>(edm::InputTag("QGTagger", "nmult"));
+    jets -> gen_token    = mayConsume<reco::GenJetCollection>(iConfig.getParameter<edm::InputTag>("genjets"));
+    for(const auto& dR: jets->dRToProduce)
+    {
+    jets -> qg_dR_tokens_i[Form("mult-dR0p%03.0f",dR*1000)] = mayConsume<edm::ValueMap<int>>(edm::InputTag("QGVariables", Form("mult-dR-0p%03.0f-pT-%.0f",dR*1000,float(500))));
+    jets -> qg_dR_tokens_i[Form("Gen-mult-dR0p%03.0f",dR*1000)] = mayConsume<edm::ValueMap<int>>(edm::InputTag("QGVariables", Form("Gen-mult-dR-0p%03.0f-pT-%.0f",dR*1000,float(500))));
+
+    jets -> qg_dR_tokens_f[Form("axis2-dR0p%03.0f",dR*1000)] = mayConsume<edm::ValueMap<float>>(edm::InputTag("QGVariables", Form("axis2-dR-0p%03.0f-pT-%.0f",dR*1000,float(500))));
+    jets -> qg_dR_tokens_f[Form("Gen-axis2-dR0p%03.0f",dR*1000)] = mayConsume<edm::ValueMap<float>>(edm::InputTag("QGVariables", Form("Gen-axis2-dR-0p%03.0f-pT-%.0f",dR*1000,float(500))));
+    jets -> qg_dR_tokens_f[Form("ptD-dR0p%03.0f",dR*1000)] = mayConsume<edm::ValueMap<float>>(edm::InputTag("QGVariables", Form("ptD-dR-0p%03.0f-pT-%.0f",dR*1000,float(500))));
+    jets -> qg_dR_tokens_f[Form("Gen-ptD-dR0p%03.0f",dR*1000)] = mayConsume<edm::ValueMap<float>>(edm::InputTag("QGVariables", Form("Gen-ptD-dR-0p%03.0f-pT-%.0f",dR*1000,float(500))));
+    jets -> qg_dR_tokens_f[Form("axis1-dR0p%03.0f",dR*1000)] = mayConsume<edm::ValueMap<float>>(edm::InputTag("QGVariables", Form("axis1-dR-0p%03.0f-pT-%.0f",dR*1000,float(500))));
+    jets -> qg_dR_tokens_f[Form("Gen-axis1-dR0p%03.0f",dR*1000)] = mayConsume<edm::ValueMap<float>>(edm::InputTag("QGVariables", Form("Gen-axis1-dR-0p%03.0f-pT-%.0f",dR*1000,float(500))));
+    
+    }
 
     obj.push_back(jets);
 
