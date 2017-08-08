@@ -6,6 +6,7 @@
 #include "NeroProducer/Nero/interface/NeroPF.hpp"
 #include "NeroProducer/Nero/interface/NeroVertex.hpp"
 #include "NeroProducer/Nero/interface/NeroEvent.hpp"
+#include "NeroProducer/Nero/interface/NeroMonteCarlo.hpp"
 
 
 // --- JEC UNCERTAINTY ---
@@ -63,6 +64,7 @@ class NeroJets : virtual public NeroCollection, virtual public BareJets
         NeroPF *pf;
         NeroVertex *vtx;
         NeroEvent *evt;
+        NeroMonteCarlo *mc;
         
         // JES
         void InitJes(const edm::EventSetup& iSetup);

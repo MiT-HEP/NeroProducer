@@ -150,9 +150,11 @@ if opts.status:
 	else: exit(1)
 
 ## to read
-EOS = "/afs/cern.ch/project/eos/installation/0.3.84-aquamarine/bin/eos.select"
+#EOS = "/afs/cern.ch/project/eos/installation/0.3.15/bin/eos.select"
 ## to write to
-EOS2 = "/afs/cern.ch/project/eos/installation/0.3.84-aquamarine/bin/eos.select " + opts.instance
+#EOS2 = "/afs/cern.ch/project/eos/installation/0.3.15/bin/eos.select " + opts.instance
+EOS="/usr/bin/eos"
+EOS2="/usr/bin/eos " + opts.instance
 
 ## check if working directory exists
 cmd = "[ -d "+ opts.dir+" ]"
