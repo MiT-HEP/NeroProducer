@@ -7,7 +7,30 @@
 
 #include <ctime>
 
+/********** FUNCTIONS **********/
+int ReMatch( const pat::Jet *jet , const edm::View<reco::GenParticle> *genp ,float dR=0.4)
+{
+    int pdg=0;
+    float ptMax=0.0;
+    for (const auto& gp : *genp)
+    {
+        int apdg=std::abs(gp.pdgId());
+        // consider only udscb g
+        if ( not (( apdg>=1 and apdg<6) or apdg==21)) continue;
+        // dR
+        if ( not (reco::deltaR(gp,*jet) <dR) ) continue;
+        // ptMax
+        if ( ptMax >= gp.pt() ) continue;
+        // update tmp values
+        ptMax=gp.pt();
+        pdg=gp.pdgId();
+    }
 
+    return pdg;
+}
+
+
+/********** FUNCTIONS **********/
 const reco::Candidate * getMother(const reco::Candidate * part){
     if(part==NULL){return NULL;}
     if(part->numberOfMothers()<1){return NULL;}
@@ -59,6 +82,20 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
     iEvent.getByToken(qg_token_nmult,qg_handle_nmult);
     iEvent.getByToken(qg_token_pt_dr_log,qg_handle_pt_dr_log);
 
+    map<string,edm::Handle<edm::ValueMap<float> > >  qg_handle_f ;
+    map<string,edm::Handle<edm::ValueMap<int> > >  qg_handle_i ;
+    for( const auto& dR: dRToProduce){
+        iEvent.getByToken( qg_dR_tokens_f[Form("axis2-dR0p%03.0f",dR*1000)] , qg_handle_f[Form("axis2-dR0p%03.0f",dR*1000)]) ;
+        iEvent.getByToken( qg_dR_tokens_f[Form("Gen-axis2-dR0p%03.0f",dR*1000)] , qg_handle_f[Form("Gen-axis2-dR0p%03.0f",dR*1000)]) ;
+        iEvent.getByToken( qg_dR_tokens_f[Form("axis1-dR0p%03.0f",dR*1000)] , qg_handle_f[Form("axis1-dR0p%03.0f",dR*1000)]) ;
+        iEvent.getByToken( qg_dR_tokens_f[Form("Gen-axis1-dR0p%03.0f",dR*1000)] , qg_handle_f[Form("Gen-axis1-dR0p%03.0f",dR*1000)]) ;
+        iEvent.getByToken( qg_dR_tokens_f[Form("ptD-dR0p%03.0f",dR*1000)] , qg_handle_f[Form("ptD-dR0p%03.0f",dR*1000)]) ;
+        iEvent.getByToken( qg_dR_tokens_f[Form("Gen-ptD-dR0p%03.0f",dR*1000)] , qg_handle_f[Form("Gen-ptD-dR0p%03.0f",dR*1000)]) ;
+
+        iEvent.getByToken( qg_dR_tokens_i[Form("mult-dR0p%03.0f",dR*1000)] , qg_handle_i[Form("mult-dR0p%03.0f",dR*1000)]) ;
+        iEvent.getByToken( qg_dR_tokens_i[Form("Gen-mult-dR0p%03.0f",dR*1000)] , qg_handle_i[Form("Gen-mult-dR0p%03.0f",dR*1000)]) ;
+    }
+
     // -- need to init JES here, where there is the iSetup
     InitJes(iSetup);
 
@@ -75,6 +112,45 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
         edm::RefToBase<pat::Jet> jetRef(edm::Ref<pat::JetCollection>(handle, ijetRef) );
         float qgLikelihood = (*qg_handle)[jetRef];
 
+        for(const auto & dR : dRToProduce)
+        {
+            qglMult_dR[Form("0p%03.0f",dR*1000)]	    ->push_back((*qg_handle_i[Form("mult-dR0p%03.0f",dR*1000)])[jetRef]);
+            qglPtD_dR[Form("0p%03.0f",dR*1000)]	    ->push_back((*qg_handle_f[Form("ptD-dR0p%03.0f",dR*1000)])[jetRef]);
+            qglAxis2_dR[Form("0p%03.0f",dR*1000)]	    ->push_back((*qg_handle_f[Form("axis2-dR0p%03.0f",dR*1000)])[jetRef]);
+            qglAxis1_dR[Form("0p%03.0f",dR*1000)]	    ->push_back((*qg_handle_f[Form("axis1-dR0p%03.0f",dR*1000)])[jetRef]);
+        }
+
+        if (not iEvent.isRealData())
+        {
+
+            edm::Handle<reco::GenJetCollection> gen_handle;
+            iEvent.getByToken(gen_token, gen_handle);
+            int igenjetRef = -1;
+            bool matched=false;
+            for(const auto& gj: *gen_handle)
+            {
+                igenjetRef+=1;
+                if (reco::deltaR(gj,j)<0.4 ) {matched=true;break;}
+            }
+            edm::RefToBase<reco::GenJet> genjetRef(edm::Ref<reco::GenJetCollection>(gen_handle, igenjetRef) );
+            if (matched){
+                for(const auto & dR : dRToProduce)
+                {
+                    qglGenMult_dR[Form("0p%03.0f",dR*1000)]	->push_back((*qg_handle_i[Form("Gen-mult-dR0p%03.0f",dR*1000)])[genjetRef]);
+                    qglGenPtD_dR[Form("0p%03.0f",dR*1000)]	->push_back((*qg_handle_f[Form("Gen-ptD-dR0p%03.0f",dR*1000)])[genjetRef]);
+                    qglGenAxis2_dR[Form("0p%03.0f",dR*1000)]	->push_back((*qg_handle_f[Form("Gen-axis2-dR0p%03.0f",dR*1000)])[genjetRef]);
+                    qglGenAxis1_dR[Form("0p%03.0f",dR*1000)]	->push_back((*qg_handle_f[Form("Gen-axis1-dR0p%03.0f",dR*1000)])[genjetRef]);
+                }
+            }else{
+                for(const auto & dR : dRToProduce)
+                {
+                    qglGenMult_dR[Form("0p%03.0f",dR*1000)]	->push_back(-999);
+                    qglGenPtD_dR[Form("0p%03.0f",dR*1000)]	->push_back(-999);
+                    qglGenAxis2_dR[Form("0p%03.0f",dR*1000)]	->push_back(-999);
+                    qglGenAxis1_dR[Form("0p%03.0f",dR*1000)]	->push_back(-999);
+                }
+            }
+        }
 
         // Generator-level Info [Charged-H specific]
         int jetMatchedPartonPdgId_I = 0;
@@ -89,7 +165,9 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
             if(!(jetGen == NULL)){jetMatchedPartonPdgId_I = jetGen->pdgId();}
             if(!(jetMother == 0)){motherPdgId_I = jetMother->pdgId();}
             if(!(jetGrMother == 0)){grMotherPdgId_I = jetGrMother->pdgId();}
-            jetFlavour_I = j.partonFlavour();
+            //jetFlavour_I = j.partonFlavour();
+            
+            jetFlavour_I = ReMatch( &j, &*mc->pruned_handle );
         }
 
         float charge =  0.;

@@ -38,7 +38,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxE
 if len(options.inputFiles) == 0:
     if isData:
         options.inputFiles = [
-            '/store/data/Run2016G/DoubleMuon/MINIAOD/03Feb2017-v1/100000/C244C67E-21EB-E611-B964-001E67E0061C.root'
+            '/store/data/Run2016B/DoubleMuon/MINIAOD/18Apr2017_ver2-v1/120000/AA011747-5A35-E711-95B4-FA163E5D3E21.root'
         ]
     else:
         options.inputFiles = [
@@ -76,7 +76,7 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condD
 
 if (isData):
     # sept reprocessing
-    process.GlobalTag.globaltag = '80X_dataRun2_2016SeptRepro_v7'
+    process.GlobalTag.globaltag = '80X_dataRun2_2016LegacyRepro_v3'
 else:
     ## tranch IV v6
     process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_TrancheIV_v8'
@@ -105,54 +105,54 @@ process.load("RecoEgamma/ElectronIdentification/ElectronIDValueMapProducer_cfi")
 ############################### JEC #####################
 #### Load from a sqlite db, if not read from the global tag
 #process.load("CondCore.DBCommon.CondDBCommon_cfi")
-from CondCore.DBCommon.CondDBSetup_cfi import *
-
-if options.isData:
-    connectString = cms.string('sqlite:jec/Summer16_23Sep2016AllV4_DATA.db')
-    tagName = 'Summer16_23Sep2016AllV4_DATA_AK4PFchs'
-    tagNamePuppi = 'Summer16_23Sep2016AllV4_DATA_AK4PFPuppi'
-else:
-    connectString = cms.string('sqlite:jec/Summer16_23Sep2016V4_MC.db')
-    tagName = 'Summer16_23Sep2016V4_MC_AK4PFchs'
-    tagNamePuppi = 'Summer16_23Sep2016V4_MC_AK4PFPuppi'
-#data only, mc hard coded
+### from CondCore.DBCommon.CondDBSetup_cfi import *
+### 
+### if options.isData:
+###     connectString = cms.string('sqlite:jec/Summer16_23Sep2016AllV4_DATA.db')
+###     tagName = 'Summer16_23Sep2016AllV4_DATA_AK4PFchs'
+###     tagNamePuppi = 'Summer16_23Sep2016AllV4_DATA_AK4PFPuppi'
+### else:
+###     connectString = cms.string('sqlite:jec/Summer16_23Sep2016V4_MC.db')
+###     tagName = 'Summer16_23Sep2016V4_MC_AK4PFchs'
+###     tagNamePuppi = 'Summer16_23Sep2016V4_MC_AK4PFPuppi'
+### #data only, mc hard coded
 process.nero.chsAK8JEC = cms.string("jec/Summer16_23Sep2016BCDV4")
-
-
-process.jec = cms.ESSource("PoolDBESSource",
-      DBParameters = cms.PSet(
-        messageLevel = cms.untracked.int32(0)
-        ),
-      timetype = cms.string('runnumber'),
-      toGet = cms.VPSet(
-      cms.PSet(
-            record = cms.string('JetCorrectionsRecord'),
-            tag    = cms.string('JetCorrectorParametersCollection_%s'%tagName),
-            label  = cms.untracked.string('AK4PFchs')
-            ),
-      cms.PSet( ## AK8
-            record = cms.string('JetCorrectionsRecord'),
-            tag    = cms.string('JetCorrectorParametersCollection_%s'%re.sub('AK4','AK8',tagName)),
-            label  = cms.untracked.string('AK8PFchs')
-            ),
-      cms.PSet(#puppi
-            record = cms.string('JetCorrectionsRecord'),
-            tag    = cms.string('JetCorrectorParametersCollection_%s'%tagNamePuppi),
-            label  = cms.untracked.string('AK4PFPuppi')
-            ),
-      cms.PSet( ## AK8 puppi
-            record = cms.string('JetCorrectionsRecord'),
-            tag    = cms.string('JetCorrectorParametersCollection_%s'%re.sub('AK4','AK8',tagNamePuppi)),
-            label  = cms.untracked.string('AK8PFPuppi')
-            ),
-      ## here you add as many jet types as you need
-      ## note that the tag name is specific for the particular sqlite file 
-      ), 
-      connect = connectString
-     # uncomment above tag lines and this comment to use MC JEC
-)
-## add an es_prefer statement to resolve a possible conflict from simultaneous connection to a global tag
-process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
+### 
+### 
+### process.jec = cms.ESSource("PoolDBESSource",
+###       DBParameters = cms.PSet(
+###         messageLevel = cms.untracked.int32(0)
+###         ),
+###       timetype = cms.string('runnumber'),
+###       toGet = cms.VPSet(
+###       cms.PSet(
+###             record = cms.string('JetCorrectionsRecord'),
+###             tag    = cms.string('JetCorrectorParametersCollection_%s'%tagName),
+###             label  = cms.untracked.string('AK4PFchs')
+###             ),
+###       cms.PSet( ## AK8
+###             record = cms.string('JetCorrectionsRecord'),
+###             tag    = cms.string('JetCorrectorParametersCollection_%s'%re.sub('AK4','AK8',tagName)),
+###             label  = cms.untracked.string('AK8PFchs')
+###             ),
+###       cms.PSet(#puppi
+###             record = cms.string('JetCorrectionsRecord'),
+###             tag    = cms.string('JetCorrectorParametersCollection_%s'%tagNamePuppi),
+###             label  = cms.untracked.string('AK4PFPuppi')
+###             ),
+###       cms.PSet( ## AK8 puppi
+###             record = cms.string('JetCorrectionsRecord'),
+###             tag    = cms.string('JetCorrectorParametersCollection_%s'%re.sub('AK4','AK8',tagNamePuppi)),
+###             label  = cms.untracked.string('AK8PFPuppi')
+###             ),
+###       ## here you add as many jet types as you need
+###       ## note that the tag name is specific for the particular sqlite file 
+###       ), 
+###       connect = connectString
+###      # uncomment above tag lines and this comment to use MC JEC
+### )
+### ## add an es_prefer statement to resolve a possible conflict from simultaneous connection to a global tag
+### process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 
 #------------------- JER -----------------
 print "TODO: Update JER"
@@ -199,32 +199,32 @@ process.es_prefer_jer = cms.ESPrefer('PoolDBESSource', 'jer')
 
 ################ end sqlite connection
 #### RECOMPUTE JEC From GT ###
-from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
- 
-jecLevels= ['L1FastJet',  'L2Relative', 'L3Absolute']
-if options.isData:
-        jecLevels =['L1FastJet',  'L2Relative', 'L3Absolute', 'L2L3Residual']
- 
-updateJetCollection(
-    process,
-    jetSource = process.nero.jets,
-    labelName = 'UpdatedJEC',
-    jetCorrections = ('AK4PFchs', cms.vstring(jecLevels), 'None')  # Do not forget 'L2L3Residual' on data!
-)
-
-updateJetCollection(
-    process,
-    jetSource = process.nero.chsAK8,
-    labelName = 'UpdatedJECAK8',
-    jetCorrections = ('AK8PFchs', cms.vstring(jecLevels), 'None')  # Do not forget 'L2L3Residual' on data!
-)
-
-print "-> Updating the jets collection to run on to 'updatedPatJetsUpdatedJEC' with the new jec in the GT"
-process.nero.jets=cms.InputTag('updatedPatJetsUpdatedJEC')
-process.nero.chsAK8=cms.InputTag('updatedPatJetsUpdatedJECAK8')
-process.jecSequence = cms.Sequence( process.patJetCorrFactorsUpdatedJEC* process.updatedPatJetsUpdatedJEC 
-        * process.patJetCorrFactorsUpdatedJECAK8* process.updatedPatJetsUpdatedJECAK8
-        )
+### from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
+###  
+### jecLevels= ['L1FastJet',  'L2Relative', 'L3Absolute']
+### if options.isData:
+###         jecLevels =['L1FastJet',  'L2Relative', 'L3Absolute', 'L2L3Residual']
+###  
+### updateJetCollection(
+###     process,
+###     jetSource = process.nero.jets,
+###     labelName = 'UpdatedJEC',
+###     jetCorrections = ('AK4PFchs', cms.vstring(jecLevels), 'None')  # Do not forget 'L2L3Residual' on data!
+### )
+### 
+### updateJetCollection(
+###     process,
+###     jetSource = process.nero.chsAK8,
+###     labelName = 'UpdatedJECAK8',
+###     jetCorrections = ('AK8PFchs', cms.vstring(jecLevels), 'None')  # Do not forget 'L2L3Residual' on data!
+### )
+### 
+### print "-> Updating the jets collection to run on to 'updatedPatJetsUpdatedJEC' with the new jec in the GT"
+### process.nero.jets=cms.InputTag('updatedPatJetsUpdatedJEC')
+### process.nero.chsAK8=cms.InputTag('updatedPatJetsUpdatedJECAK8')
+### process.jecSequence = cms.Sequence( process.patJetCorrFactorsUpdatedJEC* process.updatedPatJetsUpdatedJEC 
+###         * process.patJetCorrFactorsUpdatedJECAK8* process.updatedPatJetsUpdatedJECAK8
+###         )
 
 ########### MET Filter ################
 process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
@@ -238,10 +238,10 @@ process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidate
 process.BadChargedCandidateFilter.taggingMode = cms.bool(True)
 
 ############ RECOMPUTE MET #######################
-from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
-runMetCorAndUncFromMiniAOD(process,
-           isData=isData,
-           )
+### from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+### runMetCorAndUncFromMiniAOD(process,
+###            isData=isData,
+###            )
 
 #We no longer need to do this as the input collection needs to be change and is properly corrected out of the box. 
 #We do the above mention thing for the sake of the puppi met. (it has some small dependence in scheduled mode)
@@ -254,56 +254,56 @@ runMetCorAndUncFromMiniAOD(process,
 
 ############ RUN Muon Fixed MET CLUSTERING ##########################                                                                    
 
-process.load('RecoMET.METFilters.badGlobalMuonTaggersMiniAOD_cff')
-process.badGlobalMuonTaggerMAOD.taggingMode = cms.bool(True)
-process.cloneGlobalMuonTaggerMAOD.taggingMode = cms.bool(True)
-
-process.mucorMET = cms.Sequence()
-
-if not isData:
-    from PhysicsTools.PatUtils.tools.muonRecoMitigation import muonRecoMitigation
-
-
-    muonRecoMitigation(process,
-                       pfCandCollection="packedPFCandidates",
-                       runOnMiniAOD=True,
-                       muonCollection="",
-                       selection="",
-                       cleaningScheme="all",
-                       postfix="")
-    
-    runMetCorAndUncFromMiniAOD(process,
-                               isData=isData,
-                               pfCandColl="cleanMuonsPFCandidates",
-                               recoMetFromPFCs=True,
-                               postfix="MuClean"
-                               )
-    
-    process.mucorMET = cms.Sequence(                     
-        process.badGlobalMuonTaggerMAOD *
-        process.cloneGlobalMuonTaggerMAOD *
-        process.badMuons * # If you are using cleaning mode "all", uncomment this line
-        process.cleanMuonsPFCandidates *
-        process.fullPatMetSequenceMuClean
-        )
-    
-    
-    process.nero.metscleanmu=cms.InputTag('slimmedMETsMuClean','','nero')
-    process.nero.mets=cms.InputTag("slimmedMETs")
+#### process.load('RecoMET.METFilters.badGlobalMuonTaggersMiniAOD_cff')
+#### process.badGlobalMuonTaggerMAOD.taggingMode = cms.bool(True)
+#### process.cloneGlobalMuonTaggerMAOD.taggingMode = cms.bool(True)
+#### 
+#### process.mucorMET = cms.Sequence()
+#### 
+#### if not isData:
+####     from PhysicsTools.PatUtils.tools.muonRecoMitigation import muonRecoMitigation
+#### 
+#### 
+####     muonRecoMitigation(process,
+####                        pfCandCollection="packedPFCandidates",
+####                        runOnMiniAOD=True,
+####                        muonCollection="",
+####                        selection="",
+####                        cleaningScheme="all",
+####                        postfix="")
+####     
+####     runMetCorAndUncFromMiniAOD(process,
+####                                isData=isData,
+####                                pfCandColl="cleanMuonsPFCandidates",
+####                                recoMetFromPFCs=True,
+####                                postfix="MuClean"
+####                                )
+####     
+####     process.mucorMET = cms.Sequence(                     
+####         process.badGlobalMuonTaggerMAOD *
+####         process.cloneGlobalMuonTaggerMAOD *
+####         process.badMuons * # If you are using cleaning mode "all", uncomment this line
+####         process.cleanMuonsPFCandidates *
+####         process.fullPatMetSequenceMuClean
+####         )
+####     
+####     
+####     process.nero.metscleanmu=cms.InputTag('slimmedMETsMuClean','','nero')
+####     process.nero.mets=cms.InputTag("slimmedMETs")
 
 ############ RUN Puppi MET CLUSTERING ##########################
 
-from PhysicsTools.PatAlgos.slimming.puppiForMET_cff import makePuppiesFromMiniAOD
-makePuppiesFromMiniAOD( process, True );
-
-runMetCorAndUncFromMiniAOD(process,
-                              isData=options.isData,
-                              metType="Puppi",
-                              pfCandColl=cms.InputTag("puppiForMET"),
-                              recoMetFromPFCs=True,
-                              jetFlavor="AK4PFPuppi",
-                              postfix="Puppi"
-                              )
+### from PhysicsTools.PatAlgos.slimming.puppiForMET_cff import makePuppiesFromMiniAOD
+### makePuppiesFromMiniAOD( process, True );
+### 
+### runMetCorAndUncFromMiniAOD(process,
+###                               isData=options.isData,
+###                               metType="Puppi",
+###                               pfCandColl=cms.InputTag("puppiForMET"),
+###                               recoMetFromPFCs=True,
+###                               jetFlavor="AK4PFPuppi",
+###                               postfix="Puppi"
+###                               )
 #-----------------------ELECTRON ID-------------------------------
 from NeroProducer.Nero.egammavid_cfi import *
 
@@ -314,42 +314,42 @@ initEGammaVID(process,options)
 ## turn off the existing weight usage for the spring16 monte carlo
 ## this slows the computation by x2, but is necessary
 
-process.puppiNoLep.useExistingWeights = False
-process.puppi.useExistingWeights = False
-process.puppiForMET.photonId = process.nero.phoLooseIdMap
+##process.puppiNoLep.useExistingWeights = True
+##process.puppi.useExistingWeights = True
+##process.puppiForMET.photonId = process.nero.phoLooseIdMap
 
-print "-> Updating the puppi met collection to run on to 'slimmedMETsPuppi with nero' with the new jec in the GT for Type1"
-process.nero.metsPuppi=cms.InputTag('slimmedMETsPuppi','','nero')
+#print "-> Updating the puppi met collection to run on to 'slimmedMETsPuppi with nero' with the new jec in the GT for Type1"
+#process.nero.metsPuppi=cms.InputTag('slimmedMETsPuppi','','nero')
 
 ############### REGRESSION EGM #############
-process.load('EgammaAnalysis.ElectronTools.regressionApplication_cff')
-from EgammaAnalysis.ElectronTools.regressionWeights_cfi import regressionWeights
-process = regressionWeights(process)
-
-########## EGM Smear and Scale ###
-process.load('Configuration.StandardSequences.Services_cff')
-process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService",
-        calibratedPatElectrons  = cms.PSet( initialSeed = cms.untracked.uint32(81),
-            engineName = cms.untracked.string('TRandom3'),
-            ),
-        calibratedPatPhotons  = cms.PSet( initialSeed = cms.untracked.uint32(81),
-            engineName = cms.untracked.string('TRandom3'),
-            ),
-        )
-process.load('EgammaAnalysis.ElectronTools.calibratedElectronsRun2_cfi')
-process.load('EgammaAnalysis.ElectronTools.calibratedPhotonsRun2_cfi')
-process.calibratedPatElectrons.electrons=process.nero.electrons
-process.calibratedPatPhotons.photons= process.nero.photons
-process.nero.electrons =  cms.InputTag("calibratedPatElectrons")
-process.nero.photons = cms.InputTag("calibratedPatPhotons")
-if isData:
-    process.calibratedPatElectrons.isMC = cms.bool(False)
-    process.calibratedPatPhotons.isMC = cms.bool(False)
-else:
-    process.calibratedPatElectrons.isMC = cms.bool(True)
-    process.calibratedPatPhotons.isMC = cms.bool(True)
-print "-> Updating slimmedElectrons and slimmedPhotons to calibratedPatElectrons and calibratedPatPhotons"
-print "   ",process.nero.photons, process.nero.electrons
+### process.load('EgammaAnalysis.ElectronTools.regressionApplication_cff')
+### from EgammaAnalysis.ElectronTools.regressionWeights_cfi import regressionWeights
+### process = regressionWeights(process)
+### 
+### ########## EGM Smear and Scale ###
+### process.load('Configuration.StandardSequences.Services_cff')
+### process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService",
+###         calibratedPatElectrons  = cms.PSet( initialSeed = cms.untracked.uint32(81),
+###             engineName = cms.untracked.string('TRandom3'),
+###             ),
+###         calibratedPatPhotons  = cms.PSet( initialSeed = cms.untracked.uint32(81),
+###             engineName = cms.untracked.string('TRandom3'),
+###             ),
+###         )
+### process.load('EgammaAnalysis.ElectronTools.calibratedElectronsRun2_cfi')
+### process.load('EgammaAnalysis.ElectronTools.calibratedPhotonsRun2_cfi')
+### process.calibratedPatElectrons.electrons=process.nero.electrons
+### process.calibratedPatPhotons.photons= process.nero.photons
+### process.nero.electrons =  cms.InputTag("calibratedPatElectrons")
+### process.nero.photons = cms.InputTag("calibratedPatPhotons")
+### if isData:
+###     process.calibratedPatElectrons.isMC = cms.bool(False)
+###     process.calibratedPatPhotons.isMC = cms.bool(False)
+### else:
+###     process.calibratedPatElectrons.isMC = cms.bool(True)
+###     process.calibratedPatPhotons.isMC = cms.bool(True)
+### print "-> Updating slimmedElectrons and slimmedPhotons to calibratedPatElectrons and calibratedPatPhotons"
+### print "   ",process.nero.photons, process.nero.electrons
 #######################################
 
 # modify electrons Input Tags
@@ -362,9 +362,9 @@ process.egmPhotonIsolation.srcToIsolate = process.nero.photons
 process.egmPhotonIDs.physicsObjectSrc = process.nero.photons
 process.photonIDValueMapProducer.srcMiniAOD= process.nero.photons
 process.photonMVAValueMapProducer.srcMiniAOD= process.nero.photons 
-process.puppiForMET.photonName  = process.nero.photons
-process.puppiPhoton.photonName = process.nero.photons 
-process.modifiedPhotons.src  = process.nero.photons
+#process.puppiForMET.photonName  = process.nero.photons
+#process.puppiPhoton.photonName = process.nero.photons 
+#process.modifiedPhotons.src  = process.nero.photons
 
 # ------------------------QG-----------------------------------------------
 # after jec, because need to be run on the corrected (latest) jet collection
@@ -445,27 +445,32 @@ if options.isParticleGun:
 	## this option is for the embedding informations
 	process.nero.extendEvent = cms.untracked.bool(False)
 
+process.load('NeroProducer.Skim.QGVariablesSequence_cff')
+process.QGVariables.srcJets = process.nero.jets
+process.QGVariables.srcGenJets = cms.InputTag("slimmedGenJets")
+process.QGVariables.isData = cms.bool(isData)
 ##DEBUG
 ##print "Process=",process, process.__dict__.keys()
 #------------------------------------------------------
 process.p = cms.Path(
                 process.infoProducerSequence *
-                process.regressionApplication *
-                process.calibratedPatElectrons  *
-                process.calibratedPatPhotons *
+                #process.regressionApplication *
+                #process.calibratedPatElectrons  *
+                #process.calibratedPatPhotons *
                 process.egmGsfElectronIDSequence *
                 process.egmPhotonIDSequence * ## this is overwritten by puppi/met configuration
                 process.photonIDValueMapProducer * ## ISO MAP FOR PHOTONS
                 process.electronIDValueMapProducer *  ## ISO MAP FOR PHOTONS
-                process.jecSequence *
+                #process.jecSequence *
                 process.QGTagger    * ## after jec, because it will produce the new jet collection
-                process.fullPatMetSequence *## no puppi
-                process.mucorMET * 
-                process.puppiMETSequence * #puppi candidate producer
-                process.fullPatMetSequencePuppi * ## full puppi sequence
+                #process.fullPatMetSequence *## no puppi
+                #process.mucorMET * 
+                #process.puppiMETSequence * #puppi candidate producer
+                #process.fullPatMetSequencePuppi * ## full puppi sequence
                 process.BadPFMuonFilter *
                 process.BadChargedCandidateFilter * 
                 process.ttbarcat *
+                process.QGVariablesSequence*
                 process.nero
                 )
 

@@ -81,30 +81,6 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     obj.push_back (pf);
 
 
-    //now do what ever initialization is needed
-    NeroJets *jets = new NeroJets();
-    jets -> mOnlyMc = onlyMc;
-    jets -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("jets"));
-    jets -> qg_token = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "qgLikelihood"));
-    jets -> mMinPt = iConfig.getParameter<double>("minJetPt");
-    jets -> mMinNjets = iConfig.getParameter<int>("minJetN");
-    jets -> mMinEta = iConfig.getParameter<double>("minJetEta");
-    jets -> mMinId = iConfig.getParameter<string>("minJetId");
-    jets -> SetMatch( iConfig.getParameter<bool>("matchJet") );
-    jets -> pf = pf;
-    jets -> vtx = vtx;
-    jets -> evt = evt;
-    jets -> cachedPrefix = "";
-
-    jets -> qg_token_Mult = consumes<edm::ValueMap<int>>(edm::InputTag("QGTagger", "mult"));
-    jets -> qg_token_PtD = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "ptD"));
-    jets -> qg_token_Axis2 = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "axis2"));
-    jets -> qg_token_Axis1 = mayConsume<edm::ValueMap<float>>(edm::InputTag("QGTagger", "axis1"));
-    jets -> qg_token_pt_dr_log = mayConsume<edm::ValueMap<float>>(edm::InputTag("QGTagger", "ptDrLog"));
-    jets -> qg_token_cmult = mayConsume<edm::ValueMap<int>>(edm::InputTag("QGTagger", "cmult"));
-    jets -> qg_token_nmult = mayConsume<edm::ValueMap<int>>(edm::InputTag("QGTagger", "nmult"));
-
-    obj.push_back(jets);
 
     NeroPuppiJets *puppijets = new NeroPuppiJets();
     puppijets -> mOnlyMc = onlyMc;
@@ -202,12 +178,72 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     met -> token = consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("mets"));
     met -> pf = pf;
     met -> token_puppi = consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("metsPuppi"));
-    met -> token_cleanmu = consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("metscleanmu"));
-    met -> token_cleaneg = consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("metscleaneg"));
-    met -> token_unclean = consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("metsunclean"));
     met -> SetExtend (iConfig.getParameter<bool>("extendMet"));
     obj.push_back(met);
 
+
+
+    NeroMonteCarlo *mc = new NeroMonteCarlo();
+    mc -> mOnlyMc = onlyMc;
+    mc -> SetExtend ( iConfig.getUntrackedParameter<bool>("extendMonteCarlo",false) );
+    mc -> packed_token = consumes<edm::View<pat::PackedGenParticle> >(iConfig.getParameter<edm::InputTag>("packedgen"));
+    mc -> pruned_token = consumes<edm::View<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("prunedgen")) ;
+    mc -> info_token   = consumes<GenEventInfoProduct>(iConfig.getParameter<edm::InputTag>("generator"));
+    mc -> lhe_token   = mayConsume<LHEEventProduct>(iConfig.getParameter<edm::InputTag>("lhe"));//LHEEventProduct_externalLHEProducer__LHE
+    mc -> pu_token     = consumes<std::vector<PileupSummaryInfo> >(iConfig.getParameter<edm::InputTag>("pileup"));
+    mc -> jet_token    = consumes<reco::GenJetCollection>(iConfig.getParameter<edm::InputTag>("genjets"));
+    mc -> runinfo_token = consumes<GenRunInfoProduct,edm::InRun>(iConfig.getParameter<edm::InputTag>("genruninfo") );
+    mc -> mMinGenParticlePt = iConfig.getParameter<double>("minGenParticlePt");
+    mc -> mMinGenJetPt = iConfig.getParameter<double>("minGenJetPt");
+    mc -> mParticleGun = iConfig.getUntrackedParameter<bool>("particleGun",false);
+    // match
+    mc -> genBHadFlavour_token = consumes<std::vector<int> > (edm::InputTag("matchGenBHadron", "genBHadFlavour"));
+    mc -> genCHadJetIndex_token = consumes<std::vector<int> > (edm::InputTag("matchGenCHadron", "genCHadJetIndex"));
+    mc -> genCHadBHadronId_token = consumes<std::vector<int> > (edm::InputTag("matchGenCHadron", "genCHadBHadronId"));
+    mc -> genTtbarId_token = consumes<int> (edm::InputTag("categorizeGenTtbar", "genTtbarId"));
+
+    obj.push_back(mc);
+    runObj.push_back(mc);
+
+    //now do what ever initialization is needed
+    NeroJets *jets = new NeroJets();
+    jets -> mOnlyMc = onlyMc;
+    jets -> token = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("jets"));
+    jets -> qg_token = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "qgLikelihood"));
+    jets -> mMinPt = iConfig.getParameter<double>("minJetPt");
+    jets -> mMinNjets = iConfig.getParameter<int>("minJetN");
+    jets -> mMinEta = iConfig.getParameter<double>("minJetEta");
+    jets -> mMinId = iConfig.getParameter<string>("minJetId");
+    jets -> SetMatch( iConfig.getParameter<bool>("matchJet") );
+    jets -> pf = pf;
+    jets -> vtx = vtx;
+    jets -> evt = evt;
+    jets -> mc = mc;
+    jets -> cachedPrefix = "";
+
+    jets -> qg_token_Mult = consumes<edm::ValueMap<int>>(edm::InputTag("QGTagger", "mult"));
+    jets -> qg_token_PtD = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "ptD"));
+    jets -> qg_token_Axis2 = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "axis2"));
+    jets -> qg_token_Axis1 = mayConsume<edm::ValueMap<float>>(edm::InputTag("QGTagger", "axis1"));
+    jets -> qg_token_pt_dr_log = mayConsume<edm::ValueMap<float>>(edm::InputTag("QGTagger", "ptDrLog"));
+    jets -> qg_token_cmult = mayConsume<edm::ValueMap<int>>(edm::InputTag("QGTagger", "cmult"));
+    jets -> qg_token_nmult = mayConsume<edm::ValueMap<int>>(edm::InputTag("QGTagger", "nmult"));
+    jets -> gen_token    = mayConsume<reco::GenJetCollection>(iConfig.getParameter<edm::InputTag>("genjets"));
+    for(const auto& dR: jets->dRToProduce)
+    {
+    jets -> qg_dR_tokens_i[Form("mult-dR0p%03.0f",dR*1000)] = mayConsume<edm::ValueMap<int>>(edm::InputTag("QGVariables", Form("mult-dR-0p%03.0f-pT-%.0f",dR*1000,float(500))));
+    jets -> qg_dR_tokens_i[Form("Gen-mult-dR0p%03.0f",dR*1000)] = mayConsume<edm::ValueMap<int>>(edm::InputTag("QGVariables", Form("Gen-mult-dR-0p%03.0f-pT-%.0f",dR*1000,float(500))));
+
+    jets -> qg_dR_tokens_f[Form("axis2-dR0p%03.0f",dR*1000)] = mayConsume<edm::ValueMap<float>>(edm::InputTag("QGVariables", Form("axis2-dR-0p%03.0f-pT-%.0f",dR*1000,float(500))));
+    jets -> qg_dR_tokens_f[Form("Gen-axis2-dR0p%03.0f",dR*1000)] = mayConsume<edm::ValueMap<float>>(edm::InputTag("QGVariables", Form("Gen-axis2-dR-0p%03.0f-pT-%.0f",dR*1000,float(500))));
+    jets -> qg_dR_tokens_f[Form("ptD-dR0p%03.0f",dR*1000)] = mayConsume<edm::ValueMap<float>>(edm::InputTag("QGVariables", Form("ptD-dR-0p%03.0f-pT-%.0f",dR*1000,float(500))));
+    jets -> qg_dR_tokens_f[Form("Gen-ptD-dR0p%03.0f",dR*1000)] = mayConsume<edm::ValueMap<float>>(edm::InputTag("QGVariables", Form("Gen-ptD-dR-0p%03.0f-pT-%.0f",dR*1000,float(500))));
+    jets -> qg_dR_tokens_f[Form("axis1-dR0p%03.0f",dR*1000)] = mayConsume<edm::ValueMap<float>>(edm::InputTag("QGVariables", Form("axis1-dR-0p%03.0f-pT-%.0f",dR*1000,float(500))));
+    jets -> qg_dR_tokens_f[Form("Gen-axis1-dR0p%03.0f",dR*1000)] = mayConsume<edm::ValueMap<float>>(edm::InputTag("QGVariables", Form("Gen-axis1-dR-0p%03.0f-pT-%.0f",dR*1000,float(500))));
+    
+    }
+
+    obj.push_back(jets);
 
     // --
     NeroPhotons *phos = new NeroPhotons();
@@ -243,28 +279,6 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     //phos->PhoCorr -> doScale= true;
     
     obj.push_back(phos);
-
-    NeroMonteCarlo *mc = new NeroMonteCarlo();
-    mc -> mOnlyMc = onlyMc;
-    mc -> SetExtend ( iConfig.getUntrackedParameter<bool>("extendMonteCarlo",false) );
-    mc -> packed_token = consumes<edm::View<pat::PackedGenParticle> >(iConfig.getParameter<edm::InputTag>("packedgen"));
-    mc -> pruned_token = consumes<edm::View<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("prunedgen")) ;
-    mc -> info_token   = consumes<GenEventInfoProduct>(iConfig.getParameter<edm::InputTag>("generator"));
-    mc -> lhe_token   = mayConsume<LHEEventProduct>(iConfig.getParameter<edm::InputTag>("lhe"));//LHEEventProduct_externalLHEProducer__LHE
-    mc -> pu_token     = consumes<std::vector<PileupSummaryInfo> >(iConfig.getParameter<edm::InputTag>("pileup"));
-    mc -> jet_token    = consumes<reco::GenJetCollection>(iConfig.getParameter<edm::InputTag>("genjets"));
-    mc -> runinfo_token = consumes<GenRunInfoProduct,edm::InRun>(iConfig.getParameter<edm::InputTag>("genruninfo") );
-    mc -> mMinGenParticlePt = iConfig.getParameter<double>("minGenParticlePt");
-    mc -> mMinGenJetPt = iConfig.getParameter<double>("minGenJetPt");
-    mc -> mParticleGun = iConfig.getUntrackedParameter<bool>("particleGun",false);
-    // match
-    mc -> genBHadFlavour_token = consumes<std::vector<int> > (edm::InputTag("matchGenBHadron", "genBHadFlavour"));
-    mc -> genCHadJetIndex_token = consumes<std::vector<int> > (edm::InputTag("matchGenCHadron", "genCHadJetIndex"));
-    mc -> genCHadBHadronId_token = consumes<std::vector<int> > (edm::InputTag("matchGenCHadron", "genCHadBHadronId"));
-    mc -> genTtbarId_token = consumes<int> (edm::InputTag("categorizeGenTtbar", "genTtbarId"));
-
-    obj.push_back(mc);
-    runObj.push_back(mc);
 
     NeroMatching *match = new NeroMatching();
         match -> jets_ = jets;
