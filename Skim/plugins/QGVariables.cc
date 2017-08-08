@@ -79,11 +79,11 @@ class QGVariables : public edm::EDProducer{
 
 /// Function to put product into event
 template <typename T,typename J> void QGVariables::putInEvent(std::string name, const edm::Handle< J >& jets, std::vector<T>* product, edm::Event& iEvent){
-  std::auto_ptr<edm::ValueMap<T>> out(new edm::ValueMap<T>());
+  std::unique_ptr<edm::ValueMap<T>> out(new edm::ValueMap<T>());
   typename edm::ValueMap<T>::Filler filler(*out);
   filler.insert(jets, product->begin(), product->end());
   filler.fill();
-  iEvent.put(out, name);
+  iEvent.put(std::move(out), name);
   delete product;
 }
 
