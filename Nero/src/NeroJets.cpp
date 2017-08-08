@@ -7,7 +7,30 @@
 
 #include <ctime>
 
+/********** FUNCTIONS **********/
+int ReMatch( const pat::Jet *jet , const edm::View<reco::GenParticle> *genp ,float dR=0.4)
+{
+    int pdg=0;
+    float ptMax=0.0;
+    for (const auto& gp : *genp)
+    {
+        int apdg=std::abs(gp.pdgId());
+        // consider only udscb g
+        if ( not (( apdg>=1 and apdg<6) or apdg==21)) continue;
+        // dR
+        if ( not (reco::deltaR(gp,*jet) <dR) ) continue;
+        // ptMax
+        if ( ptMax >= gp.pt() ) continue;
+        // update tmp values
+        ptMax=gp.pt();
+        pdg=gp.pdgId();
+    }
 
+    return pdg;
+}
+
+
+/********** FUNCTIONS **********/
 const reco::Candidate * getMother(const reco::Candidate * part){
     if(part==NULL){return NULL;}
     if(part->numberOfMothers()<1){return NULL;}
@@ -89,7 +112,9 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
             if(!(jetGen == NULL)){jetMatchedPartonPdgId_I = jetGen->pdgId();}
             if(!(jetMother == 0)){motherPdgId_I = jetMother->pdgId();}
             if(!(jetGrMother == 0)){grMotherPdgId_I = jetGrMother->pdgId();}
-            jetFlavour_I = j.partonFlavour();
+            //jetFlavour_I = j.partonFlavour();
+            
+            jetFlavour_I = ReMatch( &j, &*mc->pruned_handle );
         }
 
         float charge =  0.;
