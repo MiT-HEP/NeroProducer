@@ -4,4 +4,7 @@
 <use name="DataFormats/PatCandidates"/>
 <use name="SimDataFormats/GeneratorProducts" />
 <use name="SimDataFormats/PileupSummaryInfo" />
+<!-- QGVariables -->
+<use   name="fastjet"/>
+<!-- End QGVariables -->
 <flags EDM_PLUGIN="1"/>

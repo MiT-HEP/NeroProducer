@@ -36,6 +36,18 @@ BareJets::~BareJets(){
     BareFunctions::Delete(ptResUncCentral);
     BareFunctions::Delete(ptResUncUp);
     BareFunctions::Delete(ptResUncDown);
+    //extra qg variables
+    for(const auto& dR : dRToProduce)
+    {
+        BareFunctions::Delete(qglMult_dR[Form("0p%.0f",dR*1000)]);
+        BareFunctions::Delete(qglPtD_dR[Form("0p%.0f",dR*1000)]);
+        BareFunctions::Delete(qglAxis2_dR[Form("0p%.0f",dR*1000)]);
+        BareFunctions::Delete(qglAxis1_dR[Form("0p%.0f",dR*1000)]);
+        BareFunctions::Delete(qglGenMult_dR[Form("0p%.0f",dR*1000)]);
+        BareFunctions::Delete(qglGenPtD_dR[Form("0p%.0f",dR*1000)]);
+        BareFunctions::Delete(qglGenAxis2_dR[Form("0p%.0f",dR*1000)]);
+        BareFunctions::Delete(qglGenAxis1_dR[Form("0p%.0f",dR*1000)]);
+    }
 }
 
 void BareJets::init(){
@@ -71,6 +83,18 @@ void BareJets::init(){
     BareFunctions::New(ptResUncCentral);
     BareFunctions::New(ptResUncUp);
     BareFunctions::New(ptResUncDown);
+
+    for(const auto& dR : dRToProduce)
+    {
+        BareFunctions::New(qglMult_dR[Form("0p%03.0f",dR*1000)]);
+        BareFunctions::New(qglPtD_dR[Form("0p%03.0f",dR*1000)]);
+        BareFunctions::New(qglAxis2_dR[Form("0p%03.0f",dR*1000)]);
+        BareFunctions::New(qglAxis1_dR[Form("0p%03.0f",dR*1000)]);
+        BareFunctions::New(qglGenMult_dR[Form("0p%03.0f",dR*1000)]);
+        BareFunctions::New(qglGenPtD_dR[Form("0p%03.0f",dR*1000)]);
+        BareFunctions::New(qglGenAxis2_dR[Form("0p%03.0f",dR*1000)]);
+        BareFunctions::New(qglGenAxis1_dR[Form("0p%03.0f",dR*1000)]);
+    }
 
 }
 
@@ -112,6 +136,17 @@ void BareJets::clear(){
     ptResUncCentral->clear();
     ptResUncUp->clear();
     ptResUncDown->clear();
+    for(const auto& dR : dRToProduce)
+    {
+        qglMult_dR[Form("0p%03.0f",dR*1000)]	    ->clear();
+        qglPtD_dR[Form("0p%03.0f",dR*1000)]	    ->clear();
+        qglAxis2_dR[Form("0p%03.0f",dR*1000)]	    ->clear();
+        qglAxis1_dR[Form("0p%03.0f",dR*1000)]	    ->clear();
+        qglGenMult_dR[Form("0p%03.0f",dR*1000)]	->clear();
+        qglGenPtD_dR[Form("0p%03.0f",dR*1000)]	->clear();
+        qglGenAxis2_dR[Form("0p%03.0f",dR*1000)]	->clear();
+        qglGenAxis1_dR[Form("0p%03.0f",dR*1000)]	->clear();
+    }
 }
 
 void BareJets::defineBranches(TTree *t){
@@ -163,6 +198,18 @@ void BareJets::defineBranches(TTree *t){
     t->Branch(jetName + "PtResUncCentral","vector<float>",&ptResUncCentral);
     t->Branch(jetName + "PtResUncUp","vector<float>",&ptResUncUp);
     t->Branch(jetName + "PtResUncDown","vector<float>",&ptResUncDown);
+
+    for(const auto& dR : dRToProduce)
+    {
+        t->Branch(jetName+Form("QglMult_dR0p%03.0f",dR*1000),"vector<float>",&qglMult_dR[Form("0p%03.0f",dR*1000)]	    );
+        t->Branch(jetName+Form("QglPtD_dR0p%03.0f",dR*1000),"vector<float>",&qglPtD_dR[Form("0p%03.0f",dR*1000)]	    );
+        t->Branch(jetName+Form("QglAxis2_dR0p%03.0f",dR*1000),"vector<float>",&qglAxis2_dR[Form("0p%03.0f",dR*1000)]	);
+        t->Branch(jetName+Form("QglAxis1_dR0p%03.0f",dR*1000),"vector<float>",&qglAxis1_dR[Form("0p%03.0f",dR*1000)]	);
+        t->Branch(jetName+Form("QglGenMult_dR0p%03.0f",dR*1000),"vector<float>",&qglGenMult_dR[Form("0p%03.0f",dR*1000)]	);
+        t->Branch(jetName+Form("QglGenPtD_dR0p%03.0f",dR*1000),"vector<float>",&qglGenPtD_dR[Form("0p%03.0f",dR*1000)]	);
+        t->Branch(jetName+Form("QglGenAxis2_dR0p%03.0f",dR*1000),"vector<float>",&qglGenAxis2_dR[Form("0p%03.0f",dR*1000)]	);
+        t->Branch(jetName+Form("QglGenAxis1_dR0p%03.0f",dR*1000),"vector<float>",&qglGenAxis1_dR[Form("0p%03.0f",dR*1000)]	);
+    }
 }
 
 void BareJets::setBranchAddresses(TTree* t, std::string prefix)
@@ -206,6 +253,17 @@ void BareJets::setBranchAddresses(TTree* t, std::string prefix)
     BareFunctions::SetBranchAddress(t,jetName + "PtResUncUp"	,&ptResUncUp);
     BareFunctions::SetBranchAddress(t,jetName + "PtResUncDown"	,&ptResUncDown);
 
+    for(const auto& dR : dRToProduce)
+    {
+        BareFunctions::SetBranchAddress(t,jetName+Form("QglMult_dR0p%03.0f",dR*1000) ,&qglMult_dR[Form("0p%03.0f",dR*1000)]	    );
+        BareFunctions::SetBranchAddress(t,jetName+Form("QglPtD_dR0p%03.0f",dR*1000)  ,&qglPtD_dR[Form("0p%03.0f",dR*1000)]	    );
+        BareFunctions::SetBranchAddress(t,jetName+Form("QglAxis2_dR0p%03.0f",dR*1000),&qglAxis2_dR[Form("0p%03.0f",dR*1000)]	);
+        BareFunctions::SetBranchAddress(t,jetName+Form("QglAxis1_dR0p%03.0f",dR*1000),&qglAxis1_dR[Form("0p%03.0f",dR*1000)]	);
+        BareFunctions::SetBranchAddress(t,jetName+Form("QglGenMult_dR0p%03.0f",dR*1000),&qglGenMult_dR[Form("0p%03.0f",dR*1000)]	);
+        BareFunctions::SetBranchAddress(t,jetName+Form("QglGenPtD_dR0p%03.0f",dR*1000),&qglGenPtD_dR[Form("0p%03.0f",dR*1000)]	);
+        BareFunctions::SetBranchAddress(t,jetName+Form("QglGenAxis2_dR0p%03.0f",dR*1000),&qglGenAxis2_dR[Form("0p%03.0f",dR*1000)]	);
+        BareFunctions::SetBranchAddress(t,jetName+Form("QglGenAxis1_dR0p%03.0f",dR*1000),&qglGenAxis1_dR[Form("0p%03.0f",dR*1000)]	);
+    }
 }
 
 BAREREGISTER(BareJets);
