@@ -3,6 +3,7 @@
 
 #include "NeroProducer/Core/interface/BareCollection.hpp"
 #include "NeroProducer/Core/interface/BareP4.hpp"
+#include <map>
 
 class BareJets : virtual public BareP4
 {
@@ -70,6 +71,17 @@ class BareJets : virtual public BareP4
         vector<int> *qglNMult{0};
         vector<float> *qglPtDrLog{0};
 
+        //super extra
+        vector<float> dRToProduce{0.01,0.02,0.03,0.04,0.05,0.10,0.15,0.20};
+        map<string,vector<float>* > qglMult_dR;
+        map<string,vector<float>* > qglPtD_dR;
+        map<string,vector<float>* > qglAxis2_dR;
+        map<string,vector<float>* > qglAxis1_dR;
+
+        map<string,vector<float>* > qglGenMult_dR;
+        map<string,vector<float>* > qglGenPtD_dR;
+        map<string,vector<float>* > qglGenAxis2_dR;
+        map<string,vector<float>* > qglGenAxis1_dR;
 };
 
 
