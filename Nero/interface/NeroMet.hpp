@@ -3,7 +3,6 @@
 
 #include "NeroProducer/Nero/interface/NeroCollection.hpp"
 #include "NeroProducer/Core/interface/BareMet.hpp"
-#include "NeroProducer/Nero/interface/NeroPF.hpp"
 #include "DataFormats/METReco/interface/PFMET.h"
 #include "DataFormats/METReco/interface/PFMETCollection.h"
 
@@ -11,26 +10,21 @@ class NeroMet : virtual public NeroCollection,
     virtual public BareMet
 {
     public:
-        NeroMet();
+        NeroMet():NeroCollection(){};
+        NeroMet(edm::ConsumesCollector & cc,edm::ParameterSet iConfig );
         ~NeroMet();
         int analyze(const edm::Event& iEvent);
         virtual inline string name(){return "NeroMet";};
 
-        // --- Handle
-        edm::Handle<pat::METCollection> handle;	
-        edm::Handle<pat::METCollection> handle_puppi;
-        edm::Handle<pat::METCollection> handle_cleanmu;
-        edm::Handle<pat::METCollection> handle_cleaneg;
-        edm::Handle<pat::METCollection> handle_unclean;
+
 
         // --- Token
+        edm::EDGetTokenT<pat::PackedCandidateCollection> token_pf;
         edm::EDGetTokenT<pat::METCollection> token;
         edm::EDGetTokenT<pat::METCollection> token_puppi;
         edm::EDGetTokenT<pat::METCollection> token_cleanmu;
         edm::EDGetTokenT<pat::METCollection> token_cleaneg;
         edm::EDGetTokenT<pat::METCollection> token_unclean;
-        //
-        NeroPF * pf;
 };
 
 

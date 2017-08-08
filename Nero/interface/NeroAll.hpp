@@ -11,7 +11,8 @@ class NeroAll : virtual public NeroCollection,
     virtual public NeroLumi
 {
     public:
-        NeroAll();
+        NeroAll():NeroCollection(){}
+        NeroAll(edm::ConsumesCollector & cc,edm::ParameterSet iConfig );
         ~NeroAll();
         int analyze(const edm::Event&);
         int analyzeLumi(const edm::LuminosityBlock&,TTree*);

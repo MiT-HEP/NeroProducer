@@ -1,11 +1,15 @@
 #include "NeroProducer/Nero/interface/NeroMet.hpp"
 #include "NeroProducer/Nero/interface/Nero.hpp"
 
-NeroMet::NeroMet() : 
-    NeroCollection(),
+NeroMet::NeroMet(edm::ConsumesCollector & cc,edm::ParameterSet iConfig):
+    NeroCollection(cc, iConfig),
     BareMet() 
 {
-    pf = NULL;
+    token_pf = cc.consumes<pat::PackedCandidateCollection>(iConfig.getParameter<edm::InputTag>("pfCands"));
+
+    token = cc.consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("mets"));
+    token_puppi = cc.consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("metsPuppi"));
+    SetExtend (iConfig.getParameter<bool>("extendMet"));
 }
 
 NeroMet::~NeroMet(){
@@ -14,11 +18,17 @@ NeroMet::~NeroMet(){
 
 
 int NeroMet::analyze(const edm::Event& iEvent){
-
-    if ( mOnlyMc  ) return 0; // in principle I would like to have the gen met: TODO
+    // --- Handle
+    edm::Handle<pat::METCollection> handle;	
+    edm::Handle<pat::METCollection> handle_puppi;
+    edm::Handle<pat::METCollection> handle_cleanmu;
+    edm::Handle<pat::METCollection> handle_cleaneg;
+    edm::Handle<pat::METCollection> handle_unclean;
+    edm::Handle<pat::PackedCandidateCollection> handle_pf;
 
     // maybe handle should be taken before
     iEvent.getByToken(token, handle);
+    iEvent.getByToken(token_pf, handle_pf);
     if ( not handle.isValid() ) cout<<"[NeroMet]::[analyze]::[ERROR] handle is not valid"<<endl;
 
     iEvent.getByToken(token_puppi,handle_puppi);
@@ -108,10 +118,10 @@ int NeroMet::analyze(const edm::Event& iEvent){
         TLorentzVector phoMet(0,0,0,0);
         TLorentzVector hfMet(0,0,0,0);    
     
-        if ( pf == NULL ) cout<<"[NeroMet]::[analyze]::[ERROR] PF pointer is null. Run NeroPF. "<<endl; 
+        if ( not handle_pf.isValid() ) { Logger::getInstance().Log( string("[NeroMet]: PF handle is not valid"),0);}
 
-        for (unsigned int i = 0, n = pf->handle->size(); i < n; ++i) {
-            const pat::PackedCandidate &cand = (*pf->handle)[i];
+        for (unsigned int i = 0, n = handle_pf->size(); i < n; ++i) {
+            const pat::PackedCandidate &cand = (*handle_pf)[i];
 
             // only up to eta 3
             if (std::abs(cand.pdgId()) == 13)
@@ -154,6 +164,8 @@ int NeroMet::analyze(const edm::Event& iEvent){
 
     return 0;
 }
+
+NEROREGISTER(NeroMet);
 
 // Local Variables:
 // mode:c++

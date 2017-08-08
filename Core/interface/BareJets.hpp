@@ -59,8 +59,6 @@ class BareJets : virtual public BareP4
         vector<int>   *grMotherPdgId{0};
         vector<unsigned> *selBits{0};
 
-        vector<float> *Q{0};
-
         // QGL variables
         vector<int>   *qglMult{0};
         vector<float> *qglPtD{0};

@@ -5,9 +5,9 @@
 
 //#define VERBOSE 2
 
-NeroPhotons::NeroPhotons() : 
-        NeroCollection(),
-        BarePhotons()
+NeroPhotons::NeroPhotons(edm::ConsumesCollector & cc,edm::ParameterSet iConfig):
+    NeroCollection(cc, iConfig),
+    BarePhotons()
 {
 
     mMinPt = 15;
@@ -16,8 +16,28 @@ NeroPhotons::NeroPhotons() :
     mMaxEta = 2.5;
     mMinId = "loose";
 
-    pf = NULL;
     rnd_ = new TRandom3() ;
+
+    token = cc.consumes<pat::PhotonCollection>(iConfig.getParameter<edm::InputTag>("photons"));
+    uncalib_token = cc.consumes<pat::PhotonCollection>(edm::InputTag("slimmedPhotons"));
+
+    loose_id_token = cc.consumes<edm::ValueMap<bool>>(iConfig.getParameter<edm::InputTag>("phoLooseIdMap"));
+    medium_id_token = cc.consumes<edm::ValueMap<bool>>(iConfig.getParameter<edm::InputTag>("phoMediumIdMap"));
+    tight_id_token = cc.consumes<edm::ValueMap<bool>>(iConfig.getParameter<edm::InputTag>("phoTightIdMap"));
+    iso_ch_token = cc.consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>("phoChargedIsolation"));
+    iso_nh_token = cc.consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>("phoNeutralHadronIsolation"));
+    iso_pho_token = cc.consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>("phoPhotonIsolation"));
+    iso_wch_token = cc.consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>("phoWorstChargedIsolation"));
+    ebRecHits_token = cc.mayConsume<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("ebRecHits"));
+    eeRecHits_token = cc.mayConsume<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("eeRecHits"));
+    mMinPt = iConfig.getParameter<double>("minPt");
+    mMaxIso = iConfig.getParameter<double>("maxIso");
+    mMinNpho = iConfig.getParameter<int>("minN");
+    mMinId = iConfig.getParameter<string>("minId");
+    mMaxEta = iConfig.getParameter<double>("minEta");
+
+    rho_token       = cc.consumes<double>(iConfig.getParameter<edm::InputTag>("rho"));
+    SetExtend (iConfig.getParameter<bool>("extendPhotons"));
 }
 
 NeroPhotons::~NeroPhotons(){
@@ -41,13 +61,12 @@ unsigned NeroPhotons::idStringToEnum(std::string idString)
 
 int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup){
 
-    if ( mOnlyMc  ) return 0;
-   
     kMinId = idStringToEnum(mMinId);
 
     // maybe handle should be taken before
     iEvent.getByToken(token, handle);
     iEvent.getByToken(uncalib_token, uncalib_handle);
+    iEvent.getByToken(rho_token, rho_handle);
 
     // ID and ISO
     iEvent.getByToken(loose_id_token,loose_id);
@@ -281,9 +300,8 @@ bool NeroPhotons::cutBasedPhotonId( const pat::Photon& pho, string type, bool wi
     float chiso = pho.chargedHadronIso();
     float nhiso= pho.neutralHadronIso() ;
     float phoiso = pho.photonIso();
-    //float puiso = pho.puChargedHadronIso ();
-    float rho  = evt->rho;
-    //
+    float rho  = *rho_handle;
+
     //float aeta = fabs(pho.eta());
 
     // ------------ BARREL ------------
@@ -496,6 +514,8 @@ float NeroPhotons::cutBasedPhotonIdEffArea( const pat::Photon & pho,string type)
     
     return -999.;
 }
+
+NEROREGISTER(NeroPhotons);
 
 // Local Variables:
 // mode:c++

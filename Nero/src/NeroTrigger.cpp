@@ -5,16 +5,21 @@
 
 #define VERBOSE 0 
 
-NeroTrigger::NeroTrigger() : 
-        NeroCollection(),
+NeroTrigger::NeroTrigger(edm::ConsumesCollector & cc,edm::ParameterSet iConfig):
+    NeroCollection(cc, iConfig),
         BareTrigger()
 {
     leps_=NULL;
     jets_=NULL;
     taus_=NULL;
     photons_=NULL;
-    mDr = 0.2;
-    mNMatch=32; //<= uint  n. bits
+
+    token = cc.consumes< edm::TriggerResults >( iConfig.getParameter<edm::InputTag>("trigger"));
+    object_token = cc.consumes< pat::TriggerObjectStandAloneCollection > ( iConfig.getParameter<edm::InputTag> ("objects") );
+    token_l1EtSum= cc.consumes< BXVector< l1t::EtSum > > (edm::InputTag("caloStage2Digis:EtSum"));
+    mNMatch = iConfig.getParameter<int>("triggerNMatch");
+    *(triggerNames) =  iConfig.getParameter<std::vector<std::string> > ("triggerNames");
+
     cout<<"[NeroTrigger]::[NeroTrigger]::[WARNING] Trigger matching based on object and best DR. No official tools yet."<<endl;
 }
 
@@ -25,10 +30,9 @@ NeroTrigger::~NeroTrigger(){
 
 int NeroTrigger::analyze(const edm::Event& iEvent){
 
-    if ( mOnlyMc  ) return 0;
-
     iEvent.getByToken(token,handle);
     iEvent.getByToken(prescale_token,prescale_handle);
+
     if ( not handle.isValid() ) cout<<"[NeroTrigger]::[analyze]::[ERROR] handle is not valid"<<endl;
     if ( not prescale_handle.isValid() ) cout<<"[NeroTrigger]::[analyze]::[ERROR] prescale_handle is not valid"<<endl;
 
@@ -193,6 +197,8 @@ void NeroTrigger::setTrigger(const string& name, int value){
     }
 
 }
+
+NEROREGISTER(NeroTrigger);
 
 // Local Variables:
 // mode:c++

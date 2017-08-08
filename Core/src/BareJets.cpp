@@ -22,7 +22,6 @@ BareJets::~BareJets(){
     BareFunctions::Delete(motherPdgId);
     BareFunctions::Delete(grMotherPdgId);
     BareFunctions::Delete(selBits);
-    BareFunctions::Delete(Q);
     // QGL variables
     BareFunctions::Delete(qglMult);
     BareFunctions::Delete(qglPtD);
@@ -70,7 +69,6 @@ void BareJets::init(){
     BareFunctions::New(motherPdgId);
     BareFunctions::New(grMotherPdgId);
     BareFunctions::New(selBits);
-    BareFunctions::New(Q);
     // QGL vars
     BareFunctions::New(qglMult);
     BareFunctions::New(qglPtD);
@@ -120,7 +118,6 @@ void BareJets::clear(){
 
     selBits -> clear();
 
-    Q->clear();
     
     // QGL vars
     qglMult->clear();
@@ -192,7 +189,6 @@ void BareJets::defineBranches(TTree *t){
     
     t->Branch(jetName + "SelBits","vector<unsigned>",&selBits);
 
-    t->Branch(jetName + "Q","vector<float>",&Q);
 
     //
     t->Branch(jetName + "PtResUncCentral","vector<float>",&ptResUncCentral);
@@ -246,8 +242,6 @@ void BareJets::setBranchAddresses(TTree* t, std::string prefix)
     BareFunctions::SetBranchAddress(t,jetName + "GrMotherPdgId", &grMotherPdgId);
     BareFunctions::SetBranchAddress(t,jetName + "SelBits", &selBits);
 
-    // ---
-    BareFunctions::SetBranchAddress(t,jetName + "Q",&Q);
     // ---
     BareFunctions::SetBranchAddress(t,jetName + "PtResUncCentral"	,&ptResUncCentral);
     BareFunctions::SetBranchAddress(t,jetName + "PtResUncUp"	,&ptResUncUp);

@@ -14,6 +14,7 @@ using namespace std;
 #include "FWCore/Framework/interface/MakerMacros.h"
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
+#include "FWCore/Framework/interface/ConsumesCollector.h"
 
 // TFile Service
 #include "FWCore/ServiceRegistry/interface/Service.h"

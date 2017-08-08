@@ -10,7 +10,8 @@
 class NeroEvent : virtual public NeroCollection, virtual public BareEvent
 {
     public:
-        NeroEvent();
+        NeroEvent():NeroCollection(){};
+        NeroEvent(edm::ConsumesCollector & cc,edm::ParameterSet iConfig );
         ~NeroEvent();
         int analyze(const edm::Event& iEvent);
         virtual inline string name(){return "NeroEvent";};

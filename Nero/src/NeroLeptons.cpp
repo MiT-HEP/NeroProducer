@@ -9,34 +9,62 @@ namespace myid{
 bool isMediumMuon(const reco::Muon & recoMu) 
     { // medium id for B->F
       // https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideMuonIdRun2#MediumID2016_to_be_used_with_Run
-          bool goodGlob = recoMu.isGlobalMuon() && 
-                          recoMu.globalTrack()->normalizedChi2() < 3 && 
-                          recoMu.combinedQuality().chi2LocalPosition < 12 && 
+          bool goodGlob = recoMu.isGlobalMuon() and
+                          recoMu.globalTrack()->normalizedChi2() < 3 and
+                          recoMu.combinedQuality().chi2LocalPosition < 12 and
                           recoMu.combinedQuality().trkKink < 20; 
-          bool isMedium = muon::isLooseMuon(recoMu) && 
-                          recoMu.innerTrack()->validFraction() > 0.49 && 
+          bool isMedium = muon::isLooseMuon(recoMu) and 
+                          recoMu.innerTrack()->validFraction() > 0.49 and
                           muon::segmentCompatibility(recoMu) > (goodGlob ? 0.303 : 0.451); 
           return isMedium; 
     }
 };
 
 // -- Electron Isolation
-NeroLeptons::NeroLeptons(): 
-        NeroCollection(),
-        BareLeptons()
+NeroLeptons::NeroLeptons(edm::ConsumesCollector & cc,edm::ParameterSet iConfig):
+    NeroCollection(cc, iConfig),
+    BareLeptons()
 {
-    vtx_   = NULL;
-    evt_   = NULL;
 
-    mMinPt_mu = 10;
-    mMinEta_mu = 2.4;
-    mMaxIso_mu = 0.2;
+    vtx_token = cc.consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("vertices"));
+    token_pf = cc.consumes<pat::PackedCandidateCollection>(iConfig.getParameter<edm::InputTag>("pfCands"));
+    ea_ . reset (new EffectiveAreas( edm::FileInPath(iConfig.getParameter<std::string>("eleEA")).fullPath () ) );
+    mu_token = cc.consumes<pat::MuonCollection>(iConfig.getParameter<edm::InputTag>("muons"));
+    el_token = cc.consumes<pat::ElectronCollection>(iConfig.getParameter<edm::InputTag>("electrons"));
+    el_vetoid_token = cc.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleVetoIdMap"));
+    el_looseid_token = cc.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleLooseIdMap"));
+    el_mediumid_token = cc.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMediumIdMap"));
+    el_tightid_token = cc.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleTightIdMap"));
+    el_hltid_token = cc.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleHLTIdMap"));
+    el_mva_token = cc.consumes<edm::ValueMap<float> > (iConfig.getParameter<edm::InputTag>("eleMvaMap"));
+    rho_token = cc.consumes<double> (edm::InputTag("fixedGridRhoFastjetCentralNeutral")); // for miniIso
 
-    mMinPt_el = 10;
-    mMinEta_el = 2.5;
-    mMaxIso_el = -1.;
+    el_uncalib_token = cc.consumes<pat::ElectronCollection>(edm::InputTag("slimmedElectrons"));
 
-    mMinNleptons = 0;    
+    //leps -> el_iso_ch_token  = cc.consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("eleChargedIsolation") );
+    //leps -> el_iso_nh_token  = cc.consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("eleNeutralHadronIsolation") );
+    //leps -> el_iso_pho_token = cc.consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("elePhotonIsolation") );
+    
+    mMinPt_mu = iConfig.getParameter<double>("minMuPt");
+    mMinEta_mu = iConfig.getParameter<double>("minMuEta");
+    mMaxIso_mu = iConfig.getParameter<double>("maxMuIso");
+
+    mMinPt_el = iConfig.getParameter<double>("minElePt");
+    mMinEta_el = iConfig.getParameter<double>("minEleEta");
+    mMaxIso_el = iConfig.getParameter<double>("maxEleIso");
+
+    mMinId = iConfig.getParameter<string>("minLepId");
+
+    mMinNleptons = iConfig.getParameter<int>("minLepN");
+
+    ebRecHits_token = cc.mayConsume<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("ebRecHits"));
+    //leps -> eeRecHits_token = cc.mayConsume<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("eeRecHits"));
+
+    // eventually configure
+    //leps -> EleCorr = new EnergyScaleCorrection_class("EgammaAnalysis/ElectronTools/data/ScalesSmearings/Winter_2016_reReco_v1_ele");
+    // leps->EleCorr -> doSmearings= true;
+    // leps->EleCorr -> doScale= true;
+    
 
     rnd_ = new TRandom3( ) ;
 }
@@ -60,13 +88,11 @@ unsigned NeroLeptons::idStringToEnum(std::string idString)
 }
 int NeroLeptons::analyze(const edm::Event & iEvent)
 {
-    if ( mOnlyMc  ) return 0;
-
     kMinId = idStringToEnum(mMinId);
     
-    if ( vtx_ == NULL) cout<<"[NeroLeptons]::[analyze]::[WARNING] Vertex Class not set."<<endl;
-    if ( vtx_ -> GetPV() == NULL) cout<<"[NeroLeptons]::[analyze]::[WARNING] Primary Vertex not set."<<endl;
-    if ( evt_ == NULL) cout<<"[NeroLeptons]::[analyze]::[WARNING] Event Class not set."<<endl;
+    iEvent.getByToken(vtx_token, vtx_handle);
+    const reco::Vertex *pv  = &vtx_handle->front();
+    iEvent.getByToken(token_pf, handle_pf);
 
     iEvent.getByToken(mu_token,mu_handle);	
     iEvent.getByToken(el_token,el_handle);	
@@ -134,16 +160,16 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
             l.selBits |= LepBaseline;  
             l.selBits |= unsigned(mu.isLooseMuon()) * LepVeto;  // fill veto bit with loose info
             l.selBits |= unsigned(mu.isLooseMuon()) * LepLoose;
-            l.selBits |= unsigned(mu.isTightMuon( * vtx_->GetPV() ))*LepTight ;
+            l.selBits |= unsigned(mu.isTightMuon( * pv ))*LepTight ;
             l.selBits |= unsigned(mu.isMediumMuon() * LepMedium);
             l.selBits |= unsigned(myid::isMediumMuon(mu) * MuMediumB2F);
 
-            if ( fabs((mu.muonBestTrack()->dz((*vtx_->GetPV()).position())))<0.1 and (mu.dB()< 0.02) ){
+            if ( fabs((mu.muonBestTrack()->dz(pv->position())))<0.1 and (mu.dB()< 0.02) ){
                 l.selBits |= LepIP;
                 l.selBits |= unsigned(mu.isMediumMuon() * LepMediumIP);
-                l.selBits |= unsigned(mu.isTightMuon( * vtx_->GetPV() ))*LepTightIP ;
-                l.selBits |= unsigned(mu.isSoftMuon(* vtx_->GetPV())) * LepSoftIP;
-                if(isFake){ l.selBits |= unsigned(mu.isTightMuon(* vtx_->GetPV()) * LepFake); }
+                l.selBits |= unsigned(mu.isTightMuon( * pv ))*LepTightIP ;
+                l.selBits |= unsigned(mu.isSoftMuon(* pv)) * LepSoftIP;
+                if(isFake){ l.selBits |= unsigned(mu.isTightMuon(* pv) * LepFake); }
                 }
             l.selBits |= unsigned(mu.isStandAloneMuon() * MuStandalone);
             l.selBits |= unsigned(mu.isTrackerMuon() * MuTracker);
@@ -155,14 +181,12 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         l.nhiso  = niso;
         l.phoiso = phoiso;
         l.puiso  = puiso;
-        //l.miniiso = getPFMiniIsolation_DeltaBeta(pf_->handle, dynamic_cast<const reco::Candidate *>(&mu), 0.05, 0.2, 10., false);
-        l.miniiso = getPFMiniIsolation_EffectiveArea(pf_->handle, dynamic_cast<const reco::Candidate *>(&mu), 0.05, 0.2, 10., false, false, *rho_handle );
+        l.miniiso = getPFMiniIsolation_EffectiveArea(handle_pf, dynamic_cast<const reco::Candidate *>(&mu), 0.05, 0.2, 10., false, false, *rho_handle );
 
         if (not mu.innerTrack().isNull()){
             l.nlayers = mu.innerTrack() -> hitPattern().trackerLayersWithMeasurement();
             l.resolution = mu.innerTrack() ->ptError() / mu.innerTrack()->pt();
         }
-        //l.resolution = mu.bestTrack() ->ptError() / mu.bestTrack()->pt();
         
         if ( not (l.selBits & kMinId) ) continue;
         leptons.push_back(l);
@@ -218,7 +242,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         double ea = 0.;
         ea = ea_->getEffectiveArea(el.eta() ) ;
 
-        l.iso = chIso + TMath::Max( nhIso + phoIso - evt_->rho * ea , 0. ) ; 
+        l.iso = chIso + TMath::Max( nhIso + phoIso - (*rho_handle) * ea , 0. ) ; 
 
         
         double Ecorr=NeroFunctions::getEGSeedCorrections(el,ebRecHits); 
@@ -259,12 +283,12 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         l.selBits |= unsigned(isEB and (not isEBEEGap and not isEBEtaGap and not isEBPhiGap)  ) * LepEBEE;
         l.selBits |= unsigned(isEE and (not isEBEEGap and not isEERingGap and not isEEDeeGap)  ) * LepEBEE;
 
-        const double dz = fabs( vtx_->size() ? 
-                            el.gsfTrack()->dz((*vtx_->GetPV()).position()) : 
+        const double dz = fabs( vtx_handle->size() ? 
+                            el.gsfTrack()->dz(pv->position()) : 
                             el.gsfTrack()->dz());
         
-        const double dxy = fabs( vtx_->size() ? 
-                             el.gsfTrack()->dxy((*vtx_->GetPV()).position()) : 
+        const double dxy = fabs( vtx_handle->size() ? 
+                             el.gsfTrack()->dxy(pv->position()) : 
                              el.gsfTrack()->dxy());
 
         bool dz_cut  = isEB ? 0.10 : 0.20;
@@ -290,8 +314,8 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         l.nhiso  = nhIso;
         l.phoiso = phoIso;
         l.puiso  = puChIso;
-        //l.miniiso = getPFMiniIsolation_DeltaBeta(pf_->handle, dynamic_cast<const reco::Candidate *>(&el), 0.05, 0.2, 10., false) ;
-        l.miniiso = getPFMiniIsolation_EffectiveArea(pf_->handle, dynamic_cast<const reco::Candidate *>(&el), 0.05, 0.2, 10., false, false, *rho_handle );
+        //l.miniiso = getPFMiniIsolation_DeltaBeta(handle_pf, dynamic_cast<const reco::Candidate *>(&el), 0.05, 0.2, 10., false) ;
+        l.miniiso = getPFMiniIsolation_EffectiveArea(handle_pf, dynamic_cast<const reco::Candidate *>(&el), 0.05, 0.2, 10., false, false, *rho_handle );
 
         if ( not (l.selBits & kMinId) ) continue;
         leptons.push_back(l);
@@ -333,6 +357,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 
     return 0;
 }
+NEROREGISTER(NeroLeptons);
 
 
 

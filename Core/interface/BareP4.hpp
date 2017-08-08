@@ -25,12 +25,8 @@ class BareP4 : virtual public BareCollection
         virtual inline double mass(unsigned idx) const { return static_cast<TLorentzVector*>((*p4)[idx])->M(); }
 
         TClonesArray  *p4{0};
-        vector<int>   *match{0};
 
         virtual bool isInit() { return p4 != NULL;}
-
-        inline void SetMatch(bool match=true) { doMatch_=match; }
-        inline bool doMatch() { return doMatch_;}
 
         void init() override;
         void clear() override;

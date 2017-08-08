@@ -7,8 +7,6 @@ BareCollection* BareFactory::create(const std::string & name)
     return i -> second -> create();
 }   
 
-
-
 // Local Variables:
 // mode:c++
 // indent-tabs-mode:nil

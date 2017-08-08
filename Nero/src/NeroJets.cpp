@@ -43,29 +43,58 @@ const reco::Candidate * getMother(const reco::Candidate * part){
     }
 }
 
-NeroJets::NeroJets() : 
-    NeroCollection(),
+/********** CONSTRUCTOR **********/
+NeroJets::NeroJets(edm::ConsumesCollector & cc,edm::ParameterSet iConfig):
+    NeroCollection(cc, iConfig),
     BareJets()
 {
-    mMinPt = 15.;
-    mMinNjets = 0;
-    mMinEta = 2.5;
-    mMinId = "loose";
-    pf = NULL;
     // JES
     isJecUncSet_= false;
     //
     rnd_=new TRandom3();
     rnd_->SetSeed((unsigned)time(NULL));
+
+    token = cc.consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("jets"));
+    qg_token = cc.consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "qgLikelihood"));
+    rho_token       = cc.consumes<double>(iConfig.getParameter<edm::InputTag>("rho"));
+    mMinPt = iConfig.getParameter<double>("minPt");
+    mMinNjets = iConfig.getParameter<int>("minN");
+    mMinEta = iConfig.getParameter<double>("minEta");
+    mMinId = iConfig.getParameter<string>("minId");
+
+    cachedPrefix = "";
+
+    // QG STUFF
+    pruned_token = cc.consumes<edm::View<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("prunedgen")) ;
+    qg_token_Mult = cc.consumes<edm::ValueMap<int>>(edm::InputTag("QGTagger", "mult"));
+    qg_token_PtD = cc.consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "ptD"));
+    qg_token_Axis2 = cc.consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "axis2"));
+    qg_token_Axis1 = cc.mayConsume<edm::ValueMap<float>>(edm::InputTag("QGTagger", "axis1"));
+    qg_token_pt_dr_log = cc.mayConsume<edm::ValueMap<float>>(edm::InputTag("QGTagger", "ptDrLog"));
+    qg_token_cmult = cc.mayConsume<edm::ValueMap<int>>(edm::InputTag("QGTagger", "cmult"));
+    qg_token_nmult = cc.mayConsume<edm::ValueMap<int>>(edm::InputTag("QGTagger", "nmult"));
+    // MORE QG STUFF
+    gen_token    = cc.mayConsume<reco::GenJetCollection>(iConfig.getParameter<edm::InputTag>("genjets"));
+
+    for(const auto& dR: dRToProduce)
+    {
+        qg_dR_tokens_i[Form("mult-dR0p%03.0f",dR*1000)] = cc.mayConsume<edm::ValueMap<int>>(edm::InputTag("QGVariables", Form("mult-dR-0p%03.0f-pT-%.0f",dR*1000,float(500))));
+        qg_dR_tokens_i[Form("Gen-mult-dR0p%03.0f",dR*1000)] = cc.mayConsume<edm::ValueMap<int>>(edm::InputTag("QGVariables", Form("Gen-mult-dR-0p%03.0f-pT-%.0f",dR*1000,float(500))));
+
+        qg_dR_tokens_f[Form("axis2-dR0p%03.0f",dR*1000)] = cc.mayConsume<edm::ValueMap<float>>(edm::InputTag("QGVariables", Form("axis2-dR-0p%03.0f-pT-%.0f",dR*1000,float(500))));
+        qg_dR_tokens_f[Form("Gen-axis2-dR0p%03.0f",dR*1000)] = cc.mayConsume<edm::ValueMap<float>>(edm::InputTag("QGVariables", Form("Gen-axis2-dR-0p%03.0f-pT-%.0f",dR*1000,float(500))));
+        qg_dR_tokens_f[Form("ptD-dR0p%03.0f",dR*1000)] = cc.mayConsume<edm::ValueMap<float>>(edm::InputTag("QGVariables", Form("ptD-dR-0p%03.0f-pT-%.0f",dR*1000,float(500))));
+        qg_dR_tokens_f[Form("Gen-ptD-dR0p%03.0f",dR*1000)] = cc.mayConsume<edm::ValueMap<float>>(edm::InputTag("QGVariables", Form("Gen-ptD-dR-0p%03.0f-pT-%.0f",dR*1000,float(500))));
+        qg_dR_tokens_f[Form("axis1-dR0p%03.0f",dR*1000)] = cc.mayConsume<edm::ValueMap<float>>(edm::InputTag("QGVariables", Form("axis1-dR-0p%03.0f-pT-%.0f",dR*1000,float(500))));
+        qg_dR_tokens_f[Form("Gen-axis1-dR0p%03.0f",dR*1000)] = cc.mayConsume<edm::ValueMap<float>>(edm::InputTag("QGVariables", Form("Gen-axis1-dR-0p%03.0f-pT-%.0f",dR*1000,float(500))));
+    }
+
 }
 
 NeroJets::~NeroJets(){
 }
 
 int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
-
-    if ( mOnlyMc  ) return 0;
-
 
     // maybe handle should be taken before
     iEvent.getByToken(token, handle);
@@ -74,6 +103,7 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
     if ( not handle.isValid() ) cout<<"[NeroJets]::[analyze]::[ERROR] handle is not valid"<<endl;
     if ( not qg_handle.isValid() ) cout<<"[NeroJets]::[analyze]::[ERROR] qg_handle is not valid"<<endl;
 
+    iEvent.getByToken(pruned_token, pruned_handle);
     iEvent.getByToken(qg_token_Mult,qg_handle_Mult);
     iEvent.getByToken(qg_token_Axis2,qg_handle_Axis2);
     iEvent.getByToken(qg_token_PtD,qg_handle_PtD);
@@ -81,6 +111,7 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
     iEvent.getByToken(qg_token_cmult,qg_handle_cmult);
     iEvent.getByToken(qg_token_nmult,qg_handle_nmult);
     iEvent.getByToken(qg_token_pt_dr_log,qg_handle_pt_dr_log);
+    iEvent.getByToken(rho_token,rho_handle);
 
     map<string,edm::Handle<edm::ValueMap<float> > >  qg_handle_f ;
     map<string,edm::Handle<edm::ValueMap<int> > >  qg_handle_i ;
@@ -165,43 +196,10 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
             if(!(jetGen == NULL)){jetMatchedPartonPdgId_I = jetGen->pdgId();}
             if(!(jetMother == 0)){motherPdgId_I = jetMother->pdgId();}
             if(!(jetGrMother == 0)){grMotherPdgId_I = jetGrMother->pdgId();}
-            //jetFlavour_I = j.partonFlavour();
             
-            jetFlavour_I = ReMatch( &j, &*mc->pruned_handle );
+            jetFlavour_I = ReMatch( &j, &*pruned_handle ); // TODO -> Use Matching in MiniAOD when PR Merged
         }
 
-        float charge =  0.;
-        float charge_den =  0.;
-        float charge_nopu = 0.;
-        float charge_nopu_den = 0.;
-
-        // compute jet charge
-        for( size_t idx =0; idx < j.numberOfDaughters() ; ++idx)
-        {
-            // fromPV is available only in PackedCandidates and not in reco::PFCandidate
-            pat::PackedCandidate *cand = ( pat::PackedCandidate* ) j.daughter(idx) ; 
-
-            bool isFromOtherVtx= false;
-            // 0 is the primary vertex
-            for(size_t iVtx=0;iVtx < vtx->handle->size(); ++iVtx)
-            {
-
-                if ( int(iVtx) == vtx->firstGoodVertexIdx ) continue;
-
-                if (cand->fromPV(iVtx)>1) isFromOtherVtx = true; // 0 noPV, 1 PVLoose, 2 PVTight
-            }
-
-            if (cand->charge() !=0 ) {  
-                charge     += cand->charge() * ( j.px()*cand->px() + j.py()*cand->py() + j.pz()*cand->pz()  ) ;
-                charge_den +=                  ( j.px()*cand->px() + j.py()*cand->py() + j.pz()*cand->pz()  ) ;
-            }
-            if (cand->charge() != 0 and not isFromOtherVtx)
-            {
-                charge_nopu     += cand->charge() * ( j.px()*cand->px() + j.py()*cand->py() + j.pz()*cand->pz()  ) ;
-                charge_nopu_den +=                  ( j.px()*cand->px() + j.py()*cand->py() + j.pz()*cand->pz()  ) ;
-
-            }
-        }
 
         // Fill Output  --- part I
         new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(j.px(), j.py(), j.pz(), j.energy());
@@ -224,7 +222,7 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
             JME::JetResolution resolution = JME::JetResolution("jer/Spring16_25nsV10_MC_PtResolution_AK8PFchs.txt");
             JME::JetResolutionScaleFactor resolution_sf = JME::JetResolutionScaleFactor("jer/Spring16_25nsV10_MC_SF_AK4PFchs.txt");
             JME::JetParameters jpar;
-            jpar.setJetPt( j.pt()).setJetEta( j.eta() ).setRho( evt->rho)  ;
+            jpar.setJetPt( j.pt()).setJetEta( j.eta() ).setRho( *rho_handle)  ;
             float res = resolution.getResolution(jpar);
             float sf = resolution_sf.getScaleFactor(jpar);
             float sf_up = resolution_sf.getScaleFactor(jpar, Variation::UP);
@@ -237,11 +235,6 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
             float newptUp = j.pt();
             float newptDown = j.pt();
 
-            //
-            // -- if (genjet==NULL) cout <<"DEBUG: NO GENJET"<<endl;
-            // -- else cout <<"DEBUG: YES GENJET"<<"DR="<<reco::deltaR(*genjet,j) <<" DPT="<<fabs(j.pt()-genjet->pt())<< " 3Sig="<<3*res*genjet->pt()<<endl;
-
-            // additional matching dR(reco jet, gen jet)<Rcone/2 and dpt=abs(pT-pTgen)<3*sigma_MC
             if (genjet!=NULL and reco::deltaR(*genjet,j) <0.2 and fabs(j.pt()-genjet->pt())<3*res*genjet->pt()) { //scaling
                 float genpt=genjet->pt();
                 newpt     = std::max(float(0.),float(genpt+sf*(j.pt()-genpt)      ));
@@ -267,8 +260,8 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
         puId   -> push_back (j.userFloat("pileupJetId:fullDiscriminant") );
         bDiscr -> push_back( j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") );
         bMva -> push_back( j.bDiscriminator("pfCombinedMVAV2BJetTags ") );
-        //bDiscrLegacy -> push_back( j.bDiscriminator("combinedSecondaryVertexBJetTags") );
         qgl     -> push_back( qgLikelihood );
+
         // if the token was not valid, this will simply not be filled
         if (qg_handle_Mult.isValid()) qglMult->push_back(  (*qg_handle_Mult)[jetRef] );
         if (qg_handle_PtD.isValid()) qglPtD->push_back(  (*qg_handle_PtD)[jetRef] );
@@ -285,7 +278,6 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
         nemf -> push_back(j.neutralEmEnergyFraction());
         cemf -> push_back(j.chargedEmEnergyFraction());
 
-
         flavour -> push_back( jetFlavour_I );
         matchedPartonPdgId -> push_back( jetMatchedPartonPdgId_I );
         motherPdgId -> push_back( motherPdgId_I );
@@ -299,7 +291,6 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
         bits |= JetId(j,"tight") * JetTight;
 
         selBits -> push_back( bits);
-        Q      -> push_back( charge/charge_den);
         unc -> push_back( jecunc );
     }
 
@@ -386,6 +377,8 @@ void NeroJets::InitJes(const edm::EventSetup& iSetup){
     isJecUncSet_ = true;
     return;
 }
+
+NEROREGISTER(NeroJets);
 
 // Local Variables:
 // mode:c++

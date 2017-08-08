@@ -7,15 +7,32 @@
 
 #define VERBOSE 0
 
-NeroMonteCarlo::NeroMonteCarlo() :  
-        NeroCollection(),
-        BareMonteCarlo(),
-        NeroRun()
+NeroMonteCarlo::NeroMonteCarlo(edm::ConsumesCollector & cc,edm::ParameterSet iConfig):
+    NeroCollection(cc, iConfig),
+    BareMonteCarlo(),
+    NeroRun()
 {
     mParticleGun = false;
     mMinGenParticlePt = 5.;
     mMinGenJetPt = 20.;
     isRealData = 0;
+
+    SetExtend ( iConfig.getUntrackedParameter<bool>("extendMonteCarlo",false) );
+    packed_token = cc.consumes<edm::View<pat::PackedGenParticle> >(iConfig.getParameter<edm::InputTag>("packedgen"));
+    pruned_token = cc.consumes<edm::View<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("prunedgen")) ;
+    info_token   = cc.consumes<GenEventInfoProduct>(iConfig.getParameter<edm::InputTag>("generator"));
+    lhe_token   = cc.mayConsume<LHEEventProduct>(iConfig.getParameter<edm::InputTag>("lhe"));//LHEEventProduct_externalLHEProducer__LHE
+    pu_token     = cc.consumes<std::vector<PileupSummaryInfo> >(iConfig.getParameter<edm::InputTag>("pileup"));
+    jet_token    = cc.consumes<reco::GenJetCollection>(iConfig.getParameter<edm::InputTag>("genjets"));
+    runinfo_token = cc.consumes<GenRunInfoProduct,edm::InRun>(iConfig.getParameter<edm::InputTag>("genruninfo") );
+    mMinGenParticlePt = iConfig.getParameter<double>("minGenParticlePt");
+    mMinGenJetPt = iConfig.getParameter<double>("minGenJetPt");
+    mParticleGun = iConfig.getUntrackedParameter<bool>("particleGun",false);
+
+    genBHadFlavour_token = cc.consumes<std::vector<int> > (edm::InputTag("matchGenBHadron", "genBHadFlavour"));
+    genCHadJetIndex_token = cc.consumes<std::vector<int> > (edm::InputTag("matchGenCHadron", "genCHadJetIndex"));
+    genCHadBHadronId_token = cc.consumes<std::vector<int> > (edm::InputTag("matchGenCHadron", "genCHadBHadronId"));
+    genTtbarId_token = cc.consumes<int> (edm::InputTag("categorizeGenTtbar", "genTtbarId"));
 }
 
 NeroMonteCarlo::~NeroMonteCarlo(){
@@ -352,6 +369,8 @@ unsigned NeroMonteCarlo::ComputeFlags<const pat::PackedGenParticle>(const pat::P
     //if (p.isLastCopyBeforeFSR() ) flag |= LastCopyBeforeFSR;
     return flag;
 }
+
+NEROREGISTER(NeroMonteCarlo);
 
 // Local Variables:
 // mode:c++

@@ -4,18 +4,18 @@ from NeroProducer.Nero.Nero_cfi import nero
 print " ------- LOADING LEPTON RECO CONFIGURATION -------- "
 
 nero.info = cms.string("NeroLeptonReco")
-nero.minPhoPt  = cms.double (10.),
-nero.minPhoId  = cms.string ('none'),
-nero.minLepId  = cms.string ('none'),
+nero.NeroPhotons.minPt  = cms.double (10.),
+nero.NeroPhotons.minId  = cms.string ('none'),
+nero.NeroLeptons.minLepId  = cms.string ('none'),
 
 # Match all the triggers
-nero.triggerNMatch = cms.int32(32),
+nero.NeroTrigger.triggerNMatch = cms.int32(32),
 
 # right now these are the defaults, but enforce the values
-nero.minPhoEta = cms.double (2.5),
-nero.minMuPt   = cms.double (10.),
-nero.minMuEta  = cms.double (2.4),
-nero.maxMuIso  = cms.double (-1),
-nero.minElePt  = cms.double (10.),
-nero.minEleEta = cms.double (2.5),
-nero.maxEleIso = cms.double (-1.),
+nero.NeroPhotons.minEta = cms.double (2.5),
+nero.NeroLeptons.minMuPt   = cms.double (10.),
+nero.NeroLeptons.minMuEta  = cms.double (2.4),
+nero.NeroLeptons.maxMuIso  = cms.double (-1),
+nero.NeroLeptons.minElePt  = cms.double (10.),
+nero.NeroLeptons.minEleEta = cms.double (2.5),
+nero.NeroLeptons.maxEleIso = cms.double (-1.),

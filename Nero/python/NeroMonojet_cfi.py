@@ -2,6 +2,7 @@ import FWCore.ParameterSet.Config as cms
 from NeroProducer.Nero.Nero_cfi import nero
 
 print " ------- LOADING MONO JET CONFIGURATION -------- "
+raise ValueError("Out of date")
 
 nero.info = cms.string("NeroMonojet")
 

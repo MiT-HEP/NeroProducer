@@ -3,11 +3,6 @@
 
 #include "NeroProducer/Nero/interface/NeroCollection.hpp"
 #include "NeroProducer/Core/interface/BarePhotons.hpp"
-#include "NeroProducer/Nero/interface/NeroPF.hpp"
-#include "NeroProducer/Nero/interface/NeroJets.hpp"
-#include "NeroProducer/Nero/interface/NeroEvent.hpp"
-#include "NeroProducer/Nero/interface/NeroVertex.hpp"
-#include "NeroProducer/Nero/interface/NeroLeptons.hpp"
 #include "NeroProducer/Nero/interface/SuperClusterFootprintRemovalMiniAOD.h"
 #include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
 
@@ -20,7 +15,8 @@ class NeroPhotons : virtual public NeroCollection,
     virtual public BarePhotons
 {
     public:
-        NeroPhotons();
+        NeroPhotons():NeroCollection(){};
+        NeroPhotons(edm::ConsumesCollector & cc,edm::ParameterSet iConfig );
         ~NeroPhotons();
         int analyze(const edm::Event& iEvent) {return 2;}; // this function should never be called
         int analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup);
@@ -38,8 +34,11 @@ class NeroPhotons : virtual public NeroCollection,
         edm::Handle<edm::ValueMap<float> > iso_nh;
         edm::Handle<edm::ValueMap<float> > iso_pho;
         edm::Handle<edm::ValueMap<float> > iso_wch;
+        edm::Handle<double> rho_handle;
 
         // --- Token
+
+        edm::EDGetTokenT<double> rho_token;
         edm::EDGetTokenT<pat::PhotonCollection> token;
         edm::EDGetTokenT<pat::PhotonCollection> uncalib_token;
         edm::EDGetTokenT<edm::ValueMap<bool> > loose_id_token;
@@ -65,15 +64,6 @@ class NeroPhotons : virtual public NeroCollection,
         float mMaxIso;
         string mMinId;
         unsigned kMinId;
-
-        // -- PF
-        NeroPF *pf;
-        NeroJets *jets;
-        // -- FPR
-        NeroVertex *vtx;
-        NeroLeptons*leps;
-        // -- rho
-        NeroEvent *evt;
 
         // needed to be constructed during the plugin construction
         //SuperClusterFootprintRemovalMiniAOD  *fpr;

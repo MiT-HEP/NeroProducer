@@ -9,7 +9,8 @@ class NeroVertex : virtual public NeroCollection,
     virtual public BareVertex
 {
     public:
-        NeroVertex();
+        NeroVertex():NeroCollection(){};
+        NeroVertex(edm::ConsumesCollector& cc,edm::ParameterSet iConfig );
         ~NeroVertex();
         virtual void clear(); // some extra for the vertex
         int analyze(const edm::Event& iEvent);

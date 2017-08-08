@@ -9,19 +9,16 @@ BareP4::BareP4() : BareCollection(){
 
 BareP4::~BareP4(){
     BareFunctions::Delete(p4);
-    BareFunctions::Delete(match);
 }
 
 void BareP4::init(){
     BareFunctions::New(p4);
-    BareFunctions::New(match);
 }
 
 void BareP4::clear(){ 
 
     p4->Clear() ; 
 
-    if (doMatch_) match->clear(); 
 }
 
 void BareP4::defineBranches(TTree * t, string prefix)
@@ -30,9 +27,6 @@ void BareP4::defineBranches(TTree * t, string prefix)
 
     t->Branch( (prefix + "P4").c_str(),"TClonesArray", &p4, 128000, 0);
 
-    if (doMatch_){
-        t->Branch( (prefix+"Match").c_str(),"vector<int>",&match);
-    }
 }
 
 void BareP4::setBranchAddresses(TTree* t, string prefix)
@@ -41,8 +35,6 @@ void BareP4::setBranchAddresses(TTree* t, string prefix)
 
     BareFunctions::SetBranchAddress(t, (prefix+"P4").c_str(), &p4	);
 
-    if (doMatch_ )
-        BareFunctions::SetBranchAddress(t,(prefix+"Match").c_str()	,&match);
 }
 
 void BareP4::compress(){

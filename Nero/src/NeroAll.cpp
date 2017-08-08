@@ -1,13 +1,19 @@
 #include "NeroProducer/Nero/interface/NeroAll.hpp"
 #define VERBOSE 0
 
-NeroAll::NeroAll():
-        NeroCollection(),
+NeroAll::NeroAll(edm::ConsumesCollector & cc,edm::ParameterSet iConfig):
+    NeroCollection(cc, iConfig),
         BareAll(),
         NeroLumi()
 {
     isSkim_=1;
     isMc_=-1;
+    info_token = cc.consumes<GenEventInfoProduct>(iConfig.getParameter<edm::InputTag>("generator"));
+    lhe_token   = cc.mayConsume<LHEEventProduct>(iConfig.getParameter<edm::InputTag>("lhe"));
+    // not configurable
+    events_token = cc.consumes<std::vector<long>,edm::InLumi>( edm::InputTag("InfoProducer","vecEvents") ) ;
+    weights_token = cc.consumes<std::vector<float>,edm::InLumi>( edm::InputTag("InfoProducer","vecMcWeights") ) ;
+    putrue_token = cc.consumes<std::vector<int>,edm::InLumi>( edm::InputTag("InfoProducer","vecPuTrueInt") ) ;
 }
 NeroAll::~NeroAll(){}
 
@@ -137,6 +143,9 @@ int NeroAll::analyzeLumi(const edm::LuminosityBlock &iLumi, TTree *t)
     }
     return 0;
 }
+
+NEROREGISTER(NeroAll);
+
 // Local Variables:
 // mode:c++
 // indent-tabs-mode:nil

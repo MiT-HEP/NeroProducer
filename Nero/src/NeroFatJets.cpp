@@ -3,8 +3,8 @@
 #include "NeroProducer/Nero/interface/Nero.hpp"
 #include "NeroProducer/Core/interface/BareFunctions.hpp"
 
-NeroFatJets::NeroFatJets() : 
-        NeroCollection(),
+NeroFatJets::NeroFatJets(edm::ConsumesCollector & cc,edm::ParameterSet iConfig):
+    NeroCollection(cc, iConfig),
         BareFatJets(),
         mRunJEC(false),
         mMinId("loose"),
@@ -14,6 +14,17 @@ NeroFatJets::NeroFatJets() :
         mMCJetCorrectorPuppi(0),
         mDataJetCorrectorPuppi(0)
 {
+    token = cc.consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("chsAK8"));
+    rho_token = cc.consumes<double>(iConfig.getParameter<edm::InputTag>("rho"));
+    vertex_token = cc.consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("vertices"));
+    mMinPt = iConfig.getParameter<double>("minAK8CHSPt");
+    mMaxEta = iConfig.getParameter<double>("minAK8CHSEta");
+    mMinId = iConfig.getParameter<string>("minAK8CHSId");
+    cachedPrefix = iConfig.getParameter<string>("AK8CHSName");
+    jetRadius = 0.8;
+    subjets_token = cc.mayConsume<reco::PFJetCollection>(edm::InputTag("PFJetsSoftDrop"+ cachedPrefix ,"SubJets"));
+    btags_token = cc.mayConsume<reco::JetTagCollection>(edm::InputTag(cachedPrefix + "PFCombinedInclusiveSecondaryVertexV2BJetTags") ) ;
+    jecBasePath= iConfig.getParameter<string>("chsAK8JEC");
 }
 
 NeroFatJets::~NeroFatJets(){
@@ -60,8 +71,6 @@ void NeroFatJets::init()
 
 int NeroFatJets::analyze(const edm::Event& iEvent){
 
-    if ( mOnlyMc  ) return 0;
-    
     if ( mMinId == "none" ) return 0;
 
     // maybe handle should be taken before
@@ -166,6 +175,8 @@ int NeroFatJets::analyze(const edm::Event& iEvent){
         
     return 0;
 }
+
+NEROREGISTER(NeroFatJets);
 
 // Local Variables:
 // mode:c++

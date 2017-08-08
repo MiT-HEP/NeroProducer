@@ -12,7 +12,8 @@ class NeroFatJets : virtual public NeroCollection,
     virtual public BareFatJets
 {
     public:
-        NeroFatJets();
+        NeroFatJets():NeroCollection(){};
+        NeroFatJets(edm::ConsumesCollector & cc,edm::ParameterSet iConfig );
         ~NeroFatJets();
         int analyze(const edm::Event& iEvent);
         virtual inline string name(){return "NeroFatJets";};

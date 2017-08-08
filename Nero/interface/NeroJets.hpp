@@ -3,10 +3,6 @@
 
 #include "NeroProducer/Nero/interface/NeroCollection.hpp"
 #include "NeroProducer/Core/interface/BareJets.hpp"
-#include "NeroProducer/Nero/interface/NeroPF.hpp"
-#include "NeroProducer/Nero/interface/NeroVertex.hpp"
-#include "NeroProducer/Nero/interface/NeroEvent.hpp"
-#include "NeroProducer/Nero/interface/NeroMonteCarlo.hpp"
 
 
 // --- JEC UNCERTAINTY ---
@@ -20,7 +16,8 @@
 class NeroJets : virtual public NeroCollection, virtual public BareJets
 {
     public:
-        NeroJets();
+        NeroJets():NeroCollection(){};
+        NeroJets(edm::ConsumesCollector & cc,edm::ParameterSet iConfig );
         ~NeroJets();
         int analyze(const edm::Event& iEvent, const edm::EventSetup&iSetup);
         int analyze(const edm::Event& iEvent){return 2;} // never called
@@ -41,6 +38,10 @@ class NeroJets : virtual public NeroCollection, virtual public BareJets
         edm::Handle<edm::ValueMap<int>> qg_handle_nmult;
         edm::Handle<edm::ValueMap<float>> qg_handle_pt_dr_log;
 
+        edm::Handle<edm::View<reco::GenParticle> > pruned_handle;
+        edm::Handle<double> rho_handle;
+        edm::EDGetTokenT<double> rho_token;
+
         // --- Token
         edm::EDGetTokenT<pat::JetCollection> token;
         edm::EDGetTokenT<edm::ValueMap<float> > qg_token;
@@ -57,18 +58,13 @@ class NeroJets : virtual public NeroCollection, virtual public BareJets
         edm::EDGetTokenT<reco::GenJetCollection> gen_token;
         map<string, edm::EDGetTokenT<edm::ValueMap<float> > > qg_dR_tokens_f;
         map<string, edm::EDGetTokenT<edm::ValueMap<int> > > qg_dR_tokens_i;
+        edm::EDGetTokenT<edm::View<reco::GenParticle> > pruned_token;
         // --- configuration
         float mMinPt;
         int   mMinNjets;
         float mMinEta;
         string mMinId;
 
-        // 
-        NeroPF *pf;
-        NeroVertex *vtx;
-        NeroEvent *evt;
-        NeroMonteCarlo *mc;
-        
         // JES
         void InitJes(const edm::EventSetup& iSetup);
 

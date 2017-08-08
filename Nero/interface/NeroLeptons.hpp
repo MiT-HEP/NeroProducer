@@ -3,9 +3,6 @@
 
 #include "NeroProducer/Nero/interface/NeroCollection.hpp"
 #include "NeroProducer/Core/interface/BareLeptons.hpp"
-#include "NeroProducer/Nero/interface/NeroVertex.hpp"
-#include "NeroProducer/Nero/interface/NeroEvent.hpp"
-#include "NeroProducer/Nero/interface/NeroPF.hpp"
 
 #include "RecoEgamma/EgammaTools/interface/EffectiveAreas.h"
 #include <memory>
@@ -19,7 +16,9 @@ class NeroLeptons : virtual public NeroCollection,
     virtual public BareLeptons
 {
     public:
-        NeroLeptons();
+        NeroLeptons():NeroCollection(){};
+        NeroLeptons(edm::ConsumesCollector & cc,edm::ParameterSet iConfig );
+
         ~NeroLeptons();
 
         virtual int analyze(const edm::Event &)  ;
@@ -58,15 +57,12 @@ class NeroLeptons : virtual public NeroCollection,
         };
 
         std::unique_ptr<EffectiveAreas> ea_;
-
     
-        // to be setted by the vertex
-        //const reco::Vertex *pv_;
-        //void inline SetPV( const reco::Vertex *pv){ pv_ = pv ; }
-        //void inline SetPV( const reco::Vertex &pv){ pv_ = &pv ; }
-        NeroVertex *vtx_ ;
-        NeroEvent  *evt_ ; // rho 
-        NeroPF *pf_;
+        // --- Handle
+        edm::Handle<reco::VertexCollection> vtx_handle;
+        // --- Token
+        edm::EDGetTokenT<reco::VertexCollection> vtx_token;
+        edm::EDGetTokenT<pat::PackedCandidateCollection> token_pf;
 
         // Token
         edm::EDGetTokenT<pat::MuonCollection> mu_token;
@@ -81,11 +77,7 @@ class NeroLeptons : virtual public NeroCollection,
         edm::EDGetTokenT<pat::ElectronCollection> el_uncalib_token;
 
         edm::EDGetTokenT<EcalRecHitCollection> ebRecHits_token;
-        //edm::EDGetTokenT<EcalRecHitCollection> eeRecHits_token;
 
-        //edm::EDGetTokenT<edm::ValueMap<float> > 	el_iso_ch_token;
-        //edm::EDGetTokenT<edm::ValueMap<float> > 	el_iso_nh_token;
-        //edm::EDGetTokenT<edm::ValueMap<float> > 	el_iso_pho_token;
         //for miniiso
         edm::EDGetTokenT<double> rho_token;
 
@@ -101,9 +93,7 @@ class NeroLeptons : virtual public NeroCollection,
 
         edm::Handle<pat::ElectronCollection> el_uncalib_handle;
 
-        //edm::Handle<edm::ValueMap<float> > el_iso_ch;
-        //edm::Handle<edm::ValueMap<float> > el_iso_nh;
-        //edm::Handle<edm::ValueMap<float> > el_iso_pho;
+        edm::Handle<pat::PackedCandidateCollection> handle_pf;
 
         // for miniiso
         edm::Handle<double> rho_handle;

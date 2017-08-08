@@ -11,7 +11,8 @@ class NeroMonteCarlo : virtual public NeroCollection,
     virtual public NeroRun
 {
     public:
-        NeroMonteCarlo();
+        NeroMonteCarlo():NeroCollection(){};
+        NeroMonteCarlo(edm::ConsumesCollector & cc,edm::ParameterSet iConfig );
         ~NeroMonteCarlo();
         int analyze(const edm::Event& iEvent);
         //void defineBranches(TTree *t);

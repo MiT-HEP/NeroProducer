@@ -6,10 +6,12 @@
     #include "NeroProducer/Core/interface/BareFunctions.hpp"
 #endif
 
-NeroEvent::NeroEvent():
-    NeroCollection(),
+
+NeroEvent::NeroEvent(edm::ConsumesCollector & cc,edm::ParameterSet iConfig):
+    NeroCollection(cc, iConfig),
     BareEvent()
 {
+    //* init maps
     metNameToBit["FullRecommendation"] = FullRecommendation;
     metNameToBit["Flag_HBHENoiseFilter"] = HBHENoiseFilter;
     metNameToBit["Flag_HBHENoiseIsoFilter"] = HBHENoiseIsoFilter;
@@ -17,6 +19,14 @@ NeroEvent::NeroEvent():
     metNameToBit["Flag_goodVertices"] = goodVertices;
     metNameToBit["Flag_eeBadScFilter" ] = eeBadScFilter;
     metNameToBit["Flag_globalTightHalo2016Filter" ] = GlobalTightHalo2016;
+
+    // init tokens
+    rho_token       = cc.consumes<double>(iConfig.getParameter<edm::InputTag>("rho"));
+    filter_token    = cc.consumes<edm::TriggerResults>(iConfig.getParameter < edm::InputTag > ("metFilterToken"));
+    BadChCandFilter_token = cc.consumes<bool>(iConfig.getParameter < edm::InputTag > ("BadChCandFilterToken"));
+    BadPFMuon_token = cc.consumes<bool>(iConfig.getParameter < edm::InputTag > ("BadPFMuonToken"));
+    *( metfilterNames) = iConfig.getParameter < std::vector<std::string> > ("metfilterNames");
+
 }
 
 NeroEvent::~NeroEvent(){
@@ -28,7 +38,6 @@ int NeroEvent::analyze(const edm::Event& iEvent){
     lumiNum    = iEvent.luminosityBlock();
     eventNum   = iEvent.id().event();
 
-    if ( mOnlyMc  ) return 0;
     iEvent.getByToken(rho_token,rho_handle);
     if ( not rho_handle.isValid() ) cout <<"[NeroEvent]::[analyze]::[ERROR] rho_handle is not valid"<<endl;
 
@@ -92,6 +101,8 @@ int NeroEvent::analyze(const edm::Event& iEvent){
 
     return 0;
 }
+
+NEROREGISTER(NeroEvent);
 
 // Local Variables:
 // mode:c++

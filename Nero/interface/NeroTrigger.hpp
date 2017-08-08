@@ -17,7 +17,8 @@
 class NeroTrigger : virtual public NeroCollection, virtual public BareTrigger
 {
     public:
-        NeroTrigger();
+        NeroTrigger():NeroCollection(){};
+        NeroTrigger(edm::ConsumesCollector & cc,edm::ParameterSet iConfig );
         ~NeroTrigger();
         int analyze(const edm::Event& iEvent);
         virtual inline string name(){return "NeroTrigger";};
@@ -29,13 +30,6 @@ class NeroTrigger : virtual public NeroCollection, virtual public BareTrigger
         //  handle for L1
         edm::Handle<BXVector<l1t::EtSum> > handle_l1EtSum;
         edm::Handle<BXVector<l1t::Tau> > handle_l1Tau;
-
-        //  The collections are gmtStage2Digis:Muon, caloStage2Digis:EGamma, caloStage2Digis:EtSum, caloStage2Digis:Jet, caloStage2Digis:Tau 
-        //
-        //BXVector<l1t::EGamma>                 "caloStage2Digis"           "EGamma"          "RECO"    
-        //BXVector<l1t::EtSum>                  "caloStage2Digis"           "EtSum"           "RECO"    
-        //BXVector<l1t::Jet>                    "caloStage2Digis"           "Jet"             "RECO"    
-        //BXVector<l1t::Tau>                    "caloStage2Digis"           "Tau"             "RECO" 
 
         // --- Token
         edm::EDGetTokenT< edm::TriggerResults > token;

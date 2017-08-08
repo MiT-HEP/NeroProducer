@@ -2,15 +2,19 @@
 #include "NeroProducer/Nero/interface/Nero.hpp"
 #include "DataFormats/TauReco/interface/PFTau.h"
 
-NeroTaus::NeroTaus(): 
-        NeroCollection(),
+NeroTaus::NeroTaus(edm::ConsumesCollector & cc,edm::ParameterSet iConfig):
+        NeroCollection(cc, iConfig),
         BareTaus()
 {
-    mMinPt = 18;
-    mMinNtaus = 0;
-    mMinEta = 2.3;
-    mMinId = "decayModeFinding";
-    mMaxIso = -1;
+
+    token = cc.consumes<pat::TauCollection>(iConfig.getParameter<edm::InputTag>("taus"));
+    mMinPt = iConfig.getParameter<double>("minPt");
+    mMinNtaus = iConfig.getParameter<int>("minN");
+    mMinEta = iConfig.getParameter<double>("minEta");
+    mMinId = iConfig.getParameter<string>("minId");
+    mMaxIso = iConfig.getParameter<double>("maxIso");
+    SetExtend ( iConfig.getParameter<bool>("extendTau") );
+    //taus -> SetMatch( iConfig.getParameter<bool>("matchTau") );
 }
 
 NeroTaus::~NeroTaus(){
@@ -18,8 +22,6 @@ NeroTaus::~NeroTaus(){
 
 int NeroTaus::analyze(const edm::Event & iEvent)
 {
-    if ( mOnlyMc  ) return 0;
-
     iEvent.getByToken(token, handle);
     if ( not handle.isValid() ) cout<<"[NeroTaus]::[analyze]::[ERROR] handle is not valid"<<endl;
 
@@ -98,19 +100,18 @@ int NeroTaus::analyze(const edm::Event & iEvent)
         iso -> push_back( totIso ) ; 
         leadTrackPt -> push_back( tau.leadChargedHadrCand()->p4().Pt() ) ;
 
-        if (IsExtend() ){
-            chargedIsoPtSum  -> push_back( tau.tauID("chargedIsoPtSum") );
-            neutralIsoPtSum  -> push_back( tau.tauID("neutralIsoPtSum") );
-            isoDeltaBetaCorr -> push_back( tau.tauID("byCombinedIsolationDeltaBetaCorrRaw3Hits"));
-            //isoPileupWeightedRaw -> push_back( tau.tauID("byPileupWeightedIsolationRaw3Hits")); // not in 80X
-            isoMva -> push_back(tau.tauID("byIsolationMVArun2v1DBnewDMwLTraw") );
-        }
+        chargedIsoPtSum  -> push_back( tau.tauID("chargedIsoPtSum") );
+        neutralIsoPtSum  -> push_back( tau.tauID("neutralIsoPtSum") );
+        isoDeltaBetaCorr -> push_back( tau.tauID("byCombinedIsolationDeltaBetaCorrRaw3Hits"));
+        isoMva -> push_back(tau.tauID("byIsolationMVArun2v1DBnewDMwLTraw") );
 
 
     }
     if( int(selBits->size()) < mMinNtaus) return 1;
     return 0;
 }
+
+NEROREGISTER(NeroTaus);
 
 
 // Local Variables:

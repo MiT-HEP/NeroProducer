@@ -8,7 +8,8 @@ class NeroTaus : virtual public NeroCollection,
     virtual public BareTaus
 {
     public:
-        NeroTaus();
+        NeroTaus():NeroCollection(){};
+        NeroTaus(edm::ConsumesCollector & cc,edm::ParameterSet iConfig );
         ~NeroTaus();
         int analyze(const edm::Event &)  ;
         virtual inline string name(){return "NeroTaus";};

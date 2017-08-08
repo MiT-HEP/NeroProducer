@@ -26,15 +26,11 @@ void BareTaus::init(){
     BareFunctions::New(iso);
     BareFunctions::New(leadTrackPt);
 
-
-    if ( IsExtend() )
-    {
-        BareFunctions::New(chargedIsoPtSum);
-        BareFunctions::New(neutralIsoPtSum);
-        BareFunctions::New(isoDeltaBetaCorr);
-        BareFunctions::New(isoPileupWeightedRaw);
-        BareFunctions::New(isoMva);
-    }
+    BareFunctions::New(chargedIsoPtSum);
+    BareFunctions::New(neutralIsoPtSum);
+    BareFunctions::New(isoDeltaBetaCorr);
+    BareFunctions::New(isoPileupWeightedRaw);
+    BareFunctions::New(isoMva);
 }
 
 void BareTaus::clear(){
@@ -44,14 +40,11 @@ void BareTaus::clear(){
     M->clear();
     iso -> clear();
     leadTrackPt -> clear();
-    if ( extend_ ) 
-    {
-        chargedIsoPtSum->clear();
-        neutralIsoPtSum->clear() ;
-        isoDeltaBetaCorr->clear();
-        isoPileupWeightedRaw->clear();
-        isoMva->clear();
-    }
+    chargedIsoPtSum->clear();
+    neutralIsoPtSum->clear() ;
+    isoDeltaBetaCorr->clear();
+    isoPileupWeightedRaw->clear();
+    isoMva->clear();
 }
 
 void BareTaus::defineBranches(TTree *t){
@@ -67,14 +60,11 @@ void BareTaus::defineBranches(TTree *t){
     //
     t->Branch("tauLeadTrackPt","vector<float>",&leadTrackPt);
 
-    if ( IsExtend() )
-    {
-        t->Branch("tauChargedIsoPtSum","vector<float>",&chargedIsoPtSum);
-        t->Branch("tauNeutralIsoPtSum","vector<float>",&neutralIsoPtSum);
-        t->Branch("tauIsoDeltaBetaCorr","vector<float>",&isoDeltaBetaCorr);
-        t->Branch("tauIsoPileupWeightedRaw","vector<float>",&isoPileupWeightedRaw);
-        t->Branch("tauIsoMva","vector<float>",&isoMva);
-    }
+    t->Branch("tauChargedIsoPtSum","vector<float>",&chargedIsoPtSum);
+    t->Branch("tauNeutralIsoPtSum","vector<float>",&neutralIsoPtSum);
+    t->Branch("tauIsoDeltaBetaCorr","vector<float>",&isoDeltaBetaCorr);
+    t->Branch("tauIsoPileupWeightedRaw","vector<float>",&isoPileupWeightedRaw);
+    t->Branch("tauIsoMva","vector<float>",&isoMva);
 
 }
 
@@ -87,15 +77,11 @@ void BareTaus::setBranchAddresses(TTree *t){
     BareFunctions::SetBranchAddress(t,"tauIso"	,&iso);
     BareFunctions::SetBranchAddress(t,"tauLeadTrackPt"	,&leadTrackPt);
 
-    // EXTENDED VARIBALES
-    if ( IsExtend() )
-    {
-        BareFunctions::SetBranchAddress(t,"tauChargedIsoPtSum",&chargedIsoPtSum);
-        BareFunctions::SetBranchAddress(t,"tauNeutralIsoPtSum",&neutralIsoPtSum);
-        BareFunctions::SetBranchAddress(t,"tauIsoDeltaBetaCorr",&isoDeltaBetaCorr);
-        BareFunctions::SetBranchAddress(t,"tauIsoPileupWeightedRaw",&isoPileupWeightedRaw);
-        BareFunctions::SetBranchAddress(t,"tauIsoMva"	,&isoMva);
-    }
+    BareFunctions::SetBranchAddress(t,"tauChargedIsoPtSum",&chargedIsoPtSum);
+    BareFunctions::SetBranchAddress(t,"tauNeutralIsoPtSum",&neutralIsoPtSum);
+    BareFunctions::SetBranchAddress(t,"tauIsoDeltaBetaCorr",&isoDeltaBetaCorr);
+    BareFunctions::SetBranchAddress(t,"tauIsoPileupWeightedRaw",&isoPileupWeightedRaw);
+    BareFunctions::SetBranchAddress(t,"tauIsoMva"	,&isoMva);
 }
 BAREREGISTER(BareTaus);
 // Local Variables:
