@@ -1,8 +1,0 @@
-Requirements            = Arch == "X86_64" && OpSysAndVer == "SL6" && HasFileTransfer
-Notification            = Error
-Rank                    = Mips
-# Uncomment below if a local copy of ntuples are needed
-#transfer_output_files = {fileset}.root,nero.root
-#transfer_output_remaps = "nero.root = nero_{fileset}.root"
-transfer_output_files = {fileset}.root
-accounting_group = group_cmsuser
