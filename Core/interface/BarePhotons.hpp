@@ -16,8 +16,7 @@ class BarePhotons : virtual public BareP4
             PhoElectronVeto = 1UL << 7,
             PhoPixelSeedVeto = 1UL << 8,
             // NONPOG
-            PhoVLoose50 = 1UL << 16, // loose, no-sieie, looser ph-iso
-            PhoVLoose25 = 1UL << 17, // loose + no-sieie, looser ph-iso
+            PhoVLoose = 1UL << 16, // loose, no-sieie, looser ph-iso
             PhoHighPt = 1UL << 18,
             PhoLooseNoEVeto = 1UL << 19,
             PhoMediumNoEVeto = 1UL << 20,
@@ -60,8 +59,7 @@ class BarePhotons : virtual public BareP4
         vector<float> *rawScEnergy{0};
 
         vector<float> *hOverE{0};
-        vector<float> *chWorstIso{0};
-        vector<float> *chIsoMax{0};
+        //vector<float> *chWorstIso{0};
     
         vector<float> *emax{0};
         vector<float> *e2nd{0};

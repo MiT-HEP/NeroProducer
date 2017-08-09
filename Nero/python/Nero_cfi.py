@@ -16,7 +16,7 @@ nero = cms.EDAnalyzer("Nero",
     
     NeroEvent = cms.PSet(
         rho = cms.InputTag("fixedGridRhoFastjetAll"),
-        metFilterToken = cms.InputTag("TriggerResults"),          
+        metFilterToken = cms.InputTag("TriggerResults","","RECO"),          
         BadChCandFilterToken = cms.InputTag("BadChargedCandidateFilter"),                    
         BadPFMuonToken = cms.InputTag("BadPFMuonFilter"),  
         metfilterNames = cms.vstring(['Flag_HBHENoiseFilter', 
@@ -43,6 +43,8 @@ nero = cms.EDAnalyzer("Nero",
         minAK8CHSN   = cms.int32  (0),
         minAK8CHSId  = cms.string ('loose'),
         AK8CHSName   = cms.string ('AK8CHS'),
+        rho = cms.InputTag("fixedGridRhoFastjetAll"),
+        vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
         ),
 
     # gen
@@ -53,6 +55,10 @@ nero = cms.EDAnalyzer("Nero",
         genjets = cms.InputTag("slimmedGenJets"),
         prunedgen = cms.InputTag("prunedGenParticles"),
         packedgen = cms.InputTag("packedGenParticles"),
+        lhe = cms.InputTag("externalLHEProducer"),
+        minGenParticlePt = cms.double(5.),
+        minGenJetPt = cms.double(20.),
+        particleGun = cms.untracked.bool(False),
     ),
 
     #
@@ -183,11 +189,12 @@ nero = cms.EDAnalyzer("Nero",
     NeroJets= cms.PSet( 
         jets = cms.InputTag("slimmedJets"),
         rho = cms.InputTag("fixedGridRhoFastjetAll"),
-        minJetPt  = cms.double (15.),
-        minJetEta = cms.double (4.7),
-        minJetN   = cms.int32  (0),
-        minJetId  = cms.string ('none'),
+        minPt  = cms.double (15.),
+        minEta = cms.double (4.7),
+        minN   = cms.int32  (0),
+        minId  = cms.string ('none'),
         prunedgen = cms.InputTag("prunedGenParticles"),
+        genjets = cms.InputTag("slimmedGenJets"),
     ),
 
     ## LEPTONS
@@ -226,9 +233,6 @@ nero = cms.EDAnalyzer("Nero",
         extendTau = cms.bool(True),
     ),
 
-    minGenParticlePt = cms.double(5.),
-    minGenJetPt = cms.double(20.),
-    particleGun = cms.untracked.bool(False),
 
     # PHOTONS
     NeroPhotons = cms.PSet( 
@@ -240,14 +244,8 @@ nero = cms.EDAnalyzer("Nero",
         minN   = cms.int32  (0),
         minId = cms.string ('loose'),
         maxIso = cms.double (-1.),
-        phoLooseIdMap  = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring16-%(vs)s-loose"),
-        phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring16-%(vs)s-medium"),
-        phoTightIdMap  = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring16-%(vs)s-tight"),
-        ### ISO MAP
-        phoChargedIsolation = cms.InputTag("photonIDValueMapProducer:phoChargedIsolation"),
-        phoNeutralHadronIsolation = cms.InputTag("photonIDValueMapProducer:phoNeutralHadronIsolation"),
-        phoPhotonIsolation = cms.InputTag("photonIDValueMapProducer:phoPhotonIsolation"),
-        phoWorstChargedIsolation = cms.InputTag("photonIDValueMapProducer:phoWorstChargedIsolation"),
+        ebRecHits = cms.InputTag("reducedEgamma:reducedEBRecHits"),
+        eeRecHits = cms.InputTag("reducedEgamma:reducedEERecHits"),
         ),
 )
 #------------------------------------------------------

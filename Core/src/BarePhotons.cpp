@@ -17,8 +17,6 @@ BarePhotons::~BarePhotons(){
     BareFunctions::Delete(rawpt);
     BareFunctions::Delete(rawScEnergy);
     BareFunctions::Delete(hOverE);
-    BareFunctions::Delete(chWorstIso);
-    BareFunctions::Delete(chIsoMax);
     BareFunctions::Delete(emax);
     BareFunctions::Delete(e2nd);
     BareFunctions::Delete(e33);
@@ -50,8 +48,6 @@ void BarePhotons::init(){
         BareFunctions::New(rawpt);
         BareFunctions::New(rawScEnergy);
         BareFunctions::New(hOverE);
-        BareFunctions::New(chWorstIso);
-        BareFunctions::New(chIsoMax);
         BareFunctions::New(emax);
         BareFunctions::New(e2nd);
         BareFunctions::New(e33);
@@ -86,8 +82,6 @@ void BarePhotons::clear(){
         rawpt->clear();
         rawScEnergy->clear();
         hOverE->clear();
-        chWorstIso->clear();
-        chIsoMax->clear();
         emax->clear();
         e2nd->clear();
         e33->clear();
@@ -126,8 +120,6 @@ void BarePhotons::defineBranches(TTree *t){
         t->Branch("photonRawPt", "vector<float>", &rawpt);
         t->Branch("photonRawScEnergy", "vector<float>", &rawScEnergy);
         t->Branch("photonHOverE", "vector<float>", &hOverE);
-        t->Branch("photonChWorstIso", "vector<float>", &chWorstIso);
-        t->Branch("photonChIsoMax", "vector<float>", &chIsoMax);
         t->Branch("photonEmax", "vector<float>", &emax);
         t->Branch("photonE2nd", "vector<float>", &e2nd);
         t->Branch("photonE33", "vector<float>", &e33);
@@ -163,8 +155,6 @@ void BarePhotons::setBranchAddresses(TTree *t){
         BareFunctions::SetBranchAddress(t, "photonRawPt", &rawpt);
         BareFunctions::SetBranchAddress(t, "photonRawScEnergy", &rawScEnergy);
         BareFunctions::SetBranchAddress(t, "photonHOverE", &hOverE);
-        BareFunctions::SetBranchAddress(t, "photonChWorstIso", &chWorstIso);
-        BareFunctions::SetBranchAddress(t, "photonChIsoMax", &chIsoMax);
         BareFunctions::SetBranchAddress(t, "photonEmax", &emax);
         BareFunctions::SetBranchAddress(t, "photonE2nd", &e2nd);
         BareFunctions::SetBranchAddress(t, "photonE33", &e33);

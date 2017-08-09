@@ -26,14 +26,6 @@ class NeroPhotons : virtual public NeroCollection,
         // --- Handle
         edm::Handle<pat::PhotonCollection> handle;
         edm::Handle<pat::PhotonCollection> uncalib_handle;
-        edm::Handle<edm::ValueMap<bool> > loose_id;  
-        edm::Handle<edm::ValueMap<bool> > medium_id;  
-        edm::Handle<edm::ValueMap<bool> > tight_id;  
-
-        edm::Handle<edm::ValueMap<float> > iso_ch;
-        edm::Handle<edm::ValueMap<float> > iso_nh;
-        edm::Handle<edm::ValueMap<float> > iso_pho;
-        edm::Handle<edm::ValueMap<float> > iso_wch;
         edm::Handle<double> rho_handle;
 
         // --- Token
@@ -41,17 +33,9 @@ class NeroPhotons : virtual public NeroCollection,
         edm::EDGetTokenT<double> rho_token;
         edm::EDGetTokenT<pat::PhotonCollection> token;
         edm::EDGetTokenT<pat::PhotonCollection> uncalib_token;
-        edm::EDGetTokenT<edm::ValueMap<bool> > loose_id_token;
-        edm::EDGetTokenT<edm::ValueMap<bool> > medium_id_token;
-        edm::EDGetTokenT<edm::ValueMap<bool> > tight_id_token;
-        edm::EDGetTokenT<edm::ValueMap<float> > iso_ch_token;
-        edm::EDGetTokenT<edm::ValueMap<float> > iso_nh_token;
-        edm::EDGetTokenT<edm::ValueMap<float> > iso_pho_token;
-        edm::EDGetTokenT<edm::ValueMap<float> > iso_wch_token;
         
         edm::EDGetTokenT<EcalRecHitCollection> ebRecHits_token;
         edm::EDGetTokenT<EcalRecHitCollection> eeRecHits_token;
-    
 
         EcalClusterLazyTools *clusterTools = 0;
 
@@ -70,13 +54,16 @@ class NeroPhotons : virtual public NeroCollection,
 
         unsigned idStringToEnum(std::string idString);
 
-        bool cutBasedPhotonId( const pat::Photon& pho, string type="loose_50ns", bool withIso = true , bool withSieie=true);
+        enum PHOID {Loose, Medium, Tight, MonoPhotonBaseline  };
+        bool cutBasedPhotonId( const pat::Photon& pho, PHOID type=Loose, bool withIso = true , bool withSieie=true);
 
-        float cutBasedPhotonIdEffArea( const pat::Photon&pho, string type="ch_50ns");
+        enum PHOISO {CH25, NH25, PH25  };
+        float cutBasedPhotonIdEffArea( const pat::Photon&pho, PHOISO type=CH25);
 
         // --- EGTools
-        EnergyScaleCorrection_class *PhoCorr{0};
-        TRandom3 *rnd_{0};
+        //EnergyScaleCorrection_class *PhoCorr{0};
+        //TRandom3 *rnd_{0};
+        
 
 };
 

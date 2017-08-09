@@ -16,18 +16,11 @@ NeroPhotons::NeroPhotons(edm::ConsumesCollector & cc,edm::ParameterSet iConfig):
     mMaxEta = 2.5;
     mMinId = "loose";
 
-    rnd_ = new TRandom3() ;
+    //rnd_ = new TRandom3() ;
 
     token = cc.consumes<pat::PhotonCollection>(iConfig.getParameter<edm::InputTag>("photons"));
     uncalib_token = cc.consumes<pat::PhotonCollection>(edm::InputTag("slimmedPhotons"));
 
-    loose_id_token = cc.consumes<edm::ValueMap<bool>>(iConfig.getParameter<edm::InputTag>("phoLooseIdMap"));
-    medium_id_token = cc.consumes<edm::ValueMap<bool>>(iConfig.getParameter<edm::InputTag>("phoMediumIdMap"));
-    tight_id_token = cc.consumes<edm::ValueMap<bool>>(iConfig.getParameter<edm::InputTag>("phoTightIdMap"));
-    iso_ch_token = cc.consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>("phoChargedIsolation"));
-    iso_nh_token = cc.consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>("phoNeutralHadronIsolation"));
-    iso_pho_token = cc.consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>("phoPhotonIsolation"));
-    iso_wch_token = cc.consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>("phoWorstChargedIsolation"));
     ebRecHits_token = cc.mayConsume<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("ebRecHits"));
     eeRecHits_token = cc.mayConsume<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("eeRecHits"));
     mMinPt = iConfig.getParameter<double>("minPt");
@@ -41,8 +34,8 @@ NeroPhotons::NeroPhotons(edm::ConsumesCollector & cc,edm::ParameterSet iConfig):
 }
 
 NeroPhotons::~NeroPhotons(){
-    delete PhoCorr; 
-    delete rnd_; 
+    // delete PhoCorr; 
+    // delete rnd_; 
 }
 
 unsigned NeroPhotons::idStringToEnum(std::string idString)
@@ -51,8 +44,7 @@ unsigned NeroPhotons::idStringToEnum(std::string idString)
     if (idString == "loose") { idEnum = PhoLoose; }
     else if (idString == "medium") { idEnum = PhoMedium; }
     else if (idString == "tight") { idEnum = PhoTight; }
-    else if (idString == "vloose50") { idEnum = PhoVLoose50; }
-    else if (idString == "vloose25") { idEnum = PhoVLoose25; }
+    else if (idString == "vloose") { idEnum = PhoVLoose; }
     else if (idString == "highpt") { idEnum = PhoHighPt; }
     else if (idString == "monoph") { idEnum = PhoMonophBaseline; }
     else if (idString == "none")   { idEnum = PhoBaseline; }
@@ -68,13 +60,6 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
     iEvent.getByToken(uncalib_token, uncalib_handle);
     iEvent.getByToken(rho_token, rho_handle);
 
-    // ID and ISO
-    iEvent.getByToken(loose_id_token,loose_id);
-    iEvent.getByToken(medium_id_token,medium_id);
-    iEvent.getByToken(tight_id_token,tight_id);
-    iEvent.getByToken(iso_ch_token, iso_ch);
-    iEvent.getByToken(iso_nh_token, iso_nh);
-    iEvent.getByToken(iso_pho_token, iso_pho);
 
     edm::Handle<EcalRecHitCollection> ebRecHits;
     edm::Handle<EcalRecHitCollection> eeRecHits;
@@ -84,18 +69,7 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
     
     if ( not handle.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] handle is not valid"<<endl;
     if ( not uncalib_handle.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] uncalib_handle is not valid"<<endl;
-    if ( not loose_id.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] loose_id is not valid"<<endl;
-    if ( not medium_id.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] medium_id is not valid"<<endl;
-    if ( not tight_id.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] tight_id is not valid"<<endl;
-    if ( not iso_ch.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] iso_ch is not valid"<<endl;
-    if ( not iso_nh.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] iso_nh is not valid"<<endl;
-    if ( not iso_pho.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] iso_pho is not valid"<<endl;
     
-    if (IsExtend() ) {
-        iEvent.getByToken(iso_wch_token, iso_wch);
-        if ( not iso_wch.isValid() ) cout<<"[NeroPhotons]::[analyze]::[ERROR] iso_wch is not valid"<<endl;
-    }
-
     int iPho = -1;	
     for (auto &pho : *handle)
     {
@@ -130,20 +104,18 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
             }
         #endif
 
-        edm::RefToBase<pat::Photon> ref ( edm::Ref< pat::PhotonCollection >(handle, iPho) ) ;
-        float _chIso_ =  (*iso_ch) [ref];
-        float _nhIso_ =  (*iso_nh) [ref];
-        float _phIso_ =  (*iso_pho)[ref];	
+        float _chIso_ =  pho.chargedHadronIso();
+        float _nhIso_ =  pho.neutralHadronIso() ;
+        float _phIso_ =  pho.photonIso();
         
-        float _puIso_ =  pho.puChargedHadronIso() ;  // the other are eff area corrected, no need for this correction
+        float _puIso_ =  pho.puChargedHadronIso() ; 
         float totIso = _chIso_ + _nhIso_ + _phIso_;
 
-        bool isPassLoose  = (*loose_id)[ref];	
-        bool isPassMedium = (*medium_id)[ref];	
-        bool isPassTight  = (*tight_id)[ref];	
-        bool isPassVLoose50 = cutBasedPhotonId( pho, "loose_50ns", false, false); // no pho iso , no sieie
-        bool isPassVLoose25 = cutBasedPhotonId( pho, "loose_25ns", false, false); // no pho iso , no sieie
-        bool isPassMonophBaseline = cutBasedPhotonId( pho, "monoph_baseline", true, false); // iso bool does nothing right now, sieie false allows events with sieie > 0.015
+        bool isPassLoose  = cutBasedPhotonId(pho,Loose);	
+        bool isPassMedium = cutBasedPhotonId(pho,Medium);	
+        bool isPassTight  = cutBasedPhotonId(pho,Tight);	
+        bool isPassVLoose25 = cutBasedPhotonId( pho, Loose, false, false); // no pho iso , no sieie
+        bool isPassMonophBaseline = cutBasedPhotonId( pho, MonoPhotonBaseline, true, false); // iso bool does nothing right now, sieie false allows events with sieie > 0.015
 
         //if (not isPassVLoose) continue;
         if (mMaxIso >=0 and totIso > mMaxIso) continue;
@@ -151,12 +123,15 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         unsigned bits=0;
 
         bits |= 1; // baseline bit
-        bits |= isPassTight * PhoTight;
-        bits |= isPassMedium * PhoMedium;
-        bits |= isPassLoose * PhoLoose;
-        bits |= isPassVLoose50 * PhoVLoose50;
-        bits |= isPassVLoose25 * PhoVLoose25;
+        bits |= (pho. passElectronVeto() * isPassTight) * PhoTight  ;
+        bits |= (pho. passElectronVeto() * isPassMedium) * PhoMedium;
+        bits |= (pho. passElectronVeto() * isPassLoose) * PhoLoose;
+        bits |= (pho. passElectronVeto() * isPassVLoose25) * PhoVLoose;
         bits |= isPassMonophBaseline * PhoMonophBaseline;
+
+        bits |= isPassTight * PhoTightNoEVeto  ;
+        bits |= isPassMedium * PhoMediumNoEVeto;
+        bits |= isPassLoose * PhoLooseNoEVeto;
         
         if ( not (bits & kMinId) ) continue; // even if there is some misalignment ntuples will not be corrupted
 
@@ -213,7 +188,6 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         */
 
         if (IsExtend() ){
-            //rawpt->push_back(pho.pt());
             #ifdef VERBOSE
             if (VERBOSE>0) cout<<"[NeroPhotons]::[analyze]::[DEBUG] Extend"<<endl;
             #endif
@@ -224,8 +198,7 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
             if (VERBOSE>0) cout<<"[NeroPhotons]::[analyze]::[DEBUG] ShowerShapes"<<endl;
             #endif
             hOverE->push_back(pho.hadTowOverEm()); //pho.hadronicOverEm());
-            chWorstIso->push_back( (*iso_wch)[ref] );
-            // chIsoMax->push_back( ??? );
+            //chWorstIso->push_back( (*iso_wch)[ref] );
             
             e33->push_back(pho.full5x5_e3x3());
             e55->push_back(pho.full5x5_e5x5());
@@ -292,7 +265,7 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
     return 0;
 }
 
-bool NeroPhotons::cutBasedPhotonId( const pat::Photon& pho, string type, bool withIso, bool withSieie)
+bool NeroPhotons::cutBasedPhotonId( const pat::Photon& pho, PHOID type, bool withIso, bool withSieie)
 {
 // https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedPhotonIdentificationRun2#
     float hoe   = pho.hadTowOverEm();
@@ -301,144 +274,85 @@ bool NeroPhotons::cutBasedPhotonId( const pat::Photon& pho, string type, bool wi
     float nhiso= pho.neutralHadronIso() ;
     float phoiso = pho.photonIso();
     float rho  = *rho_handle;
+    float pt=pho.pt();
 
     //float aeta = fabs(pho.eta());
 
     // ------------ BARREL ------------
     if ( pho.isEB() )
         {
-        if (not withSieie and sieie > 0.15) return false;  // pu a very loose sieie requirement
-        if (not withIso and phoiso > 10 ) return false; // put  a very loose pho-iso requirement
 
-        if ( type == "loose_50ns" ) 
-            {
-                if (hoe >= 0.0559  ) return false;
-                if (sieie >= 0.010 and withSieie  ) return false;
-                if ( chiso - cutBasedPhotonIdEffArea(pho,"ch_50ns") * rho >= 2.51 ) return false;// 
-                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_50ns")*rho >= 21.11 + 0.0065*pho.pt() ) return false;// 
-                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_50ns") *rho >= 3.70 + 0.0032*pho.pt() ) return false ;//  2.09 + 0.0032*pho_pt    1.60 + 0.0032*pho_pt 
-
-                return true;
-            }
-        if ( type == "medium_50ns" )
-            {
-                if (hoe >= 0.0138 ) return false;
-                if (sieie >= 0.010 and withSieie ) return false;
-                if (chiso -  cutBasedPhotonIdEffArea(pho,"ch_50ns")*rho >=2.23 ) return false;
-                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_50ns")*rho >= 8.85 + 0.0065*pho.pt() ) return false;
-                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_50ns") *rho >= 2.09 + 0.0032*pho.pt() ) return false ; 
-                return true;
-            }
-        if ( type == "tight_50ns" )
-            {
-                if (hoe >= 0.0099 ) return false;
-                if (sieie >= 0.0099 and withSieie ) return false;
-                if ( chiso - cutBasedPhotonIdEffArea(pho,"ch_50ns") * rho >= 1.96 ) return false;
-                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_50ns")*rho >= 4.18 + 0.0065*pho.pt() ) return false;
-                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_50ns") *rho >= 1.60 + 0.0032*pho.pt() ) return false ;
-                return true;
-            }
         // ---------------- 25ns ---------------
-        if ( type == "monoph_baseline") // using spring15 loose selections, but with sieie and chiso sidebands
+        if ( type == MonoPhotonBaseline) // using spring15 loose selections, but with sieie and chiso sidebands
             {
                 if (hoe >= 0.05   ) return false;
                 if (sieie >= 0.015  and withSieie  ) return false;
-                if (chiso - cutBasedPhotonIdEffArea(pho,"ch_25ns") * rho >= 11.0) return false;// 
-                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_25ns")*rho >= 1.92 + 0.014*pho.pt() + 0.000019*pho.pt()*pho.pt() ) return false;// 
-                if (phoiso - cutBasedPhotonIdEffArea(pho,"pho_25ns") *rho >= 0.81 + 0.0053*pho.pt() ) return false ;//
+                if (chiso - cutBasedPhotonIdEffArea(pho,CH25) * rho >= 11.0) return false;// 
+                if (nhiso - cutBasedPhotonIdEffArea(pho,NH25)*rho >= 1.92 + 0.014*pho.pt() + 0.000019*pho.pt()*pho.pt() ) return false;// 
+                if (phoiso - cutBasedPhotonIdEffArea(pho,PH25) *rho >= 0.81 + 0.0053*pho.pt() ) return false ;//
 
                 return true;
             }
-        // selections below are CSA14; latest version used by most people is Spring15
-        if ( type == "loose_25ns" ) 
+        //  Moriond17
+        if ( type == Loose ) 
             {
-                if (hoe >= 0.553   ) return false;
-                if (sieie >= 0.0099  and withSieie  ) return false;
-                if ( chiso - cutBasedPhotonIdEffArea(pho,"ch_25ns") * rho >= 2.49  ) return false;// 
-                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_25ns")*rho >= 15.43 + 0.007*pho.pt() ) return false;// 
-                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_25ns") *rho >= 9.42 + 0.0033*pho.pt() ) return false ;//
+                if (hoe >= 0.0597    ) return false;
+                if (sieie >=0.01031   and withSieie  ) return false;
+                if ( chiso - cutBasedPhotonIdEffArea(pho,CH25) * rho >= 1.295   ) return false;// 
+                if (nhiso - cutBasedPhotonIdEffArea(pho,NH25)*rho >= 10.910+0.0148*pt+0.000017*pt*pt  ) return false;// 
+                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,PH25) *rho >=3.630+0.0047*pt ) return false ;//
 
                 return true;
             }
-        if ( type == "medium_25ns" )
+        if ( type == Medium )
             {
-                if (hoe >= 0.058  ) return false;
-                if (sieie >= 0.0099  and withSieie ) return false;
-                if (chiso -  cutBasedPhotonIdEffArea(pho,"ch_25ns")*rho >= 1.91 ) return false;
-                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_25ns")*rho >= 4.66 + 0.007*pho.pt() ) return false;
-                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_25ns") *rho >= 4.29 + 0.0033*pho.pt() ) return false ; 
+                if (hoe >= 0.0396   ) return false;
+                if (sieie >=0.01022   and withSieie ) return false;
+                if (chiso -  cutBasedPhotonIdEffArea(pho,CH25)*rho >=  0.441  ) return false;
+                if (nhiso - cutBasedPhotonIdEffArea(pho,NH25)*rho >= 2.725+0.0148*pt+0.000017*pt*pt) return false;
+                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,PH25) *rho >= 2.571+0.0047*pt  ) return false ; 
                 return true;
             }
-        if ( type == "tight_25ns" )
+        if ( type == Tight )
             {
-                if (hoe >= 0.0019 ) return false;
-                if (sieie >= 0.0099 and withSieie ) return false;
-                if ( chiso - cutBasedPhotonIdEffArea(pho,"ch_25ns") * rho >= 1.61 ) return false;
-                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_25ns")*rho >= 3.98 + 0.007*pho.pt() ) return false;
-                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_25ns") *rho >= 3.01 + 0.0033*pho.pt() ) return false ;
+                if (hoe >= 0.0269  ) return false;
+                if (sieie >= 0.00994  and withSieie ) return false;
+                if ( chiso - cutBasedPhotonIdEffArea(pho,CH25) * rho >= 0.202  ) return false;
+                if (nhiso - cutBasedPhotonIdEffArea(pho,NH25)*rho >= 0.264+0.0148*pt+0.000017*pt*pt ) return false;
+                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,PH25) *rho >= 2.362+0.0047*pt ) return false ;
                 return true;
             }
         }
     // ------------ ENDCAP ------------
     else if (pho.isEE()){
-        if (not withSieie and sieie > 0.035) return false;  // pu a very loose sieie requirement
+        if (not withSieie and sieie > 0.050) return false;  // pu a very loose sieie requirement
         if (not withIso and phoiso > 20 ) return false; // put  a very loose pho-iso requirement
-        // ---------------- 50ns --------------- 
-        if ( type == "loose_50ns" ) 
+        if ( type == Loose ) 
             {
-                if (hoe >= 0.049  ) return false;
-                if (sieie >= 0.0321 and withSieie  ) return false;
-                if ( chiso - cutBasedPhotonIdEffArea(pho,"ch_50ns") * rho >= 0.98 ) return false;// 
-                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_50ns")*rho >= 23.67 + 0.0116*pho.pt() ) return false;// 
-                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_50ns") *rho >= 6.57 + 0.0095 *pho.pt() ) return false ;//  2.09 + 0.0032*pho_pt    1.60 + 0.0032*pho_pt 
+                if (hoe >= 0.0481     ) return false;
+                if (sieie >= 0.03013 and withSieie  ) return false;
+                if ( chiso - cutBasedPhotonIdEffArea(pho,CH25) * rho >= 1.011   ) return false;// 
+                if (nhiso - cutBasedPhotonIdEffArea(pho,NH25)*rho >= 5.931+0.0163*pt+0.000014*pt*pt) return false;// 
+                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,PH25) *rho >= 6.641+0.0034*pt  ) return false ;//
 
                 return true;
             }
-        if ( type == "medium_50ns" )
+        if ( type == Medium )
             {
-                if (hoe >= 0.016 ) return false;
-                if (sieie >= 0.0275 and withSieie ) return false;
-                if (chiso -  cutBasedPhotonIdEffArea(pho,"ch_50ns")*rho >= 0.89 ) return false;
-                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_50ns")*rho >= 14.48 + 0.0116*pho.pt() ) return false;
-                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_50ns") *rho >= 2.88 + 0.0095*pho.pt() ) return false ; 
+                if (hoe >= 0.0219   ) return false;
+                if (sieie >= 0.03001  and withSieie ) return false;
+                if (chiso -  cutBasedPhotonIdEffArea(pho,CH25)*rho >= 0.442  ) return false;
+                if (nhiso - cutBasedPhotonIdEffArea(pho,NH25)*rho >= 1.715+0.0163*pt+0.000014*pt*pt ) return false;
+                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,PH25) *rho >= 3.863+0.0034*pt  ) return false ; 
                 return true;
             }
-        if ( type == "tight_50ns" )
+        if ( type == Tight )
             {
-                if (hoe >= 0.016  ) return false;
-                if (sieie >= 0.0275 and withSieie ) return false;
-                if ( chiso - cutBasedPhotonIdEffArea(pho,"ch_50ns") * rho >= .67 ) return false;
-                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_50ns")*rho >= 2.95 + 0.0116*pho.pt() ) return false;
-                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_50ns") *rho >= 1.56 + 0.0095*pho.pt() ) return false ;
-                return true;
-            }
-        // ---------------- 25ns ---------------  TODO
-        if ( type == "loose_25ns" ) 
-            {
-                if (hoe >= 0.062    ) return false;
-                if (sieie >=    0.0284   and withSieie  ) return false;
-                if ( chiso - cutBasedPhotonIdEffArea(pho,"ch_25ns") * rho >= 1.04   ) return false;// 
-                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_25ns")*rho >= 19.71 + 0.0129*pho.pt() ) return false;// 
-                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_25ns") *rho >= 11.88 + 0.0108*pho.pt() ) return false ;//
-
-                return true;
-            }
-        if ( type == "medium_25ns" )
-            {
-                if (hoe >= 0.020  ) return false;
-                if (sieie >= 0.0268   and withSieie ) return false;
-                if (chiso -  cutBasedPhotonIdEffArea(pho,"ch_25ns")*rho >= 0.82  ) return false;
-                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_25ns")*rho >= 14.65 + 0.0129*pho.pt() ) return false;
-                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_25ns") *rho >= 4.06 + 0.0108*pho.pt() ) return false ; 
-                return true;
-            }
-        if ( type == "tight_25ns" )
-            {
-                if (hoe >= 0.016  ) return false;
-                if (sieie >= 0.0263  and withSieie ) return false;
-                if ( chiso - cutBasedPhotonIdEffArea(pho,"ch_25ns") * rho >= 0.69  ) return false;
-                if (nhiso - cutBasedPhotonIdEffArea(pho,"nh_25ns")*rho >= 4.52+ 0.0129*pho.pt() ) return false;
-                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,"pho_25ns") *rho >= 3.61 + 0.0108*pho.pt() ) return false ;
+                if (hoe >= 0.0213   ) return false;
+                if (sieie >= 0.03000  and withSieie ) return false;
+                if ( chiso - cutBasedPhotonIdEffArea(pho,CH25) * rho >= 0.034  ) return false;
+                if (nhiso - cutBasedPhotonIdEffArea(pho,NH25)*rho >= 0.586+0.0163*pt+0.000014*pt*pt  ) return false;
+                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,PH25) *rho >= 2.617+0.0034*pt  ) return false ;
                 return true;
             }
 
@@ -447,41 +361,10 @@ bool NeroPhotons::cutBasedPhotonId( const pat::Photon& pho, string type, bool wi
 
 }
 
-float NeroPhotons::cutBasedPhotonIdEffArea( const pat::Photon & pho,string type){
+float NeroPhotons::cutBasedPhotonIdEffArea( const pat::Photon & pho,PHOISO type){
     float aeta = fabs( pho.eta() ) ;
-    // --------------- 50 ns ----------------
-    if (type == "ch_50ns")
-        {
-        if (aeta < 1.0   ) return 0.0064 ;
-        if (aeta < 1.479 ) return 0.0055 ;
-        if (aeta < 2.0   ) return 0.0055 ;
-        if (aeta < 2.2   ) return 0.0049 ;
-        if (aeta < 2.3   ) return 0.0047 ;
-        if (aeta < 2.4   ) return 0.0037 ;
-                           return 0.0017 ;
-        }
-    if (type == "nh_50ns")
-        {
-        if (aeta < 1.0   ) return  0.0129;
-        if (aeta < 1.479 ) return  0.0245;
-        if (aeta < 2.0   ) return  0.0125;
-        if (aeta < 2.2   ) return  0.0022;
-        if (aeta < 2.3   ) return  0.0039;
-        if (aeta < 2.4   ) return  0.0033;
-                           return  0.1147;
-        }
-    if (type == "pho_50ns")
-        {
-        if (aeta < 1.0   ) return  0.1020;
-        if (aeta < 1.479 ) return  0.0889;
-        if (aeta < 2.0   ) return  0.0423;
-        if (aeta < 2.2   ) return  0.0441;
-        if (aeta < 2.3   ) return  0.0559;
-        if (aeta < 2.4   ) return  0.0653;
-                           return  0.0862;
-        }
     // --------------- 25 ns ----------------
-    if (type == "ch_25ns")
+    if (type == CH25)
         {
         if (aeta < 1.0   ) return 0.0080;
         if (aeta < 1.479 ) return 0.0079;
@@ -491,7 +374,7 @@ float NeroPhotons::cutBasedPhotonIdEffArea( const pat::Photon & pho,string type)
         if (aeta < 2.4   ) return 0.0036;
                            return 0.0016;
         }
-    if (type == "nh_25ns")
+    if (type == NH25)
         {
         if (aeta < 1.0   ) return 0.0126 ;
         if (aeta < 1.479 ) return 0.0237 ;
@@ -501,7 +384,7 @@ float NeroPhotons::cutBasedPhotonIdEffArea( const pat::Photon & pho,string type)
         if (aeta < 2.4   ) return 0      ;
                            return 0.0769 ;
         }
-    if (type == "pho_25ns")
+    if (type == PH25)
         {
         if (aeta < 1.0   ) return 0.0982;
         if (aeta < 1.479 ) return 0.0857;

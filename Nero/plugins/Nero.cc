@@ -30,7 +30,7 @@ Implementation:
 #include "NeroProducer/Nero/interface/NeroAll.hpp"
 #include "NeroProducer/Nero/interface/NeroTrigger.hpp"
 
-//#define NERO_VERBOSE 2
+#define NERO_VERBOSE 2
 //#define NERO_VERBOSE 1
 
 //
@@ -39,23 +39,43 @@ Implementation:
 Nero::Nero(const edm::ParameterSet& iConfig) 
 
 {
+    #ifdef NERO_VERBOSE
+    if (NERO_VERBOSE>0) std::cout<<"[Nero]::[Nero]: Begin constructor"<<std::endl;
+    #endif
 
     tag_  = iConfig.getParameter<string>("tag");
     head_ = iConfig.getParameter<string>("head");
     info_ = iConfig.getParameter<string>("info");
     cmssw_ = iConfig.getParameter<string>("cmssw");
 
-    auto&& cc = consumesCollector();
+    auto&& cc ( consumesCollector() );
 
-    std::vector<string> objName{"NeroAll","NeroEvents","NeroVertex","NeroFatJets","NeroTaus","NeroLeptons","NeroMet","NeroMonteCarlo","NeroTrigger","NeroJets","NeroPhotons"};
+
+    std::vector<string> objName{"NeroAll","NeroEvent","NeroVertex","NeroFatJets","NeroTaus","NeroLeptons","NeroMet","NeroMonteCarlo","NeroJets","NeroPhotons","NeroTrigger"};
+
+
     for (const auto& name : objName)
     {
+        #ifdef NERO_VERBOSE
+            if (NERO_VERBOSE>1) std::cout<<"[Nero]::[Nero]: Doing: "<< name<<std::endl;
+        #endif
+        Logger::getInstance().Log("Constructing obj: " + name,2) ;
         NeroCollection *o = NeroFactory::get().create( name, cc, iConfig.getParameterSet(name) );
+        if (o==NULL)  Logger::getInstance().Log("Object '" + name+"' unable to construct",0) ;
         obj.push_back(o);
         if (name=="NeroMet") runObj.push_back(dynamic_cast<NeroRun*>(o));
         if (name=="NeroAll") lumiObj.push_back(dynamic_cast<NeroLumi*>(o));
         if (name == "NeroTrigger") {
             NeroTrigger *tr = dynamic_cast<NeroTrigger*>(o); // TODO what if these are not in the list?
+            #ifdef NERO_VERBOSE
+            if (NERO_VERBOSE >0){
+                cout<<"[Nero]::[Nero]::[Nero Trigger construction] size:" << obj.size()<<" | "<<objName.size()<<endl;
+                cout<<"[Nero]::[Nero]::[Nero Trigger construction] Lep: pos=" << std::find (objName.begin(),objName.end(),"NeroLeptons")-objName.begin()<<endl;
+                cout<<"[Nero]::[Nero]::[Nero Trigger construction] Jet: pos=" << std::find (objName.begin(),objName.end(),"NeroJets")-objName.begin()<<endl;
+                cout<<"[Nero]::[Nero]::[Nero Trigger construction] Tau: pos=" << std::find (objName.begin(),objName.end(),"NeroTaus")-objName.begin()<<endl;
+                cout<<"[Nero]::[Nero]::[Nero Trigger construction] Pho: pos=" << std::find (objName.begin(),objName.end(),"NeroPhotons")-objName.begin()<<endl;
+            }
+            #endif 
             tr -> leps_    = dynamic_cast<NeroLeptons*>( obj[std::find (objName.begin(),objName.end(),"NeroLeptons")-objName.begin()] );
             tr -> jets_    = dynamic_cast<NeroJets*>   ( obj[std::find (objName.begin(),objName.end(),"NeroJets")-objName.begin()] ) ;
             tr -> taus_    = dynamic_cast<NeroTaus*>   ( obj[std::find (objName.begin(),objName.end(),"NeroTaus")-objName.begin()] );
@@ -67,6 +87,9 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     // set the collection it needs to be awared of
     // this step is needed in order to insure trigger matching is done on the saved collection
     //
+    #ifdef NERO_VERBOSE
+    if (NERO_VERBOSE>0) std::cout<<"[Nero]::[Nero]: end constructor"<<std::endl;
+    #endif
 
 }
 

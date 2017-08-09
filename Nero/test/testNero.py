@@ -363,10 +363,10 @@ process.electronIDValueMapProducer.srcMiniAOD= process.nero.NeroLeptons.electron
 process.electronMVAValueMapProducer.srcMiniAOD= process.nero.NeroLeptons.electrons
 
 # modify photons Input Tags
-process.egmPhotonIsolation.srcToIsolate = process.nero.NeroPhotons.photons
-process.egmPhotonIDs.physicsObjectSrc = process.nero.NeroPhotons.photons
-process.photonIDValueMapProducer.srcMiniAOD= process.nero.NeroPhotons.photons
-process.photonMVAValueMapProducer.srcMiniAOD= process.nero.NeroPhotons.photons 
+## process.egmPhotonIsolation.srcToIsolate = process.nero.NeroPhotons.photons
+## process.egmPhotonIDs.physicsObjectSrc = process.nero.NeroPhotons.photons
+## process.photonIDValueMapProducer.srcMiniAOD= process.nero.NeroPhotons.photons
+## process.photonMVAValueMapProducer.srcMiniAOD= process.nero.NeroPhotons.photons 
 #process.puppiForMET.photonName  = process.nero.NeroPhotons.photons
 #process.puppiPhoton.photonName = process.nero.NeroPhotons.photons 
 #process.modifiedPhotons.src  = process.nero.NeroPhotons.photons
@@ -462,10 +462,10 @@ process.p = cms.Path(
                 #process.regressionApplication *
                 #process.calibratedPatElectrons  *
                 #process.calibratedPatPhotons *
-                process.egmGsfElectronIDSequence *
-                process.egmPhotonIDSequence * ## this is overwritten by puppi/met configuration
-                process.photonIDValueMapProducer * ## ISO MAP FOR PHOTONS
-                process.electronIDValueMapProducer *  ## ISO MAP FOR PHOTONS
+                #process.egmGsfElectronIDSequence *
+                #process.egmPhotonIDSequence * ## this is overwritten by puppi/met configuration
+                #process.photonIDValueMapProducer * ## ISO MAP FOR PHOTONS
+                #process.electronIDValueMapProducer *  ## ISO MAP FOR PHOTONS
                 #process.jecSequence *
                 process.QGTagger    * ## after jec, because it will produce the new jet collection
                 #process.fullPatMetSequence *## no puppi
