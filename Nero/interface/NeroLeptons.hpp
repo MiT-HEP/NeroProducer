@@ -56,10 +56,11 @@ class NeroLeptons : virtual public NeroCollection,
             
         };
 
+        enum ELEID{Veto,Loose,Medium,Tight};
+        bool passEleId(const pat::Electron & , ELEID id, float iso);
+
         std::unique_ptr<EffectiveAreas> ea_;
     
-        // --- Handle
-        edm::Handle<reco::VertexCollection> vtx_handle;
         // --- Token
         edm::EDGetTokenT<reco::VertexCollection> vtx_token;
         edm::EDGetTokenT<pat::PackedCandidateCollection> token_pf;
@@ -82,8 +83,10 @@ class NeroLeptons : virtual public NeroCollection,
         edm::EDGetTokenT<double> rho_token;
 
         // Handle
+        // --- Handle
         edm::Handle<pat::MuonCollection> mu_handle;
         edm::Handle<pat::ElectronCollection> el_handle;
+
         edm::Handle<edm::ValueMap<bool> > el_veto_id;
         edm::Handle<edm::ValueMap<bool> > el_loose_id;
         edm::Handle<edm::ValueMap<bool> > el_medium_id;
@@ -93,6 +96,7 @@ class NeroLeptons : virtual public NeroCollection,
 
         edm::Handle<pat::ElectronCollection> el_uncalib_handle;
 
+        edm::Handle<reco::VertexCollection> vtx_handle;
         edm::Handle<pat::PackedCandidateCollection> handle_pf;
 
         // for miniiso
