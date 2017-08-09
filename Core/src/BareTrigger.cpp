@@ -50,12 +50,12 @@ void BareTrigger::defineBranches(TTree *t){
     t->Branch("triggerFired","vector<int>",&triggerFired);
     t->Branch("triggerPrescale","vector<float>",&triggerPrescale);
     // ---
-    t->Branch("triggerLeps","vector<int>",&triggerLeps);
-    t->Branch("triggerJets","vector<int>",&triggerLeps);
-    t->Branch("triggerTaus","vector<int>",&triggerTaus);
-    t->Branch("triggerPhotons","vector<int>",&triggerPhotons);
+    t->Branch("triggerLeps","vector<ULong64_t>",&triggerLeps);
+    t->Branch("triggerJets","vector<ULong64_t>",&triggerJets);
+    t->Branch("triggerTaus","vector<ULong64_t>",&triggerTaus);
+    t->Branch("triggerPhotons","vector<ULong64_t>",&triggerPhotons);
     // ---
-    t->Branch("triggerNoneTaus","vector<unsigned>",&triggerNoneTaus);
+    t->Branch("triggerNoneTaus","vector<ULong64_t>",&triggerNoneTaus);
 }
 
 void BareTrigger::setBranchAddresses(TTree*t)

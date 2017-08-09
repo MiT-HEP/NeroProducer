@@ -31,18 +31,22 @@ else:
 process.load("FWCore.MessageService.MessageLogger_cfi")
 # If you run over many samples and you save the log, remember to reduce
 # the size of the output by prescaling the report of the event number
-process.MessageLogger.cerr.FwkReport.reportEvery = 100
+process.MessageLogger.cerr.FwkReport.reportEvery = 250
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxEvents) )
 
 if len(options.inputFiles) == 0:
     if isData:
         options.inputFiles = [
-            '/store/data/Run2016B/DoubleMuon/MINIAOD/18Apr2017_ver2-v1/120000/AA011747-5A35-E711-95B4-FA163E5D3E21.root'
+            '/store/data/Run2017C/SingleMuon/MINIAOD/PromptReco-v1/000/299/368/00000/06C94520-886D-E711-B000-02163E0141D3.root',
+            '/store/data/Run2017C/SingleMuon/MINIAOD/PromptReco-v1/000/299/368/00000/328F8A6A-846D-E711-BAB7-02163E012244.root',
+            '/store/data/Run2017C/SingleMuon/MINIAOD/PromptReco-v1/000/299/368/00000/464F0A19-826D-E711-8FF0-02163E014128.root',
+            '/store/data/Run2017C/SingleMuon/MINIAOD/PromptReco-v1/000/299/368/00000/54C0AD94-A76D-E711-BF46-02163E013530.root',
+            '/store/data/Run2017C/SingleMuon/MINIAOD/PromptReco-v1/000/299/368/00000/5E4BC918-8C6D-E711-9C2F-02163E012A9F.root',
         ]
     else:
         options.inputFiles = [
-            '/store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_backup_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/10000/FAF828EF-1EBB-E611-9151-848F69FD483E.root'
+            '/store/mc/RunIISummer17MiniAOD/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/92X_upgrade2017_realistic_v7-v1/110000/24E2100A-A375-E711-86B9-0CC47A745250.root'
         ]
 
 ### do not remove the line below!
@@ -75,11 +79,11 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condD
 ## fly any more, because jec is in the release.
 
 if (isData):
-    # sept reprocessing
-    process.GlobalTag.globaltag = '80X_dataRun2_2016LegacyRepro_v3'
+    # 2017 data
+    process.GlobalTag.globaltag = '92X_dataRun2_HLT_v7'
 else:
-    ## tranch IV v6
-    process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_TrancheIV_v8'
+    ## new miniaod
+    process.GlobalTag.globaltag = '92X_upgrade2017_realistic_v7-v1'
 
 ### LOAD DATABASE
 from CondCore.DBCommon.CondDBSetup_cfi import *
@@ -91,7 +95,8 @@ if isData and not options.isGrid and False: ## dont load the lumiMaks, will be c
     import FWCore.PythonUtilities.LumiList as LumiList
     ## SILVER
     print "-> UPDATE THE LUMI LIST"
-    process.source.lumisToProcess = LumiList.LumiList(filename='/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/DCSOnly/json_DCSONLY.txt').getVLuminosityBlockRange()
+    process.source.lumisToProcess =None 
+    #process.source.lumisToProcess = LumiList.LumiList(filename='/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/DCSOnly/json_DCSONLY.txt').getVLuminosityBlockRange()
 
 ## SKIM INFO
 process.load('NeroProducer.Skim.infoProducerSequence_cff')
