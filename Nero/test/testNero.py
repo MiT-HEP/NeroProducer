@@ -116,7 +116,7 @@ process.load("RecoEgamma/ElectronIdentification/ElectronIDValueMapProducer_cfi")
 ###     tagName = 'Summer16_23Sep2016V4_MC_AK4PFchs'
 ###     tagNamePuppi = 'Summer16_23Sep2016V4_MC_AK4PFPuppi'
 ### #data only, mc hard coded
-process.nero.chsAK8JEC = cms.string("jec/Summer16_23Sep2016BCDV4")
+process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Summer16_23Sep2016BCDV4")
 ### 
 ### 
 ### process.jec = cms.ESSource("PoolDBESSource",
@@ -207,21 +207,21 @@ process.es_prefer_jer = cms.ESPrefer('PoolDBESSource', 'jer')
 ###  
 ### updateJetCollection(
 ###     process,
-###     jetSource = process.nero.jets,
+###     jetSource = process.nero.NeroJets.jets,
 ###     labelName = 'UpdatedJEC',
 ###     jetCorrections = ('AK4PFchs', cms.vstring(jecLevels), 'None')  # Do not forget 'L2L3Residual' on data!
 ### )
 ### 
 ### updateJetCollection(
 ###     process,
-###     jetSource = process.nero.chsAK8,
+###     jetSource = process.nero.NeroFatJets.chsAK8,
 ###     labelName = 'UpdatedJECAK8',
 ###     jetCorrections = ('AK8PFchs', cms.vstring(jecLevels), 'None')  # Do not forget 'L2L3Residual' on data!
 ### )
 ### 
 ### print "-> Updating the jets collection to run on to 'updatedPatJetsUpdatedJEC' with the new jec in the GT"
-### process.nero.jets=cms.InputTag('updatedPatJetsUpdatedJEC')
-### process.nero.chsAK8=cms.InputTag('updatedPatJetsUpdatedJECAK8')
+### process.nero.NeroJets.jets=cms.InputTag('updatedPatJetsUpdatedJEC')
+### process.nero.NeroFatJets.chsAK8=cms.InputTag('updatedPatJetsUpdatedJECAK8')
 ### process.jecSequence = cms.Sequence( process.patJetCorrFactorsUpdatedJEC* process.updatedPatJetsUpdatedJEC 
 ###         * process.patJetCorrFactorsUpdatedJECAK8* process.updatedPatJetsUpdatedJECAK8
 ###         )
@@ -246,11 +246,11 @@ process.BadChargedCandidateFilter.taggingMode = cms.bool(True)
 #We no longer need to do this as the input collection needs to be change and is properly corrected out of the box. 
 #We do the above mention thing for the sake of the puppi met. (it has some small dependence in scheduled mode)
 #print "-> Updating the met collection to run on to 'slimmedMETs with nero' with the new jec in the GT for Type1"
-#process.nero.mets=cms.InputTag('slimmedMETs','','nero')
+#process.nero.NeroMets.mets=cms.InputTag('slimmedMETs','','nero')
 
 ## TO DO this is production specific, when testing on relval it works with RECO, maybe we should leave it empty
 ##if not options.isData:
-##            process.nero.metFilterToken=cms.InputTag("TriggerResults","","PAT")
+##            process.nero.NeroEvent.metFilterToken=cms.InputTag("TriggerResults","","PAT")
 
 ############ RUN Muon Fixed MET CLUSTERING ##########################                                                                    
 
@@ -288,8 +288,8 @@ process.BadChargedCandidateFilter.taggingMode = cms.bool(True)
 ####         )
 ####     
 ####     
-####     process.nero.metscleanmu=cms.InputTag('slimmedMETsMuClean','','nero')
-####     process.nero.mets=cms.InputTag("slimmedMETs")
+####     process.nero.NeroMets.metscleanmu=cms.InputTag('slimmedMETsMuClean','','nero')
+####     process.nero.NeroMets.mets=cms.InputTag("slimmedMETs")
 
 ############ RUN Puppi MET CLUSTERING ##########################
 
@@ -316,10 +316,10 @@ initEGammaVID(process,options)
 
 ##process.puppiNoLep.useExistingWeights = True
 ##process.puppi.useExistingWeights = True
-##process.puppiForMET.photonId = process.nero.phoLooseIdMap
+##process.puppiForMET.photonId = process.nero.NeroPhotons.phoLooseIdMap
 
 #print "-> Updating the puppi met collection to run on to 'slimmedMETsPuppi with nero' with the new jec in the GT for Type1"
-#process.nero.metsPuppi=cms.InputTag('slimmedMETsPuppi','','nero')
+#process.nero.NeroMets.metsPuppi=cms.InputTag('slimmedMETsPuppi','','nero')
 
 ############### REGRESSION EGM #############
 ### process.load('EgammaAnalysis.ElectronTools.regressionApplication_cff')
@@ -338,10 +338,10 @@ initEGammaVID(process,options)
 ###         )
 ### process.load('EgammaAnalysis.ElectronTools.calibratedElectronsRun2_cfi')
 ### process.load('EgammaAnalysis.ElectronTools.calibratedPhotonsRun2_cfi')
-### process.calibratedPatElectrons.electrons=process.nero.electrons
-### process.calibratedPatPhotons.photons= process.nero.photons
-### process.nero.electrons =  cms.InputTag("calibratedPatElectrons")
-### process.nero.photons = cms.InputTag("calibratedPatPhotons")
+### process.calibratedPatElectrons.electrons=process.nero.NeroLeptons.electrons
+### process.calibratedPatPhotons.photons= process.nero.NeroPhotons.photons
+### process.nero.NeroLeptons.electrons =  cms.InputTag("calibratedPatElectrons")
+### process.nero.NeroPhotons.photons = cms.InputTag("calibratedPatPhotons")
 ### if isData:
 ###     process.calibratedPatElectrons.isMC = cms.bool(False)
 ###     process.calibratedPatPhotons.isMC = cms.bool(False)
@@ -349,22 +349,22 @@ initEGammaVID(process,options)
 ###     process.calibratedPatElectrons.isMC = cms.bool(True)
 ###     process.calibratedPatPhotons.isMC = cms.bool(True)
 ### print "-> Updating slimmedElectrons and slimmedPhotons to calibratedPatElectrons and calibratedPatPhotons"
-### print "   ",process.nero.photons, process.nero.electrons
+### print "   ",process.nero.NeroPhotons.photons, process.nero.NeroLeptons.electrons
 #######################################
 
 # modify electrons Input Tags
-process.egmGsfElectronIDs.physicsObjectSrc = process.nero.electrons
-process.electronIDValueMapProducer.srcMiniAOD= process.nero.electrons
-process.electronMVAValueMapProducer.srcMiniAOD= process.nero.electrons
+process.egmGsfElectronIDs.physicsObjectSrc = process.nero.NeroLeptons.electrons
+process.electronIDValueMapProducer.srcMiniAOD= process.nero.NeroLeptons.electrons
+process.electronMVAValueMapProducer.srcMiniAOD= process.nero.NeroLeptons.electrons
 
 # modify photons Input Tags
-process.egmPhotonIsolation.srcToIsolate = process.nero.photons
-process.egmPhotonIDs.physicsObjectSrc = process.nero.photons
-process.photonIDValueMapProducer.srcMiniAOD= process.nero.photons
-process.photonMVAValueMapProducer.srcMiniAOD= process.nero.photons 
-#process.puppiForMET.photonName  = process.nero.photons
-#process.puppiPhoton.photonName = process.nero.photons 
-#process.modifiedPhotons.src  = process.nero.photons
+process.egmPhotonIsolation.srcToIsolate = process.nero.NeroPhotons.photons
+process.egmPhotonIDs.physicsObjectSrc = process.nero.NeroPhotons.photons
+process.photonIDValueMapProducer.srcMiniAOD= process.nero.NeroPhotons.photons
+process.photonMVAValueMapProducer.srcMiniAOD= process.nero.NeroPhotons.photons 
+#process.puppiForMET.photonName  = process.nero.NeroPhotons.photons
+#process.puppiPhoton.photonName = process.nero.NeroPhotons.photons 
+#process.modifiedPhotons.src  = process.nero.NeroPhotons.photons
 
 # ------------------------QG-----------------------------------------------
 # after jec, because need to be run on the corrected (latest) jet collection
@@ -393,8 +393,8 @@ process.QGPoolDBESSource = cms.ESSource("PoolDBESSource",
 process.es_prefer_qg = cms.ESPrefer('PoolDBESSource','QGPoolDBESSource')
 
 process.load('RecoJets.JetProducers.QGTagger_cfi')
-process.QGTagger.srcJets             = process.nero.jets   # Could be reco::PFJetCollection or pat::JetCollection (both AOD and miniAOD)               
-process.QGTagger.srcVertexCollection = process.nero.vertices
+process.QGTagger.srcJets             = process.nero.NeroJets.jets   # Could be reco::PFJetCollection or pat::JetCollection (both AOD and miniAOD)               
+process.QGTagger.srcVertexCollection = process.nero.NeroVertex.vertices
 process.QGTagger.useQualityCuts = cms.bool(False)
 
 # ----------------------- GenHFHadronMatcher -----------------
@@ -403,25 +403,25 @@ process.load("PhysicsTools.JetMCAlgos.GenHFHadronMatcher_cff")
 
 from PhysicsTools.JetMCAlgos.HadronAndPartonSelector_cfi import selectedHadronsAndPartons
 process.selectedHadronsAndPartons = selectedHadronsAndPartons.clone(
-            particles = process.nero.prunedgen
+            particles = process.nero.NeroMonteCarlo.prunedgen
             )
 from PhysicsTools.JetMCAlgos.AK4PFJetsMCFlavourInfos_cfi import ak4JetFlavourInfos
 process.genJetFlavourInfos = ak4JetFlavourInfos.clone(
-            jets = process.nero.genjets
+            jets = process.nero.NeroMonteCarlo.genjets
             )
 
 from PhysicsTools.JetMCAlgos.GenHFHadronMatcher_cff import matchGenBHadron
 process.matchGenBHadron = matchGenBHadron.clone(
-            genParticles = process.nero.prunedgen,
+            genParticles = process.nero.NeroMonteCarlo.prunedgen,
             jetFlavourInfos = "genJetFlavourInfos"
             )
 from PhysicsTools.JetMCAlgos.GenHFHadronMatcher_cff import matchGenCHadron
 process.matchGenCHadron = matchGenCHadron.clone(
-            genParticles = process.nero.prunedgen,
+            genParticles = process.nero.NeroMonteCarlo.prunedgen,
             jetFlavourInfos = "genJetFlavourInfos"
             )
 process.load("TopQuarkAnalysis.TopTools.GenTtbarCategorizer_cfi")
-process.categorizeGenTtbar.genJets = process.nero.genjets
+process.categorizeGenTtbar.genJets = process.nero.NeroMonteCarlo.genjets
 
 process.ttbarcat = cms.Sequence()
 if not isData:
@@ -446,7 +446,7 @@ if options.isParticleGun:
 	process.nero.extendEvent = cms.untracked.bool(False)
 
 process.load('NeroProducer.Skim.QGVariablesSequence_cff')
-process.QGVariables.srcJets = process.nero.jets
+process.QGVariables.srcJets = process.nero.NeroJets.jets
 process.QGVariables.srcGenJets = cms.InputTag("slimmedGenJets")
 process.QGVariables.isData = cms.bool(isData)
 ##DEBUG
