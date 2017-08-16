@@ -28,6 +28,7 @@ class NeroMonteCarlo : virtual public NeroCollection,
         edm::Handle<LHEEventProduct> lhe_handle;
         edm::Handle< std::vector<PileupSummaryInfo> > pu_handle;
         edm::Handle<reco::GenJetCollection> jet_handle;
+        edm::Handle<reco::GenJetCollection> jetAK8_handle;
         edm::Handle<GenRunInfoProduct> runinfo_handle; 
         edm::Handle<std::vector<int> > genBHadFlavour_handle;
         edm::Handle<std::vector<int> > genCHadJetIndex_handle;
@@ -41,6 +42,7 @@ class NeroMonteCarlo : virtual public NeroCollection,
         edm::EDGetTokenT<LHEEventProduct> lhe_token;
         edm::EDGetTokenT< std::vector<PileupSummaryInfo> > pu_token;
         edm::EDGetTokenT<reco::GenJetCollection> jet_token;
+        edm::EDGetTokenT<reco::GenJetCollection> jetAK8_token;
         edm::EDGetTokenT<GenRunInfoProduct> runinfo_token;
         // bhadrons tokens
         edm::EDGetTokenT<std::vector<int> > genBHadFlavour_token;

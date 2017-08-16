@@ -195,6 +195,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     mc -> lhe_token   = mayConsume<LHEEventProduct>(iConfig.getParameter<edm::InputTag>("lhe"));//LHEEventProduct_externalLHEProducer__LHE
     mc -> pu_token     = consumes<std::vector<PileupSummaryInfo> >(iConfig.getParameter<edm::InputTag>("pileup"));
     mc -> jet_token    = consumes<reco::GenJetCollection>(iConfig.getParameter<edm::InputTag>("genjets"));
+    mc -> jetAK8_token    = consumes<reco::GenJetCollection>(iConfig.getParameter<edm::InputTag>("genjetsAK8"));
     mc -> runinfo_token = consumes<GenRunInfoProduct,edm::InRun>(iConfig.getParameter<edm::InputTag>("genruninfo") );
     mc -> mMinGenParticlePt = iConfig.getParameter<double>("minGenParticlePt");
     mc -> mMinGenJetPt = iConfig.getParameter<double>("minGenJetPt");
