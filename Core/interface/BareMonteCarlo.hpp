@@ -40,6 +40,7 @@ class BareMonteCarlo : virtual public BareP4
 
         // genjets
         TClonesArray *jetP4{0};
+        TClonesArray *jetAK8P4{0};
 
         //
         int puTrueInt;

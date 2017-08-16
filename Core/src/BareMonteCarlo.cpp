@@ -6,6 +6,7 @@ BareMonteCarlo::BareMonteCarlo() : BareP4(){
 
 BareMonteCarlo::~BareMonteCarlo(){
     BareFunctions::Delete(jetP4);
+    BareFunctions::Delete(jetAK8P4);
     BareFunctions::Delete(pdgId);
     BareFunctions::Delete(pdfRwgt);
     BareFunctions::Delete(flags);
@@ -17,6 +18,7 @@ void BareMonteCarlo::init(){
     BareP4::init();
 
     BareFunctions::New(jetP4);
+    BareFunctions::New(jetAK8P4);
     BareFunctions::New(pdgId);
     BareFunctions::New(pdfRwgt);
     BareFunctions::New(flags);
@@ -30,6 +32,7 @@ void BareMonteCarlo::clear(){
     pdgId -> clear();
     flags -> clear();
     jetP4 -> Clear();
+    jetAK8P4 -> Clear();
     puTrueInt = -999;
     mcWeight = 1.0;
     qScale = -999;
@@ -63,6 +66,7 @@ void BareMonteCarlo::defineBranches(TTree *t){
     BareP4::defineBranches(t, "gen" );
     //
     t->Branch("genjetP4","TClonesArray", &jetP4, 128000, 0);
+    t->Branch("genjetAK8P4","TClonesArray", &jetAK8P4, 128000, 0);
     //
     t->Branch("genPdgId","vector<int>", &pdgId);
     t->Branch("genFlags","vector<unsigned>", &flags);
@@ -100,6 +104,7 @@ void BareMonteCarlo::setBranchAddresses(TTree *t){
     BareP4::setBranchAddresses(t,"gen");
     //
     BareFunctions::SetBranchAddress(t,"genjetP4"	, &jetP4 );
+    BareFunctions::SetBranchAddress(t,"genjetAK8P4"	, &jetAK8P4 );
     BareFunctions::SetBranchAddress(t,"genPdgId"	, &pdgId);
     BareFunctions::SetBranchAddress(t,"genFlags"	, &flags);
 
@@ -140,6 +145,9 @@ void BareMonteCarlo::compress(){
     BareP4::compress();
 	for(int i=0;i<jetP4->GetEntries();++i)
 		BareFunctions::Compress( * (TLorentzVector*) jetP4->At(i)  );
+
+	for(int i=0;i<jetAK8P4->GetEntries();++i)
+		BareFunctions::Compress( * (TLorentzVector*) jetAK8P4->At(i)  );
 }
 
 BAREREGISTER(BareMonteCarlo);

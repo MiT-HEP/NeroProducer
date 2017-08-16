@@ -24,6 +24,8 @@ NeroMonteCarlo::NeroMonteCarlo(edm::ConsumesCollector & cc,edm::ParameterSet iCo
     lhe_token   = cc.mayConsume<LHEEventProduct>(iConfig.getParameter<edm::InputTag>("lhe"));//LHEEventProduct_externalLHEProducer__LHE
     pu_token     = cc.consumes<std::vector<PileupSummaryInfo> >(iConfig.getParameter<edm::InputTag>("pileup"));
     jet_token    = cc.consumes<reco::GenJetCollection>(iConfig.getParameter<edm::InputTag>("genjets"));
+    jetAK8_token    = cc.consumes<reco::GenJetCollection>(iConfig.getParameter<edm::InputTag>("genjetsAK8"));
+
     runinfo_token = cc.consumes<GenRunInfoProduct,edm::InRun>(iConfig.getParameter<edm::InputTag>("genruninfo") );
     mMinGenParticlePt = iConfig.getParameter<double>("minGenParticlePt");
     mMinGenJetPt = iConfig.getParameter<double>("minGenJetPt");
@@ -52,7 +54,7 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
     iEvent.getByToken(pruned_token, pruned_handle);
     iEvent.getByToken(pu_token, pu_handle);
     iEvent.getByToken(jet_token, jet_handle);
-
+    iEvent.getByToken(jetAK8_token, jetAK8_handle);
     iEvent.getByToken(genBHadFlavour_token,genBHadFlavour_handle);
     iEvent.getByToken(genCHadJetIndex_token,genCHadJetIndex_handle);
     iEvent.getByToken(genCHadBHadronId_token,genCHadBHadronId_handle);
@@ -64,6 +66,7 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
     if ( not pruned_handle.isValid() ) cout<<"[NeroMonteCarlo]::[analyze]::[ERROR] pruned_handle is not valid"<<endl;
     if ( not pu_handle.isValid() ) cout<<"[NeroMonteCarlo]::[analyze]::[ERROR] pu_handle is not valid"<<endl;
     if ( not jet_handle.isValid() ) cout<<"[NeroMonteCarlo]::[analyze]::[ERROR] jet_handle is not valid"<<endl;
+    if ( not jetAK8_handle.isValid() ) cout<<"[NeroMonteCarlo]::[analyze]::[ERROR] jetAK8_handle is not valid"<<endl;
     if (not genBHadFlavour_handle.isValid() ) cout<<"[NeroMonteCarlo]::[analyze]::ERROR genBHadFlavour_handle is not valid"<<endl;
     if (not genCHadJetIndex_handle.isValid() ) cout<<"[NeroMonteCarlo]::[analyze]::ERROR genCHadJetIndex_handle is not valid"<<endl;
     if (not genCHadBHadronId_handle.isValid() ) cout<<"[NeroMonteCarlo]::[analyze]::ERROR genCHadBHadronId_handle is not valid"<<endl;
@@ -273,13 +276,22 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
     }
 
     if(VERBOSE){ sw.Stop() ; cout<<"[NeroMonteCarlo]::[analyze] pruned took "<<sw.CpuTime()<<" Cpu and "<<sw.RealTime()<<" RealTime"<<endl; sw.Reset(); sw.Start();}
-    // GEN JETS
+    // GEN JETS AK4
     for (const auto & j : *jet_handle)
     {
         if (j.pt() < 20 ) continue;
         if (j.pt() < mMinGenJetPt ) continue;
         // --- FILL
         new ( (*jetP4)[jetP4->GetEntriesFast()]) TLorentzVector(j.px(), j.py(), j.pz(), j.energy());
+    }
+
+    // GEN JETS AK8
+    for (const auto & j : *jet_handle)
+    {
+        if (j.pt() < 100 ) continue;
+        if (j.pt() < mMinGenJetPt ) continue;
+        // --- FILL
+        new ( (*jetAK8P4)[jetAK8P4->GetEntriesFast()]) TLorentzVector(j.px(), j.py(), j.pz(), j.energy());
     }
 
     // Counting number of different b hadrons https://github.com/cms-sw/cmssw/blob/CMSSW_8_0_20_patchX/PhysicsTools/JetMCAlgos/test/matchGenHFHadrons.cc#L216
