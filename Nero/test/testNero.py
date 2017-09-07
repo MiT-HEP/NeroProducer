@@ -454,6 +454,12 @@ process.load('NeroProducer.Skim.QGVariablesSequence_cff')
 process.QGVariables.srcJets = process.nero.NeroJets.jets
 process.QGVariables.srcGenJets = cms.InputTag("slimmedGenJets")
 process.QGVariables.isData = cms.bool(isData)
+
+### Groomed variables
+process.load('NeroProducer.Skim.NjettinesGroomed_cff')
++process.NjettinessGroomed.srcJets = process.nero.chsAK8
+
+
 ##DEBUG
 ##print "Process=",process, process.__dict__.keys()
 #------------------------------------------------------
@@ -476,6 +482,7 @@ process.p = cms.Path(
                 process.BadChargedCandidateFilter * 
                 process.ttbarcat *
                 process.QGVariablesSequence*
+                process.NjettinessGroomed *
                 process.nero
                 )
 

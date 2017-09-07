@@ -24,13 +24,19 @@ class NeroFatJets : virtual public NeroCollection,
         edm::Handle<pat::JetCollection> handle;	
         edm::Handle<double> rho_handle;
         edm::Handle<reco::VertexCollection> vertex_handle;
-    
+        edm::Handle<edm::ValueMap<float>> sd_tau1_handle;
+        edm::Handle<edm::ValueMap<float>> sd_tau2_handle;
+        edm::Handle<edm::ValueMap<float>> sd_tau3_handle;
+
         // --- Token
         edm::EDGetTokenT<pat::JetCollection> token;
         edm::EDGetTokenT<double> rho_token;
         edm::EDGetTokenT<reco::VertexCollection> vertex_token;
         edm::EDGetTokenT<reco::PFJetCollection> subjets_token;
         edm::EDGetTokenT<reco::JetTagCollection> btags_token;
+        edm::EDGetTokenT<edm::ValueMap<float> > sd_tau1_token;
+        edm::EDGetTokenT<edm::ValueMap<float> > sd_tau2_token;
+        edm::EDGetTokenT<edm::ValueMap<float> > sd_tau3_token;
 
         // --- configuration
         float mMinPt;
