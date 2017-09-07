@@ -27,6 +27,9 @@ class BareFatJets : virtual public BareP4
         vector<float> *tau1{0};
         vector<float> *tau2{0};
         vector<float> *tau3{0};
+        vector<float> *sdtau1{0};
+        vector<float> *sdtau2{0};
+        vector<float> *sdtau3{0};
 
         vector<float> *trimmedMass{0};
         vector<float> *prunedMass{0};

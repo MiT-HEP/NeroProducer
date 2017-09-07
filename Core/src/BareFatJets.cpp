@@ -12,6 +12,9 @@ BareFatJets::~BareFatJets(){
     BareFunctions::Delete(tau1           );
     BareFunctions::Delete(tau2           );
     BareFunctions::Delete(tau3           );
+    BareFunctions::Delete(sdtau1);
+    BareFunctions::Delete(sdtau2);
+    BareFunctions::Delete(sdtau3);
     BareFunctions::Delete(trimmedMass    );
     BareFunctions::Delete(prunedMass     );
     BareFunctions::Delete(corrprunedMass );
@@ -38,6 +41,9 @@ void BareFatJets::init(){
     BareFunctions::New(tau1);
     BareFunctions::New(tau2);
     BareFunctions::New(tau3);
+    BareFunctions::New(sdtau1);
+    BareFunctions::New(sdtau2);
+    BareFunctions::New(sdtau3);
     BareFunctions::New(trimmedMass    );
     BareFunctions::New(prunedMass     );
     BareFunctions::New(corrprunedMass );
@@ -65,6 +71,9 @@ void BareFatJets::clear(){
     tau1 -> clear();
     tau2 -> clear();
     tau3 -> clear();
+    sdtau1 -> clear();
+    sdtau2 -> clear();
+    sdtau3 -> clear();
     trimmedMass -> clear();
     prunedMass -> clear();
     corrprunedMass -> clear();
@@ -95,6 +104,9 @@ void BareFatJets::defineBranches(TTree *t){
     t->Branch(jetName + "Tau1","vector<float>",&tau1);
     t->Branch(jetName + "Tau2","vector<float>",&tau2);
     t->Branch(jetName + "Tau3","vector<float>",&tau3);
+    t->Branch(jetName + "SDTau1","vector<float>",&sdtau1);
+    t->Branch(jetName + "SDTau2","vector<float>",&sdtau2);
+    t->Branch(jetName + "SDTau3","vector<float>",&sdtau3);
     //
     t->Branch(jetName + "TrimmedMass","vector<float>",&trimmedMass);
     t->Branch(jetName + "PrunedMass","vector<float>",&prunedMass);

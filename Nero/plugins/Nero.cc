@@ -108,6 +108,10 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     chsAK8 -> subjets_token = mayConsume<reco::PFJetCollection>(edm::InputTag("PFJetsSoftDrop"+chsAK8 -> cachedPrefix ,"SubJets"));
     chsAK8 -> btags_token = mayConsume<reco::JetTagCollection>(edm::InputTag(chsAK8->cachedPrefix + "PFCombinedInclusiveSecondaryVertexV2BJetTags") ) ;
     chsAK8 -> jecBasePath= iConfig.getParameter<string>("chsAK8JEC");
+    chsAK8 -> sd_tau1_token = consumes<edm::ValueMap<float>>(edm::InputTag("NjettinessGroomed","Nsubjettiness:softdrop:tau1"));
+    chsAK8 -> sd_tau2_token = consumes<edm::ValueMap<float>>(edm::InputTag("NjettinessGroomed","Nsubjettiness:softdrop:tau2"));
+    chsAK8 -> sd_tau3_token = consumes<edm::ValueMap<float>>(edm::InputTag("NjettinessGroomed","Nsubjettiness:softdrop:tau3"));
+
     obj.push_back(chsAK8);
 
     // --- 
@@ -233,6 +237,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     jets -> qg_token_cmult = mayConsume<edm::ValueMap<int>>(edm::InputTag("QGTagger", "cmult"));
     jets -> qg_token_nmult = mayConsume<edm::ValueMap<int>>(edm::InputTag("QGTagger", "nmult"));
     jets -> gen_token    = mayConsume<reco::GenJetCollection>(iConfig.getParameter<edm::InputTag>("genjets"));
+
     for(const auto& dR: jets->dRToProduce)
     {
     jets -> qg_dR_tokens_i[Form("mult-dR0p%03.0f",dR*1000)] = mayConsume<edm::ValueMap<int>>(edm::InputTag("QGVariables", Form("mult-dR-0p%03.0f-pT-%.0f",dR*1000,float(500))));
