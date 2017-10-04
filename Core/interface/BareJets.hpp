@@ -54,6 +54,7 @@ class BareJets : virtual public BareP4
         //
         vector<float> *qgl{0};
         vector<int>   *flavour{0};
+        vector<int>   *hadFlavour{0};
         vector<int>   *matchedPartonPdgId{0};
         vector<int>   *motherPdgId{0};
         vector<int>   *grMotherPdgId{0};

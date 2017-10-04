@@ -24,6 +24,7 @@ class BareFatJets : virtual public BareP4
         //TClonesArray  *p4;
         vector<float> *rawPt{0};
         vector<int>   *flavour{0};
+        vector<int>   *hadFlavour{0};
         vector<float> *tau1{0};
         vector<float> *tau2{0};
         vector<float> *tau3{0};

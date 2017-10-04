@@ -157,6 +157,7 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
         int motherPdgId_I = 0;
         int grMotherPdgId_I = 0;
         int jetFlavour_I = 0;
+        int hadFlavour_I = 0;
 
         if( not iEvent.isRealData() ){           
             const reco::Candidate * jetGen = j.genParton();
@@ -165,7 +166,8 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
             if(!(jetGen == NULL)){jetMatchedPartonPdgId_I = jetGen->pdgId();}
             if(!(jetMother == 0)){motherPdgId_I = jetMother->pdgId();}
             if(!(jetGrMother == 0)){grMotherPdgId_I = jetGrMother->pdgId();}
-            //jetFlavour_I = j.partonFlavour();
+            //            jetFlavour_I = j.jetFlavor();
+            hadFlavour_I = j.hadronFlavour();
             
             jetFlavour_I = ReMatch( &j, &*mc->pruned_handle );
         }
@@ -285,7 +287,7 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
         nemf -> push_back(j.neutralEmEnergyFraction());
         cemf -> push_back(j.chargedEmEnergyFraction());
 
-
+        hadFlavour -> push_back( hadFlavour_I );
         flavour -> push_back( jetFlavour_I );
         matchedPartonPdgId -> push_back( jetMatchedPartonPdgId_I );
         motherPdgId -> push_back( motherPdgId_I );

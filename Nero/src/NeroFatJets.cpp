@@ -118,6 +118,7 @@ int NeroFatJets::analyze(const edm::Event& iEvent){
         corr = jecAK8_->getCorrection();        
 
         flavour -> push_back( j.partonFlavour() );
+        hadFlavour -> push_back( j.hadronFlavour() );
 
         tau1 -> push_back(j.userFloat("NjettinessAK8:tau1"));
         tau2 -> push_back(j.userFloat("NjettinessAK8:tau2"));
