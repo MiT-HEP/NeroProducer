@@ -97,7 +97,8 @@ function CMSSW_8_0_25 {
 
 function CMSSW_8_0_26_patch1 {
         git cms-init
-        git cms-merge-topic zdemirag:conflict_met_resolved
+	git cms-merge-topic amarini:conflict_met_resolved
+        #git cms-merge-topic zdemirag:conflict_met_resolved
         #git cms-merge-topic emanueledimarco:ecal_smear_fix_80X
         git cms-merge-topic rafaellopesdesa:Regression80XEgammaAnalysis_v2
         git cms-merge-topic rafaellopesdesa:RegressionCheckNegEnergy
