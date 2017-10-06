@@ -7,4 +7,6 @@
 <!-- QGVariables -->
 <use   name="fastjet"/>
 <!-- End QGVariables -->
+<!-- Njettiness groomed -->
+<use name="fastjet-contrib"/>
 <flags EDM_PLUGIN="1"/>

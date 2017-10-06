@@ -18,6 +18,7 @@ BareJets::~BareJets(){
     BareFunctions::Delete(nemf);
     BareFunctions::Delete(cemf);
     BareFunctions::Delete(flavour);
+    BareFunctions::Delete(hadFlavour);
     BareFunctions::Delete(matchedPartonPdgId);
     BareFunctions::Delete(motherPdgId);
     BareFunctions::Delete(grMotherPdgId);
@@ -66,6 +67,7 @@ void BareJets::init(){
     BareFunctions::New(nemf);
     BareFunctions::New(cemf);
     BareFunctions::New(flavour);
+    BareFunctions::New(hadFlavour);
     BareFunctions::New(matchedPartonPdgId);
     BareFunctions::New(motherPdgId);
     BareFunctions::New(grMotherPdgId);
@@ -114,6 +116,7 @@ void BareJets::clear(){
     cemf -> clear();
     // gen matching
     flavour -> clear();
+    hadFlavour -> clear();
     matchedPartonPdgId -> clear();
     motherPdgId -> clear();
     grMotherPdgId -> clear();
@@ -183,6 +186,7 @@ void BareJets::defineBranches(TTree *t){
     t->Branch(jetName + "QglPtDrLog","vector<float>",&qglPtDrLog);
     // -- Jet Flavour by PAT
     t->Branch(jetName + "Flavour","vector<int>",&flavour);
+    t->Branch(jetName + "hadFlavour","vector<int>",&hadFlavour);
 
     t->Branch(jetName + "MatchedPartonPdgId","vector<int>",&matchedPartonPdgId);
     

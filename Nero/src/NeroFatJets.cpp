@@ -66,6 +66,9 @@ int NeroFatJets::analyze(const edm::Event& iEvent){
 
     // maybe handle should be taken before
     iEvent.getByToken(token, handle);
+    iEvent.getByToken(sd_tau1_token,sd_tau1_handle);
+    iEvent.getByToken(sd_tau2_token,sd_tau2_handle);
+    iEvent.getByToken(sd_tau3_token,sd_tau3_handle);
 
     //Vertex
     iEvent.getByToken(vertex_token,vertex_handle);
@@ -75,7 +78,10 @@ int NeroFatJets::analyze(const edm::Event& iEvent){
     // this jet collection is straight from miniAOD - skip all the fancy stuff
 
     if ( not handle.isValid() ) cout<<"[NeroFatJets]::[analyze]::[ERROR] handle is not valid"<<endl;
-    
+    if ( not sd_tau1_handle.isValid() ) cout<<"[NeroJets]::[analyze]::[ERROR] sd tau1_handle is not valid"<<endl;
+    if ( not sd_tau2_handle.isValid() ) cout<<"[NeroJets]::[analyze]::[ERROR] sd tau2_handle is not valid"<<endl;
+    if ( not sd_tau3_handle.isValid() ) cout<<"[NeroJets]::[analyze]::[ERROR] sd tau3_handle is not valid"<<endl;
+
     int ijetRef = -1;
     int nsubjet = 0;
     for (const pat::Jet& j : *handle)
@@ -87,7 +93,14 @@ int NeroFatJets::analyze(const edm::Event& iEvent){
         if ( !NeroJets::JetId(j,mMinId) ) continue;
         
         // GET  ValueMaps
-        
+        edm::RefToBase<pat::Jet> jetRef(edm::Ref<pat::JetCollection>(handle, ijetRef) );
+        float sdtau1_ = (*sd_tau1_handle)[jetRef];
+        sdtau1     -> push_back( sdtau1_);
+        float sdtau2_ = (*sd_tau2_handle)[jetRef];
+        sdtau2     -> push_back( sdtau2_);
+        float sdtau3_ = (*sd_tau3_handle)[jetRef];
+        sdtau3     -> push_back( sdtau3_);
+
         // Fill output object	
         new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(j.px(), j.py(), j.pz(), j.energy());
         
@@ -105,6 +118,8 @@ int NeroFatJets::analyze(const edm::Event& iEvent){
         corr = jecAK8_->getCorrection();        
 
         flavour -> push_back( j.partonFlavour() );
+        hadFlavour -> push_back( j.hadronFlavour() );
+
         tau1 -> push_back(j.userFloat("NjettinessAK8:tau1"));
         tau2 -> push_back(j.userFloat("NjettinessAK8:tau2"));
         tau3 -> push_back(j.userFloat("NjettinessAK8:tau3"));

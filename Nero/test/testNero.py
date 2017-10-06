@@ -449,6 +449,12 @@ process.load('NeroProducer.Skim.QGVariablesSequence_cff')
 process.QGVariables.srcJets = process.nero.jets
 process.QGVariables.srcGenJets = cms.InputTag("slimmedGenJets")
 process.QGVariables.isData = cms.bool(isData)
+
+###
+process.load('NeroProducer.Skim.NjettinesGroomed_cff')
+process.NjettinessGroomed.srcJets = process.nero.chsAK8
+
+
 ##DEBUG
 ##print "Process=",process, process.__dict__.keys()
 #------------------------------------------------------
@@ -463,6 +469,7 @@ process.p = cms.Path(
                 process.electronIDValueMapProducer *  ## ISO MAP FOR PHOTONS
                 process.jecSequence *
                 process.QGTagger    * ## after jec, because it will produce the new jet collection
+                process.NjettinessGroomed *
                 process.fullPatMetSequence *## no puppi
                 process.mucorMET * 
                 process.puppiMETSequence * #puppi candidate producer
