@@ -119,6 +119,7 @@ void NjettinessGroomed::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 
     for(auto jet = jets->begin(); jet != jets->end(); ++jet)
     {
+        input_particles.clear();
         for(auto daughter : jet->getJetConstituentsQuick()){
             auto part = static_cast<const pat::PackedCandidate*>(daughter);
 
