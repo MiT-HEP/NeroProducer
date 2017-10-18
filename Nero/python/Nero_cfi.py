@@ -66,7 +66,7 @@ nero = cms.EDAnalyzer("Nero",
     ## TRIGGER
     NeroTrigger = cms.PSet ( 
         trigger = cms.InputTag("TriggerResults","","HLT"),
-        objects = cms.InputTag('selectedPatTrigger'),
+        objects = cms.InputTag('slimmedPatTrigger'),
         triggerNMatch = cms.int32(12),
         triggerNames = cms.vstring([
 				## LEPTON FAKES

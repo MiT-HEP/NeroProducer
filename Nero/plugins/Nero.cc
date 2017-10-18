@@ -63,7 +63,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
         NeroCollection *o = NeroFactory::get().create( name, cc, iConfig.getParameterSet(name) );
         if (o==NULL)  Logger::getInstance().Log("Object '" + name+"' unable to construct",0) ;
         obj.push_back(o);
-        if (name=="NeroMet") runObj.push_back(dynamic_cast<NeroRun*>(o));
+        //if (name=="NeroMet") runObj.push_back(dynamic_cast<NeroRun*>(o));
         if (name=="NeroAll") lumiObj.push_back(dynamic_cast<NeroLumi*>(o));
         if (name == "NeroTrigger") {
             NeroTrigger *tr = dynamic_cast<NeroTrigger*>(o); // TODO what if these are not in the list?
@@ -289,13 +289,9 @@ Nero::beginRun(edm::Run const&iRun, edm::EventSetup const&)
     void 
 Nero::endRun(edm::Run const&iRun, edm::EventSetup const&iSetup)
 { // this should be finalized at the end of the run
-    //for(auto o : obj)
-    //	{
-    //	if ( dynamic_cast<NeroMonteCarlo*> (o) != NULL)
-    //		{
-    //		dynamic_cast<NeroMonteCarlo*> (o) -> crossSection(iRun, hXsec_);
-    //		}
-    //	}
+    #ifdef NERO_VERBOSE
+        if(NERO_VERBOSE) cout <<" ---- end run macros --- "<<endl;
+    #endif
 
     for(auto o : runObj )
     {

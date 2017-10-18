@@ -44,9 +44,6 @@ class BareFatJets : virtual public BareP4
         vector<float> *hbb{0};
         vector<float> *topMVA{0};
 
-        TClonesArray  *puppiAK8{0};
-        vector<float> *puppi_tau1{0};
-        vector<float> *puppi_tau2{0};
         vector<float> *puppi_softdrop_masscorr{0};
         vector<float> *puppi_softdrop_mass{0};
 };

@@ -15,6 +15,7 @@ NeroTrigger::NeroTrigger(edm::ConsumesCollector & cc,edm::ParameterSet iConfig):
     photons_=NULL;
 
     token = cc.consumes< edm::TriggerResults >( iConfig.getParameter<edm::InputTag>("trigger"));
+    prescale_token = cc.consumes<pat::PackedTriggerPrescales>( edm::InputTag("patTrigger") );
     object_token = cc.consumes< pat::TriggerObjectStandAloneCollection > ( iConfig.getParameter<edm::InputTag> ("objects") );
     token_l1EtSum= cc.consumes< BXVector< l1t::EtSum > > (edm::InputTag("caloStage2Digis:EtSum"));
     mNMatch = iConfig.getParameter<int>("triggerNMatch");

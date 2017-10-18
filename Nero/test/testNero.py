@@ -38,15 +38,11 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxE
 if len(options.inputFiles) == 0:
     if isData:
         options.inputFiles = [
-            '/store/data/Run2017C/SingleMuon/MINIAOD/PromptReco-v1/000/299/368/00000/06C94520-886D-E711-B000-02163E0141D3.root',
-            '/store/data/Run2017C/SingleMuon/MINIAOD/PromptReco-v1/000/299/368/00000/328F8A6A-846D-E711-BAB7-02163E012244.root',
-            '/store/data/Run2017C/SingleMuon/MINIAOD/PromptReco-v1/000/299/368/00000/464F0A19-826D-E711-8FF0-02163E014128.root',
-            '/store/data/Run2017C/SingleMuon/MINIAOD/PromptReco-v1/000/299/368/00000/54C0AD94-A76D-E711-BF46-02163E013530.root',
-            '/store/data/Run2017C/SingleMuon/MINIAOD/PromptReco-v1/000/299/368/00000/5E4BC918-8C6D-E711-9C2F-02163E012A9F.root',
+                '/store/data/Run2017C/JetHT/MINIAOD/12Sep2017-v1/90000/F20CE177-A299-E711-98D2-001E67792486.root'
         ]
     else:
         options.inputFiles = [
-            '/store/mc/RunIISummer17MiniAOD/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/92X_upgrade2017_realistic_v7-v1/110000/24E2100A-A375-E711-86B9-0CC47A745250.root'
+                '/store/mc/RunIISummer17MiniAOD/DYJetsToLL_M-50_Zpt-150toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v1/150000/ECCFB7E7-6FAA-E711-B219-008CFA110C6C.root'
         ]
 
 ### do not remove the line below!
@@ -80,10 +76,12 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condD
 
 if (isData):
     # 2017 data
-    process.GlobalTag.globaltag = '92X_dataRun2_HLT_v7'
+    #process.GlobalTag.globaltag = '92X_dataRun2_Prompt_v9'
+    process.GlobalTag.globaltag = '92X_dataRun2_2017Repro_v4' ## EARLY RERECO 12Sep2017 9 2 11
 else:
     ## new miniaod
-    process.GlobalTag.globaltag = '92X_upgrade2017_realistic_v7-v1'
+    #process.GlobalTag.globaltag = '92X_upgrade2017_realistic_v7-v1'
+    process.GlobalTag.globaltag = '92X_upgrade2017_realistic_v7' 
 
 ### LOAD DATABASE
 from CondCore.DBCommon.CondDBSetup_cfi import *
@@ -93,9 +91,9 @@ from CondCore.DBCommon.CondDBSetup_cfi import *
 if isData and not options.isGrid and False: ## dont load the lumiMaks, will be called by crab
     #pass
     import FWCore.PythonUtilities.LumiList as LumiList
-    ## SILVER
     print "-> UPDATE THE LUMI LIST"
     process.source.lumisToProcess =None 
+    #process.source.lumisToProcess = LumiList.LumiList(filename='/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification//Collisions17/13TeV/PromptReco/Cert_294927-304507_13TeV_PromptReco_Collisions17_JSON.txt').getVLuminosityBlockRange()
     #process.source.lumisToProcess = LumiList.LumiList(filename='/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/DCSOnly/json_DCSONLY.txt').getVLuminosityBlockRange()
 
 ## SKIM INFO
@@ -457,7 +455,7 @@ process.QGVariables.isData = cms.bool(isData)
 
 ### Groomed variables
 process.load('NeroProducer.Skim.NjettinesGroomed_cff')
-+process.NjettinessGroomed.srcJets = process.nero.chsAK8
+process.NjettinessGroomed.srcJets = process.nero.NeroFatJets.chsAK8
 
 
 ##DEBUG
@@ -468,10 +466,11 @@ process.p = cms.Path(
                 #process.regressionApplication *
                 #process.calibratedPatElectrons  *
                 #process.calibratedPatPhotons *
-                #process.egmGsfElectronIDSequence *
+                process.egmGsfElectronIDSequence *
                 #process.egmPhotonIDSequence * ## this is overwritten by puppi/met configuration
                 #process.photonIDValueMapProducer * ## ISO MAP FOR PHOTONS
                 #process.electronIDValueMapProducer *  ## ISO MAP FOR PHOTONS
+                process.electronMVAValueMapProducer *
                 #process.jecSequence *
                 process.QGTagger    * ## after jec, because it will produce the new jet collection
                 #process.fullPatMetSequence *## no puppi
@@ -482,16 +481,16 @@ process.p = cms.Path(
                 process.BadChargedCandidateFilter * 
                 process.ttbarcat *
                 process.QGVariablesSequence*
-                process.NjettinessGroomed *
+                process.NjettinessGroomed*
                 process.nero
                 )
 
 ## DEBUG -- dump the event content with all the value maps ..
-#process.output = cms.OutputModule(
-#                "PoolOutputModule",
-#                      fileName = cms.untracked.string('output.root'),
-#                      )
-#process.output_step = cms.EndPath(process.output)
+### process.output = cms.OutputModule(
+###                 "PoolOutputModule",
+###                       fileName = cms.untracked.string('output.root'),
+###                       )
+### process.output_step = cms.EndPath(process.output)
 
 #process.schedule = cms.Schedule(
 #		process.p,
