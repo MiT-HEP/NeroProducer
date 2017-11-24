@@ -2,8 +2,8 @@
 
 # Instruct builder to use a particular CMSSW release
 # [CMSSW] CMSSW_9_2_4
-# [Options] isData=False
-# [fileList] /store/data/Run2017B/SingleMuon/MINIAOD/PromptReco-v1/000/297/046/00000/4EF129BD-4956-E711-A2A2-02163E01369E.root
+# [Options] isData=True
+# [fileList] /store/data/Run2017B/SingleMuon/MINIAOD/12Sep2017-v1/100000/D40C3EBA-77A7-E711-9F82-FA163E106E6B.root
 # [MaxEvents] 5000
 
 function CMSSW_7_6_4 {
