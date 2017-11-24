@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Instruct builder to use a particular CMSSW release
-# [CMSSW] CMSSW_9_2_3_patch2
+# [CMSSW] CMSSW_9_2_4
 # [Options] isData=False
 # [fileList] /store/data/Run2017B/SingleMuon/MINIAOD/PromptReco-v1/000/297/046/00000/4EF129BD-4956-E711-A2A2-02163E01369E.root
 # [MaxEvents] 5000
