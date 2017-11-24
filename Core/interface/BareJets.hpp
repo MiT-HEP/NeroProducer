@@ -39,6 +39,13 @@ class BareJets : virtual public BareP4
         vector<float> *refPt{0}; // as in MINIAOD->pt()
         vector<float> *bDiscr{0};
         vector<float> *bMva{0};
+        
+        // deep information for jets
+        vector<float> *deepB{0};
+        vector<float> *deepBB{0};
+        vector<float> *deepC{0};
+        vector<float> *deepL{0};
+
         //vector<float> *bDiscrLegacy{0};
         vector<float> *puId{0};
         vector<float> *unc{0};
