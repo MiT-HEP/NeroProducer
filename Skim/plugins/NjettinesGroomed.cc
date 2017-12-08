@@ -72,7 +72,9 @@ class NjettinessGroomed : public edm::EDProducer{
         int maxTau_{3};
         float R_{0.8};
         JetDefinition AKDef{JetDefinition(antikt_algorithm, R_)};
-        fastjet::contrib::SoftDrop softdrop_ {fastjet::contrib::SoftDrop(1., 0.15, R_)};
+        // AK8 R=0.8, beta=0 and z=0.1
+        // CA R=1.5, beta=1.0 and z=0.15
+        fastjet::contrib::SoftDrop softdrop_ {fastjet::contrib::SoftDrop(0.0, 0.1, R_)};
         fastjet::contrib::Njettiness *tau_ { new fastjet::contrib::Njettiness(fastjet::contrib::OnePass_KT_Axes(), fastjet::contrib::NormalizedMeasure(1., R_)) };
 
 };

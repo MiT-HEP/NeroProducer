@@ -179,6 +179,7 @@ nero = cms.EDAnalyzer("Nero",
 				'HLT_Photon175',
 				'HLT_Photon165_HE10',
                                 ### Hadronic Triggers
+                                'HLT_PFJet450_v'
                                 'HLT_PFHT475_v',
                                 'HLT_PFHT800_v',
                                 'HLT_PFHT900_v',
