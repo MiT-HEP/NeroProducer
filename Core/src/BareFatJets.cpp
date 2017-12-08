@@ -145,9 +145,13 @@ void BareFatJets::setBranchAddresses(TTree *t, std::string prefix){
     BareFunctions::SetBranchAddress(t,jetName + "RawPt", &rawPt);
 
     BareFunctions::SetBranchAddress(t,jetName + "Flavour" ,&flavour);
+    BareFunctions::SetBranchAddress(t,jetName + "hadFlavour"    ,&hadFlavour);
     BareFunctions::SetBranchAddress(t,jetName + "Tau1"  ,&tau1);
     BareFunctions::SetBranchAddress(t,jetName + "Tau2"  ,&tau2);
     BareFunctions::SetBranchAddress(t,jetName + "Tau3"  ,&tau3);
+    BareFunctions::SetBranchAddress(t,jetName + "SDTau1"  ,&sdtau1);
+    BareFunctions::SetBranchAddress(t,jetName + "SDTau2"  ,&sdtau2);
+    BareFunctions::SetBranchAddress(t,jetName + "SDTau3"  ,&sdtau3);
 
     BareFunctions::SetBranchAddress(t,jetName + "TrimmedMass"   ,&trimmedMass);
     BareFunctions::SetBranchAddress(t,jetName + "PrunedMass"    ,&prunedMass);
