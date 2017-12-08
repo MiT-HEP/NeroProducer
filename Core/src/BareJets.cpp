@@ -37,6 +37,13 @@ BareJets::~BareJets(){
     BareFunctions::Delete(ptResUncCentral);
     BareFunctions::Delete(ptResUncUp);
     BareFunctions::Delete(ptResUncDown);
+    //
+    //DEEP
+    BareFunctions::Delete(deepB);
+    BareFunctions::Delete(deepBB);
+    BareFunctions::Delete(deepC);
+    BareFunctions::Delete(deepL);
+    //
     //extra qg variables
     for(const auto& dR : dRToProduce)
     {
@@ -81,6 +88,11 @@ void BareJets::init(){
     BareFunctions::New(qglCMult);
     BareFunctions::New(qglNMult);
     BareFunctions::New(qglPtDrLog);
+    //DEEP
+    BareFunctions::New(deepB);
+    BareFunctions::New(deepBB);
+    BareFunctions::New(deepC);
+    BareFunctions::New(deepL);
     //
     BareFunctions::New(ptResUncCentral);
     BareFunctions::New(ptResUncUp);
@@ -150,6 +162,11 @@ void BareJets::clear(){
         qglGenAxis2_dR[Form("0p%03.0f",dR*1000)]	->clear();
         qglGenAxis1_dR[Form("0p%03.0f",dR*1000)]	->clear();
     }
+    deepB->clear();
+    deepBB->clear();
+    deepC->clear();
+    deepL->clear();
+
 }
 
 void BareJets::defineBranches(TTree *t){
@@ -214,6 +231,11 @@ void BareJets::defineBranches(TTree *t){
         t->Branch(jetName+Form("QglGenAxis2_dR0p%03.0f",dR*1000),"vector<float>",&qglGenAxis2_dR[Form("0p%03.0f",dR*1000)]	);
         t->Branch(jetName+Form("QglGenAxis1_dR0p%03.0f",dR*1000),"vector<float>",&qglGenAxis1_dR[Form("0p%03.0f",dR*1000)]	);
     }
+
+    t->Branch(jetName +"DeepB",&deepB);
+    t->Branch(jetName +"DeepBB",&deepBB);
+    t->Branch(jetName +"DeepC",&deepC);
+    t->Branch(jetName +"DeepL",&deepL);
 }
 
 void BareJets::setBranchAddresses(TTree* t, std::string prefix)
@@ -268,6 +290,12 @@ void BareJets::setBranchAddresses(TTree* t, std::string prefix)
         BareFunctions::SetBranchAddress(t,jetName+Form("QglGenAxis2_dR0p%03.0f",dR*1000),&qglGenAxis2_dR[Form("0p%03.0f",dR*1000)]	);
         BareFunctions::SetBranchAddress(t,jetName+Form("QglGenAxis1_dR0p%03.0f",dR*1000),&qglGenAxis1_dR[Form("0p%03.0f",dR*1000)]	);
     }
+
+    //DEEP
+    BareFunctions::SetBranchAddress(t,jetName +"DeepB",&deepB);
+    BareFunctions::SetBranchAddress(t,jetName +"DeepBB",&deepBB);
+    BareFunctions::SetBranchAddress(t,jetName +"DeepC",&deepC);
+    BareFunctions::SetBranchAddress(t,jetName +"DeepL",&deepL);
 }
 
 BAREREGISTER(BareJets);

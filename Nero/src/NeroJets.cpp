@@ -271,6 +271,13 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
         bMva -> push_back( j.bDiscriminator("pfCombinedMVAV2BJetTags ") );
         //bDiscrLegacy -> push_back( j.bDiscriminator("combinedSecondaryVertexBJetTags") );
         qgl     -> push_back( qgLikelihood );
+
+        //DEEP
+        deepB -> push_back( j.bDiscriminator("pfDeepCSVJetTags:probb") );
+        deepBB -> push_back( j.bDiscriminator("pfDeepCSVJetTags:probbb") );
+        deepC -> push_back( j.bDiscriminator("pfDeepCSVJetTags:probc") );
+        deepL -> push_back( j.bDiscriminator("pfDeepCSVJetTags:probudsg") );
+
         // if the token was not valid, this will simply not be filled
         if (qg_handle_Mult.isValid()) qglMult->push_back(  (*qg_handle_Mult)[jetRef] );
         if (qg_handle_PtD.isValid()) qglPtD->push_back(  (*qg_handle_PtD)[jetRef] );
