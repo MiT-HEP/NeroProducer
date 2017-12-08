@@ -31,6 +31,7 @@ if mystatustoken == '' :
 
 
 repo= 'MiT-HEP/NeroProducer'
+tag = 'CMSSW_92X'
 url = 'https://api.github.com/repos/' + repo
 tmpdir="/tmp/" + os.environ['USER']
 
@@ -166,6 +167,13 @@ def TryPullReq(sha, origin):
 	status = call(cmd,shell=True)
 	if status >0 : 
 		print red +"ERROR: "+white + "unable to set up repo"
+		print "\t'"+cmd+"'"
+		return 2
+
+    if tag !='': cmd = "cd " + repo +" && git checkout "+ tag
+    status= call (cmd,shell=True)
+	if status >0 : 
+		print red +"ERROR: "+white + "unable to checkout "+ tag
 		print "\t'"+cmd+"'"
 		return 2
 
