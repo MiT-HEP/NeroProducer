@@ -5,6 +5,7 @@
 # [Options] isData=True
 # [fileList] /store/data/Run2017B/SingleMuon/MINIAOD/12Sep2017-v1/100000/D40C3EBA-77A7-E711-9F82-FA163E106E6B.root
 # [MaxEvents] 5000
+# [Tag] CMSSW_92X
 
 function CMSSW_7_6_4 {
 	git cms-init
