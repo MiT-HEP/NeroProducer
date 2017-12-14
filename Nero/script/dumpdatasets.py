@@ -13,7 +13,7 @@ proxy="/tmp/x509up_u"+ check_output("id -u",shell=True).split()[0]
 print "-> Using proxy",proxy
 
 ## we need env -i because there is a mess up with libraries
-EOSLS="/afs/cern.ch/project/eos/installation/0.3.84-aquamarine/bin/eos.select %(instance)s ls"
+EOSLS="/usr/bin/eos %(instance)s ls"
 GFAL="env -i X509_USER_PROXY="+proxy +" gfal-ls -t 180"
 GFAL_EOS="gsiftp://eoscmsftp.cern.ch//eos/cms/store/user/%(user)s"
 EOS="/eos/cms/store/user/%(user)s"

@@ -31,7 +31,7 @@ if mystatustoken == '' :
 
 
 repo= 'MiT-HEP/NeroProducer'
-tag = 'CMSSW_92X'
+tag = ''
 url = 'https://api.github.com/repos/' + repo
 tmpdir="/tmp/" + os.environ['USER']
 
@@ -66,6 +66,7 @@ def GetPullReqList():
 def TryPullReq(sha, origin):
 	## create the place where store the output
 	CMSSW="CMSSW_7_4_5" ## some default
+	tag = ''
 	cmd = "mkdir -p %s" % os.environ["HOME"]+"/www/%s/"%(repo.split('/')[1]) + sha + "/"
 	call(cmd,shell=True)
 
@@ -91,6 +92,13 @@ def TryPullReq(sha, origin):
 				if parts[i] == "[CMSSW]":
 					CMSSW=parts[i+1]
 					print "-> Setting CMSSW to ", CMSSW
+		if '[Tag]' in line and not dangerous.search(line): 
+			# line is of the form # [Tag] Tag_release
+			parts = line.split()
+			for i in range(0, len(parts) -1 ) :
+				if parts[i] == "[Tag]":
+					tag=parts[i+1]
+					print "-> Setting Tag to ", tag
 		if '[Options]' in line and not dangerous.search(line):
 			parts= line.split()
 			for i in range(0,len(parts)-1):
@@ -170,12 +178,15 @@ def TryPullReq(sha, origin):
 		print "\t'"+cmd+"'"
 		return 2
 
-    if tag !='': cmd = "cd " + repo +" && git checkout "+ tag
-    status= call (cmd,shell=True)
-	if status >0 : 
-		print red +"ERROR: "+white + "unable to checkout "+ tag
-		print "\t'"+cmd+"'"
-		return 2
+	if tag !='': 
+	    print cyan+"-> Checking out ",tag
+	    cmd = "cd %s/%s/src && %s &&" %(tmpdir,CMSSW,cmsenv)
+	    cmd += "cd " + repo +" && git checkout "+ tag
+	    status= call (cmd,shell=True)
+	    if status >0 : 
+	        print red +"ERROR: "+white + "unable to checkout "+ tag
+	        print "\t'"+cmd+"'"
+	        return 2
 
 	print cyan+"-> Merging PR"+white
 	cmd = "cd %s/%s/src && %s &&" %(tmpdir,CMSSW,cmsenv)
