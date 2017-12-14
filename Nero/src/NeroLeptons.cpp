@@ -184,7 +184,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
             l.selBits |= unsigned(mu.isStandAloneMuon() * MuStandalone);
             l.selBits |= unsigned(mu.isTrackerMuon() * MuTracker);
             l.selBits |= unsigned(mu.isGlobalMuon() * MuGlobal);
-            l.selBits |= unsigned(LepHighPt * myid::isHighPtMuon(mu,*vtx_->GetPV())) ;
+            l.selBits |= unsigned(LepHighPt * myid::isHighPtMuon(mu,*pv)) ;
             
         l.pfPt = mu.pfP4().pt();
 
