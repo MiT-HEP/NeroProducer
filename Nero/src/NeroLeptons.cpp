@@ -18,6 +18,28 @@ bool isMediumMuon(const reco::Muon & recoMu)
                           muon::segmentCompatibility(recoMu) > (goodGlob ? 0.303 : 0.451); 
           return isMedium; 
     }
+
+bool isHighPtMuon(const pat::Muon & mu, const reco::Vertex& PV) 
+{
+    if(mu.tunePMuonBestTrack().isAvailable() && mu.globalTrack().isAvailable() && mu.innerTrack().isAvailable())
+    {
+        if(mu.isGlobalMuon() && mu.isTrackerMuon() && 
+                mu.tunePMuonBestTrack()->ptError()/mu.tunePMuonBestTrack()->pt() < 0.3 &&
+                (
+                 mu.numberOfMatchedStations() > 1 ||
+                 (mu.numberOfMatchedStations() == 1 &&  !(mu.stationMask() == 1 || mu.stationMask() == 16)) || 
+                 (mu.numberOfMatchedStations() == 1 &&   (mu.stationMask() == 1 || mu.stationMask() == 16) &&  mu.numberOfMatchedRPCLayers() > 2) 
+                ) &&
+                mu.globalTrack()->hitPattern().numberOfValidMuonHits() > 0 &&
+                mu.innerTrack()->hitPattern().numberOfValidPixelHits() > 0 &&
+                mu.innerTrack()->hitPattern().numberOfValidTrackerHits() > 5 &&
+                fabs(mu.dB()) < 0.2 &&
+                fabs(mu.innerTrack()->dz(PV.position()))< 0.5
+                )return true;
+    }
+    return false;
+}
+
 };
 
 // -- Electron Isolation
@@ -162,6 +184,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
             l.selBits |= unsigned(mu.isStandAloneMuon() * MuStandalone);
             l.selBits |= unsigned(mu.isTrackerMuon() * MuTracker);
             l.selBits |= unsigned(mu.isGlobalMuon() * MuGlobal);
+            l.selBits |= unsigned(LepHighPt * myid::isHighPtMuon(mu,*vtx_->GetPV())) ;
             
         l.pfPt = mu.pfP4().pt();
 
