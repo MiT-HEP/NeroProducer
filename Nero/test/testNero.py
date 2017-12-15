@@ -44,7 +44,7 @@ if len(options.inputFiles) == 0:
         ]
     else:
         options.inputFiles = [
-                '/store/mc/RunIISummer17MiniAOD/DYJetsToLL_M-50_Zpt-150toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v1/150000/ECCFB7E7-6FAA-E711-B219-008CFA110C6C.root'
+                '/store/mc/RunIIFall17MiniAOD/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/50000/0CAD1964-6FD9-E711-97C4-FA163EE0F5F8.root'
         ]
 
 ### do not remove the line below!
@@ -78,12 +78,10 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condD
 
 if (isData):
     # 2017 data
-    #process.GlobalTag.globaltag = '92X_dataRun2_Prompt_v9'
-    process.GlobalTag.globaltag = '92X_dataRun2_2017Repro_v4' ## EARLY RERECO 12Sep2017 9 2 11
+    process.GlobalTag.globaltag = '94X_dataRun2_ReReco_EOY17_v2' 
 else:
     ## new miniaod
-    #process.GlobalTag.globaltag = '92X_upgrade2017_realistic_v7-v1'
-    process.GlobalTag.globaltag = '92X_upgrade2017_realistic_v7' 
+    process.GlobalTag.globaltag = '94X_mc2017_realistic_v10' 
 
 ### LOAD DATABASE
 from CondCore.DBCommon.CondDBSetup_cfi import *
