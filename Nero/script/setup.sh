@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Instruct builder to use a particular CMSSW release
-# [CMSSW] CMSSW_9_2_4
+# [CMSSW] CMSSW_9_4_1
 # [Options] isData=True
-# [fileList] /store/data/Run2017B/SingleMuon/MINIAOD/12Sep2017-v1/100000/D40C3EBA-77A7-E711-9F82-FA163E106E6B.root
+# [fileList] /store/data/Run2017B/DoubleMuon/MINIAOD/17Nov2017-v1/50000/C81DD09D-DFD3-E711-8CA8-F04DA275BFEC.root
 # [MaxEvents] 5000
 # [Tag] CMSSW_92X
 
