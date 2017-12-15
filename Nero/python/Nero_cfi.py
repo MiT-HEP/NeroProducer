@@ -205,6 +205,11 @@ nero = cms.EDAnalyzer("Nero",
         genjets = cms.InputTag("slimmedGenJets"),
     ),
 
+    NeroTrackJets= cms.PSet( 
+        jets = cms.InputTag("softActivityJets"),
+        minPt = cms.double(0.),
+    ),
+
     ## LEPTONS
     NeroLeptons = cms.PSet(
         pfCands = cms.InputTag("packedPFCandidates"),
