@@ -99,11 +99,14 @@ int NeroFatJets::analyze(const edm::Event& iEvent){
     for (const pat::Jet& j : *handle)
     {
         ijetRef++;
+        cout<<"[NeroFatJets]::[DEBUG] -> Doing FAT JET "<<ijetRef<<endl;
         if (j.pt() < mMinPt || fabs(j.eta()) > mMaxEta) continue;
         
         // JET ID
+        if ( !j.isPFJet() ) continue;  // Jet Id breaks for non pf
         if ( !NeroJets::JetId(j,mMinId) ) continue;
         
+        cout<<"[NeroFatJets]::[DEBUG] -> FatJet IDED "<<ijetRef<<endl;
         // GET  ValueMaps
         edm::RefToBase<pat::Jet> jetRef(edm::Ref<pat::JetCollection>(handle, ijetRef) );
         float sdtau1_ = (*sd_tau1_handle)[jetRef];
@@ -113,6 +116,7 @@ int NeroFatJets::analyze(const edm::Event& iEvent){
         float sdtau3_ = (*sd_tau3_handle)[jetRef];
         sdtau3     -> push_back( sdtau3_);
 
+        cout<<"[NeroFatJets]::[DEBUG] -> FatJet Fill "<<ijetRef<<endl;
         // Fill output object	
         new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(j.px(), j.py(), j.pz(), j.energy());
         
