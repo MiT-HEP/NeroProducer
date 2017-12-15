@@ -38,7 +38,9 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxE
 if len(options.inputFiles) == 0:
     if isData:
         options.inputFiles = [
-                '/store/data/Run2017C/JetHT/MINIAOD/12Sep2017-v1/90000/F20CE177-A299-E711-98D2-001E67792486.root'
+                '/store/data/Run2017B/DoubleMuon/MINIAOD/17Nov2017-v1/50000/C81DD09D-DFD3-E711-8CA8-F04DA275BFEC.root',
+                '/store/data/Run2017B/DoubleMuon/MINIAOD/17Nov2017-v1/50000/D0138D26-50D4-E711-B871-0025905C95F8.root',
+                '/store/data/Run2017B/DoubleMuon/MINIAOD/17Nov2017-v1/50000/D0E4CDFD-1BD4-E711-9157-0025905D1E00.root'
         ]
     else:
         options.inputFiles = [
@@ -369,6 +371,16 @@ process.electronMVAValueMapProducer.srcMiniAOD= process.nero.NeroLeptons.electro
 #process.puppiPhoton.photonName = process.nero.NeroPhotons.photons 
 #process.modifiedPhotons.src  = process.nero.NeroPhotons.photons
 
+
+# ------------- Soft jet activity: Track jets ------------------------
+
+from RecoJets.JetProducers.ak4PFJets_cfi import ak4PFJets
+
+process.chsForSATkJets = cms.EDFilter("CandPtrSelector", src = cms.InputTag("packedPFCandidates"), cut = cms.string('charge()!=0 && pvAssociationQuality()>=5 && vertexRef().key()==0'))
+process.softActivityJets = ak4PFJets.clone(src = 'chsForSATkJets', doAreaFastjet = False, jetPtMin=1) 
+
+#------------------------------------------
+
 # ------------------------QG-----------------------------------------------
 # after jec, because need to be run on the corrected (latest) jet collection
 qgDatabaseVersion = 'cmssw8020_v2'
@@ -482,6 +494,7 @@ process.p = cms.Path(
                 process.ttbarcat *
                 process.QGVariablesSequence*
                 process.NjettinessGroomed*
+                process.chsForSATkJets * process.softActivityJets * ## track jtes
                 process.nero
                 )
 
