@@ -293,7 +293,8 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 
         if (el.chargeInfo().isGsfCtfConsistent and el.chargeInfo().isGsfCtfScPixConsistent and el.chargeInfo().isGsfScPixConsistent) l.selBits |= EleTripleCharge;
         constexpr reco::HitPattern::HitCategory missingHitType = reco::HitPattern::MISSING_INNER_HITS;
-        const unsigned mHits = el.gsfTrack()->hitPattern().numberOfHits(missingHitType);
+        //const unsigned mHits = el.gsfTrack()->hitPattern().numberOfHits(missingHitType);
+        const unsigned mHits = el.gsfTrack()->hitPattern().numberOfLostHits(missingHitType); // this accounts for the dead modules. numberOfAllHits no
 
         if (mHits == 0 ) l.selBits |=EleNoMissingHits;
 
@@ -355,7 +356,7 @@ namespace NeroHelper {
     }
     int missingHits(const pat::Electron& el) { 
         constexpr reco::HitPattern::HitCategory missingHitType = reco::HitPattern::MISSING_INNER_HITS;
-        const unsigned mHits = el.gsfTrack()->hitPattern().numberOfHits(missingHitType);
+        const unsigned mHits = el.gsfTrack()->hitPattern().numberOfLostHits(missingHitType);
         return mHits ;
     }
 

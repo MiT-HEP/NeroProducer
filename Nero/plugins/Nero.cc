@@ -30,7 +30,7 @@ Implementation:
 #include "NeroProducer/Nero/interface/NeroAll.hpp"
 #include "NeroProducer/Nero/interface/NeroTrigger.hpp"
 
-#define NERO_VERBOSE 2
+//#define NERO_VERBOSE 2
 //#define NERO_VERBOSE 1
 
 //
@@ -51,7 +51,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     auto&& cc ( consumesCollector() );
 
 
-    std::vector<string> objName{"NeroAll","NeroEvent","NeroVertex","NeroFatJets","NeroTaus","NeroLeptons","NeroMet","NeroMonteCarlo","NeroJets","NeroPhotons","NeroTrigger"};
+    std::vector<string> objName{"NeroAll","NeroEvent","NeroVertex","NeroFatJets","NeroTaus","NeroLeptons","NeroMet","NeroMonteCarlo","NeroJets","NeroPhotons","NeroTrigger","NeroTrackJets"};
 
 
     for (const auto& name : objName)

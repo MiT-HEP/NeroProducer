@@ -39,8 +39,7 @@ Add information missing in the input edm files.
 using namespace edm;
 using namespace std;
 
-class InfoProducer : public edm::one::EDProducer<edm::one::WatchLuminosityBlocks,
-    edm::EndLuminosityBlockProducer>{
+class InfoProducer : public edm::one::EDProducer<edm::one::WatchLuminosityBlocks, edm::EndLuminosityBlockProducer>{
         public:
             explicit InfoProducer(const edm::ParameterSet&);
             ~InfoProducer();
@@ -78,13 +77,14 @@ InfoProducer::InfoProducer(const edm::ParameterSet& iConfig)
 {
     //register your products
     //produces<edm::ValueMap<bool> >("monojetSelection");
-    produces<edm::MergeableCounter, edm::InLumi>("numberEvents");
-    produces<edm::MergeableCounter, edm::InLumi>("sumMcWeights");
+    //edm::Transition::EndLuminosityBlock
+    produces<edm::MergeableCounter, edm::Transition::EndLuminosityBlock>("numberEvents");
+    produces<edm::MergeableCounter, edm::Transition::EndLuminosityBlock>("sumMcWeights");
 
     // save this info for all the events, in the lumiblock
-    produces<std::vector<long>,   edm::InLumi>("vecEvents");
-    produces<std::vector<float>, edm::InLumi>("vecMcWeights");
-    produces<std::vector<int>,  edm::InLumi>("vecPuTrueInt");
+    produces<std::vector<long>,   edm::Transition::EndLuminosityBlock>("vecEvents");
+    produces<std::vector<float>,  edm::Transition::EndLuminosityBlock>("vecMcWeights");
+    produces<std::vector<int>,  edm::Transition::EndLuminosityBlock>("vecPuTrueInt");
 }
 
 

@@ -38,11 +38,13 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxE
 if len(options.inputFiles) == 0:
     if isData:
         options.inputFiles = [
-                '/store/data/Run2017C/JetHT/MINIAOD/12Sep2017-v1/90000/F20CE177-A299-E711-98D2-001E67792486.root'
+                '/store/data/Run2017B/DoubleMuon/MINIAOD/17Nov2017-v1/50000/C81DD09D-DFD3-E711-8CA8-F04DA275BFEC.root',
+                '/store/data/Run2017B/DoubleMuon/MINIAOD/17Nov2017-v1/50000/D0138D26-50D4-E711-B871-0025905C95F8.root',
+                '/store/data/Run2017B/DoubleMuon/MINIAOD/17Nov2017-v1/50000/D0E4CDFD-1BD4-E711-9157-0025905D1E00.root'
         ]
     else:
         options.inputFiles = [
-                '/store/mc/RunIISummer17MiniAOD/DYJetsToLL_M-50_Zpt-150toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v1/150000/ECCFB7E7-6FAA-E711-B219-008CFA110C6C.root'
+                '/store/mc/RunIIFall17MiniAOD/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/50000/0CAD1964-6FD9-E711-97C4-FA163EE0F5F8.root'
         ]
 
 ### do not remove the line below!
@@ -76,12 +78,10 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condD
 
 if (isData):
     # 2017 data
-    #process.GlobalTag.globaltag = '92X_dataRun2_Prompt_v9'
-    process.GlobalTag.globaltag = '92X_dataRun2_2017Repro_v4' ## EARLY RERECO 12Sep2017 9 2 11
+    process.GlobalTag.globaltag = '94X_dataRun2_ReReco_EOY17_v2' 
 else:
     ## new miniaod
-    #process.GlobalTag.globaltag = '92X_upgrade2017_realistic_v7-v1'
-    process.GlobalTag.globaltag = '92X_upgrade2017_realistic_v7' 
+    process.GlobalTag.globaltag = '94X_mc2017_realistic_v10' 
 
 ### LOAD DATABASE
 from CondCore.DBCommon.CondDBSetup_cfi import *
@@ -369,6 +369,16 @@ process.electronMVAValueMapProducer.srcMiniAOD= process.nero.NeroLeptons.electro
 #process.puppiPhoton.photonName = process.nero.NeroPhotons.photons 
 #process.modifiedPhotons.src  = process.nero.NeroPhotons.photons
 
+
+# ------------- Soft jet activity: Track jets ------------------------
+
+from RecoJets.JetProducers.ak4PFJets_cfi import ak4PFJets
+
+process.chsForSATkJets = cms.EDFilter("CandPtrSelector", src = cms.InputTag("packedPFCandidates"), cut = cms.string('charge()!=0 && pvAssociationQuality()>=5 && vertexRef().key()==0'))
+process.softActivityJets = ak4PFJets.clone(src = 'chsForSATkJets', doAreaFastjet = False, jetPtMin=1) 
+
+#------------------------------------------
+
 # ------------------------QG-----------------------------------------------
 # after jec, because need to be run on the corrected (latest) jet collection
 qgDatabaseVersion = 'cmssw8020_v2'
@@ -482,6 +492,7 @@ process.p = cms.Path(
                 process.ttbarcat *
                 process.QGVariablesSequence*
                 process.NjettinessGroomed*
+                process.chsForSATkJets * process.softActivityJets * ## track jtes
                 process.nero
                 )
 
