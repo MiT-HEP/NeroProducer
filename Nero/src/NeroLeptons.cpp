@@ -57,6 +57,11 @@ NeroLeptons::NeroLeptons(edm::ConsumesCollector & cc,edm::ParameterSet iConfig):
     el_mva_token = cc.consumes<edm::ValueMap<float> > (iConfig.getParameter<edm::InputTag>("eleMvaMap"));
     rho_token = cc.consumes<double> (edm::InputTag("fixedGridRhoFastjetCentralNeutral")); // for miniIso
 
+    el_vetoid_token = cc.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleVetoIdMap"));
+    el_looseid_token = cc.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleLooseIdMap"));
+    el_mediumid_token = cc.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMediumIdMap"));
+    el_tightid_token = cc.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleTightIdMap"));
+
     el_uncalib_token = cc.consumes<pat::ElectronCollection>(edm::InputTag("slimmedElectrons"));
 
     mMinPt_mu = iConfig.getParameter<double>("minMuPt");
@@ -112,10 +117,12 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
     iEvent.getByToken(el_token,el_handle);	
     iEvent.getByToken(el_uncalib_token,el_uncalib_handle);	
 
-    //iEvent.getByToken(el_mediumid_token,el_medium_id);
-    //iEvent.getByToken(el_tightid_token,el_tight_id);
-    //iEvent.getByToken(el_vetoid_token,el_veto_id);
-    //iEvent.getByToken(el_looseid_token,el_loose_id);
+    //VID
+    iEvent.getByToken(el_mediumid_token,el_medium_id);
+    iEvent.getByToken(el_tightid_token,el_tight_id);
+    iEvent.getByToken(el_vetoid_token,el_veto_id);
+    iEvent.getByToken(el_looseid_token,el_loose_id);
+
     iEvent.getByToken(el_mva_token,el_mva);
     iEvent.getByToken(el_hltid_token,el_hlt_id);
     iEvent.getByToken(rho_token,rho_handle);
@@ -218,6 +225,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         l.pdgId = -el.charge()*11;
 
         l.mva = (*el_mva)[ref];
+
         l.etasc = el.superCluster()->eta();
         l.sieie = el.full5x5_sigmaIetaIeta();
         l.sipip = el.full5x5_sigmaIphiIphi();
@@ -249,10 +257,17 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 
         l.iso = chIso + TMath::Max( nhIso + phoIso - (*rho_handle) * ea , 0. ) ; 
 
-        bool isPassVeto = passEleId( el, Veto, l.iso/el.pt());   
-        bool isPassTight = passEleId( el, Tight, l.iso/el.pt()); 
-        bool isPassMedium = passEleId( el, Medium, l.iso/el.pt());
-        bool isPassLoose = passEleId( el, Loose, l.iso/el.pt()) ; 
+        //NON VID
+        //bool isPassVeto = passEleId( el, Veto, l.iso/el.pt());   
+        //bool isPassTight = passEleId( el, Tight, l.iso/el.pt()); 
+        //bool isPassMedium = passEleId( el, Medium, l.iso/el.pt());
+        //bool isPassLoose = passEleId( el, Loose, l.iso/el.pt()) ; 
+        //VID
+        bool isPassVeto = (*el_veto_id)[ref] and el.passConversionVeto();
+        bool isPassTight = (*el_tight_id)[ref] and el.passConversionVeto();
+        bool isPassMedium = (*el_medium_id)[ref] and el.passConversionVeto();
+        bool isPassLoose = (*el_loose_id)[ref] and el.passConversionVeto();
+
         bool isPassHLT = (*el_hlt_id)[ref] and el.passConversionVeto();
 
         
@@ -366,51 +381,52 @@ bool NeroLeptons::passEleId(const pat::Electron &el , ELEID id, float iso)
 {
    using std::abs;
    bool passId = true;
+   float energy = el.energy(); // hoe C0 + CE/energy + Cr*rho/energy;
    if ( abs(el.superCluster()->eta()) <= 1.479 )
    {
        switch (id)
        {
            case Veto: 
                {
-               passId = passId and  el.full5x5_sigmaIetaIeta()  < 0.0115; 
-               passId = passId and  abs(NeroHelper::dEtaInSeed(el)) < 0.00749  ; 
-               passId = passId and  abs(el.deltaPhiSuperClusterTrackAtVtx()) <0.228  ; 
-               passId = passId and  el.hadronicOverEm() < 0.356;
-               passId = passId and  iso < 0.175 ;
-               passId = passId and  std::abs(1.0 - el.eSuperClusterOverP())*1.0/el.ecalEnergy() < 0.299 ;
+               passId = passId and  el.full5x5_sigmaIetaIeta()  < 0.0128;// 0.0115;  
+               passId = passId and  abs(NeroHelper::dEtaInSeed(el)) < 0.00523; //0.00749  ; 
+               passId = passId and  abs(el.deltaPhiSuperClusterTrackAtVtx()) < 0.159; //0.228  ; 
+               passId = passId and  el.hadronicOverEm() < 0.247; //0.356;
+               passId = passId and  iso < 0.168; //0.175 ;
+               passId = passId and  std::abs(1.0 - el.eSuperClusterOverP())*1.0/el.ecalEnergy() < 0.193;//0.299 ;
                passId = passId and  NeroHelper::missingHits(el) <=2;
                passId = passId and  el.passConversionVeto();
                break;
                }
            case Loose:{
-               passId = passId and  el.full5x5_sigmaIetaIeta()  < 0.011; 
-               passId = passId and  abs(NeroHelper::dEtaInSeed(el)) < 0.00477; 
-               passId = passId and  abs(el.deltaPhiSuperClusterTrackAtVtx()) <0.222 ; 
-               passId = passId and  el.hadronicOverEm() < 0.298;
-               passId = passId and  iso <  0.0994  ;
-               passId = passId and  std::abs(1.0 - el.eSuperClusterOverP())*1.0/el.ecalEnergy() < 0.241 ;
+               passId = passId and  el.full5x5_sigmaIetaIeta()  < 0.0105;//0.011; 
+               passId = passId and  abs(NeroHelper::dEtaInSeed(el)) < 0.00387;//0.00477; 
+               passId = passId and  abs(el.deltaPhiSuperClusterTrackAtVtx()) < 0.0716;//0.222 ; 
+               passId = passId and  el.hadronicOverEm() < 0.236; //0.298;
+               passId = passId and  iso <  0.133; //0.0994  ;
+               passId = passId and  std::abs(1.0 - el.eSuperClusterOverP())*1.0/el.ecalEnergy() < 0.129;//0.241 ;
                passId = passId and  NeroHelper::missingHits(el) <=1;
                passId = passId and  el.passConversionVeto();
                break;
                }
            case Medium:{
-               passId = passId and  el.full5x5_sigmaIetaIeta()  < 0.00998; 
-               passId = passId and  abs(NeroHelper::dEtaInSeed(el)) < 0.00311; 
-               passId = passId and  abs(el.deltaPhiSuperClusterTrackAtVtx()) <0.103; 
-               passId = passId and  el.hadronicOverEm() < 0.253;
-               passId = passId and  iso < 0.0695 ;
-               passId = passId and  std::abs(1.0 - el.eSuperClusterOverP())*1.0/el.ecalEnergy() < 0.134 ;
+               passId = passId and  el.full5x5_sigmaIetaIeta()  < 0.0105; //0.00998; 
+               passId = passId and  abs(NeroHelper::dEtaInSeed(el)) < 0.00365; //0.00311; 
+               passId = passId and  abs(el.deltaPhiSuperClusterTrackAtVtx()) < 0.0588;//0.103; 
+               passId = passId and  el.hadronicOverEm() < 0.0859;//0.253;
+               passId = passId and  iso < 0.0718; //0.0695 ;
+               passId = passId and  std::abs(1.0 - el.eSuperClusterOverP())*1.0/el.ecalEnergy() < 0.0327;//0.134 ;
                passId = passId and  NeroHelper::missingHits(el) <=1;
                passId = passId and  el.passConversionVeto();
                break;
                }
            case Tight: { 
-               passId = passId and  el.full5x5_sigmaIetaIeta()  < 0.00998; 
-               passId = passId and  abs(NeroHelper::dEtaInSeed(el)) <   0.00308 ; 
-               passId = passId and  abs(el.deltaPhiSuperClusterTrackAtVtx()) <0.0816; 
-               passId = passId and  el.hadronicOverEm() < 0.0414;
-               passId = passId and  iso < 0.0588 ;
-               passId = passId and  std::abs(1.0 - el.eSuperClusterOverP())*1.0/el.ecalEnergy() < 0.0129 ;
+               passId = passId and  el.full5x5_sigmaIetaIeta()  < 0.0104; //0.00998; 
+               passId = passId and  abs(NeroHelper::dEtaInSeed(el)) <  0.00353; //0.00308 ; 
+               passId = passId and  abs(el.deltaPhiSuperClusterTrackAtVtx()) < 0.0499; //0.0816; 
+               passId = passId and  el.hadronicOverEm() < 0.0833; //0.0414;
+               passId = passId and  iso < 0.0361; //0.0588 ;
+               passId = passId and  std::abs(1.0 - el.eSuperClusterOverP())*1.0/el.ecalEnergy() < 0.0278;// 0.0129 ;
                passId = passId and  NeroHelper::missingHits(el) <=1;
                passId = passId and  el.passConversionVeto();
                break;
@@ -424,45 +440,45 @@ bool NeroLeptons::passEleId(const pat::Electron &el , ELEID id, float iso)
        {
            case Veto: 
                {
-               passId = passId and  el.full5x5_sigmaIetaIeta()  < 0.037; 
-               passId = passId and  abs(NeroHelper::dEtaInSeed(el)) < 0.00895  ; 
-               passId = passId and  abs(el.deltaPhiSuperClusterTrackAtVtx()) < 0.213  ; 
-               passId = passId and  el.hadronicOverEm() < 0.211;
-               passId = passId and  iso < 0.159 ;
-               passId = passId and  std::abs(1.0 - el.eSuperClusterOverP())*1.0/el.ecalEnergy() < 0.15  ;
+               passId = passId and  el.full5x5_sigmaIetaIeta()  < 0.0445; //0.037; 
+               passId = passId and  abs(NeroHelper::dEtaInSeed(el)) < 0.00984; //0.00895  ; 
+               passId = passId and  abs(el.deltaPhiSuperClusterTrackAtVtx()) <  0.157; //0.213  ; 
+               passId = passId and  el.hadronicOverEm() < 0.0982;//0.211;
+               passId = passId and  iso < 0.185;// 0.159 ;
+               passId = passId and  std::abs(1.0 - el.eSuperClusterOverP())*1.0/el.ecalEnergy() < 0.0962;//0.15  ;
                passId = passId and  NeroHelper::missingHits(el) <=3;
                passId = passId and  el.passConversionVeto();
                break;
                }
            case Loose:{
-               passId = passId and  el.full5x5_sigmaIetaIeta()  < 0.0314; 
-               passId = passId and  abs(NeroHelper::dEtaInSeed(el)) < 0.00868; 
-               passId = passId and  abs(el.deltaPhiSuperClusterTrackAtVtx()) < 0.213  ; 
-               passId = passId and  el.hadronicOverEm() < 0.101 ;
-               passId = passId and  iso <  0.107 ;
-               passId = passId and  std::abs(1.0 - el.eSuperClusterOverP())*1.0/el.ecalEnergy() < 0.14  ;
+               passId = passId and  el.full5x5_sigmaIetaIeta()  < 0.0356; //0.0314; 
+               passId = passId and  abs(NeroHelper::dEtaInSeed(el)) < 0.0072; //0.00868; 
+               passId = passId and  abs(el.deltaPhiSuperClusterTrackAtVtx()) < 0.147;//0.213  ; 
+               passId = passId and  el.hadronicOverEm() < 0.0801;//0.101 ;
+               passId = passId and  iso <  0.146;//0.107 ;
+               passId = passId and  std::abs(1.0 - el.eSuperClusterOverP())*1.0/el.ecalEnergy() < 0.0875;//0.14  ;
                passId = passId and  NeroHelper::missingHits(el) <=1;
                passId = passId and  el.passConversionVeto();
                break;
                }
            case Medium:{
-               passId = passId and  el.full5x5_sigmaIetaIeta()  < 0.0298; 
-               passId = passId and  abs(NeroHelper::dEtaInSeed(el)) < 0.00609; 
-               passId = passId and  abs(el.deltaPhiSuperClusterTrackAtVtx()) < 0.045; 
-               passId = passId and  el.hadronicOverEm() < 0.0878;
-               passId = passId and  iso < 0.0821 ;
-               passId = passId and  std::abs(1.0 - el.eSuperClusterOverP())*1.0/el.ecalEnergy() < 0.13  ;
+               passId = passId and  el.full5x5_sigmaIetaIeta()  < 0.0309; //0.0298; 
+               passId = passId and  abs(NeroHelper::dEtaInSeed(el)) < 0.00625; //0.00609; 
+               passId = passId and  abs(el.deltaPhiSuperClusterTrackAtVtx()) < 0.0355;//0.045; 
+               passId = passId and  el.hadronicOverEm() < 0.0604; //0.0878;
+               passId = passId and  iso < 0.143; //0.0821 ;
+               passId = passId and  std::abs(1.0 - el.eSuperClusterOverP())*1.0/el.ecalEnergy() < 0.0335;//0.13  ;
                passId = passId and  NeroHelper::missingHits(el) <=1;
                passId = passId and  el.passConversionVeto();
                break;
                }
            case Tight: { 
-               passId = passId and  el.full5x5_sigmaIetaIeta()  < 0.0292; 
-               passId = passId and  abs(NeroHelper::dEtaInSeed(el)) < 0.00605  ; 
-               passId = passId and  abs(el.deltaPhiSuperClusterTrackAtVtx()) < 0.0394; 
-               passId = passId and  el.hadronicOverEm() < 0.0641 ;
-               passId = passId and  iso < 0.0571  ;
-               passId = passId and  std::abs(1.0 - el.eSuperClusterOverP())*1.0/el.ecalEnergy() < 0.0129  ;
+               passId = passId and  el.full5x5_sigmaIetaIeta()  < 0.0305; //0.0292; 
+               passId = passId and  abs(NeroHelper::dEtaInSeed(el)) < 0.00567; //0.00605  ; 
+               passId = passId and  abs(el.deltaPhiSuperClusterTrackAtVtx()) < 0.0165; ;//0.0394; 
+               passId = passId and  el.hadronicOverEm() < 0.0543; //0.0641 ;
+               passId = passId and  iso < 0.094; //0.0571  ;
+               passId = passId and  std::abs(1.0 - el.eSuperClusterOverP())*1.0/el.ecalEnergy() < 0.0158; //0.0129  ;
                passId = passId and  NeroHelper::missingHits(el) <=1;
                passId = passId and  el.passConversionVeto();
                break;

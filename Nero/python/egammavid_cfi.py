@@ -14,6 +14,7 @@ def initEGammaVID(process, options):
     
     toProduce['ele']["RecoEgamma.ElectronIdentification.Identification.cutBasedElectronHLTPreselecition_Summer16_V1_cff"] = 1
     toProduce['ele']["RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring16_GeneralPurpose_V1_cff"] = 1
+    toProduce['ele']['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V1_Preliminary_cff'] = 1
     
     switchOnVIDElectronIdProducer(process, dataFormat)
     ### # define which IDs we want to produce. it is silly to redifine them here hard coded

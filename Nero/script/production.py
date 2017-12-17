@@ -17,12 +17,14 @@ parser.add_option("-v","--cmssw",dest="cmssw",type="string",help="cmssw [%defaul
 
 prodhome = opts.prodhome if opts.prodhome != "" else "/afs/cern.ch/work/" + os.environ['USER'][0] + "/" + os.environ['USER']  + "/production/" 
 cmssw = os.environ['CMSSW_VERSION'] if opts.cmssw =="" else opts.cmssw
-cmsenv = "cd " + prodhome + " && " "eval `scramv1 runtime -sh`"
+nerodir = prodhome +"/" + cmssw + "/src/NeroProducer/Nero"
+cmsenv = "cd " + prodhome + "/"+cmssw +"/src" + " && " "eval `scramv1 runtime -sh`"
 
 if os.path.isdir(prodhome + cmssw + '/src'):
     print "-> Recycling production home:"
-    cmd = cmsenv + " && " + "git describe --tags"
+    cmd = cmsenv + " && cd "+nerodir +" && " + "git describe --tags"
     curtag = check_output(cmd,shell=True).split()[0]
+    print "    current tag is",curtag
     if curtag != opts.tag:
         print "tag in production area is: '" + curtag+"', while requested tag is '"+opts.tag+"'"
         raw_input("ok?")
@@ -49,24 +51,31 @@ if status != 0 :
 #########################################################
 ## use send on batch to produce the different datasets ##
 #########################################################
-nerodir = prodhome + "/NeroProducer/Nero"
-cmsenv = "cd " + prodhome + "/NeroProducer/Nero" + " && " "eval `scramv1 runtime -sh`"
-datasets = open(opts.datesets)
-for d in datasets.split():
+cmsenv = "cd " + nerodir + " && " "eval `scramv1 runtime -sh`"
+datasets = open(opts.datasets)
+for l in datasets.readlines():
+    if len(l.split()) == 0  : continue
+    d=l.split()[0]
     print "->",d
     data="--mc"
     if 'Run2016' in d or 'Run2017' in d:
         data="--data"
     dname = '/'.join(d.split('/')[0:-1])
     destination="submissions/"+dname
-
+   
+    ## disable for resubmissions and new jobs to be submitted. Not fully supported yet.
+    #condor="--condor"
+    condor=""
     ## check failures
     if os.path.isdir(nerodir +"/"+ destination):
-        cmd = ' '.join(["python script/sendOnBatch.py","-q 1nd","--only-submit","-j fail"])
+        condor=""
+        cmd = cmsenv + ' && ' + ' '.join(["python script/sendOnBatch.py","-q 1nd","--only-submit","-j fail","--proxy"])
+        #print " Calling cmd '" + cmd +"'"
         call(cmd,shell=True)
 
     ## check extra jobs
-    cmd = ' ' .join(["python script/sendOnBatch.py", "-n 100" ,"-q 1nd" ,"--condor" ,"--put-in=/store/group/phys_higgs/cmshmm/Nero/"+opts.tag+"/"+dname, data ,"--query","-d "+destination,"-e "+d] )
+    cmd = cmsenv + ' && ' +' ' .join(["python script/sendOnBatch.py", "-n 100" ,"-q 1nd",condor,"-i test/testNero.py"  ,"--put-in=/store/group/phys_higgs/cmshmm/Nero/"+opts.tag+"/"+dname, data ,"--query","--proxy","-d "+destination,"-e "+d] )
+    #print " Calling cmd '" + cmd +"'"
     call(cmd,shell=True)
 print ""
 
