@@ -132,6 +132,7 @@ function CMSSW_9_2_4 {
 
 function CMSSW_9_4_1 {
         git cms-init
+        git cms-merge-topic lsoffi:CMSSW_9_4_0_pre3_TnP
         #git cms-merge-topic ikrav:egm_id_80X_v3_photons_rebasedTo_CMSSW_9_2_X_2017-05-29-1100
         #git cms-merge-topic ikrav:egm_id_80X_v2_rebased_CMSSW_9_0_X_2016-12-07-2300
 }

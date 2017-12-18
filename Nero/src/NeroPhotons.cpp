@@ -296,30 +296,30 @@ bool NeroPhotons::cutBasedPhotonId( const pat::Photon& pho, PHOID type, bool wit
         //  Moriond17
         if ( type == Loose ) 
             {
-                if (hoe >= 0.0597    ) return false;
-                if (sieie >=0.01031   and withSieie  ) return false;
-                if ( chiso - cutBasedPhotonIdEffArea(pho,CH25) * rho >= 1.295   ) return false;// 
-                if (nhiso - cutBasedPhotonIdEffArea(pho,NH25)*rho >= 10.910+0.0148*pt+0.000017*pt*pt  ) return false;// 
-                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,PH25) *rho >=3.630+0.0047*pt ) return false ;//
+                if (hoe >= 0.043   ) return false;
+                if (sieie >=0.0101   and withSieie  ) return false;
+                if ( chiso - cutBasedPhotonIdEffArea(pho,CH25) * rho >= 1.403   ) return false;// 
+                if (nhiso - cutBasedPhotonIdEffArea(pho,NH25)*rho >= 15.959  ) return false;// 
+                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,PH25) *rho >=3.060 ) return false ;//
 
                 return true;
             }
         if ( type == Medium )
             {
-                if (hoe >= 0.0396   ) return false;
-                if (sieie >=0.01022   and withSieie ) return false;
-                if (chiso -  cutBasedPhotonIdEffArea(pho,CH25)*rho >=  0.441  ) return false;
-                if (nhiso - cutBasedPhotonIdEffArea(pho,NH25)*rho >= 2.725+0.0148*pt+0.000017*pt*pt) return false;
-                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,PH25) *rho >= 2.571+0.0047*pt  ) return false ; 
+                if (hoe >= 0.032   ) return false;
+                if (sieie >=0.0101   and withSieie ) return false;
+                if (chiso -  cutBasedPhotonIdEffArea(pho,CH25)*rho >=  0.430  ) return false;
+                if (nhiso - cutBasedPhotonIdEffArea(pho,NH25)*rho >= 2.133) return false;
+                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,PH25) *rho >= 2.344  ) return false ; 
                 return true;
             }
         if ( type == Tight )
             {
-                if (hoe >= 0.0269  ) return false;
-                if (sieie >= 0.00994  and withSieie ) return false;
-                if ( chiso - cutBasedPhotonIdEffArea(pho,CH25) * rho >= 0.202  ) return false;
-                if (nhiso - cutBasedPhotonIdEffArea(pho,NH25)*rho >= 0.264+0.0148*pt+0.000017*pt*pt ) return false;
-                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,PH25) *rho >= 2.362+0.0047*pt ) return false ;
+                if (hoe >= 0.022  ) return false;
+                if (sieie >= 0.0099  and withSieie ) return false;
+                if ( chiso - cutBasedPhotonIdEffArea(pho,CH25) * rho >= 0.101  ) return false;
+                if (nhiso - cutBasedPhotonIdEffArea(pho,NH25)*rho >= 0.137 ) return false;
+                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,PH25) *rho >= 2.308 ) return false ;
                 return true;
             }
         }
@@ -329,30 +329,30 @@ bool NeroPhotons::cutBasedPhotonId( const pat::Photon& pho, PHOID type, bool wit
         if (not withIso and phoiso > 20 ) return false; // put  a very loose pho-iso requirement
         if ( type == Loose ) 
             {
-                if (hoe >= 0.0481     ) return false;
-                if (sieie >= 0.03013 and withSieie  ) return false;
-                if ( chiso - cutBasedPhotonIdEffArea(pho,CH25) * rho >= 1.011   ) return false;// 
-                if (nhiso - cutBasedPhotonIdEffArea(pho,NH25)*rho >= 5.931+0.0163*pt+0.000014*pt*pt) return false;// 
-                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,PH25) *rho >= 6.641+0.0034*pt  ) return false ;//
+                if (hoe >= 0.026     ) return false;
+                if (sieie >= 0.0267 and withSieie  ) return false;
+                if ( chiso - cutBasedPhotonIdEffArea(pho,CH25) * rho >= 2.809   ) return false;// 
+                if (nhiso - cutBasedPhotonIdEffArea(pho,NH25)*rho >= 7.056) return false;// 
+                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,PH25) *rho >= 4.766  ) return false ;//
 
                 return true;
             }
         if ( type == Medium )
             {
-                if (hoe >= 0.0219   ) return false;
-                if (sieie >= 0.03001  and withSieie ) return false;
-                if (chiso -  cutBasedPhotonIdEffArea(pho,CH25)*rho >= 0.442  ) return false;
-                if (nhiso - cutBasedPhotonIdEffArea(pho,NH25)*rho >= 1.715+0.0163*pt+0.000014*pt*pt ) return false;
-                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,PH25) *rho >= 3.863+0.0034*pt  ) return false ; 
+                if (hoe >= 0.024   ) return false;
+                if (sieie >= 0.0267  and withSieie ) return false;
+                if (chiso -  cutBasedPhotonIdEffArea(pho,CH25)*rho >= 0.846  ) return false;
+                if (nhiso - cutBasedPhotonIdEffArea(pho,NH25)*rho >= 1.679 ) return false;
+                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,PH25) *rho >= 4.271  ) return false ; 
                 return true;
             }
         if ( type == Tight )
             {
-                if (hoe >= 0.0213   ) return false;
-                if (sieie >= 0.03000  and withSieie ) return false;
-                if ( chiso - cutBasedPhotonIdEffArea(pho,CH25) * rho >= 0.034  ) return false;
-                if (nhiso - cutBasedPhotonIdEffArea(pho,NH25)*rho >= 0.586+0.0163*pt+0.000014*pt*pt  ) return false;
-                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,PH25) *rho >= 2.617+0.0034*pt  ) return false ;
+                if (hoe >= 0.021   ) return false;
+                if (sieie >= 0.0267  and withSieie ) return false;
+                if ( chiso - cutBasedPhotonIdEffArea(pho,CH25) * rho >= 0.134  ) return false;
+                if (nhiso - cutBasedPhotonIdEffArea(pho,NH25)*rho >= 1.615  ) return false;
+                if (withIso and phoiso - cutBasedPhotonIdEffArea(pho,PH25) *rho >= 3.107  ) return false ;
                 return true;
             }
 
@@ -366,33 +366,33 @@ float NeroPhotons::cutBasedPhotonIdEffArea( const pat::Photon & pho,PHOISO type)
     // --------------- 25 ns ----------------
     if (type == CH25)
         {
-        if (aeta < 1.0   ) return 0.0080;
-        if (aeta < 1.479 ) return 0.0079;
-        if (aeta < 2.0   ) return 0.0080;
-        if (aeta < 2.2   ) return 0.0048;
-        if (aeta < 2.3   ) return 0.0029;
-        if (aeta < 2.4   ) return 0.0036;
-                           return 0.0016;
+        if (aeta < 1.0   ) return 0.057;
+        if (aeta < 1.479 ) return 0.052;
+        if (aeta < 2.0   ) return 0.045;
+        if (aeta < 2.2   ) return 0.044;
+        if (aeta < 2.3   ) return 0.043;
+        if (aeta < 2.4   ) return 0.038;
+                           return 0.034;
         }
     if (type == NH25)
         {
-        if (aeta < 1.0   ) return 0.0126 ;
-        if (aeta < 1.479 ) return 0.0237 ;
-        if (aeta < 2.0   ) return 0      ;
-        if (aeta < 2.2   ) return 0      ;
-        if (aeta < 2.3   ) return 0      ;
-        if (aeta < 2.4   ) return 0      ;
-                           return 0.0769 ;
+        if (aeta < 1.0   ) return 0.0620 ;
+        if (aeta < 1.479 ) return 0.1120 ;
+        if (aeta < 2.0   ) return 0.0770 ;
+        if (aeta < 2.2   ) return 0.0330 ;
+        if (aeta < 2.3   ) return 0.0070 ;
+        if (aeta < 2.4   ) return 0.0070 ;
+                           return 0.0120 ;
         }
     if (type == PH25)
         {
-        if (aeta < 1.0   ) return 0.0982;
-        if (aeta < 1.479 ) return 0.0857;
-        if (aeta < 2.0   ) return 0.0484;
-        if (aeta < 2.2   ) return 0.0668;
-        if (aeta < 2.3   ) return 0.0868;
-        if (aeta < 2.4   ) return 0.0982;
-                           return 0.1337;
+        if (aeta < 1.0   ) return 0.1220;
+        if (aeta < 1.479 ) return 0.1100;
+        if (aeta < 2.0   ) return 0.0610;
+        if (aeta < 2.2   ) return 0.0770;
+        if (aeta < 2.3   ) return 0.0990;
+        if (aeta < 2.4   ) return 0.1090;
+                           return 0.1340;
         }
     
     return -999.;
