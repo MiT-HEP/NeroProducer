@@ -197,6 +197,13 @@ def submit(list, queue = "1nh", name = "job"):
         call(cmd, shell = True)
 
 def submitCondor(queue="espresso",name="job",dirname="dir"):
+    if queue == "1nd": queue = "tomorrow"
+    if queue == "1nh": queue = "microcentury"
+    if queue == "2nh": queue = "longlunch"
+    if queue == "8nh": queue = "workday"
+    if queue == "2nd": queue = "testmatch" ## actually 3nd
+    if queue == "1nw": queue = "nextweek"
+
     jdl = open(dirname +"/condor.jdl","w")
     jdl.write("log = $(filename).log\n")
     jdl.write("output = $(filename).out\n")
@@ -343,7 +350,10 @@ for idx0,fl in enumerate(fileChunks):
     print >> sh, 'touch sub_%d.run'%idx
     print >> sh, 'cd $WORKDIR'
     print >> sh, 'echo "entering $WORKDIR"'
-    if opts.proxy: print >> sh, 'rsync -avP '+os.environ["HOSTNAME"]+":/tmp/x509up_u"+ check_output("id -u",shell=True).split()[0] + " ./"
+    if opts.proxy: 
+        print >> sh, 'rsync -avP '+os.environ["HOSTNAME"]+":/tmp/x509up_u"+ check_output("id -u",shell=True).split()[0] + " ./"
+        print >> sh, "cp -v "+"x509up_u"+ check_output("id -u",shell=True).split()[0] + " /tmp/"
+        print >> sh, "chmod go-a "+"/tmp/x509up_u"+ check_output("id -u",shell=True).split()[0]
     if opts.xrdcp:
         fl2=[]
         for f in fl:

@@ -9,6 +9,7 @@ parser.add_option("-p","--prodhome",dest="prodhome",type="string",help="producti
 parser.add_option("-t","--tag",dest="tag",type="string",help="tag [%default]",default="CMSSW_92X");
 parser.add_option("-d","--datasets",dest="datasets",type="string",help="dataset file [%default]",default="datasets.txt");
 parser.add_option("-v","--cmssw",dest="cmssw",type="string",help="cmssw [%default]",default="");
+parser.add_option("-s","--status",dest="status",action='store_true',help="Status [%default]",default=False);
 (opts,args) = parser.parse_args()
 
 colors={ ## bash colors
@@ -38,7 +39,15 @@ if os.path.isdir(prodhome + cmssw + '/src'):
     if curtag != opts.tag:
         print "tag in production area is: '" + curtag+"', while requested tag is '"+opts.tag+"'"
         raw_input("ok?")
+    if opts.status:
+        cmd = "cd " + nerodir + " && " + "eval `scramv1 runtime -sh`"
+        cmd += " && for dir in submissions/*/*; do python script/sendOnBatch.py --status -d $dir ; done" 
+        call(cmd, shell=True)
+        exit(0)
 else:
+    if opts.status: 
+        print "["+colors["red"] + "ERROR"+colors["white"]+"] asking status but area does not exist" 
+        raise ValueError
     print colors['cyan'] + "-> Setting production" + colors['white']
     cmd = "python script/fastsetup.py -v "+cmssw+" -t "+opts.tag + " -d "+ prodhome
     status = call(cmd,shell=True)
@@ -78,18 +87,18 @@ for l in datasets.readlines():
     destination="submissions/"+dname
    
     ## disable for resubmissions and new jobs to be submitted. Not fully supported yet.
-    #condor="--condor"
-    condor=""
+    condor="--condor"
+    #condor=""
     ## check failures
     if os.path.isdir(nerodir +"/"+ destination):
-        condor=""
-        cmd = cmsenv + ' && ' + ' '.join(["python script/sendOnBatch.py","-q 1nd","--only-submit","-j fail","--proxy"])
+        condor="" ## reset condor for resubmissions anyhow
+        cmd = cmsenv + ' && ' + ' '.join(["python script/sendOnBatch.py","-q 1nd","--only-submit","-j fail","--proxy","-d " + destination])
         #print " Calling cmd '" + cmd +"'"
         call(cmd,shell=True)
 
     ## create destination
-    finalDestination="/store/group/phys_higgs/cmshmm/Nero/"+opts.tag+"/"+dname
-    cmd = "eos mkdir -p " +  finalDestination
+    finalDestination="/store/group/phys_higgs/cmshmm/amarini/Nero/"+opts.tag+"/"+dname
+    cmd = "eos mkdir -p "  +finalDestination
     ## check also for extra jobs
     cmd = cmsenv + ' && ' +' ' .join(["python script/sendOnBatch.py", "-n 100" ,"-q 1nd",condor,"-i test/testNero.py"  ,"--put-in="+finalDestination, data ,"--query","--proxy","-d "+destination,"-e "+d] )
     #print " Calling cmd '" + cmd +"'"
