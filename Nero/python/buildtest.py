@@ -181,7 +181,8 @@ def TryPullReq(sha, origin):
 	if tag !='': 
 	    print cyan+"-> Checking out ",tag
 	    cmd = "cd %s/%s/src && %s &&" %(tmpdir,CMSSW,cmsenv)
-	    cmd += "cd " + repo +" && git checkout "+ tag
+	    cmd += "cd " + origin.split('/')[1] + " && "
+	    cmd += " git checkout "+ tag
 	    status= call (cmd,shell=True)
 	    if status >0 : 
 	        print red +"ERROR: "+white + "unable to checkout "+ tag
