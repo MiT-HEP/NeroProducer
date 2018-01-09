@@ -87,8 +87,8 @@ for l in datasets.readlines():
     destination="submissions/"+dname
    
     ## disable for resubmissions and new jobs to be submitted. Not fully supported yet.
-    condor="--condor"
-    #condor=""
+    #condor="--condor"
+    condor=""
     ## check failures
     if os.path.isdir(nerodir +"/"+ destination):
         condor="" ## reset condor for resubmissions anyhow
@@ -97,8 +97,9 @@ for l in datasets.readlines():
         call(cmd,shell=True)
 
     ## create destination
-    finalDestination="/store/group/phys_higgs/cmshmm/amarini/Nero/"+opts.tag+"/"+dname
+    finalDestination="/eos/cms/store/group/phys_higgs/cmshmm/amarini/Nero/"+opts.tag+"/"+dname
     cmd = "eos mkdir -p "  +finalDestination
+    call(cmd,shell=True)
     ## check also for extra jobs
     cmd = cmsenv + ' && ' +' ' .join(["python script/sendOnBatch.py", "-n 100" ,"-q 1nd",condor,"-i test/testNero.py"  ,"--put-in="+finalDestination, data ,"--query","--proxy","-d "+destination,"-e "+d] )
     #print " Calling cmd '" + cmd +"'"
