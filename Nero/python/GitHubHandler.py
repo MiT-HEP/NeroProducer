@@ -100,7 +100,7 @@ class  GitHubHandler:
 		self.commits={} ## sha -> commit
 		self.statuses={} ## sha, context  -> state
 		self.milestones=[]
-		self.head="" ## sha of the head
+		self.head={} ## sha of the head
 
 		# for post -- or auth req
 		self.auth="" ## auth token
@@ -196,11 +196,11 @@ class  GitHubHandler:
 		r = self._request(resource,params)
 		## TODO
 
-	def get_head(self):
+	def get_head(self,branch="master"):
 		#"https://api.github.com/repos/MiT-HEP/NeroProducer/git/refs/heads/master"
-		r = self._request("git/refs/heads/master",{})
+		r = self._request("git/refs/heads/"+branch,{})
 		cm = r.json()
-		self.head=cm["object"]["sha"]
+		self.head[branch]=cm["object"]["sha"]
 		return self
 
 	def get_commits(self):
