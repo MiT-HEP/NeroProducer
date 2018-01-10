@@ -38,7 +38,7 @@ nero = cms.EDAnalyzer("Nero",
         chsAK8 = cms.InputTag("slimmedJetsAK8"),
         ## Mass Corrections
         chsAK8JEC = cms.string("jec/Summer16_23Sep2016V4"),
-        minAK8CHSPt  = cms.double (100.),
+        minAK8CHSPt  = cms.double (170.),
         minAK8CHSEta = cms.double (4.7),
         minAK8CHSN   = cms.int32  (0),
         minAK8CHSId  = cms.string ('loose'),

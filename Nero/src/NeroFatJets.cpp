@@ -145,45 +145,45 @@ int NeroFatJets::analyze(const edm::Event& iEvent){
         
         hbb -> push_back( j.bDiscriminator("pfBoostedDoubleSecondaryVertexAK8BJetTags") ) ;
         
-        // BROKEN IN 9X ... To be review    
-        /// unsigned int nsubjetThisJet=0;
-        /// firstSubjet->push_back(nsubjet);
-        /// auto &Subjets = j.subjets("SoftDrop");
-        /// for ( auto const & i : Subjets ) {
-        ///     new ( (*subjet)[nsubjet]) TLorentzVector(i->px(), i->py(), i->pz(), i->energy());
-        ///     subjet_btag->push_back(i->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
-        ///     nsubjetThisJet++;
-        ///     nsubjet++;
-        /// }
-        /// nSubjets->push_back(nsubjetThisJet);
+        // Using SoftDropPuppi Subjets in 94X
+        unsigned int nsubjetThisJet=0;
+        firstSubjet->push_back(nsubjet);
+        auto &Subjets = j.subjets("SoftDropPuppi");
+        for ( auto const & i : Subjets ) {
+            new ( (*subjet)[nsubjet]) TLorentzVector(i->px(), i->py(), i->pz(), i->energy());
+            subjet_btag->push_back(i->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+            nsubjetThisJet++;
+            nsubjet++;
+        }
+        nSubjets->push_back(nsubjetThisJet);
 
         /////////////////////////////////////
         // Fill Puppi
         /////////////////////////////////////
         
-        // SubJets are broken
-        //TLorentzVector puppi_softdrop, puppi_softdrop_subjet;
-        //auto const & sdSubjetsPuppi = j.subjets("SoftDropPuppi");
-        //for ( auto const & it : sdSubjetsPuppi ) {
-        //    puppi_softdrop_subjet.SetPtEtaPhiM(it->correctedP4(0).pt(),it->correctedP4(0).eta(),it->correctedP4(0).phi(),it->correctedP4(0).mass());
-        //    puppi_softdrop+=puppi_softdrop_subjet;
-        //}
-        //
-        //puppi_softdrop_mass->push_back(puppi_softdrop.M());
+        // SubJets > 170
+        TLorentzVector puppi_softdrop, puppi_softdrop_subjet;
+        auto const & sdSubjetsPuppi = j.subjets("SoftDropPuppi");
+        for ( auto const & it : sdSubjetsPuppi ) {
+            puppi_softdrop_subjet.SetPtEtaPhiM(it->correctedP4(0).pt(),it->correctedP4(0).eta(),it->correctedP4(0).phi(),it->correctedP4(0).mass());
+            puppi_softdrop+=puppi_softdrop_subjet;
+        }
+        
+        puppi_softdrop_mass->push_back(puppi_softdrop.M());
 
         //L2L3 Corrected Jet only for the pruned mass correction
-        //double corrpuppi=0.;              
-        //FactorizedJetCorrector *jecAK8Puppi_ = ( iEvent.isRealData() ) ? mDataJetCorrectorPuppi : mMCJetCorrectorPuppi;
-        //
-        //jecAK8Puppi_->setJetEta( puppi_softdrop.Eta() );
-        //jecAK8Puppi_->setJetPt ( puppi_softdrop.Pt() );
-        //jecAK8Puppi_->setJetE  ( puppi_softdrop.Energy() );
-        //jecAK8Puppi_->setJetA  ( j.jetArea() );
-        //jecAK8Puppi_->setRho   ( *rho_handle );
-        //jecAK8Puppi_->setNPV   ( vertex_handle->size() );
-        //corrpuppi = jecAK8Puppi_->getCorrection();
-        //
-        //puppi_softdrop_masscorr->push_back(corrpuppi*puppi_softdrop.M());
+        double corrpuppi=0.;              
+        FactorizedJetCorrector *jecAK8Puppi_ = ( iEvent.isRealData() ) ? mDataJetCorrectorPuppi : mMCJetCorrectorPuppi;
+        
+        jecAK8Puppi_->setJetEta( puppi_softdrop.Eta() );
+        jecAK8Puppi_->setJetPt ( puppi_softdrop.Pt() );
+        jecAK8Puppi_->setJetE  ( puppi_softdrop.Energy() );
+        jecAK8Puppi_->setJetA  ( j.jetArea() );
+        jecAK8Puppi_->setRho   ( *rho_handle );
+        jecAK8Puppi_->setNPV   ( vertex_handle->size() );
+        corrpuppi = jecAK8Puppi_->getCorrection();
+        
+        puppi_softdrop_masscorr->push_back(corrpuppi*puppi_softdrop.M());
 
     }
         
