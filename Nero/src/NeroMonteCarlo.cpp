@@ -45,6 +45,9 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
     if ( iEvent.isRealData() ) return 0;
     isRealData = iEvent.isRealData() ? 1 : 0 ; // private, not the one in the tree
 
+    std::map<const reco::Candidate *,unsigned int> genIndices;
+    std::vector<const reco::Candidate *> savedParticles;
+
     TStopwatch sw;
     if(VERBOSE)sw.Start();
     // maybe handle should be taken before
@@ -93,6 +96,23 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
         {
         pdfRwgt -> push_back( double(lhe_handle -> weights() . at(pdfw) . wgt ) );    
         }
+
+    if (lhe_handle.isValid() )  // save lhe particles
+    {
+        for ( unsigned ilhe =0 ; ilhe < lhe_handle->hepeup().PUP.size(); ++ilhe )
+        {
+          TLorentzVector fourMom;
+          fourMom.SetPxPyPzE( lhe_handle->hepeup().PUP[ilhe][0],lhe_handle->hepeup().PUP[ilhe][1],lhe_handle->hepeup().PUP[ilhe][2],lhe_handle->hepeup().PUP[ilhe][3] );
+          new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector( fourMom );
+          pdgId -> push_back( lhe_handle->hepeup().IDUP[ilhe] );
+          flags -> push_back( LHE );
+          // doing the following for dressed leptons as well so vectors stay in sync
+          genIndices[NULL] = pdgId->size()-1; // save gen particle pointers
+          savedParticles.push_back(NULL);     //  no navigation for LHE
+          genIso -> push_back (0.) ;
+        }
+    }
+
     // --- fill pdf Weights
     //
     if(VERBOSE>1) cout<<"[NeroMonteCarlo]::[analyze]::[DEBUG] PDF="<<endl;
@@ -132,8 +152,6 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
     if(VERBOSE){ sw.Stop() ; cout<<"[NeroMonteCarlo]::[analyze] pu&info took "<<sw.CpuTime()<<" Cpu and "<<sw.RealTime()<<" RealTime"<<endl; sw.Reset(); sw.Start();}
     // GEN PARTICLES
     //TLorentzVector genmet(0,0,0,0);
-    std::map<const reco::Candidate *,unsigned int> genIndices;
-    std::vector<const reco::Candidate *> savedParticles;
     //for ( auto & gen : *packed_handle)
     for ( unsigned int i=0;i < packed_handle->size() ;++i)
     {
@@ -258,7 +276,7 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
                                                            // this loop is O(N*logN) where N is the number of saved particles
     {
         const auto gen = savedParticles[i];
-        if (gen->numberOfMothers()==0) {
+        if ( gen == NULL or gen->numberOfMothers()==0) {
             parent->push_back(-1);
             continue;
         }         
