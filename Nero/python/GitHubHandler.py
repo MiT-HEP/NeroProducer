@@ -227,8 +227,8 @@ class  GitHubHandler:
 	def set_status(self, sha, state="success", context="build", targeturl="url"):
 		## check if it exists
 		self.get_statuses(sha)
-		if (sha,context) in self.statuses: 
-			print "* Status",context,"already set for ",sha
+		if (sha,context) in self.statuses and self.statuses[(sha,context)] == state: 
+			print "* Status",context,"already set for ",sha, "with state",state
 			return self
 		payload={"state":state,"context":context,"target_url":targeturl,"description":context}
 		r = self._post("statuses/" + sha,payload)
