@@ -26,8 +26,8 @@ class PullReq:
 		self.mergeable = pr["merge_commit_sha"] ##FIXME will become mergeable in the future 
 		self.merged = pr["merged_at"]
 		self.sha= pr["head"]["sha"]
-		if 'state' == 'open':
-			self.origin=pr["head"]["origin"]["full_name"]
+		if self.state == 'open':
+			self.origin=pr["head"]["repo"]["full_name"]
 
 		if github != None:
 			resource='issues/' + str(self.number) + "/labels"
@@ -37,6 +37,13 @@ class PullReq:
 				#print "DEBUG label is ",l
 				self.labels.append( l["name"]) 
 	def Print(self):
+		print "PR:",self.number,self.title
+		print "    state:",self.state
+		print "    sha:", self.sha
+		print "    origin:", self.origin
+		print "    mergeable:",self.mergeable
+		print "    merged at:",self.merged
+		print "    labels:",','.join(self.labels)
 		pass
 
 class Tag:
@@ -219,7 +226,7 @@ class  GitHubHandler:
 
 	def set_status(self, sha, state="success", context="build", targeturl="url"):
 		## check if it exists
-		get_statuses(sha)
+		self.get_statuses(sha)
 		if (sha,context) in self.statuses: 
 			print "* Status",context,"already set for ",sha
 			return self
