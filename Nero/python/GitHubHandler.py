@@ -70,8 +70,9 @@ class Status:
 		self.context=""
 		self.targeturl=""
 		self.creator = ""
-	def ParseRequest(self,st):
-		self.sha = st["sha"]
+
+	def ParseRequest(self,st,sha):
+		self.sha = sha
 		self.state = st["state"]
 		self.context= st["context"]
 		self.targeturl= st["target_url"]
@@ -209,9 +210,9 @@ class  GitHubHandler:
 	def get_statuses(self, sha ) :
 		r = self._request("statuses/" + sha ,{} )
 		#self.statuses={}
-		for st in r.json():
+		for key in r.json():
 			st = Status()
-			st.ParseRequest(r) 
+			st.ParseRequest(key,sha) 
 			self.statuses[ (st.sha, st.context) ] = st
 		return self
 
