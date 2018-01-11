@@ -234,7 +234,7 @@ class  GitHubHandler:
 		r = self._post("statuses/" + sha,payload)
 		return self
 
-	def submit_comment(self,num,message,pr="pulls")
+	def submit_comment(self,num,message,pr="pulls"):
 		if pr != "issues" and pr != "pulls": 
 			raise ValueError("Only pulls and issues can be accepted as argument")
 		payload={"body":message}
