@@ -234,6 +234,13 @@ class  GitHubHandler:
 		r = self._post("statuses/" + sha,payload)
 		return self
 
+	def submit_comment(self,num,message,pr="pulls")
+		if pr != "issues" and pr != "pulls": 
+			raise ValueError("Only pulls and issues can be accepted as argument")
+		payload={"body":message}
+		r = self._post("/"+pr+"/"+"%d"%num+"/comments",payload)
+		return self
+
 	def read_token_fromfile(self,name):
 		f = open(name)
 		for l in f:
