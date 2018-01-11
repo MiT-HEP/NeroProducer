@@ -154,6 +154,7 @@ class  GitHubHandler:
 		url = '/'.join([self.baseurl,self.owner,self.repo,resource])
 		url+= authstring
 		data=json.dumps(params)
+		#print "(D) post:",url,"|",data
 		r = requests.post(url,data=data)
 		self._count(r)
 		return r
@@ -235,10 +236,11 @@ class  GitHubHandler:
 		return self
 
 	def submit_comment(self,num,message):
-		if pr != "issues" and pr != "pulls": 
-			raise ValueError("Only pulls and issues can be accepted as argument")
+		#if pr != "issues" and pr != "pulls": 
+		#	raise ValueError("Only pulls and issues can be accepted as argument")
 		payload={"body":message}
-		r = self._post("/issues/"+"%d"%num+"/comments",payload)
+		r = self._post("issues/"+"%d"%num+"/comments",payload)
+		#print "DEBUG Respnse to comment:",r
 		return self
 
 	def read_token_fromfile(self,name):
