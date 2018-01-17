@@ -127,7 +127,7 @@ def dumpLumi(ARGV):
 #----------------------------------------------------------------------    
 from subprocess import call, check_output
 import re
-EOS = "/afs/cern.ch/project/eos/installation/0.3.84-aquamarine/bin/eos.select"
+EOS = "/usr/bin/eos"
 
 if __name__ == "__main__" :
     parser = OptionParser(option_list=[
