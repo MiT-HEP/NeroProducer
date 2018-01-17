@@ -198,8 +198,8 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
             if(!(jetMother == 0)){motherPdgId_I = jetMother->pdgId();}
             if(!(jetGrMother == 0)){grMotherPdgId_I = jetGrMother->pdgId();}
             hadFlavour_I = j.hadronFlavour();
-            
-            jetFlavour_I = ReMatch( &j, &*pruned_handle ); // TODO -> Use Matching in MiniAOD when PR Merged
+            // this uses ghosts 
+            jetFlavour_I = j.partonFlavour(); //ReMatch( &j, &*pruned_handle ); // TODO -> Use Matching in MiniAOD when PR Merged
         }
 
 
