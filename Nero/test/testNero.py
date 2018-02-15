@@ -330,45 +330,46 @@ initEGammaVID(process,options)
 ### process = regressionWeights(process)
 ### 
 ### ########## EGM Smear and Scale ###
-### process.load('Configuration.StandardSequences.Services_cff')
-### process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService",
-###         calibratedPatElectrons  = cms.PSet( initialSeed = cms.untracked.uint32(81),
-###             engineName = cms.untracked.string('TRandom3'),
-###             ),
-###         calibratedPatPhotons  = cms.PSet( initialSeed = cms.untracked.uint32(81),
-###             engineName = cms.untracked.string('TRandom3'),
-###             ),
-###         )
-### process.load('EgammaAnalysis.ElectronTools.calibratedElectronsRun2_cfi')
-### process.load('EgammaAnalysis.ElectronTools.calibratedPhotonsRun2_cfi')
-### process.calibratedPatElectrons.electrons=process.nero.NeroLeptons.electrons
-### process.calibratedPatPhotons.photons= process.nero.NeroPhotons.photons
-### process.nero.NeroLeptons.electrons =  cms.InputTag("calibratedPatElectrons")
-### process.nero.NeroPhotons.photons = cms.InputTag("calibratedPatPhotons")
-### if isData:
-###     process.calibratedPatElectrons.isMC = cms.bool(False)
-###     process.calibratedPatPhotons.isMC = cms.bool(False)
-### else:
-###     process.calibratedPatElectrons.isMC = cms.bool(True)
-###     process.calibratedPatPhotons.isMC = cms.bool(True)
-### print "-> Updating slimmedElectrons and slimmedPhotons to calibratedPatElectrons and calibratedPatPhotons"
-### print "   ",process.nero.NeroPhotons.photons, process.nero.NeroLeptons.electrons
+process.load('Configuration.StandardSequences.Services_cff')
+process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService",
+        calibratedPatElectrons  = cms.PSet( initialSeed = cms.untracked.uint32(81),
+            engineName = cms.untracked.string('TRandom3'),
+            ),
+        calibratedPatPhotons  = cms.PSet( initialSeed = cms.untracked.uint32(81),
+            engineName = cms.untracked.string('TRandom3'),
+            ),
+        )
+process.load('EgammaAnalysis.ElectronTools.calibratedPatElectronsRun2_cfi')
+process.load('EgammaAnalysis.ElectronTools.calibratedPatPhotonsRun2_cfi')
+process.calibratedPatElectrons.electrons=process.nero.NeroLeptons.electrons
+process.calibratedPatPhotons.photons= process.nero.NeroPhotons.photons
+process.nero.NeroLeptons.electrons =  cms.InputTag("calibratedPatElectrons")
+process.nero.NeroPhotons.photons = cms.InputTag("calibratedPatPhotons")
+if isData:
+    process.calibratedPatElectrons.isMC = cms.bool(False)
+    process.calibratedPatPhotons.isMC = cms.bool(False)
+else:
+    process.calibratedPatElectrons.isMC = cms.bool(True)
+    process.calibratedPatPhotons.isMC = cms.bool(True)
+print "-> Updating slimmedElectrons and slimmedPhotons to calibratedPatElectrons and calibratedPatPhotons"
+print "   ",process.nero.NeroPhotons.photons, process.nero.NeroLeptons.electrons
 #######################################
 
 # modify electrons Input Tags
+process.load("RecoEgamma.ElectronIdentification.egmGsfElectronIDs_cff")
 process.egmGsfElectronIDs.physicsObjectSrc = process.nero.NeroLeptons.electrons
+#process.egmPatElectronIDs.physicsObjectSrc = process.nero.NeroLeptons.electrons
 process.electronIDValueMapProducer.srcMiniAOD= process.nero.NeroLeptons.electrons
 process.electronMVAValueMapProducer.srcMiniAOD= process.nero.NeroLeptons.electrons
 
 # modify photons Input Tags
-## process.egmPhotonIsolation.srcToIsolate = process.nero.NeroPhotons.photons
-## process.egmPhotonIDs.physicsObjectSrc = process.nero.NeroPhotons.photons
-## process.photonIDValueMapProducer.srcMiniAOD= process.nero.NeroPhotons.photons
-## process.photonMVAValueMapProducer.srcMiniAOD= process.nero.NeroPhotons.photons 
-#process.puppiForMET.photonName  = process.nero.NeroPhotons.photons
-#process.puppiPhoton.photonName = process.nero.NeroPhotons.photons 
-#process.modifiedPhotons.src  = process.nero.NeroPhotons.photons
-
+##process.egmPhotonIsolation.srcToIsolate = process.nero.NeroPhotons.photons
+##process.egmPhotonIDs.physicsObjectSrc = process.nero.NeroPhotons.photons
+##process.photonIDValueMapProducer.srcMiniAOD= process.nero.NeroPhotons.photons
+##process.photonMVAValueMapProducer.srcMiniAOD= process.nero.NeroPhotons.photons 
+##process.puppiForMET.photonName  = process.nero.NeroPhotons.photons
+##process.puppiPhoton.photonName = process.nero.NeroPhotons.photons 
+##process.modifiedPhotons.src  = process.nero.NeroPhotons.photons
 
 # ------------- Soft jet activity: Track jets ------------------------
 
@@ -474,13 +475,13 @@ process.NjettinessGroomed.srcJets = process.nero.NeroFatJets.chsAK8
 process.p = cms.Path(
                 process.infoProducerSequence *
                 #process.regressionApplication *
-                #process.calibratedPatElectrons  *
-                #process.calibratedPatPhotons *
+                process.calibratedPatElectrons  *
+                process.calibratedPatPhotons *
                 process.egmGsfElectronIDSequence *
                 #process.egmPhotonIDSequence * ## this is overwritten by puppi/met configuration
                 #process.photonIDValueMapProducer * ## ISO MAP FOR PHOTONS
-                #process.electronIDValueMapProducer *  ## ISO MAP FOR PHOTONS
-                process.electronMVAValueMapProducer *
+                #process.electronIDValueMapProducer *  ## ISO MAP FOR PHOTONS -> ALREADY IN egmPat Seq
+                #process.electronMVAValueMapProducer * -> ALREADY IN egmPat Seq
                 #process.jecSequence *
                 process.QGTagger    * ## after jec, because it will produce the new jet collection
                 #process.fullPatMetSequence *## no puppi

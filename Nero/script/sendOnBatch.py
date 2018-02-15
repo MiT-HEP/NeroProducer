@@ -295,7 +295,8 @@ if opts.eos == "":
 elif opts.query:
         instance=""
         if '/USER' in opts.eos: instance="instance=prod/phys03"
-        cmd = 'das_client.py --query="file dataset=' + opts.eos+' '+instance+'" --idx=0 --limit=10000  | grep -v "Showing" | grep -v \'^$\' '
+        #cmd = 'das_client.py --query="file dataset=' + opts.eos+' '+instance+'" --idx=0 --limit=10000  | grep -v "Showing" | grep -v \'^$\' '
+        cmd = 'dasgoclient --query="file dataset=' + opts.eos+' '+instance+'" --idx=0 --limit=10000  | grep -v "Showing" | grep -v \'^$\' '
         outputList = check_output(cmd,shell=True);
         fileList = [ '"'+ f + '"' for f in outputList.split() if '/store' in f ]
 elif opts.eos == "fake":

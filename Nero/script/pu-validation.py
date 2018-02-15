@@ -24,7 +24,7 @@ if opts.batch:
 	ROOT.gROOT.SetBatch()
 
 
-version="v2.2"
+version="v3.1"
 
 disks={}
 xsections={}
@@ -37,7 +37,7 @@ fileLimit=-1
 book=['DY','TTJets'] ## WJets is very big with low eff for double muon
 datasets=['SingleMuon']
 ##configure
-if True:
+if True and version=="v2.2":
 	#### reMiniAOD Moriond17
 	#base='/store/user/amarini/Nero/' + version + "/"
 	base='/store/group/phys_higgs/ceballos/Nero/' + version + "/"
@@ -60,11 +60,18 @@ if True:
 	disks['Tau'] = base+'Tau'
 	disks['MET']=base+'MET'
 
+if True and version=='v3.1':
+    base='/store/group/phys_higgs/cmshmm/amarini/Nero/v3.1/'
+    disks['DY']=base+'DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8'
+    disks['TTJets']= base +'TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8'
+    disks['SingleMuon'] = base + 'SingleMuon'
+
 ## xsections
 if True:
 	#https://twiki.cern.ch/twiki/bin/viewauth/CMS/StandardModelCrossSectionsat13TeV
 	xsections['DY']=2008.4*3 #NNLO, Z->mm is 2008.4,  we have Z->ll
 	xsections['TTJets']=831.76 ## mtop=172.5; xsec=815.96 mtop=173.2 NNLO
+	if 'TTTo2L2Nu' in disks['TTJets']: xsections['TTJets']=831.76*((0.1080*3)**2)
 	#LO
 	xsections['WW']=64.5856059293
 	xsections['WZ']=23.1768776388
@@ -73,7 +80,8 @@ if True:
 
 def ReadFromEos(eos):
 	if not eos.startswith('/store') : return [eos]
-	EOS = "/afs/cern.ch/project/eos/installation/0.3.84-aquamarine/bin/eos.select"
+	#EOS = "/afs/cern.ch/project/eos/installation/0.3.84-aquamarine/bin/eos.select"
+	EOS='/usr/bin/eos'
 	cmd = EOS+ " find -f " + eos
 	outputList = check_output(cmd,shell=True)
 	fileList0 = outputList.split()
@@ -102,19 +110,7 @@ if opts.json != "":
 
 # get PU Target
 puFiles={}
-#puFiles[80] = ROOT.TFile.Open("script/MyDataPileupHistogram.root")
-#puFiles[65] = ROOT.TFile.Open("script/MyDataPileupHistogram_65mb.root")
-#puFiles[70] = ROOT.TFile.Open("script/MyDataPileupHistogram_70mb.root")
-#puFiles[71] = ROOT.TFile.Open("script/MyDataPileupHistogram_71mb.root")
-#puFiles[72] = ROOT.TFile.Open("script/MyDataPileupHistogram_72mb.root")
-#puFiles[73] = ROOT.TFile.Open("script/MyDataPileupHistogram_73mb.root")
-#puFiles[74] = ROOT.TFile.Open("script/MyDataPileupHistogram_74mb.root")
-#puFiles[75] = ROOT.TFile.Open("script/MyDataPileupHistogram_75mb.root")
-#puFiles[76] = ROOT.TFile.Open("script/MyDataPileupHistogram_76mb.root")
-#puFiles[84] = ROOT.TFile.Open("script/MyDataPileupHistogram_84mb.root")
 
-#for num in [69,68,67,66,64,65,70,71,72,73,74,75,76,84]:
-#for num in [ 65000 , 67000 , 68000 , 69000, 69200, 69300, 69400, 69500, 69600, 69800, 70000, 71000, 73000  ]:
 for num in[ 78000,77000,76000,75000,74000,73000,72000,71000,70800,70600,70400,70200,70000,69800,69600,69400,69200,69000,68000,67000,66000,65000,64000,63000 ]:
 #for num in [ 65000 , 67000 , 68000 , 68600, 68800, 69000, 69200, 69300, 69400, 69500, 69600, 69800, 70000, 71000, 73000  ]:
 	puFiles[num] = ROOT.TFile.Open(opts.pileupdir + "/NewPileupHistogram_%dnb.root"%num)
@@ -361,7 +357,7 @@ for mc in book:
 				den=1
 			puReweight[puNum] = float(num)/float(den )
 
-		if t.lepP4.GetEntries()>=2 and t.lepP4[1].Pt() > 20 and t.lepPdgId[0]* t.lepPdgId[1] == -13*13 :  ## OS SF muon, leading two
+		if t.lepP4.GetEntries()>=2 and t.lepP4[1].Pt() > 30 and t.lepPdgId[0]* t.lepPdgId[1] == -13*13 :  ## OS SF muon, leading two
 			#print '* DEBUG MM Event', t.lepP4[1].Pt(), t.lepPdgId[0]
 			ll = t.lepP4[0] + t.lepP4[1]
 			#print "mc pass", ll.M(), ll.Pt() ## DEBUG
@@ -421,7 +417,7 @@ for data in datasets:
                 if t.lepP4[1].Pt() < 20 : continue ## pt 20
 
 
-                if t.lepP4.GetEntries()>=2 and t.lepP4[1].Pt() > 20 and t.lepPdgId[0]* t.lepPdgId[1] == -13*13 and data=='SingleMuon' : ## OS SF muon, leading two
+                if t.lepP4.GetEntries()>=2 and t.lepP4[1].Pt() > 30 and t.lepPdgId[0]* t.lepPdgId[1] == -13*13 and data=='SingleMuon' : ## OS SF muon, leading two
                 	ll = t.lepP4[0] + t.lepP4[1]
 			#print "data pass", ll.M(), ll.Pt() ## DEBUG
 			if ll.M() <60 or ll.M() >120 : continue

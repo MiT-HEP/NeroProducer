@@ -53,7 +53,7 @@ NeroLeptons::NeroLeptons(edm::ConsumesCollector & cc,edm::ParameterSet iConfig):
     ea_ . reset (new EffectiveAreas( edm::FileInPath(iConfig.getParameter<std::string>("eleEA")).fullPath () ) );
     mu_token = cc.consumes<pat::MuonCollection>(iConfig.getParameter<edm::InputTag>("muons"));
     el_token = cc.consumes<pat::ElectronCollection>(iConfig.getParameter<edm::InputTag>("electrons"));
-    el_hltid_token = cc.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleHLTIdMap"));
+    //el_hltid_token = cc.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleHLTIdMap"));
     el_mva_token = cc.consumes<edm::ValueMap<float> > (iConfig.getParameter<edm::InputTag>("eleMvaMap"));
     rho_token = cc.consumes<double> (edm::InputTag("fixedGridRhoFastjetCentralNeutral")); // for miniIso
 
@@ -124,7 +124,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
     iEvent.getByToken(el_looseid_token,el_loose_id);
 
     iEvent.getByToken(el_mva_token,el_mva);
-    iEvent.getByToken(el_hltid_token,el_hlt_id);
+    //iEvent.getByToken(el_hltid_token,el_hlt_id);
     iEvent.getByToken(rho_token,rho_handle);
 
     edm::Handle<EcalRecHitCollection> ebRecHits;
@@ -149,7 +149,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
     if ( not mu_handle.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] mu_handle is not valid"<<endl;
     if ( not el_handle.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_handle is not valid"<<endl;
     if ( not el_uncalib_handle.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_uncalib_handle is not valid"<<endl;
-    if ( not el_hlt_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_hlt_id is not valid"<<endl;
+    //if ( not el_hlt_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_hlt_id is not valid"<<endl;
     if ( not el_mva.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_mva is not valid"<<endl;
     if ( not rho_handle.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] rho_handle is not valid"<<endl;
 
@@ -268,7 +268,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         bool isPassMedium = (*el_medium_id)[ref] and el.passConversionVeto();
         bool isPassLoose = (*el_loose_id)[ref] and el.passConversionVeto();
 
-        bool isPassHLT = (*el_hlt_id)[ref] and el.passConversionVeto();
+        //bool isPassHLT = (*el_hlt_id)[ref] and el.passConversionVeto();
 
         
         double Ecorr=NeroFunctions::getEGSeedCorrections(el,ebRecHits); 
@@ -304,7 +304,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
             l.selBits |= unsigned(isPassTight)  * LepTightIP;
         }
         
-        l.selBits |= unsigned(isPassHLT) * LepFake;
+        //l.selBits |= unsigned(isPassHLT) * LepFake;
 
         if (el.chargeInfo().isGsfCtfConsistent and el.chargeInfo().isGsfCtfScPixConsistent and el.chargeInfo().isGsfScPixConsistent) l.selBits |= EleTripleCharge;
         constexpr reco::HitPattern::HitCategory missingHitType = reco::HitPattern::MISSING_INNER_HITS;
@@ -381,7 +381,7 @@ bool NeroLeptons::passEleId(const pat::Electron &el , ELEID id, float iso)
 {
    using std::abs;
    bool passId = true;
-   float energy = el.energy(); // hoe C0 + CE/energy + Cr*rho/energy;
+   //float energy = el.energy(); // hoe C0 + CE/energy + Cr*rho/energy;
    if ( abs(el.superCluster()->eta()) <= 1.479 )
    {
        switch (id)
