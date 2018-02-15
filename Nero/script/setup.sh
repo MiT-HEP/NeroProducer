@@ -44,8 +44,18 @@ function CMSSW_9_2_4 {
 function CMSSW_9_4_1 {
         git cms-init
         git cms-merge-topic lsoffi:CMSSW_9_4_0_pre3_TnP
+        git cms-merge-topic guitargeek:ElectronID_MVA2017_940pre3
+        git clone https://github.com/lsoffi/RecoEgamma-PhotonIdentification.git RecoEgamma/PhotonIdentification/data.new -b CMSSW_9_4_0_pre3_TnP
+        git clone https://github.com/lsoffi/RecoEgamma-ElectronIdentification.git RecoEgamma/ElectronIdentification/data.new -b CMSSW_9_4_0_pre3_TnP
+        rsync -avP RecoEgamma/ElectronIdentification/data.new/* RecoEgamma/ElectronIdentification/data/
+        rsync -avP RecoEgamma/PhotonIdentification/data.new/* RecoEgamma/PhotonIdentification/data/
         #git cms-merge-topic ikrav:egm_id_80X_v3_photons_rebasedTo_CMSSW_9_2_X_2017-05-29-1100
         #git cms-merge-topic ikrav:egm_id_80X_v2_rebased_CMSSW_9_0_X_2016-12-07-2300
+        #add the repository with the updated Egamma package
+        git cms-merge-topic cms-egamma:EGM_94X_v1
+        # download the txt files with the corrections
+        git clone https://github.com/ECALELFS/ScalesSmearings.git EgammaAnalysis/ElectronTools/data/ScalesSmearings -b Run2017_17Nov2017_v1
+        #rsync -avP EgammaAnalysis/ElectronTools/data/ScalesSmearings.new/* EgammaAnalysis/ElectronTools/data/ScalesSmearings/
 }
 
 
