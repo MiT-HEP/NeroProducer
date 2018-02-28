@@ -81,7 +81,7 @@ if (isData):
     process.GlobalTag.globaltag = '94X_dataRun2_ReReco_EOY17_v2' 
 else:
     ## new miniaod
-    process.GlobalTag.globaltag = '94X_mc2017_realistic_v10' 
+    process.GlobalTag.globaltag = '94X_mc2017_realistic_v12' 
 
 ### LOAD DATABASE
 from CondCore.DBCommon.CondDBSetup_cfi import *
@@ -107,55 +107,56 @@ process.load("RecoEgamma/ElectronIdentification/ElectronIDValueMapProducer_cfi")
 
 ############################### JEC #####################
 #### Load from a sqlite db, if not read from the global tag
-#process.load("CondCore.DBCommon.CondDBCommon_cfi")
-### from CondCore.DBCommon.CondDBSetup_cfi import *
-### 
-### if options.isData:
-###     connectString = cms.string('sqlite:jec/Summer16_23Sep2016AllV4_DATA.db')
-###     tagName = 'Summer16_23Sep2016AllV4_DATA_AK4PFchs'
-###     tagNamePuppi = 'Summer16_23Sep2016AllV4_DATA_AK4PFPuppi'
-### else:
-###     connectString = cms.string('sqlite:jec/Summer16_23Sep2016V4_MC.db')
-###     tagName = 'Summer16_23Sep2016V4_MC_AK4PFchs'
-###     tagNamePuppi = 'Summer16_23Sep2016V4_MC_AK4PFPuppi'
-### #data only, mc hard coded
+process.load("CondCore.DBCommon.CondDBCommon_cfi")
+from CondCore.DBCommon.CondDBSetup_cfi import *
+
+if options.isData:
+    connectString = cms.string('sqlite:jec/Fall17_17Nov2017BCDEF_V6_DATA.db')
+    tagName = 'Fall17_17Nov2017BCDEF_V6_DATA_AK4PFchs'
+    tagNamePuppi = 'Fall17_17Nov2017BCDEF_V6_DATA_AK4PFPuppi'
+else:
+    connectString = cms.string('sqlite:jec/Fall17_17Nov2017_V6_MC.db')
+    tagName = 'Fall17_17Nov2017_V6_MC_AK4PFchs'
+    tagNamePuppi = 'Fall17_17Nov2017_V6_MC_AK4PFPuppi'
+#data only, mc hard coded
+print "-> FIX JEC FOR AK8"
 process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Summer16_23Sep2016BCDV4")
 ### 
 ### 
-### process.jec = cms.ESSource("PoolDBESSource",
-###       DBParameters = cms.PSet(
-###         messageLevel = cms.untracked.int32(0)
-###         ),
-###       timetype = cms.string('runnumber'),
-###       toGet = cms.VPSet(
-###       cms.PSet(
-###             record = cms.string('JetCorrectionsRecord'),
-###             tag    = cms.string('JetCorrectorParametersCollection_%s'%tagName),
-###             label  = cms.untracked.string('AK4PFchs')
-###             ),
-###       cms.PSet( ## AK8
-###             record = cms.string('JetCorrectionsRecord'),
-###             tag    = cms.string('JetCorrectorParametersCollection_%s'%re.sub('AK4','AK8',tagName)),
-###             label  = cms.untracked.string('AK8PFchs')
-###             ),
-###       cms.PSet(#puppi
-###             record = cms.string('JetCorrectionsRecord'),
-###             tag    = cms.string('JetCorrectorParametersCollection_%s'%tagNamePuppi),
-###             label  = cms.untracked.string('AK4PFPuppi')
-###             ),
-###       cms.PSet( ## AK8 puppi
-###             record = cms.string('JetCorrectionsRecord'),
-###             tag    = cms.string('JetCorrectorParametersCollection_%s'%re.sub('AK4','AK8',tagNamePuppi)),
-###             label  = cms.untracked.string('AK8PFPuppi')
-###             ),
-###       ## here you add as many jet types as you need
-###       ## note that the tag name is specific for the particular sqlite file 
-###       ), 
-###       connect = connectString
-###      # uncomment above tag lines and this comment to use MC JEC
-### )
-### ## add an es_prefer statement to resolve a possible conflict from simultaneous connection to a global tag
-### process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
+process.jec = cms.ESSource("PoolDBESSource",
+      DBParameters = cms.PSet(
+        messageLevel = cms.untracked.int32(0)
+        ),
+      timetype = cms.string('runnumber'),
+      toGet = cms.VPSet(
+      cms.PSet(
+            record = cms.string('JetCorrectionsRecord'),
+            tag    = cms.string('JetCorrectorParametersCollection_%s'%tagName),
+            label  = cms.untracked.string('AK4PFchs')
+            ),
+      cms.PSet( ## AK8
+            record = cms.string('JetCorrectionsRecord'),
+            tag    = cms.string('JetCorrectorParametersCollection_%s'%re.sub('AK4','AK8',tagName)),
+            label  = cms.untracked.string('AK8PFchs')
+            ),
+      cms.PSet(#puppi
+            record = cms.string('JetCorrectionsRecord'),
+            tag    = cms.string('JetCorrectorParametersCollection_%s'%tagNamePuppi),
+            label  = cms.untracked.string('AK4PFPuppi')
+            ),
+      cms.PSet( ## AK8 puppi
+            record = cms.string('JetCorrectionsRecord'),
+            tag    = cms.string('JetCorrectorParametersCollection_%s'%re.sub('AK4','AK8',tagNamePuppi)),
+            label  = cms.untracked.string('AK8PFPuppi')
+            ),
+      ## here you add as many jet types as you need
+      ## note that the tag name is specific for the particular sqlite file 
+      ), 
+      connect = connectString
+     # uncomment above tag lines and this comment to use MC JEC
+)
+## add an es_prefer statement to resolve a possible conflict from simultaneous connection to a global tag
+process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 
 #------------------- JER -----------------
 print "TODO: Update JER"
@@ -202,32 +203,34 @@ process.es_prefer_jer = cms.ESPrefer('PoolDBESSource', 'jer')
 
 ################ end sqlite connection
 #### RECOMPUTE JEC From GT ###
-### from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
-###  
-### jecLevels= ['L1FastJet',  'L2Relative', 'L3Absolute']
-### if options.isData:
-###         jecLevels =['L1FastJet',  'L2Relative', 'L3Absolute', 'L2L3Residual']
-###  
-### updateJetCollection(
-###     process,
-###     jetSource = process.nero.NeroJets.jets,
-###     labelName = 'UpdatedJEC',
-###     jetCorrections = ('AK4PFchs', cms.vstring(jecLevels), 'None')  # Do not forget 'L2L3Residual' on data!
-### )
-### 
-### updateJetCollection(
-###     process,
-###     jetSource = process.nero.NeroFatJets.chsAK8,
-###     labelName = 'UpdatedJECAK8',
-###     jetCorrections = ('AK8PFchs', cms.vstring(jecLevels), 'None')  # Do not forget 'L2L3Residual' on data!
-### )
-### 
-### print "-> Updating the jets collection to run on to 'updatedPatJetsUpdatedJEC' with the new jec in the GT"
-### process.nero.NeroJets.jets=cms.InputTag('updatedPatJetsUpdatedJEC')
-### process.nero.NeroFatJets.chsAK8=cms.InputTag('updatedPatJetsUpdatedJECAK8')
-### process.jecSequence = cms.Sequence( process.patJetCorrFactorsUpdatedJEC* process.updatedPatJetsUpdatedJEC 
-###         * process.patJetCorrFactorsUpdatedJECAK8* process.updatedPatJetsUpdatedJECAK8
-###         )
+from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
+ 
+jecLevels= ['L1FastJet',  'L2Relative', 'L3Absolute']
+if options.isData:
+        jecLevels =['L1FastJet',  'L2Relative', 'L3Absolute', 'L2L3Residual']
+ 
+updateJetCollection(
+    process,
+    jetSource = process.nero.NeroJets.jets,
+    labelName = 'UpdatedJEC',
+    jetCorrections = ('AK4PFchs', cms.vstring(jecLevels), 'None')  # Do not forget 'L2L3Residual' on data!
+)
+
+updateJetCollection(
+    process,
+    jetSource = process.nero.NeroFatJets.chsAK8,
+    labelName = 'UpdatedJECAK8',
+    jetCorrections = ('AK8PFchs', cms.vstring(jecLevels), 'None')  # Do not forget 'L2L3Residual' on data!
+)
+
+print "-> Updating the jets collection to run on to 'updatedPatJetsUpdatedJEC' with the new jec in the GT/or DB"
+process.nero.NeroJets.jets=cms.InputTag('updatedPatJetsUpdatedJEC')
+process.nero.NeroFatJets.chsAK8=cms.InputTag('updatedPatJetsUpdatedJECAK8')
+process.jecSequence = cms.Sequence( 
+        #process.patJetCorrFactorsReapplyJEC + process.patJetsReapplyJEC
+        process.patJetCorrFactorsUpdatedJEC* process.updatedPatJetsUpdatedJEC 
+        * process.patJetCorrFactorsUpdatedJECAK8* process.updatedPatJetsUpdatedJECAK8
+        )
 
 ########### MET Filter ################
 process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
@@ -482,7 +485,7 @@ process.p = cms.Path(
                 #process.photonIDValueMapProducer * ## ISO MAP FOR PHOTONS
                 #process.electronIDValueMapProducer *  ## ISO MAP FOR PHOTONS -> ALREADY IN egmPat Seq
                 #process.electronMVAValueMapProducer * -> ALREADY IN egmPat Seq
-                #process.jecSequence *
+                process.jecSequence *
                 process.QGTagger    * ## after jec, because it will produce the new jet collection
                 #process.fullPatMetSequence *## no puppi
                 #process.mucorMET * 
