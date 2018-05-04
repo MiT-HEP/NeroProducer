@@ -290,8 +290,8 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
                              el.gsfTrack()->dxy((*vtx_->GetPV()).position()) : 
                              el.gsfTrack()->dxy());
 
-        bool dz_cut  = isEB ? 0.10 : 0.20;
-        bool dxy_cut = isEB ? 0.05 : 0.10;
+        double dz_cut  = isEB ? 0.10 : 0.20;
+        double dxy_cut = isEB ? 0.05 : 0.10;
 
         if ( dz<dz_cut && dxy<dxy_cut ){
             l.selBits |= LepIP;
