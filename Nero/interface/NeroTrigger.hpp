@@ -11,6 +11,7 @@
 #include "DataFormats/L1Trigger/interface/BXVector.h"
 #include "DataFormats/L1Trigger/interface/EtSum.h"
 #include "DataFormats/L1Trigger/interface/Tau.h"
+#include "DataFormats/L1TGlobal/interface/GlobalAlgBlk.h"
 
 #define DEBUG_TRIGGER 0
 
@@ -30,6 +31,7 @@ class NeroTrigger : virtual public NeroCollection, virtual public BareTrigger
         //  handle for L1
         edm::Handle<BXVector<l1t::EtSum> > handle_l1EtSum;
         edm::Handle<BXVector<l1t::Tau> > handle_l1Tau;
+        edm::Handle<BXVector<GlobalAlgBlk>> handle_l1Gt;
 
         // --- Token
         edm::EDGetTokenT< edm::TriggerResults > token;
@@ -37,6 +39,7 @@ class NeroTrigger : virtual public NeroCollection, virtual public BareTrigger
         edm::EDGetTokenT< pat::TriggerObjectStandAloneCollection > object_token;
         edm::EDGetTokenT<BXVector<l1t::EtSum> > token_l1EtSum;
         edm::EDGetTokenT<BXVector<l1t::Tau> > token_l1Tau;
+        edm::EDGetTokenT<BXVector<GlobalAlgBlk>> token_l1Gt;
 
         // --- configuration
         template <class T>
