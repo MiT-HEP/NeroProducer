@@ -18,6 +18,7 @@ NeroTrigger::NeroTrigger(edm::ConsumesCollector & cc,edm::ParameterSet iConfig):
     prescale_token = cc.consumes<pat::PackedTriggerPrescales>( edm::InputTag("patTrigger") );
     object_token = cc.consumes< pat::TriggerObjectStandAloneCollection > ( iConfig.getParameter<edm::InputTag> ("objects") );
     token_l1EtSum= cc.consumes< BXVector< l1t::EtSum > > (edm::InputTag("caloStage2Digis:EtSum"));
+    token_l1Gt = cc.consumes < BXVector<GlobalAlgBlk > >(edm::InputTag("gtStage2Digis"));
     mNMatch = iConfig.getParameter<int>("triggerNMatch");
     *(triggerNames) =  iConfig.getParameter<std::vector<std::string> > ("triggerNames");
 
@@ -94,6 +95,15 @@ int NeroTrigger::analyze(const edm::Event& iEvent){
             }
         }
     }
+    
+
+    // FinalOr information
+    iEvent.getByToken(token_l1Gt,handle_l1Gt);
+    if (handle_l1Gt->begin(-2)->getFinalOR()) l1FOR |= FORM2;
+    if (handle_l1Gt->begin(-1)->getFinalOR()) l1FOR |= FORM1;
+    if (handle_l1Gt->begin(0)->getFinalOR()) l1FOR |= FOR;
+    if (handle_l1Gt->begin(1)->getFinalOR()) l1FOR |= FORP1;
+    if (handle_l1Gt->begin(2)->getFinalOR()) l1FOR |= FORP2;
 
 
     // ---- TRIGGER MATCHING ---

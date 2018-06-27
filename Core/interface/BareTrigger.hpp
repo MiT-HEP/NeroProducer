@@ -31,6 +31,16 @@ class BareTrigger: virtual public BareCollection
         vector<ULong64_t>  *triggerPhotons{0};
 
         vector<ULong64_t>  *triggerNoneTaus{0};
+
+        enum L1{
+            FORM2 = 1UL <<0,
+            FORM1 = 1UL <<1,
+            FOR   = 1UL <<2,
+            FORP1 = 1UL <<3,
+            FORP2 = 1UL <<4,
+        };
+        ULong64_t l1FOR{0};
+
 };
 
 

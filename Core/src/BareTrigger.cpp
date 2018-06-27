@@ -29,6 +29,7 @@ void BareTrigger::init(){
     BareFunctions::New(triggerPhotons);
 
     BareFunctions::New(triggerNoneTaus);
+    l1FOR=0;
 }
 
 void BareTrigger::clear(){
@@ -42,6 +43,8 @@ void BareTrigger::clear(){
     triggerPhotons -> clear();
     // ---
     triggerNoneTaus -> clear();
+
+    l1FOR=0;
 }
 
 void BareTrigger::defineBranches(TTree *t){
@@ -56,6 +59,7 @@ void BareTrigger::defineBranches(TTree *t){
     t->Branch("triggerPhotons","vector<ULong64_t>",&triggerPhotons);
     // ---
     t->Branch("triggerNoneTaus","vector<ULong64_t>",&triggerNoneTaus);
+    t->Branch("triggerL1FOR",&l1FOR,"triggerL1FOR/l");
 }
 
 void BareTrigger::setBranchAddresses(TTree*t)
@@ -70,6 +74,8 @@ void BareTrigger::setBranchAddresses(TTree*t)
     BareFunctions::SetBranchAddress(t,"triggerTaus", &triggerTaus);
     BareFunctions::SetBranchAddress(t,"triggerPhotons", &triggerPhotons);
     BareFunctions::SetBranchAddress(t,"triggerNoneTaus", &triggerNoneTaus);
+
+    BareFunctions::SetBranchAddress(t,"triggerL1FOR", &l1FOR);
 }
 
 BAREREGISTER(BareTrigger);
