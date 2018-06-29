@@ -99,11 +99,11 @@ int NeroTrigger::analyze(const edm::Event& iEvent){
 
     // FinalOr information
     iEvent.getByToken(token_l1Gt,handle_l1Gt);
-    if (handle_l1Gt->begin(-2)->getFinalOR()) l1FOR |= FORM2;
-    if (handle_l1Gt->begin(-1)->getFinalOR()) l1FOR |= FORM1;
-    if (handle_l1Gt->begin(0)->getFinalOR()) l1FOR |= FOR;
-    if (handle_l1Gt->begin(1)->getFinalOR()) l1FOR |= FORP1;
-    if (handle_l1Gt->begin(2)->getFinalOR()) l1FOR |= FORP2;
+    if (handle_l1Gt->size(-2)>0 and handle_l1Gt->begin(-2)->getFinalOR()) l1FOR |= FORM2;
+    if (handle_l1Gt->size(-1)>0 and handle_l1Gt->begin(-1)->getFinalOR()) l1FOR |= FORM1;
+    if (handle_l1Gt->size( 0)>0 and handle_l1Gt->begin(0)->getFinalOR()) l1FOR |= FOR;
+    if (handle_l1Gt->size( 1)>0 and handle_l1Gt->begin(1)->getFinalOR()) l1FOR |= FORP1;
+    if (handle_l1Gt->size( 2)>0 and handle_l1Gt->begin(2)->getFinalOR()) l1FOR |= FORP2;
 
 
     // ---- TRIGGER MATCHING ---
