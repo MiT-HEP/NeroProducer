@@ -58,6 +58,10 @@ function CMSSW_9_4_1 {
         #rsync -avP EgammaAnalysis/ElectronTools/data/ScalesSmearings.new/* EgammaAnalysis/ElectronTools/data/ScalesSmearings/
 }
 
+function CMSSW_10_1_6 {
+        git cms-init
+}
+
 
 # expected default
 [ "X$1" == "X" ] && $1=$CMSSW_VERSION

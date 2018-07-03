@@ -3,7 +3,6 @@
 
 #include "NeroProducer/Nero/interface/NeroCollection.hpp"
 #include "NeroProducer/Core/interface/BarePhotons.hpp"
-#include "NeroProducer/Nero/interface/SuperClusterFootprintRemovalMiniAOD.h"
 #include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
 
 // Electron corrector
