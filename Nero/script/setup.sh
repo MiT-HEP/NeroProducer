@@ -56,7 +56,7 @@ function CMSSW_9_4_1 {
         # download the txt files with the corrections
         git clone https://github.com/ECALELFS/ScalesSmearings.git EgammaAnalysis/ElectronTools/data/ScalesSmearings -b Run2017_17Nov2017_v1
         #rsync -avP EgammaAnalysis/ElectronTools/data/ScalesSmearings.new/* EgammaAnalysis/ElectronTools/data/ScalesSmearings/
-        git cms-merge-topic amarini:topic_qgmorvar_94X
+        #git cms-merge-topic amarini:topic_qgmorvar_94X ## not working
 }
 
 
