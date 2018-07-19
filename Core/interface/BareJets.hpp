@@ -58,6 +58,8 @@ class BareJets : virtual public BareP4
         vector<float> *nhef{0};
         vector<float> *nemf{0};
         vector<float> *cemf{0};
+        vector<int>   *cm{0};
+        vector<int>   *nm{0};
         //
         vector<float> *qgl{0};
         vector<int>   *flavour{0};

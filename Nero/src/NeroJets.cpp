@@ -285,6 +285,9 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
         nhef -> push_back(j.neutralHadronEnergyFraction());
         nemf -> push_back(j.neutralEmEnergyFraction());
         cemf -> push_back(j.chargedEmEnergyFraction());
+        cm   -> push_back(j.chargedMultiplicity());
+        nm   -> push_back(j.neutralMultiplicity());
+
 
         hadFlavour -> push_back( hadFlavour_I );
         flavour -> push_back( jetFlavour_I );
