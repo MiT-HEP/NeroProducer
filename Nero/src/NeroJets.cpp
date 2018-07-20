@@ -70,7 +70,6 @@ NeroJets::NeroJets(edm::ConsumesCollector & cc,edm::ParameterSet iConfig):
     qg_token_PtD = cc.consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "ptD"));
     qg_token_Axis2 = cc.consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "axis2"));
     qg_token_Axis1 = cc.mayConsume<edm::ValueMap<float>>(edm::InputTag("QGTagger", "axis1"));
-    qg_token_pt_dr_log = cc.mayConsume<edm::ValueMap<float>>(edm::InputTag("QGTagger", "ptDrLog"));
     qg_token_cmult = cc.mayConsume<edm::ValueMap<int>>(edm::InputTag("QGTagger", "cmult"));
     qg_token_nmult = cc.mayConsume<edm::ValueMap<int>>(edm::InputTag("QGTagger", "nmult"));
     // MORE QG STUFF
@@ -110,7 +109,6 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
     iEvent.getByToken(qg_token_Axis1,qg_handle_Axis1);
     iEvent.getByToken(qg_token_cmult,qg_handle_cmult);
     iEvent.getByToken(qg_token_nmult,qg_handle_nmult);
-    iEvent.getByToken(qg_token_pt_dr_log,qg_handle_pt_dr_log);
     iEvent.getByToken(rho_token,rho_handle);
 
     map<string,edm::Handle<edm::ValueMap<float> > >  qg_handle_f ;
@@ -277,7 +275,6 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
         if (qg_handle_Axis1.isValid()) qglAxis1->push_back(  (*qg_handle_Axis1)[jetRef] );
         if (qg_handle_cmult.isValid()) qglCMult->push_back(  (*qg_handle_cmult)[jetRef] );
         if (qg_handle_nmult.isValid()) qglNMult->push_back(  (*qg_handle_nmult)[jetRef] );
-        if (qg_handle_pt_dr_log.isValid()) qglPtDrLog->push_back(  (*qg_handle_pt_dr_log)[jetRef] );
 
 
         // saving the energy fractions

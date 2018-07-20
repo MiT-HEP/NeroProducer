@@ -32,7 +32,6 @@ BareJets::~BareJets(){
     BareFunctions::Delete(qglAxis1);
     BareFunctions::Delete(qglCMult);
     BareFunctions::Delete(qglNMult);
-    BareFunctions::Delete(qglPtDrLog);
     //JER
     BareFunctions::Delete(refPt);
     BareFunctions::Delete(ptResUncCentral);
@@ -89,7 +88,6 @@ void BareJets::init(){
     BareFunctions::New(qglAxis1);
     BareFunctions::New(qglCMult);
     BareFunctions::New(qglNMult);
-    BareFunctions::New(qglPtDrLog);
     //DEEP
     BareFunctions::New(deepB);
     BareFunctions::New(deepBB);
@@ -147,7 +145,6 @@ void BareJets::clear(){
     qglAxis1->clear();
     qglCMult->clear();
     qglNMult->clear();
-    qglPtDrLog->clear();
 
     //
     refPt->clear();
@@ -205,7 +202,6 @@ void BareJets::defineBranches(TTree *t){
     t->Branch(jetName + "QglAxis1","vector<float>",&qglAxis1);
     t->Branch(jetName + "QglCMult","vector<int>",&qglCMult);
     t->Branch(jetName + "QglNMult","vector<int>",&qglNMult);
-    t->Branch(jetName + "QglPtDrLog","vector<float>",&qglPtDrLog);
     // -- Jet Flavour by PAT
     t->Branch(jetName + "Flavour","vector<int>",&flavour);
     t->Branch(jetName + "hadFlavour","vector<int>",&hadFlavour);
@@ -269,7 +265,6 @@ void BareJets::setBranchAddresses(TTree* t, std::string prefix)
     BareFunctions::SetBranchAddress(t,jetName + "QglCMult"	,&qglCMult);
     BareFunctions::SetBranchAddress(t,jetName + "QglNMult"	,&qglNMult);
     BareFunctions::SetBranchAddress(t,jetName + "QglPtD"	,&qglPtD);
-    BareFunctions::SetBranchAddress(t,jetName + "QglPtDrLog"	,&qglPtDrLog);
     BareFunctions::SetBranchAddress(t,jetName + "QglAxis2"	,&qglAxis2);
     BareFunctions::SetBranchAddress(t,jetName + "QglAxis1"	,&qglAxis1);
     BareFunctions::SetBranchAddress(t,jetName + "Flavour"	,&flavour);

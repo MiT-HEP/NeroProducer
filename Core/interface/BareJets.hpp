@@ -77,7 +77,6 @@ class BareJets : virtual public BareP4
         vector<float> *qglAxis1{0};
         vector<int> *qglCMult{0};
         vector<int> *qglNMult{0};
-        vector<float> *qglPtDrLog{0};
 
         //super extra
         //vector<float> dRToProduce{0.01,0.02,0.03,0.04,0.05,0.10,0.15,0.20};
