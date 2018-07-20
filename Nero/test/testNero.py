@@ -162,15 +162,15 @@ process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 print "TODO: Update JER"
 toGet=[]
 if options.isData:
-    jerString = cms.string('sqlite:jer/Spring16_25nsV6_DATA.db')
-    resTag= cms.string('JR_Spring16_25nsV6_DATA_PtResolution_AK4PFchs')
-    phiTag= cms.string('JR_Spring16_25nsV6_DATA_PhiResolution_AK4PFchs')
-    sfTag = cms.string('JR_Spring16_25nsV6_DATA_SF_AK4PFchs')
+    jerString = cms.string('sqlite:jer/Fall17_25nsV1_DATA.db')
+    resTag= cms.string('JR_Fall17_25nsV1_DATA_PtResolution_AK4PFchs')
+    phiTag= cms.string('JR_Fall17_25nsV1_DATA_PhiResolution_AK4PFchs')
+    sfTag = cms.string('JR_Fall17_25nsV1_DATA_SF_AK4PFchs')
 else:
-    jerString = cms.string('sqlite:jer/Spring16_25nsV6_MC.db')
-    resTag=cms.string('JR_Spring16_25nsV6_MC_PtResolution_AK4PFchs')
-    phiTag= cms.string('JR_Spring16_25nsV6_MC_PhiResolution_AK4PFchs')
-    sfTag = cms.string('JR_Spring16_25nsV6_MC_SF_AK4PFchs')
+    jerString = cms.string('sqlite:jer/Fall17_25nsV1_MC.db')
+    resTag=cms.string('JR_Fall17_25nsV1_MC_PtResolution_AK4PFchs')
+    phiTag= cms.string('JR_Fall17_25nsV1_MC_PhiResolution_AK4PFchs')
+    sfTag = cms.string('JR_Fall17_25nsV1_MC_SF_AK4PFchs')
 
 process.jer = cms.ESSource("PoolDBESSource",
         CondDBSetup,
