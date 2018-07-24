@@ -19,12 +19,13 @@ NeroEvent::NeroEvent(edm::ConsumesCollector & cc,edm::ParameterSet iConfig):
     metNameToBit["Flag_goodVertices"] = goodVertices;
     metNameToBit["Flag_eeBadScFilter" ] = eeBadScFilter;
     metNameToBit["Flag_globalTightHalo2016Filter" ] = GlobalTightHalo2016;
+    metNameToBit["Flag_BadPFMuonFilter" ] = BadPFMuonFilter;
+    metNameToBit["Flag_BadChargedCandidateFilter"] = BadChargedCandidateFilter;
+    metNameToBit["Flag_ecalBadCalibFilter"] = ecalBadCalibFilter;
 
     // init tokens
     rho_token       = cc.consumes<double>(iConfig.getParameter<edm::InputTag>("rho"));
     filter_token    = cc.consumes<edm::TriggerResults>(iConfig.getParameter < edm::InputTag > ("metFilterToken"));
-    BadChCandFilter_token = cc.consumes<bool>(iConfig.getParameter < edm::InputTag > ("BadChCandFilterToken"));
-    BadPFMuon_token = cc.consumes<bool>(iConfig.getParameter < edm::InputTag > ("BadPFMuonToken"));
     *( metfilterNames) = iConfig.getParameter < std::vector<std::string> > ("metfilterNames");
 
 }
@@ -44,15 +45,7 @@ int NeroEvent::analyze(const edm::Event& iEvent){
     rho 	   =  *rho_handle;
 
     // Implement MET Filters
-    //if (isRealData) {
-    edm::Handle< bool > ifilterbadChCand;
-    iEvent.getByToken(BadChCandFilter_token, ifilterbadChCand);
-    filterbadChCandidate = *ifilterbadChCand;       
     
-    edm::Handle< bool > ifilterbadPFMuon;
-    iEvent.getByToken(BadPFMuon_token, ifilterbadPFMuon);
-    filterbadPFMuon = *ifilterbadPFMuon;
-
     edm::Handle < edm::TriggerResults > metFiltersResults;
     iEvent.getByToken(filter_token, metFiltersResults);
     const edm::TriggerNames &names = iEvent.triggerNames(*metFiltersResults);
@@ -66,9 +59,10 @@ int NeroEvent::analyze(const edm::Event& iEvent){
 
         for ( unsigned int i = 0; i < names.size(); ++i) {            
             if ( std::find( metfilterNames->begin(), metfilterNames->end(), names.triggerName(i) ) != metfilterNames->end() ) {
-
-                *passesMETFilters = *passesMETFilters && metFiltersResults->accept( i );
-                //metFilters->push_back( metFiltersResults->accept( i ) );
+                if (names.triggerName(i) != "Flag_eeBadScFilter")                
+                {
+                    *passesMETFilters = *passesMETFilters && metFiltersResults->accept( i );
+                }
                 unsigned bitflag = Unknown;
                 const auto& it = metNameToBit.find(names.triggerName(i) );
                 if ( it != metNameToBit.end()) bitflag = it->second;

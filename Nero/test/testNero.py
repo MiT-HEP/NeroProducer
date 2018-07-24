@@ -38,9 +38,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxE
 if len(options.inputFiles) == 0:
     if isData:
         options.inputFiles = [
-                '/store/data/Run2017B/DoubleMuon/MINIAOD/17Nov2017-v1/50000/C81DD09D-DFD3-E711-8CA8-F04DA275BFEC.root',
-                '/store/data/Run2017B/DoubleMuon/MINIAOD/17Nov2017-v1/50000/D0138D26-50D4-E711-B871-0025905C95F8.root',
-                '/store/data/Run2017B/DoubleMuon/MINIAOD/17Nov2017-v1/50000/D0E4CDFD-1BD4-E711-9157-0025905D1E00.root'
+                '/store/data/Run2017B/SingleMuon/MINIAOD/31Mar2018-v1/90000/FEC62083-1E39-E811-B2A1-0CC47A4D75F8.root'
         ]
     else:
         options.inputFiles = [
@@ -100,10 +98,21 @@ if isData and not options.isGrid and False: ## dont load the lumiMaks, will be c
 process.load('NeroProducer.Skim.infoProducerSequence_cff')
 process.load('NeroProducer.Nero.Nero_cfi')
 
-### ##ISO
-process.load("RecoEgamma/PhotonIdentification/PhotonIDValueMapProducer_cfi")
-process.load("RecoEgamma/ElectronIdentification/ElectronIDValueMapProducer_cfi")
+from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
+setupEgammaPostRecoSeq(process,
+                       runVID=True,
+                       era='2017-Nov17ReReco')  
+#a sequence egammaPostRecoSeq has now been created and should be added to your path, eg process.p=cms.Path(process.egammaPostRecoSeq)
+#process.nero.NeroLeptons.electrons=cms.InputTag("slimmedElectrons","","nero")
 
+### ##ISO
+#process.load("RecoEgamma/PhotonIdentification/PhotonIDValueMapProducer_cfi")
+#process.load("RecoEgamma/ElectronIdentification/ElectronIDValueMapProducer_cfi")
+
+#process.load("RecoEgamma.ElectronIdentification.egmGsfElectronIDs_cff")
+#process.egmGsfElectronIDs.physicsObjectSrc = process.nero.NeroLeptons.electrons
+#process.electronIDValueMapProducer.srcMiniAOD= process.nero.NeroLeptons.electrons
+#process.electronMVAValueMapProducer.srcMiniAOD= process.nero.NeroLeptons.electrons
 
 ############################### JEC #####################
 #### Load from a sqlite db, if not read from the global tag
@@ -159,7 +168,7 @@ process.jec = cms.ESSource("PoolDBESSource",
 process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 
 #------------------- JER -----------------
-print "TODO: Update JER"
+#print "TODO: Update JER"
 toGet=[]
 if options.isData:
     jerString = cms.string('sqlite:jer/Fall17_25nsV1_DATA.db')
@@ -200,7 +209,6 @@ process.jer = cms.ESSource("PoolDBESSource",
 
 process.es_prefer_jer = cms.ESPrefer('PoolDBESSource', 'jer')
 
-
 ################ end sqlite connection
 #### RECOMPUTE JEC From GT ###
 from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
@@ -232,147 +240,11 @@ process.jecSequence = cms.Sequence(
         * process.patJetCorrFactorsUpdatedJECAK8* process.updatedPatJetsUpdatedJECAK8
         )
 
-########### MET Filter ################
-process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
-process.BadPFMuonFilter.muons = cms.InputTag("slimmedMuons")
-process.BadPFMuonFilter.PFCandidates = cms.InputTag("packedPFCandidates")
-process.BadPFMuonFilter.taggingMode = cms.bool(True)
 
-process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
-process.BadChargedCandidateFilter.muons = cms.InputTag("slimmedMuons")
-process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidates")
-process.BadChargedCandidateFilter.taggingMode = cms.bool(True)
-
-############ RECOMPUTE MET #######################
-### from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
-### runMetCorAndUncFromMiniAOD(process,
-###            isData=isData,
-###            )
-
-#We no longer need to do this as the input collection needs to be change and is properly corrected out of the box. 
-#We do the above mention thing for the sake of the puppi met. (it has some small dependence in scheduled mode)
-#print "-> Updating the met collection to run on to 'slimmedMETs with nero' with the new jec in the GT for Type1"
-#process.nero.NeroMets.mets=cms.InputTag('slimmedMETs','','nero')
-
-## TO DO this is production specific, when testing on relval it works with RECO, maybe we should leave it empty
-##if not options.isData:
-##            process.nero.NeroEvent.metFilterToken=cms.InputTag("TriggerResults","","PAT")
-
-############ RUN Muon Fixed MET CLUSTERING ##########################                                                                    
-
-#### process.load('RecoMET.METFilters.badGlobalMuonTaggersMiniAOD_cff')
-#### process.badGlobalMuonTaggerMAOD.taggingMode = cms.bool(True)
-#### process.cloneGlobalMuonTaggerMAOD.taggingMode = cms.bool(True)
-#### 
-#### process.mucorMET = cms.Sequence()
-#### 
-#### if not isData:
-####     from PhysicsTools.PatUtils.tools.muonRecoMitigation import muonRecoMitigation
-#### 
-#### 
-####     muonRecoMitigation(process,
-####                        pfCandCollection="packedPFCandidates",
-####                        runOnMiniAOD=True,
-####                        muonCollection="",
-####                        selection="",
-####                        cleaningScheme="all",
-####                        postfix="")
-####     
-####     runMetCorAndUncFromMiniAOD(process,
-####                                isData=isData,
-####                                pfCandColl="cleanMuonsPFCandidates",
-####                                recoMetFromPFCs=True,
-####                                postfix="MuClean"
-####                                )
-####     
-####     process.mucorMET = cms.Sequence(                     
-####         process.badGlobalMuonTaggerMAOD *
-####         process.cloneGlobalMuonTaggerMAOD *
-####         process.badMuons * # If you are using cleaning mode "all", uncomment this line
-####         process.cleanMuonsPFCandidates *
-####         process.fullPatMetSequenceMuClean
-####         )
-####     
-####     
-####     process.nero.NeroMets.metscleanmu=cms.InputTag('slimmedMETsMuClean','','nero')
-####     process.nero.NeroMets.mets=cms.InputTag("slimmedMETs")
-
-############ RUN Puppi MET CLUSTERING ##########################
-
-### from PhysicsTools.PatAlgos.slimming.puppiForMET_cff import makePuppiesFromMiniAOD
-### makePuppiesFromMiniAOD( process, True );
-### 
-### runMetCorAndUncFromMiniAOD(process,
-###                               isData=options.isData,
-###                               metType="Puppi",
-###                               pfCandColl=cms.InputTag("puppiForMET"),
-###                               recoMetFromPFCs=True,
-###                               jetFlavor="AK4PFPuppi",
-###                               postfix="Puppi"
-###                               )
 #-----------------------ELECTRON ID-------------------------------
-from NeroProducer.Nero.egammavid_cfi import *
 
-initEGammaVID(process,options)
-
-############### end of met conf avoid overwriting
-
-## turn off the existing weight usage for the spring16 monte carlo
-## this slows the computation by x2, but is necessary
-
-##process.puppiNoLep.useExistingWeights = True
-##process.puppi.useExistingWeights = True
-##process.puppiForMET.photonId = process.nero.NeroPhotons.phoLooseIdMap
-
-#print "-> Updating the puppi met collection to run on to 'slimmedMETsPuppi with nero' with the new jec in the GT for Type1"
-#process.nero.NeroMets.metsPuppi=cms.InputTag('slimmedMETsPuppi','','nero')
-
-############### REGRESSION EGM #############
-### process.load('EgammaAnalysis.ElectronTools.regressionApplication_cff')
-### from EgammaAnalysis.ElectronTools.regressionWeights_cfi import regressionWeights
-### process = regressionWeights(process)
-### 
-### ########## EGM Smear and Scale ###
-process.load('Configuration.StandardSequences.Services_cff')
-process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService",
-        calibratedPatElectrons  = cms.PSet( initialSeed = cms.untracked.uint32(81),
-            engineName = cms.untracked.string('TRandom3'),
-            ),
-        calibratedPatPhotons  = cms.PSet( initialSeed = cms.untracked.uint32(81),
-            engineName = cms.untracked.string('TRandom3'),
-            ),
-        )
-process.load('EgammaAnalysis.ElectronTools.calibratedPatElectronsRun2_cfi')
-process.load('EgammaAnalysis.ElectronTools.calibratedPatPhotonsRun2_cfi')
-process.calibratedPatElectrons.electrons=process.nero.NeroLeptons.electrons
-process.calibratedPatPhotons.photons= process.nero.NeroPhotons.photons
-process.nero.NeroLeptons.electrons =  cms.InputTag("calibratedPatElectrons")
-process.nero.NeroPhotons.photons = cms.InputTag("calibratedPatPhotons")
-if isData:
-    process.calibratedPatElectrons.isMC = cms.bool(False)
-    process.calibratedPatPhotons.isMC = cms.bool(False)
-else:
-    process.calibratedPatElectrons.isMC = cms.bool(True)
-    process.calibratedPatPhotons.isMC = cms.bool(True)
-print "-> Updating slimmedElectrons and slimmedPhotons to calibratedPatElectrons and calibratedPatPhotons"
-print "   ",process.nero.NeroPhotons.photons, process.nero.NeroLeptons.electrons
-#######################################
-
-# modify electrons Input Tags
-process.load("RecoEgamma.ElectronIdentification.egmGsfElectronIDs_cff")
-process.egmGsfElectronIDs.physicsObjectSrc = process.nero.NeroLeptons.electrons
-#process.egmPatElectronIDs.physicsObjectSrc = process.nero.NeroLeptons.electrons
-process.electronIDValueMapProducer.srcMiniAOD= process.nero.NeroLeptons.electrons
-process.electronMVAValueMapProducer.srcMiniAOD= process.nero.NeroLeptons.electrons
-
-# modify photons Input Tags
-##process.egmPhotonIsolation.srcToIsolate = process.nero.NeroPhotons.photons
-##process.egmPhotonIDs.physicsObjectSrc = process.nero.NeroPhotons.photons
-##process.photonIDValueMapProducer.srcMiniAOD= process.nero.NeroPhotons.photons
-##process.photonMVAValueMapProducer.srcMiniAOD= process.nero.NeroPhotons.photons 
-##process.puppiForMET.photonName  = process.nero.NeroPhotons.photons
-##process.puppiPhoton.photonName = process.nero.NeroPhotons.photons 
-##process.modifiedPhotons.src  = process.nero.NeroPhotons.photons
+#from NeroProducer.Nero.egammavid_cfi import *
+#initEGammaVID(process,options)
 
 # ------------- Soft jet activity: Track jets ------------------------
 
@@ -386,15 +258,6 @@ process.softActivityJets = ak4PFJets.clone(src = 'chsForSATkJets', doAreaFastjet
 # ------------------------QG-----------------------------------------------
 # after jec, because need to be run on the corrected (latest) jet collection
 qgDatabaseVersion = 'cmssw8020_v2'
-
-# to use the database, see https://twiki.cern.ch/twiki/bin/view/CMS/QuarkGluonLikelihood
-#connect = cms.string('frontier://FrontierProd/CMS_COND_PAT_000'),
-#for type in ['AK4PFchs','AK4PFchs_antib']:
-#  QGPoolDBESSource.toGet.extend(cms.VPSet(cms.PSet(
-#    record = cms.string('QGLikelihoodRcd'),
-#    tag    = cms.string('QGLikelihoodObject_'+qgDatabaseVersion+'_'+type),
-#    label  = cms.untracked.string('QGL_'+type)
-#  )))
 
 process.QGPoolDBESSource = cms.ESSource("PoolDBESSource",
       CondDBSetup,
@@ -477,22 +340,12 @@ process.NjettinessGroomed.srcJets = process.nero.NeroFatJets.chsAK8
 #------------------------------------------------------
 process.p = cms.Path(
                 process.infoProducerSequence *
-                #process.regressionApplication *
-                process.calibratedPatElectrons  *
-                process.calibratedPatPhotons *
-                process.egmGsfElectronIDSequence *
-                #process.egmPhotonIDSequence * ## this is overwritten by puppi/met configuration
-                #process.photonIDValueMapProducer * ## ISO MAP FOR PHOTONS
-                #process.electronIDValueMapProducer *  ## ISO MAP FOR PHOTONS -> ALREADY IN egmPat Seq
-                #process.electronMVAValueMapProducer * -> ALREADY IN egmPat Seq
+                process.egammaPostRecoSeq *  #-> should be everything from EGamma
+
+                #process.electronIDValueMapProducer *  
+                #process.electronMVAValueMapProducer * # needs to be produced on to of new slimmed electrons.
                 process.jecSequence *
                 process.QGTagger    * ## after jec, because it will produce the new jet collection
-                #process.fullPatMetSequence *## no puppi
-                #process.mucorMET * 
-                #process.puppiMETSequence * #puppi candidate producer
-                #process.fullPatMetSequencePuppi * ## full puppi sequence
-                process.BadPFMuonFilter *
-                process.BadChargedCandidateFilter * 
                 process.ttbarcat *
                 process.QGVariablesSequence*
                 process.NjettinessGroomed*
@@ -501,15 +354,15 @@ process.p = cms.Path(
                 )
 
 ## DEBUG -- dump the event content with all the value maps ..
-### process.output = cms.OutputModule(
-###                 "PoolOutputModule",
-###                       fileName = cms.untracked.string('output.root'),
-###                       )
-### process.output_step = cms.EndPath(process.output)
-
-#process.schedule = cms.Schedule(
-#		process.p,
-#		process.output_step)
+##process.output = cms.OutputModule(
+##                "PoolOutputModule",
+##                      fileName = cms.untracked.string('output.root'),
+##                      )
+##process.output_step = cms.EndPath(process.output)
+##
+##process.schedule = cms.Schedule(
+##		process.p,
+##		process.output_step)
 
 # Local Variables:
 # mode:python

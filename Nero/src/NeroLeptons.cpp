@@ -5,9 +5,11 @@
 #include "NeroProducer/Nero/interface/NeroFunctions.hpp"
 #include <time.h>
 
+//#define VERBOSE_LEP 2
+
 namespace myid{
 bool isMediumMuon(const reco::Muon & recoMu) 
-    { // medium id for B->F
+{ // medium id for B->F
       // https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideMuonIdRun2#MediumID2016_to_be_used_with_Run
           bool goodGlob = recoMu.isGlobalMuon() and
                           recoMu.globalTrack()->normalizedChi2() < 3 and
@@ -17,7 +19,7 @@ bool isMediumMuon(const reco::Muon & recoMu)
                           recoMu.innerTrack()->validFraction() > 0.49 and
                           muon::segmentCompatibility(recoMu) > (goodGlob ? 0.303 : 0.451); 
           return isMedium; 
-    }
+}
 
 bool isHighPtMuon(const pat::Muon & mu, const reco::Vertex& PV) 
 {
@@ -47,6 +49,10 @@ NeroLeptons::NeroLeptons(edm::ConsumesCollector & cc,edm::ParameterSet iConfig):
     NeroCollection(cc, iConfig),
     BareLeptons()
 {
+#ifdef VERBOSE_LEP
+    if (VERBOSE_LEP>0) Logger::getInstance().verbosity_=5;
+    if (VERBOSE_LEP >0) Logger::getInstance().Log("-> Constructor of Nero Leptons",Logger::DEBUG);
+#endif
 
     vtx_token = cc.consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("vertices"));
     token_pf = cc.consumes<pat::PackedCandidateCollection>(iConfig.getParameter<edm::InputTag>("pfCands"));
@@ -54,13 +60,13 @@ NeroLeptons::NeroLeptons(edm::ConsumesCollector & cc,edm::ParameterSet iConfig):
     mu_token = cc.consumes<pat::MuonCollection>(iConfig.getParameter<edm::InputTag>("muons"));
     el_token = cc.consumes<pat::ElectronCollection>(iConfig.getParameter<edm::InputTag>("electrons"));
     //el_hltid_token = cc.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleHLTIdMap"));
-    el_mva_token = cc.consumes<edm::ValueMap<float> > (iConfig.getParameter<edm::InputTag>("eleMvaMap"));
+    //el_mva_token = cc.consumes<edm::ValueMap<float> > (iConfig.getParameter<edm::InputTag>("eleMvaMap"));
     rho_token = cc.consumes<double> (edm::InputTag("fixedGridRhoFastjetCentralNeutral")); // for miniIso
 
-    el_vetoid_token = cc.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleVetoIdMap"));
-    el_looseid_token = cc.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleLooseIdMap"));
-    el_mediumid_token = cc.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMediumIdMap"));
-    el_tightid_token = cc.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleTightIdMap"));
+    //el_vetoid_token = cc.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleVetoIdMap"));
+    //el_looseid_token = cc.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleLooseIdMap"));
+    //el_mediumid_token = cc.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMediumIdMap"));
+    //el_tightid_token = cc.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleTightIdMap"));
 
     el_uncalib_token = cc.consumes<pat::ElectronCollection>(edm::InputTag("slimmedElectrons"));
 
@@ -76,20 +82,17 @@ NeroLeptons::NeroLeptons(edm::ConsumesCollector & cc,edm::ParameterSet iConfig):
 
     mMinNleptons = iConfig.getParameter<int>("minLepN");
 
-    ebRecHits_token = cc.mayConsume<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("ebRecHits"));
+    //ebRecHits_token = cc.mayConsume<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("ebRecHits"));
     //leps -> eeRecHits_token = cc.mayConsume<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("eeRecHits"));
 
-    // eventually configure
-    //leps -> EleCorr = new EnergyScaleCorrection_class("EgammaAnalysis/ElectronTools/data/ScalesSmearings/Winter_2016_reReco_v1_ele");
-    // leps->EleCorr -> doSmearings= true;
-    // leps->EleCorr -> doScale= true;
-    
-
     rnd_ = new TRandom3( ) ;
+
+#ifdef VERBOSE_LEP
+    if (VERBOSE_LEP >0) Logger::getInstance().Log("-> end constructor",Logger::DEBUG);
+#endif
 }
 
 NeroLeptons::~NeroLeptons(){
-    delete EleCorr; 
     delete rnd_; 
 }
 
@@ -107,6 +110,9 @@ unsigned NeroLeptons::idStringToEnum(std::string idString)
 }
 int NeroLeptons::analyze(const edm::Event & iEvent)
 {
+#ifdef VERBOSE_LEP
+    if (VERBOSE_LEP >0) Logger::getInstance().Log("-> Begin analyze NeroLeptons",Logger::DEBUG);
+#endif
     kMinId = idStringToEnum(mMinId);
     
     iEvent.getByToken(vtx_token, vtx_handle);
@@ -118,43 +124,39 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
     iEvent.getByToken(el_uncalib_token,el_uncalib_handle);	
 
     //VID
-    iEvent.getByToken(el_mediumid_token,el_medium_id);
-    iEvent.getByToken(el_tightid_token,el_tight_id);
-    iEvent.getByToken(el_vetoid_token,el_veto_id);
-    iEvent.getByToken(el_looseid_token,el_loose_id);
+    //iEvent.getByToken(el_mediumid_token,el_medium_id);
+    //iEvent.getByToken(el_tightid_token,el_tight_id);
+    //iEvent.getByToken(el_vetoid_token,el_veto_id);
+    //iEvent.getByToken(el_looseid_token,el_loose_id);
 
-    iEvent.getByToken(el_mva_token,el_mva);
+    //iEvent.getByToken(el_mva_token,el_mva);
     //iEvent.getByToken(el_hltid_token,el_hlt_id);
     iEvent.getByToken(rho_token,rho_handle);
 
-    edm::Handle<EcalRecHitCollection> ebRecHits;
+    //edm::Handle<EcalRecHitCollection> ebRecHits;
     //edm::Handle<EcalRecHitCollection> eeRecHits;
-    iEvent.getByToken(ebRecHits_token,ebRecHits);
+    //iEvent.getByToken(ebRecHits_token,ebRecHits);
     //iEvent.getByToken(eeRecHits_token,eeRecHits);
-    //
+    
     iEvent.getByToken(el_uncalib_token,el_uncalib_handle);
-
-    /*
-    for(unsigned i=0;i<el_uncalib_handle->size();++i)
-    {
-        cout<<"I="<<i<<"PT="<<(*el_uncalib_handle)[i].pt()
-            <<(*el_handle)[i].pt()
-            <<"ETA = "<<(*el_uncalib_handle)[i].eta()<<":"<<(*el_handle)[i].eta()
-            <<"ID = "<<edm::Ref<pat::ElectronCollection>(el_uncalib_handle,i).id().id()
-            <<": "   <<edm::Ref<pat::ElectronCollection>(el_handle,i).id().id()
-            <<endl;
-    }
-    */
 
     if ( not mu_handle.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] mu_handle is not valid"<<endl;
     if ( not el_handle.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_handle is not valid"<<endl;
     if ( not el_uncalib_handle.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_uncalib_handle is not valid"<<endl;
     //if ( not el_hlt_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_hlt_id is not valid"<<endl;
-    if ( not el_mva.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_mva is not valid"<<endl;
+    //if ( not el_mva.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_mva is not valid"<<endl;
     if ( not rho_handle.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] rho_handle is not valid"<<endl;
+
+    //if ( not el_veto_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_vetoid_handle is not valid"<<endl;
+    //if ( not el_loose_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_looseid_handle is not valid"<<endl;
+    //if ( not el_medium_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_mediumid_handle is not valid"<<endl;
+    //if ( not el_tight_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_tightid_handle is not valid"<<endl;
 
     vector<myLepton> leptons;
 
+#ifdef VERBOSE_LEP
+    if (VERBOSE_LEP >0) Logger::getInstance().Log("[NeroLeptons] Begin muon loop",Logger::DEBUG);
+#endif
     for (const pat::Muon &mu : *mu_handle) {
         // selection
         if (mu.pt() < 5. ) continue;
@@ -210,6 +212,9 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         leptons.push_back(l);
     }
 
+#ifdef VERBOSE_LEP
+    if (VERBOSE_LEP >0) Logger::getInstance().Log("[NeroLeptons] Begin electron loop",Logger::DEBUG);
+#endif
     // Electron LOOP
     int iEle = -1;
     for (const pat::Electron &el : *el_handle)
@@ -219,12 +224,30 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         if ( el.pt() < 10 ) continue;
         if ( el.pt() < mMinPt_el || fabs(el.eta()) > mMinEta_el ) continue;
 
+#ifdef VERBOSE_LEP
+    if (VERBOSE_LEP >1) Logger::getInstance().Log(Form("[NeroLeptons] Considering Electron %d. pt=%f eta=%f phi=%f",iEle, el.pt(),el.eta(),el.phi()),Logger::DEBUG);
+#endif
+
         edm::RefToBase<pat::Electron> ref ( edm::Ref< pat::ElectronCollection >(el_handle, iEle) ) ;
 
         myLepton l;
         l.pdgId = -el.charge()*11;
 
-        l.mva = (*el_mva)[ref];
+#ifdef VERBOSE_LEP
+    if (VERBOSE_LEP >1) Logger::getInstance().Log("[NeroLeptons]  - userfloat",Logger::DEBUG);
+    //ElectronMVAEstimatorRun2Fall17IsoV1Values ElectronMVAEstimatorRun2Fall17NoIsoV1Values ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values ElectronMVAEstimatorRun2Spring15Trig25nsV1Values ElectronMVAEstimatorRun2Spring15Trig50nsV1Values ElectronMVAEstimatorRun2Spring16GeneralPurposeV1Values ElectronMVAEstimatorRun2Spring16HZZV1Values ecalEnergyErrPostCorr ecalEnergyErrPreCorr ecalEnergyPostCorr ecalEnergyPreCorr ecalTrkEnergyErrPostCorr ecalTrkEnergyErrPreCorr ecalTrkEnergyPostCorr ecalTrkEnergyPreCorr energyScaleDown energyScaleEtDown energyScaleEtUp energyScaleGainDown energyScaleGainUp energyScaleStatDown energyScaleStatUp energyScaleSystDown energyScaleSystUp energyScaleUp energyScaleValue energySigmaDown energySigmaPhiDown energySigmaPhiUp energySigmaRhoDown energySigmaRhoUp energySigmaUp energySigmaValue energySmearNrSigma heepTrkPtIso 
+    //
+    if (VERBOSE_LEP >1) Logger::getInstance().Log(Form("[NeroLeptons]  ---> uf=%f",el.userFloat("ElectronMVAEstimatorRun2Fall17NoIsoV1Values")),Logger::DEBUG);
+
+    if (VERBOSE_LEP >1) Logger::getInstance().Log("[NeroLeptons]  - mva",Logger::DEBUG);
+#endif
+
+        //l.mva = (*el_mva)[ref];
+        l.mva = el.userFloat("ElectronMVAEstimatorRun2Fall17NoIsoV1Values");
+
+#ifdef VERBOSE_LEP
+    if (VERBOSE_LEP >1) Logger::getInstance().Log(Form("[NeroLeptons]  ---> mva=%f",l.mva),Logger::DEBUG);
+#endif
 
         l.etasc = el.superCluster()->eta();
         l.sieie = el.full5x5_sigmaIetaIeta();
@@ -262,18 +285,35 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         //bool isPassTight = passEleId( el, Tight, l.iso/el.pt()); 
         //bool isPassMedium = passEleId( el, Medium, l.iso/el.pt());
         //bool isPassLoose = passEleId( el, Loose, l.iso/el.pt()) ; 
+        //
+#ifdef VERBOSE_LEP
+    if (VERBOSE_LEP >1) Logger::getInstance().Log("[NeroLeptons]  - VID1",Logger::DEBUG);
+    if (VERBOSE_LEP >1) Logger::getInstance().Log(Form("[NeroLeptons]  ---> veto=%d",int(el.electronID("cutBasedElectronID-Fall17-94X-V1-loose"))),Logger::DEBUG);
+    if (VERBOSE_LEP >1) Logger::getInstance().Log("[NeroLeptons]  - VID",Logger::DEBUG);
+#endif
         //VID
-        bool isPassVeto = (*el_veto_id)[ref] and el.passConversionVeto();
-        bool isPassTight = (*el_tight_id)[ref] and el.passConversionVeto();
-        bool isPassMedium = (*el_medium_id)[ref] and el.passConversionVeto();
-        bool isPassLoose = (*el_loose_id)[ref] and el.passConversionVeto();
+        //bool isPassVeto = (*el_veto_id)[ref] and el.passConversionVeto();
+        //bool isPassTight = (*el_tight_id)[ref] and el.passConversionVeto();
+        //bool isPassMedium = (*el_medium_id)[ref] and el.passConversionVeto();
+        //bool isPassLoose = (*el_loose_id)[ref] and el.passConversionVeto();
+        //
+        bool isPassVeto  = el.electronID("cutBasedElectronID-Fall17-94X-V1-veto") and el.passConversionVeto();
+        bool isPassLoose = el.electronID("cutBasedElectronID-Fall17-94X-V1-loose") and el.passConversionVeto();
+        bool isPassMedium= el.electronID("cutBasedElectronID-Fall17-94X-V1-medium") and el.passConversionVeto();
+        bool isPassTight = el.electronID("cutBasedElectronID-Fall17-94X-V1-tight") and el.passConversionVeto();
 
+#ifdef VERBOSE_LEP
+    if (VERBOSE_LEP >1) Logger::getInstance().Log(Form("[NeroLeptons]  ---> veto=%d",int(isPassVeto)),Logger::DEBUG);
+    if (VERBOSE_LEP >1) Logger::getInstance().Log(Form("[NeroLeptons]  ---> loose=%d",int(isPassLoose)),Logger::DEBUG);
+    if (VERBOSE_LEP >1) Logger::getInstance().Log(Form("[NeroLeptons]  ---> medium=%d",int(isPassMedium)),Logger::DEBUG);
+    if (VERBOSE_LEP >1) Logger::getInstance().Log(Form("[NeroLeptons]  ---> tight=%d",int(isPassTight)),Logger::DEBUG);
+#endif
         //bool isPassHLT = (*el_hlt_id)[ref] and el.passConversionVeto();
 
         
-        double Ecorr=NeroFunctions::getEGSeedCorrections(el,ebRecHits); 
+        //double Ecorr=NeroFunctions::getEGSeedCorrections(el,ebRecHits); 
 
-        l.ecorr = Ecorr;
+        //l.ecorr = Ecorr;
         l.p4.SetPxPyPzE( el.px(),el.py(),el.pz(),el.energy());
 
         l.selBits = 0 ;
@@ -327,6 +367,10 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 
     }
 
+#ifdef VERBOSE_LEP
+    if (VERBOSE_LEP >0) Logger::getInstance().Log("[NeroLeptons] Filling leptons",Logger::DEBUG);
+#endif
+
     if ( int(leptons.size()) < mMinNleptons ) return 1;
 
     // sort leptons
@@ -359,6 +403,9 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         nLayers -> push_back(l.nlayers);
     }
 
+#ifdef VERBOSE_LEP
+    if (VERBOSE_LEP >0) Logger::getInstance().Log("[NeroLeptons] return",Logger::DEBUG);
+#endif
 
     return 0;
 }
