@@ -46,6 +46,9 @@ class BareJets : virtual public BareP4
         vector<float> *deepC{0};
         vector<float> *deepL{0};
 
+        vector<float> *bcorr{0};
+        vector<float> *bcorrunc{0};
+
         //vector<float> *bDiscrLegacy{0};
         vector<float> *puId{0};
         vector<float> *unc{0};

@@ -57,6 +57,8 @@ NeroJets::NeroJets(edm::ConsumesCollector & cc,edm::ParameterSet iConfig):
     token = cc.consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("jets"));
     qg_token = cc.consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "qgLikelihood"));
     rho_token       = cc.consumes<double>(iConfig.getParameter<edm::InputTag>("rho"));
+    bcorr_token = cc.consumes<edm::ValueMap<float>>(edm::InputTag("bRegressionProducer", "bRegression"));
+    bcorrunc_token = cc.consumes<edm::ValueMap<float>>(edm::InputTag("bRegressionProducer", "bRegressionResolution"));
     mMinPt = iConfig.getParameter<double>("minPt");
     mMinNjets = iConfig.getParameter<int>("minN");
     mMinEta = iConfig.getParameter<double>("minEta");
@@ -101,6 +103,12 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
 
     if ( not handle.isValid() ) cout<<"[NeroJets]::[analyze]::[ERROR] handle is not valid"<<endl;
     if ( not qg_handle.isValid() ) cout<<"[NeroJets]::[analyze]::[ERROR] qg_handle is not valid"<<endl;
+
+    iEvent.getByToken(bcorr_token,bcorr_handle);
+    iEvent.getByToken(bcorrunc_token,bcorrunc_handle);
+
+    if ( not bcorr_handle.isValid() ) cout<<"[NeroJets]::[analyze]::[ERROR] bcorr_handle is not valid"<<endl;
+    if ( not bcorrunc_handle.isValid() ) cout<<"[NeroJets]::[analyze]::[ERROR] bcorrunc_handle is not valid"<<endl;
 
     iEvent.getByToken(pruned_token, pruned_handle);
     iEvent.getByToken(qg_token_Mult,qg_handle_Mult);
@@ -267,6 +275,9 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
         deepBB -> push_back( j.bDiscriminator("pfDeepCSVJetTags:probbb") );
         deepC -> push_back( j.bDiscriminator("pfDeepCSVJetTags:probc") );
         deepL -> push_back( j.bDiscriminator("pfDeepCSVJetTags:probudsg") );
+
+        bcorr    -> push_back( (*bcorr_handle)[jetRef] );
+        bcorrunc -> push_back( (*bcorrunc_handle)[jetRef] );
 
         // if the token was not valid, this will simply not be filled
         if (qg_handle_Mult.isValid()) qglMult->push_back(  (*qg_handle_Mult)[jetRef] );

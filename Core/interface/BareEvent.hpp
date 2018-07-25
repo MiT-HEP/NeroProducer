@@ -15,6 +15,10 @@ class BareEvent : virtual public BareCollection
             goodVertices           = 1UL << 4,
             eeBadScFilter          = 1UL << 5,
             GlobalTightHalo2016    = 1UL << 6,
+            BadPFMuonFilter        = 1UL << 7,
+            BadChargedCandidateFilter = 1UL <<8,
+            ecalBadCalibFilter     = 1UL <<9,
+
             Unknown                = 1UL << 31 // if matching do not work, put it here, but keep the full correct
         };
 
@@ -38,8 +42,6 @@ class BareEvent : virtual public BareCollection
     
         vector<string> *metfilterNames;
         unsigned selBits{0};
-        bool filterbadChCandidate;
-        bool filterbadPFMuon;
 
 };
 

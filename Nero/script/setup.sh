@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Instruct builder to use a particular CMSSW release
-# [CMSSW] CMSSW_9_4_1
+# [CMSSW] CMSSW_9_4_9
 # [Options] isData=True
-# [fileList] /store/data/Run2017B/DoubleMuon/MINIAOD/17Nov2017-v1/50000/C81DD09D-DFD3-E711-8CA8-F04DA275BFEC.root
+# [fileList] /store/data/Run2017B/SingleMuon/MINIAOD/31Mar2018-v1/90000/FEC62083-1E39-E811-B2A1-0CC47A4D75F8.root
 # [MaxEvents] 5000
 # [Tag] CMSSW_92X
 
@@ -57,6 +57,16 @@ function CMSSW_9_4_1 {
         git clone https://github.com/ECALELFS/ScalesSmearings.git EgammaAnalysis/ElectronTools/data/ScalesSmearings -b Run2017_17Nov2017_v1
         #rsync -avP EgammaAnalysis/ElectronTools/data/ScalesSmearings.new/* EgammaAnalysis/ElectronTools/data/ScalesSmearings/
         git cms-merge-topic amarini:topic_qgmorvar_94X 
+}
+
+function CMSSW_9_4_9 {
+        git cms-init
+        ## postReco for EGamma
+        git cms-merge-topic cms-egamma:EgammaPostRecoTools_940
+        ## additional variables for qg: (axis1,cmult,nmult). Optional 
+        git cms-merge-topic amarini:topic_qgmorvar_94X 
+        ## tensor flow for breg
+        git clone https://gitlab.cern.ch/mrieger/CMSSW-DNN.git DNN -b tf_cc_1.3
 }
 
 function CMSSW_10_1_6 {

@@ -38,6 +38,9 @@ class NeroJets : virtual public NeroCollection, virtual public BareJets
         edm::Handle<edm::ValueMap<int>> qg_handle_nmult;
         edm::Handle<edm::ValueMap<float>> qg_handle_pt_dr_log;
 
+        edm::Handle<edm::ValueMap<float>> bcorr_handle;
+        edm::Handle<edm::ValueMap<float>> bcorrunc_handle;
+
         edm::Handle<edm::View<reco::GenParticle> > pruned_handle;
         edm::Handle<double> rho_handle;
         edm::EDGetTokenT<double> rho_token;
@@ -54,6 +57,9 @@ class NeroJets : virtual public NeroCollection, virtual public BareJets
         edm::EDGetTokenT<edm::ValueMap<int>> qg_token_cmult;
         edm::EDGetTokenT<edm::ValueMap<int>> qg_token_nmult;
         edm::EDGetTokenT<edm::ValueMap<float>> qg_token_pt_dr_log;
+
+        edm::EDGetTokenT<edm::ValueMap<float>> bcorr_token;
+        edm::EDGetTokenT<edm::ValueMap<float>> bcorrunc_token;
 
         edm::EDGetTokenT<reco::GenJetCollection> gen_token;
         map<string, edm::EDGetTokenT<edm::ValueMap<float> > > qg_dR_tokens_f;

@@ -9,4 +9,10 @@
 <!-- End QGVariables -->
 <!-- Njettiness groomed -->
 <use name="fastjet-contrib"/>
+<!-- BReg -->
+<use name="PhysicsTools/TensorFlow" />
+<use name="tensorflow-cc" />
+<use name="DataFormats/VertexReco" />
+<use name="RecoVertex/VertexPrimitives"/>
+<use name="RecoVertex/VertexTools" />
 <flags EDM_PLUGIN="1"/>
