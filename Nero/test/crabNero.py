@@ -355,6 +355,11 @@ if __name__ == '__main__':
     config.Data.inputDataset = '/VBFHHTo2B2Mu_CV_1_C2V_1_C3_1_13TeV-madgraph/amarini-Fall17_94X_Apr2018_MINIAOD-18783c0a07109245951450a1a4f55409/USER'
     submit(config)
 
+    config.Data.inputDBS = 'phys03'
+    config.General.requestName = 'GluGluToHHTo2B2M_node_4_13TeV-madgraph'
+    config.Data.inputDataset = '/GluGluToHHTo2B2G_node_4_13TeV-madgraph/amarini-Fall17_94X_Apr2018_MINIAOD-18783c0a07109245951450a1a4f55409/USER'
+    submit(config)
+
     #### HMM
     ##for mh in [120,130]:
     ##    config.General.requestName = 'ttH_%d'%mh
