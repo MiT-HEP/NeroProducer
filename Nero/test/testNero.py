@@ -334,6 +334,9 @@ process.QGVariables.isData = cms.bool(isData)
 process.load('NeroProducer.Skim.NjettinesGroomed_cff')
 process.NjettinessGroomed.srcJets = process.nero.NeroFatJets.chsAK8
 
+### BRegression
+process.load('NeroProducer.Skim.bRegressionProducer_cfi')
+process.bRegressionProducer.JetTag = process.nero.NeroJets.jets
 
 ##DEBUG
 ##print "Process=",process, process.__dict__.keys()
@@ -350,6 +353,7 @@ process.p = cms.Path(
                 process.QGVariablesSequence*
                 process.NjettinessGroomed*
                 process.chsForSATkJets * process.softActivityJets * ## track jtes
+                process.bRegressionProducer*
                 process.nero
                 )
 

@@ -43,7 +43,9 @@ BareJets::~BareJets(){
     BareFunctions::Delete(deepBB);
     BareFunctions::Delete(deepC);
     BareFunctions::Delete(deepL);
-    //
+    // bregression
+    BareFunctions::Delete(bcorr);
+    BareFunctions::Delete(bcorrunc);
     //extra qg variables
     for(const auto& dR : dRToProduce)
     {
@@ -93,6 +95,9 @@ void BareJets::init(){
     BareFunctions::New(deepBB);
     BareFunctions::New(deepC);
     BareFunctions::New(deepL);
+    //
+    BareFunctions::New(bcorr);
+    BareFunctions::New(bcorrunc);
     //
     BareFunctions::New(ptResUncCentral);
     BareFunctions::New(ptResUncUp);
@@ -167,6 +172,8 @@ void BareJets::clear(){
     deepC->clear();
     deepL->clear();
 
+    bcorr->clear();
+    bcorrunc->clear();
 }
 
 void BareJets::defineBranches(TTree *t){
@@ -236,6 +243,9 @@ void BareJets::defineBranches(TTree *t){
     t->Branch(jetName +"DeepBB",&deepBB);
     t->Branch(jetName +"DeepC",&deepC);
     t->Branch(jetName +"DeepL",&deepL);
+
+    t->Branch(jetName +"BCorr",&bcorr);
+    t->Branch(jetName +"BCorrUnc",&bcorrunc);
 }
 
 void BareJets::setBranchAddresses(TTree* t, std::string prefix)
@@ -295,6 +305,9 @@ void BareJets::setBranchAddresses(TTree* t, std::string prefix)
     BareFunctions::SetBranchAddress(t,jetName +"DeepBB",&deepBB);
     BareFunctions::SetBranchAddress(t,jetName +"DeepC",&deepC);
     BareFunctions::SetBranchAddress(t,jetName +"DeepL",&deepL);
+
+    BareFunctions::SetBranchAddress(t,jetName +"BCorr",&bcorr);
+    BareFunctions::SetBranchAddress(t,jetName +"BCorrUnc",&bcorrunc);
 }
 
 BAREREGISTER(BareJets);
