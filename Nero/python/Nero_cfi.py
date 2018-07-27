@@ -64,6 +64,9 @@ nero = cms.EDAnalyzer("Nero",
         minGenParticlePt = cms.double(5.),
         minGenJetPt = cms.double(20.),
         particleGun = cms.untracked.bool(False),
+        minPdfId=cms.string("1682"),# PDF4LHC15_nlo_30
+        maxPdfId=cms.string("1714"),
+        ## PDF4LH15_nlo_100 1476, 1578
     ),
 
     #
