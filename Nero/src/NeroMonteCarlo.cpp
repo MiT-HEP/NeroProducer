@@ -31,6 +31,9 @@ NeroMonteCarlo::NeroMonteCarlo(edm::ConsumesCollector & cc,edm::ParameterSet iCo
     mMinGenJetPt = iConfig.getParameter<double>("minGenJetPt");
     mParticleGun = iConfig.getUntrackedParameter<bool>("particleGun",false);
 
+    minPdfId = iConfig.getParameter<std::string>("minPdfId");
+    maxPdfId = iConfig.getParameter<std::string>("maxPdfId");
+
     genBHadFlavour_token = cc.consumes<std::vector<int> > (edm::InputTag("matchGenBHadron", "genBHadFlavour"));
     genCHadJetIndex_token = cc.consumes<std::vector<int> > (edm::InputTag("matchGenCHadron", "genCHadJetIndex"));
     genCHadBHadronId_token = cc.consumes<std::vector<int> > (edm::InputTag("matchGenCHadron", "genCHadBHadronId"));
@@ -91,11 +94,50 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
         r5f5 = double(lhe_handle -> weights() . at(8) . wgt);  
     }
 
-    if (lhe_handle.isValid() and  lhe_handle->weights().size() >109)
-        for( int pdfw = 9 ; pdfw<109 ;++pdfw)
+    //if (lhe_handle.isValid() and  lhe_handle->weights().size() >109)
+    //    for( int pdfw = 9 ; pdfw<109 ;++pdfw)
+    //    {
+    //    pdfRwgt -> push_back( double(lhe_handle -> weights() . at(pdfw) . wgt ) );    
+    //    }
+
+    // save pdf for lhc 30;
+    if (lhe_handle.isValid() and minPdfIdx==-1 and maxPdfIdx==-1) 
+    {
+        for( unsigned pdfw=0; pdfw<lhe_handle->weights().size() ;++pdfw)
         {
-        pdfRwgt -> push_back( double(lhe_handle -> weights() . at(pdfw) . wgt ) );    
+            if ( minPdfIdx<0 and string(lhe_handle -> weights() . at(pdfw) .id).find(minPdfId) != string::npos)minPdfIdx=pdfw;
+            if ( maxPdfIdx<0 and string(lhe_handle -> weights() . at(pdfw) .id).find(maxPdfId) != string::npos)maxPdfIdx=pdfw;
+            if ( maxPdfIdx >=0 and minPdfIdx >=0) break;
         }
+        if (minPdfIdx==-1) minPdfIdx=-2; // don't reloop if I didn't find them once
+        if (maxPdfIdx==-1) maxPdfIdx=-2;
+        cout<<"[NeroMonteCarlo]::[analyze]::[INFO] "
+                <<"Pdf saved from ["
+                << minPdfIdx<<","
+                << maxPdfIdx
+                <<"] corresponding to ids ["
+                <<lhe_handle -> weights() . at(minPdfIdx) .id <<","
+                <<lhe_handle -> weights() . at(maxPdfIdx) .id
+                << "]. Requested were ["
+                << minPdfId <<","
+                << maxPdfId
+                << "]"
+                <<endl;
+    }
+
+    if (lhe_handle.isValid() and minPdfIdx>=0 and maxPdfIdx>=0) 
+    {
+        for( int pdfw = minPdfIdx ; pdfw<=maxPdfIdx ;++pdfw)
+        {
+            pdfRwgt -> push_back( double(lhe_handle -> weights() . at(pdfw) . wgt ) );    
+        }
+    }
+
+    //<weightgroup combine="unknown" name="PDF_variation PDF4LHC15_nlo_30_pdfas">
+    //    T       <weight id="1682"> PDF=   90400 PDF4LHC15_nlo_30_pdfas </weight>
+    //    T       <weight id="1714"> PDF=   90432 PDF4LHC15_nlo_30_pdfas </weight>
+    //    T     </weightgroup>
+
 
     if (lhe_handle.isValid() )  // save lhe particles
     {

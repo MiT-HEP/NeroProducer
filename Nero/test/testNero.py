@@ -38,11 +38,13 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxE
 if len(options.inputFiles) == 0:
     if isData:
         options.inputFiles = [
-                '/store/data/Run2017B/SingleMuon/MINIAOD/31Mar2018-v1/90000/FEC62083-1E39-E811-B2A1-0CC47A4D75F8.root'
+                #'/store/data/Run2017B/SingleMuon/MINIAOD/31Mar2018-v1/90000/FEC62083-1E39-E811-B2A1-0CC47A4D75F8.root'
+                '/store/user/amarini/Sync/0E555487-7241-E811-9209-002481CFC92C.root' ## SingleMuon Run2017B 31Mar2018
         ]
     else:
         options.inputFiles = [
-                '/store/mc/RunIIFall17MiniAOD/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/50000/0CAD1964-6FD9-E711-97C4-FA163EE0F5F8.root'
+                #'/store/mc/RunIIFall17MiniAOD/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/50000/0CAD1964-6FD9-E711-97C4-FA163EE0F5F8.root'
+                '/store/user/amarini/Sync/5AC9148F-9842-E811-892B-3417EBE535DA.root' ## GGH Hmm Apr2018
         ]
 
 ### do not remove the line below!

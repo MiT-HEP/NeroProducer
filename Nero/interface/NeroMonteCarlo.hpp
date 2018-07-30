@@ -56,7 +56,9 @@ class NeroMonteCarlo : virtual public NeroCollection,
         float mMinGenJetPt;
         bool mParticleGun; 
         int isRealData;
-       
+        
+        string minPdfId{"xxx"}; int minPdfIdx=-1;
+        string maxPdfId{"xxx"}; int maxPdfIdx=-1;
         // ---  
         template<class T> // T is supposed to be: reco::GenParticles or Packed Gen Particles
         unsigned  ComputeFlags( T & p ) ;
