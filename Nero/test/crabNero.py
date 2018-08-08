@@ -126,26 +126,27 @@ if __name__ == '__main__':
     ###################################################
     setdata("True")
     ###################################################
-    config.Data.unitsPerJob = 150
+    config.Data.unitsPerJob = 100
 
-    #config.General.requestName = 'SingleMuon-Run2017B'
-    #config.Data.inputDataset = '/SingleMuon/Run2017B-17Nov2017-v1/MINIAOD'
-    #submit(config)
+    # /SingleMuon/Run2017B-31Mar2018-v1/MINIAOD
+    config.General.requestName = 'SingleMuon-Run2017B'
+    config.Data.inputDataset = '/SingleMuon/Run2017B-31Mar2018-v1/MINIAOD'
+    submit(config)
 
     #config.General.requestName = 'SingleMuon-Run2017C'
-    #config.Data.inputDataset = '/SingleMuon/Run2017C-17Nov2017-v1/MINIAOD'
+    #config.Data.inputDataset = '/SingleMuon/Run2017C-31Mar2018-v1/MINIAOD'
     #submit(config)
 
     #config.General.requestName = 'SingleMuon-Run2017D'
-    #config.Data.inputDataset = '/SingleMuon/Run2017D-17Nov2017-v1/MINIAOD'
+    #config.Data.inputDataset = '/SingleMuon/Run2017D-31Mar2018-v1/MINIAOD'
     #submit(config)
 
     #config.General.requestName = 'SingleMuon-Run2017E'
-    #config.Data.inputDataset = '/SingleMuon/Run2017E-17Nov2017-v1/MINIAOD'
+    #config.Data.inputDataset = '/SingleMuon/Run2017E-31Mar2018-v1/MINIAOD'
     #submit(config)
 
     #config.General.requestName = 'SingleMuon-Run2017F'
-    #config.Data.inputDataset = '/SingleMuon/Run2017F-17Nov2017-v1/MINIAOD'
+    #config.Data.inputDataset = '/SingleMuon/Run2017F-31Mar2018-v1/MINIAOD'
     #submit(config)
 
     ### LOW PU DATA
@@ -161,69 +162,91 @@ if __name__ == '__main__':
     #config.Data.inputDataset = '/ZeroBias/Run2017H-17Nov2017-v1/MINIAOD'
     #submit(config)
 
+    ####################################### DOUBLE MUON
+    # /DoubleMuon/Run2017B-31Mar2018-v1/MINIAOD
+    #config.General.requestName = 'DoubleMuon-Run2017B'
+    #config.Data.inputDataset = '/DoubleMuon/Run2017B-31Mar2018-v1/MINIAOD'
+    #submit(config)
+
+    #config.General.requestName = 'DoubleMuon-Run2017C'
+    #config.Data.inputDataset = '/DoubleMuon/Run2017C-31Mar2018-v1/MINIAOD'
+    #submit(config)
+
+    #config.General.requestName = 'DoubleMuon-Run2017D'
+    #config.Data.inputDataset = '/DoubleMuon/Run2017D-31Mar2018-v1/MINIAOD'
+    #submit(config)
+
+    #config.General.requestName = 'DoubleMuon-Run2017E'
+    #config.Data.inputDataset = '/DoubleMuon/Run2017E-31Mar2018-v1/MINIAOD'
+    #submit(config)
+
+    #config.General.requestName = 'DoubleMuon-Run2017F'
+    #config.Data.inputDataset = '/DoubleMuon/Run2017F-31Mar2018-v1/MINIAOD'
+    #submit(config)
+
     ###################################################
     setdata("True")
 
     #config.Data.unitsPerJob = 50
     #config.General.requestName = 'JetHT-Run2017B'
-    #config.Data.inputDataset = '/JetHT/Run2017B-17Nov2017-v1/MINIAOD'
+    #config.Data.inputDataset = '/JetHT/Run2017B-31Mar2018-v1/MINIAOD'
     #submit(config)
 
     #config.General.requestName = 'JetHT-Run2017C'
-    #config.Data.inputDataset = '/JetHT/Run2017C-17Nov2017-v1/MINIAOD'
+    #config.Data.inputDataset = '/JetHT/Run2017C-31Mar2018-v1/MINIAOD'
     #submit(config)
 
     #config.General.requestName = 'JetHT-Run2017D'
-    #config.Data.inputDataset = '/JetHT/Run2017D-17Nov2017-v1/MINIAOD'
+    #config.Data.inputDataset = '/JetHT/Run2017D-31Mar2018-v1/MINIAOD'
     #submit(config)
 
     #config.General.requestName = 'JetHT-Run2017E'
-    #config.Data.inputDataset = '/JetHT/Run2017E-17Nov2017-v1/MINIAOD'
+    #config.Data.inputDataset = '/JetHT/Run2017E-31Mar2018-v1/MINIAOD'
     #submit(config)
 
     #config.General.requestName = 'JetHT-Run2017F'
-    #config.Data.inputDataset = '/JetHT/Run2017F-17Nov2017-v1/MINIAOD'
+    #config.Data.inputDataset = '/JetHT/Run2017F-31Mar2018-v1/MINIAOD'
     #submit(config)
 
 
     #config.General.requestName = 'ZeroBias-Run2017B'
-    #config.Data.inputDataset = '/ZeroBias/Run2017B-17Nov2017-v1/MINIAOD'
+    #config.Data.inputDataset = '/ZeroBias/Run2017B-31Mar2018-v1/MINIAOD'
     #submit(config)
 
     #config.General.requestName = 'ZeroBias-Run2017C'
-    #config.Data.inputDataset = '/ZeroBias/Run2017C-17Nov2017-v1/MINIAOD'
+    #config.Data.inputDataset = '/ZeroBias/Run2017C-31Mar2018-v1/MINIAOD'
     #submit(config)
 
     #config.General.requestName = 'ZeroBias-Run2017D'
-    #config.Data.inputDataset = '/ZeroBias/Run2017D-17Nov2017-v1/MINIAOD'
+    #config.Data.inputDataset = '/ZeroBias/Run2017D-31Mar2018-v1/MINIAOD'
     #submit(config)
 
     #config.General.requestName = 'ZeroBias-Run2017E'
-    #config.Data.inputDataset = '/ZeroBias/Run2017E-17Nov2017-v1/MINIAOD'
+    #config.Data.inputDataset = '/ZeroBias/Run2017E-31Mar2018-v1/MINIAOD'
     #submit(config)
 
     #config.General.requestName = 'ZeroBias-Run2017F'
-    #config.Data.inputDataset = '/ZeroBias/Run2017F-17Nov2017-v1/MINIAOD'
+    #config.Data.inputDataset = '/ZeroBias/Run2017F-31Mar2018-v1/MINIAOD'
     #submit(config)
 
     #config.General.requestName = 'Charmonium-Run2017B'
-    #config.Data.inputDataset = '/Charmonium/Run2017B-17Nov2017-v1/MINIAOD'
+    #config.Data.inputDataset = '/Charmonium/Run2017B-31Mar2018-v1/MINIAOD'
     #submit(config)
 
     #config.General.requestName = 'Charmonium-Run2017C'
-    #config.Data.inputDataset = '/Charmonium/Run2017C-17Nov2017-v1/MINIAOD'
+    #config.Data.inputDataset = '/Charmonium/Run2017C-31Mar2018-v1/MINIAOD'
     #submit(config)
 
     #config.General.requestName = 'Charmonium-Run2017D'
-    #config.Data.inputDataset = '/Charmonium/Run2017D-17Nov2017-v1/MINIAOD'
+    #config.Data.inputDataset = '/Charmonium/Run2017D-31Mar2018-v1/MINIAOD'
     #submit(config)
 
     #config.General.requestName = 'Charmonium-Run2017E'
-    #config.Data.inputDataset = '/Charmonium/Run2017E-17Nov2017-v1/MINIAOD'
+    #config.Data.inputDataset = '/Charmonium/Run2017E-31Mar2018-v1/MINIAOD'
     #submit(config)
 
     #config.General.requestName = 'Charmonium-Run2017F'
-    #config.Data.inputDataset = '/Charmonium/Run2017F-17Nov2017-v1/MINIAOD'
+    #config.Data.inputDataset = '/Charmonium/Run2017F-31Mar2018-v1/MINIAOD'
     #submit(config)
 
     #####################################################
@@ -351,15 +374,15 @@ if __name__ == '__main__':
     #config.Data.inputDataset = '/QCD_HT700to1000_TuneCP5_13TeV-madgraph-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
     #submit(config)
 
-    config.Data.inputDBS = 'phys03'
-    config.General.requestName = 'VBFHHTo2B2Mu_CV_1_C2V_1_C3_1_13TeV-madgraph'
-    config.Data.inputDataset = '/VBFHHTo2B2Mu_CV_1_C2V_1_C3_1_13TeV-madgraph/amarini-Fall17_94X_Apr2018_MINIAOD-18783c0a07109245951450a1a4f55409/USER'
-    submit(config)
+    #config.Data.inputDBS = 'phys03'
+    #config.General.requestName = 'VBFHHTo2B2Mu_CV_1_C2V_1_C3_1_13TeV-madgraph'
+    #config.Data.inputDataset = '/VBFHHTo2B2Mu_CV_1_C2V_1_C3_1_13TeV-madgraph/amarini-Fall17_94X_Apr2018_MINIAOD-18783c0a07109245951450a1a4f55409/USER'
+    #submit(config)
 
-    config.Data.inputDBS = 'phys03'
-    config.General.requestName = 'GluGluToHHTo2B2M_node_4_13TeV-madgraph'
-    config.Data.inputDataset = '/GluGluToHHTo2B2G_node_4_13TeV-madgraph/amarini-Fall17_94X_Apr2018_MINIAOD-18783c0a07109245951450a1a4f55409/USER'
-    submit(config)
+    #config.Data.inputDBS = 'phys03'
+    #config.General.requestName = 'GluGluToHHTo2B2M_node_4_13TeV-madgraph'
+    #config.Data.inputDataset = '/GluGluToHHTo2B2G_node_4_13TeV-madgraph/amarini-Fall17_94X_Apr2018_MINIAOD-18783c0a07109245951450a1a4f55409/USER'
+    #submit(config)
 
     #### HMM
     ##for mh in [120,130]:
