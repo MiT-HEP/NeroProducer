@@ -96,7 +96,8 @@ if __name__ == '__main__':
             #url = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions17/13TeV/Final"
             #config.Data.lumiMask = url + "/Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt"
             url = "https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions17/13TeV/ReReco"
-            config.Data.lumiMask = url + "/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt"
+            #config.Data.lumiMask = url + "/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt"
+            config.Data.lumiMask = url + "/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt"
         else:
             config.Data.lumiMask = None
             config.Data.splitting = 'FileBased'

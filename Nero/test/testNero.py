@@ -78,10 +78,11 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condD
 
 if (isData):
     # 2017 data
-    process.GlobalTag.globaltag = '94X_dataRun2_ReReco_EOY17_v2' 
+    #process.GlobalTag.globaltag = '94X_dataRun2_ReReco_EOY17_v2' 
+    process.GlobalTag.globaltag = '94X_dataRun2_v10' 
 else:
     ## new miniaod
-    process.GlobalTag.globaltag = '94X_mc2017_realistic_v12' 
+    process.GlobalTag.globaltag = '94X_mc2017_realistic_v15' 
 
 ### LOAD DATABASE
 from CondCore.DBCommon.CondDBSetup_cfi import *
