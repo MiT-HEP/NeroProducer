@@ -129,9 +129,9 @@ if __name__ == '__main__':
     config.Data.unitsPerJob = 100
 
     # /SingleMuon/Run2017B-31Mar2018-v1/MINIAOD
-    config.General.requestName = 'SingleMuon-Run2017B'
-    config.Data.inputDataset = '/SingleMuon/Run2017B-31Mar2018-v1/MINIAOD'
-    submit(config)
+    #config.General.requestName = 'SingleMuon-Run2017B'
+    #config.Data.inputDataset = '/SingleMuon/Run2017B-31Mar2018-v1/MINIAOD'
+    #submit(config)
 
     #config.General.requestName = 'SingleMuon-Run2017C'
     #config.Data.inputDataset = '/SingleMuon/Run2017C-31Mar2018-v1/MINIAOD'
@@ -161,6 +161,28 @@ if __name__ == '__main__':
     #config.General.requestName = 'ZeroBias-Run2017H'
     #config.Data.inputDataset = '/ZeroBias/Run2017H-17Nov2017-v1/MINIAOD'
     #submit(config)
+
+    ####### SINGLE ELECTRON
+    # /SingleElectron/Run2017B-31Mar2018-v1/MINIAOD
+    config.General.requestName = 'SingleElectron-Run2017B'
+    config.Data.inputDataset = '/SingleElectron/Run2017B-31Mar2018-v1/MINIAOD'
+    submit(config)
+
+    config.General.requestName = 'SingleElectron-Run2017C'
+    config.Data.inputDataset = '/SingleElectron/Run2017C-31Mar2018-v1/MINIAOD'
+    submit(config)
+
+    config.General.requestName = 'SingleElectron-Run2017D'
+    config.Data.inputDataset = '/SingleElectron/Run2017D-31Mar2018-v1/MINIAOD'
+    submit(config)
+
+    config.General.requestName = 'SingleElectron-Run2017E'
+    config.Data.inputDataset = '/SingleElectron/Run2017E-31Mar2018-v1/MINIAOD'
+    submit(config)
+
+    config.General.requestName = 'SingleElectron-Run2017F'
+    config.Data.inputDataset = '/SingleElectron/Run2017F-31Mar2018-v1/MINIAOD'
+    submit(config)
 
     ####################################### DOUBLE MUON
     # /DoubleMuon/Run2017B-31Mar2018-v1/MINIAOD
@@ -382,6 +404,12 @@ if __name__ == '__main__':
     #config.Data.inputDBS = 'phys03'
     #config.General.requestName = 'GluGluToHHTo2B2M_node_4_13TeV-madgraph'
     #config.Data.inputDataset = '/GluGluToHHTo2B2G_node_4_13TeV-madgraph/amarini-Fall17_94X_Apr2018_MINIAOD-18783c0a07109245951450a1a4f55409/USER'
+    #submit(config)
+
+    #config.Data.inputDBS = 'phys03'
+    #config.Data.unitsPerJob = 10
+    #config.General.requestName = 'VBFH_HToMuMu_M125_13TeV_powheg_pythia8'
+    #config.Data.inputDataset = '/VBFH_HToMuMu_M125_13TeV_powheg_pythia8/amarini-Fall17_94X-MINIAODSIM-18783c0a07109245951450a1a4f55409/USER'
     #submit(config)
 
     #### HMM

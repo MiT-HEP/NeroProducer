@@ -94,6 +94,7 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
         r5f5 = double(lhe_handle -> weights() . at(8) . wgt);  
     }
 
+    if(VERBOSE>1) cout<<"[NeroMonteCarlo]::[analyze]::[DEBUG] rfweights"<<r1f2<<", "<<r1f5<<",..."<<endl;
     //if (lhe_handle.isValid() and  lhe_handle->weights().size() >109)
     //    for( int pdfw = 9 ; pdfw<109 ;++pdfw)
     //    {
@@ -111,18 +112,22 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
         }
         if (minPdfIdx==-1) minPdfIdx=-2; // don't reloop if I didn't find them once
         if (maxPdfIdx==-1) maxPdfIdx=-2;
+
+        if (VERBOSE or maxPdfIdx >0 ) // if maxPdfIdx >0 is printed only once
+        {
         cout<<"[NeroMonteCarlo]::[analyze]::[INFO] "
                 <<"Pdf saved from ["
                 << minPdfIdx<<","
                 << maxPdfIdx
                 <<"] corresponding to ids ["
-                <<lhe_handle -> weights() . at(minPdfIdx) .id <<","
-                <<lhe_handle -> weights() . at(maxPdfIdx) .id
+                << ((minPdfIdx>0)?lhe_handle -> weights() . at(minPdfIdx) .id :"XXX") <<","
+                << ((maxPdfIdx>0)?lhe_handle -> weights() . at(maxPdfIdx) .id :"XXX")
                 << "]. Requested were ["
                 << minPdfId <<","
                 << maxPdfId
                 << "]"
                 <<endl;
+        }
     }
 
     if (lhe_handle.isValid() and minPdfIdx>=0 and maxPdfIdx>=0) 
