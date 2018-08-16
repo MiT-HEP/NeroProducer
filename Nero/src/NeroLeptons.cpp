@@ -324,6 +324,10 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         l.selBits |= unsigned(isPassVeto) * LepVeto;
         l.selBits |= unsigned(isPassLoose) * LepLoose;
 
+        l.selBits |= unsigned(el.electronID("mvaEleID-Fall17-noIso-V1-wp80"))*LepMVA80;
+        l.selBits |= unsigned(el.electronID("mvaEleID-Fall17-noIso-V1-wp90"))*LepMVA90;
+        l.selBits |= unsigned(el.electronID("mvaEleID-Fall17-noIso-V1-wpLoose"))*LepMVALoose;
+
         l.selBits |= unsigned(isEB and (not isEBEEGap and not isEBEtaGap and not isEBPhiGap)  ) * LepEBEE;
         l.selBits |= unsigned(isEE and (not isEBEEGap and not isEERingGap and not isEEDeeGap)  ) * LepEBEE;
 

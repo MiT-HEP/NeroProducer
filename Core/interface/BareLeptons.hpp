@@ -27,7 +27,10 @@ class BareLeptons : virtual public BareP4
           EleTripleCharge = 1UL<<15, // charge is in agreement between different measurements
           EleNoMissingHits = 1UL<<16,
           LepIP    = 1UL<<17,
-          LepHighPt=1UL<<18
+          LepHighPt=1UL<<18,
+          LepMVA80 = 1UL <<19, // non iso
+          LepMVA90 = 1UL <<20,
+          LepMVALoose = 1UL <<21
         };
 
         BareLeptons();

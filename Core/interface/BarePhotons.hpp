@@ -42,6 +42,7 @@ class BarePhotons : virtual public BareP4
         vector<unsigned> *selBits{0};
         vector<float> *corr{0};
 
+        vector<float> *mva{0};
 
         vector<float> *chIso{0};
         vector<float> *nhIso{0};
