@@ -412,6 +412,12 @@ if __name__ == '__main__':
     #config.Data.inputDataset = '/VBFH_HToMuMu_M125_13TeV_powheg_pythia8/amarini-Fall17_94X-MINIAODSIM-18783c0a07109245951450a1a4f55409/USER'
     #submit(config)
 
+    config.Data.inputDBS = 'phys03'
+    config.Data.unitsPerJob = 10
+    config.General.requestName = 'GluGluH_HToMuMu_M125_13TeV_powheg_pythia8'
+    config.Data.inputDataset = '/GluGlu_HToMuMu_M125_13TeV_powheg_pythia8/amarini-Fall17_94X-MINIAODSIM-18783c0a07109245951450a1a4f55409/USER'
+    submit(config)
+
     #### HMM
     ##for mh in [120,130]:
     ##    config.General.requestName = 'ttH_%d'%mh
