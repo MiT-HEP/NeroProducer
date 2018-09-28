@@ -278,6 +278,7 @@ void BareJets::setBranchAddresses(TTree* t, std::string prefix)
     BareFunctions::SetBranchAddress(t,jetName + "QglAxis2"	,&qglAxis2);
     BareFunctions::SetBranchAddress(t,jetName + "QglAxis1"	,&qglAxis1);
     BareFunctions::SetBranchAddress(t,jetName + "Flavour"	,&flavour);
+    BareFunctions::SetBranchAddress(t,jetName + "hadFlavour"	,&hadFlavour);
     BareFunctions::SetBranchAddress(t,jetName + "MatchedPartonPdgId", &matchedPartonPdgId);
     BareFunctions::SetBranchAddress(t,jetName + "MotherPdgId", &motherPdgId);
     BareFunctions::SetBranchAddress(t,jetName + "GrMotherPdgId", &grMotherPdgId);
