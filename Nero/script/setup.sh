@@ -2,8 +2,8 @@
 
 # Instruct builder to use a particular CMSSW release
 # [CMSSW] CMSSW_9_4_9
-# [Options] isData=True
-# [fileList] /store/data/Run2017B/SingleMuon/MINIAOD/31Mar2018-v1/90000/FEC62083-1E39-E811-B2A1-0CC47A4D75F8.root
+# [Options] isData=False
+# [fileList] /store/user/amarini/Sync/5AC9148F-9842-E811-892B-3417EBE535DA.root
 # [MaxEvents] 5000
 # [Tag] CMSSW_92X
 
@@ -65,6 +65,7 @@ function CMSSW_9_4_9 {
         git cms-merge-topic cms-egamma:EgammaPostRecoTools_940
         ## additional variables for qg: (axis1,cmult,nmult). Optional 
         git cms-merge-topic amarini:topic_qgmorvar_94X 
+        git cms-merge-topic cms-met:METFixEE2017_949_v2
 }
 
 function CMSSW_10_1_6 {

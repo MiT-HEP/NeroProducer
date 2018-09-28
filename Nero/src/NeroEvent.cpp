@@ -60,7 +60,7 @@ int NeroEvent::analyze(const edm::Event& iEvent){
 
         for ( unsigned int i = 0; i < names.size(); ++i) {            
             if ( std::find( metfilterNames->begin(), metfilterNames->end(), names.triggerName(i) ) != metfilterNames->end() ) {
-                if (names.triggerName(i) != "Flag_eeBadScFilter")                
+                if (names.triggerName(i) != "Flag_eeBadScFilter" and not isRealData)                
                 {
                     *passesMETFilters = *passesMETFilters && metFiltersResults->accept( i );
                 }
