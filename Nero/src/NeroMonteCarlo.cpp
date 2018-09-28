@@ -83,6 +83,12 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
     if(VERBOSE>1) cout<<"[NeroMonteCarlo]::[analyze]::[DEBUG] mcWeight="<<endl;
     mcWeight = info_handle -> weight();
     if(VERBOSE>1) cout<<"                                     mcWeight="<<mcWeight<<endl;
+
+    for(size_t i=0;i<info_handle->weights().size() ;++i)
+    { // save systematics shifts. this are pythia only
+        psRwgt->push_back(info_handle->weights()[i]);
+    }
+
     //weights() 
     //---  scale
     if ( lhe_handle.isValid() and  lhe_handle->weights().size() >=9){

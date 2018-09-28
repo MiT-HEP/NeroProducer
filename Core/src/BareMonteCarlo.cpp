@@ -9,6 +9,7 @@ BareMonteCarlo::~BareMonteCarlo(){
     BareFunctions::Delete(jetAK8P4);
     BareFunctions::Delete(pdgId);
     BareFunctions::Delete(pdfRwgt);
+    BareFunctions::Delete(psRwgt);
     BareFunctions::Delete(flags);
     BareFunctions::Delete(genIso);
     BareFunctions::Delete(parent);
@@ -21,6 +22,7 @@ void BareMonteCarlo::init(){
     BareFunctions::New(jetAK8P4);
     BareFunctions::New(pdgId);
     BareFunctions::New(pdfRwgt);
+    BareFunctions::New(psRwgt);
     BareFunctions::New(flags);
     BareFunctions::New(genIso);
     BareFunctions::New(parent);
@@ -59,6 +61,7 @@ void BareMonteCarlo::clear(){
     genTtbarId = -1.;
 
     pdfRwgt->clear();
+    psRwgt->clear();
 }
 
 void BareMonteCarlo::defineBranches(TTree *t){
@@ -90,6 +93,7 @@ void BareMonteCarlo::defineBranches(TTree *t){
     t->Branch("r1f5", &r1f5, "r1f5/F");
     t->Branch("r5f5", &r5f5, "r5f5/F");
     t->Branch("pdfRwgt", "vector<float>", &pdfRwgt);
+    t->Branch("psRwgt", "vector<float>", &psRwgt);
     t->Branch("genIso","vector<float>", &genIso);
     t->Branch("genParent","vector<int>", &parent);
 
@@ -136,6 +140,7 @@ void BareMonteCarlo::setBranchAddresses(TTree *t){
     BareFunctions::SetBranchAddress(t,"genTtbarId",&genTtbarId);
 	
     BareFunctions::SetBranchAddress(t,"pdfRwgt", &pdfRwgt);
+    BareFunctions::SetBranchAddress(t,"psRwgt", &psRwgt);
     BareFunctions::SetBranchAddress(t,"genIso", &genIso);
 
     BareFunctions::SetBranchAddress(t,"genParent", &parent);
