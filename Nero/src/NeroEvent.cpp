@@ -19,6 +19,7 @@ NeroEvent::NeroEvent(edm::ConsumesCollector & cc,edm::ParameterSet iConfig):
     metNameToBit["Flag_goodVertices"] = goodVertices;
     metNameToBit["Flag_eeBadScFilter" ] = eeBadScFilter;
     metNameToBit["Flag_globalTightHalo2016Filter" ] = GlobalTightHalo2016;
+    metNameToBit["Flag_globalSuperTightHalo2016Filter" ] = GlobalSuperTightHalo2016;
     metNameToBit["Flag_BadPFMuonFilter" ] = BadPFMuonFilter;
     metNameToBit["Flag_BadChargedCandidateFilter"] = BadChargedCandidateFilter;
     metNameToBit["Flag_ecalBadCalibFilter"] = ecalBadCalibFilter;

@@ -121,7 +121,6 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 
     iEvent.getByToken(mu_token,mu_handle);	
     iEvent.getByToken(el_token,el_handle);	
-    iEvent.getByToken(el_uncalib_token,el_uncalib_handle);	
 
     //VID
     //iEvent.getByToken(el_mediumid_token,el_medium_id);
@@ -138,11 +137,11 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
     //iEvent.getByToken(ebRecHits_token,ebRecHits);
     //iEvent.getByToken(eeRecHits_token,eeRecHits);
     
-    iEvent.getByToken(el_uncalib_token,el_uncalib_handle);
+    //iEvent.getByToken(el_uncalib_token,el_uncalib_handle);
 
     if ( not mu_handle.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] mu_handle is not valid"<<endl;
     if ( not el_handle.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_handle is not valid"<<endl;
-    if ( not el_uncalib_handle.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_uncalib_handle is not valid"<<endl;
+    //if ( not el_uncalib_handle.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_uncalib_handle is not valid"<<endl;
     //if ( not el_hlt_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_hlt_id is not valid"<<endl;
     //if ( not el_mva.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_mva is not valid"<<endl;
     if ( not rho_handle.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] rho_handle is not valid"<<endl;
@@ -310,11 +309,12 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 #endif
         //bool isPassHLT = (*el_hlt_id)[ref] and el.passConversionVeto();
 
-        
-        //double Ecorr=NeroFunctions::getEGSeedCorrections(el,ebRecHits); 
-
+        float Ecorr=el.userFloat("ecalTrkEnergyPostCorr") / el.energy();
         //l.ecorr = Ecorr;
         l.p4.SetPxPyPzE( el.px(),el.py(),el.pz(),el.energy());
+        l.p4 *= Ecorr;
+
+        l.pfPt = el.pt() ; //,el.py(),el.pz(),el.energy());
 
         l.selBits = 0 ;
 
@@ -323,6 +323,10 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         l.selBits |= unsigned(isPassMedium) * LepMedium;
         l.selBits |= unsigned(isPassVeto) * LepVeto;
         l.selBits |= unsigned(isPassLoose) * LepLoose;
+
+        l.selBits |= unsigned(el.electronID("mvaEleID-Fall17-noIso-V1-wp80"))*LepMVA80;
+        l.selBits |= unsigned(el.electronID("mvaEleID-Fall17-noIso-V1-wp90"))*LepMVA90;
+        l.selBits |= unsigned(el.electronID("mvaEleID-Fall17-noIso-V1-wpLoose"))*LepMVALoose;
 
         l.selBits |= unsigned(isEB and (not isEBEEGap and not isEBEtaGap and not isEBPhiGap)  ) * LepEBEE;
         l.selBits |= unsigned(isEE and (not isEBEEGap and not isEERingGap and not isEEDeeGap)  ) * LepEBEE;
@@ -353,7 +357,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 
         if (mHits == 0 ) l.selBits |=EleNoMissingHits;
 
-        l.pfPt = (*el_uncalib_handle)[iEle].pt();
+        //l.pfPt = (*el_uncalib_handle)[iEle].pt();
     
         l.chiso  = chIso;
         l.nhiso  = nhIso;

@@ -6,6 +6,7 @@ BarePhotons::BarePhotons():BareP4(){
 }
 
 BarePhotons::~BarePhotons(){
+    BareFunctions::Delete(mva);
     BareFunctions::Delete(iso);
     BareFunctions::Delete(corr);
     BareFunctions::Delete(sieie);
@@ -35,6 +36,7 @@ BarePhotons::~BarePhotons(){
 void BarePhotons::init(){
     BareP4::init();
 
+    BareFunctions::New(mva);
     BareFunctions::New(iso);
     BareFunctions::New(corr);
     BareFunctions::New(sieie);
@@ -67,6 +69,7 @@ void BarePhotons::init(){
 void BarePhotons::clear(){
     // This function clear all the internal storage and init it to an arbitrary value
     BareP4::clear();
+    mva -> clear();
     iso -> clear();
     corr -> clear();
     sieie -> clear();
@@ -102,6 +105,7 @@ void BarePhotons::defineBranches(TTree *t){
     //
     BareP4::defineBranches(t, "photon" );
     //
+    t->Branch("photonMva","vector<float>",&mva);
     t->Branch("photonIso","vector<float>",&iso);
     t->Branch("photonCorrections","vector<float>",&corr);
     //
@@ -140,6 +144,7 @@ void BarePhotons::setBranchAddresses(TTree *t){
 
     BareP4::setBranchAddresses(t,"photon");
 
+    BareFunctions::SetBranchAddress(t,"photonMva"	,&mva);
     BareFunctions::SetBranchAddress(t,"photonIso"	,&iso);
     BareFunctions::SetBranchAddress(t,"photonCorrections"	,&corr);
     BareFunctions::SetBranchAddress(t,"photonSieie"	,&sieie);

@@ -18,6 +18,7 @@ class BareEvent : virtual public BareCollection
             BadPFMuonFilter        = 1UL << 7,
             BadChargedCandidateFilter = 1UL <<8,
             ecalBadCalibFilter     = 1UL <<9,
+            GlobalSuperTightHalo2016    = 1UL << 10,
 
             Unknown                = 1UL << 31 // if matching do not work, put it here, but keep the full correct
         };
