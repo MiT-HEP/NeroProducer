@@ -48,7 +48,7 @@ if len(options.inputFiles) == 0:
         ]
 
 ### do not remove the line below!
-###FILELIST###
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(5000) )
 
 process.source = cms.Source("PoolSource",
 	skipEvents = cms.untracked.uint32(0),
@@ -136,7 +136,7 @@ else:
     tagNamePuppi = 'Fall17_17Nov2017_V32_94X_MC_AK4PFPuppi'
 
 #data only, mc hard coded. Need to be fixed per Run
-print "-> FIX JEC FOR AK8"
+print "-> FIX JEC FOR AK8. Using 2017B for Data [ignore if running on MC]"
 process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Fall17_17Nov2017B_V32")
 
 ### 
@@ -253,6 +253,29 @@ runMetCorAndUncFromMiniAOD (
         postfix = "ModifiedMET"
 )
 
+print "-> Ecal Bad "
+
+baddetEcallist = cms.vuint32(
+    [872439604,872422825,872420274,872423218,
+     872423215,872416066,872435036,872439336,
+     872420273,872436907,872420147,872439731,
+     872436657,872420397,872439732,872439339,
+     872439603,872422436,872439861,872437051,
+     872437052,872420649,872422436,872421950,
+     872437185,872422564,872421566,872421695,
+     872421955,872421567,872437184,872421951,
+     872421694,872437056,872437057,872437313])
+
+
+process.ecalBadCalibReducedMINIAODFilter = cms.EDFilter(
+    "EcalBadCalibFilter",
+    EcalRecHitSource = cms.InputTag("reducedEgamma:reducedEERecHits"),
+    ecalMinEt        = cms.double(50.),
+    baddetEcal    = baddetEcallist, 
+    taggingMode = cms.bool(True),
+    debug = cms.bool(False)
+    )
+
 print "-> Updating the jets collection to run on to 'updatedPatJetsUpdatedJEC' with the new jec in the GT/or DB"
 process.nero.NeroJets.jets=cms.InputTag('updatedPatJetsUpdatedJEC')
 process.nero.NeroFatJets.chsAK8=cms.InputTag('updatedPatJetsUpdatedJECAK8')
@@ -262,6 +285,7 @@ process.jecSequence = cms.Sequence(
         process.patJetCorrFactorsUpdatedJEC* process.updatedPatJetsUpdatedJEC 
         * process.patJetCorrFactorsUpdatedJECAK8* process.updatedPatJetsUpdatedJECAK8
         * process.fullPatMetSequenceModifiedMET 
+        * process.ecalBadCalibReducedMINIAODFilter
         )
 
 
