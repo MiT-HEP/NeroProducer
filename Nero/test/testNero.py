@@ -131,11 +131,14 @@ if options.isData:
     tagNamePuppi = 'Fall17_17Nov2017_V32_94X_DATA_AK4PFPuppi'
 else:
     connectString = cms.string('sqlite:jec/Fall17_17Nov2017_V32_94X_MC.db')
-    tagName = 'Fall17_17Nov2017_V32_MC_AK4PFchs'
-    tagNamePuppi = 'Fall17_17Nov2017_V32_MC_AK4PFPuppi'
-#data only, mc hard coded
+    #JetCorrectorParametersCollection_Fall17_17Nov2017_V32_94X_MC_AK4PFPuppi
+    tagName = 'Fall17_17Nov2017_V32_94X_MC_AK4PFchs'
+    tagNamePuppi = 'Fall17_17Nov2017_V32_94X_MC_AK4PFPuppi'
+
+#data only, mc hard coded. Need to be fixed per Run
 print "-> FIX JEC FOR AK8"
-process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Summer16_23Sep2016BCDV4")
+process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Fall17_17Nov2017B_V32")
+
 ### 
 ### 
 process.jec = cms.ESSource("PoolDBESSource",
