@@ -249,7 +249,7 @@ runMetCorAndUncFromMiniAOD (
         pfCandColl=cms.InputTag("packedPFCandidates"),
         CHS = True,
         fixEE2017 = True,
-        fixEE2017Params = {'userawPt': True, 'PtThreshold':50.0, 'MinEtaThreshold':2.65, 'MaxEtaThreshold': 3.139} ,
+        #fixEE2017Params = {'userawPt': True, 'PtThreshold':50.0, 'MinEtaThreshold':2.65, 'MaxEtaThreshold': 3.139} , ## default have modified names
         postfix = "ModifiedMET"
 )
 
