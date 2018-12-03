@@ -123,16 +123,22 @@ process.load("CondCore.DBCommon.CondDBCommon_cfi")
 from CondCore.DBCommon.CondDBSetup_cfi import *
 
 if options.isData:
-    connectString = cms.string('sqlite:jec/Fall17_17Nov2017BCDEF_V6_DATA.db')
-    tagName = 'Fall17_17Nov2017BCDEF_V6_DATA_AK4PFchs'
-    tagNamePuppi = 'Fall17_17Nov2017BCDEF_V6_DATA_AK4PFPuppi'
+    connectString = cms.string('sqlite:jec/Fall17_17Nov2017_V32_94X_DATA.db')
+    # B C DE F
+    #tagName = 'Fall17_17Nov2017BCDEF_V32_DATA_AK4PFchs'
+    tagName = 'Fall17_17Nov2017_V32_94X_DATA_AK4PFchs'
+    #tagNamePuppi = 'Fall17_17Nov2017BCDEF_V32_DATA_AK4PFPuppi'
+    tagNamePuppi = 'Fall17_17Nov2017_V32_94X_DATA_AK4PFPuppi'
 else:
-    connectString = cms.string('sqlite:jec/Fall17_17Nov2017_V6_MC.db')
-    tagName = 'Fall17_17Nov2017_V6_MC_AK4PFchs'
-    tagNamePuppi = 'Fall17_17Nov2017_V6_MC_AK4PFPuppi'
-#data only, mc hard coded
+    connectString = cms.string('sqlite:jec/Fall17_17Nov2017_V32_94X_MC.db')
+    #JetCorrectorParametersCollection_Fall17_17Nov2017_V32_94X_MC_AK4PFPuppi
+    tagName = 'Fall17_17Nov2017_V32_94X_MC_AK4PFchs'
+    tagNamePuppi = 'Fall17_17Nov2017_V32_94X_MC_AK4PFPuppi'
+
+#data only, mc hard coded. Need to be fixed per Run
 print "-> FIX JEC FOR AK8"
-process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Summer16_23Sep2016BCDV4")
+process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Fall17_17Nov2017B_V32")
+
 ### 
 ### 
 process.jec = cms.ESSource("PoolDBESSource",
