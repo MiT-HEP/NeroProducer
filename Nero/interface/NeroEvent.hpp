@@ -30,6 +30,9 @@ class NeroEvent : virtual public NeroCollection, virtual public BareEvent
         
         // need to convert the name to bit in the enum
         map<string,unsigned> metNameToBit;
+
+        // Ecal Bad Filter Token
+        edm::EDGetTokenT<bool> ecalBadCalibFilterUpdate_token ;
 };
 
 

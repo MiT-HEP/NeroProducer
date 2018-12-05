@@ -29,6 +29,9 @@ NeroEvent::NeroEvent(edm::ConsumesCollector & cc,edm::ParameterSet iConfig):
     filter_token    = cc.consumes<edm::TriggerResults>(iConfig.getParameter < edm::InputTag > ("metFilterToken"));
     *( metfilterNames) = iConfig.getParameter < std::vector<std::string> > ("metfilterNames");
 
+    // bad filters
+    ecalBadCalibFilterUpdate_token= cc.consumes<bool>(edm::InputTag("ecalBadCalibReducedMINIAODFilter"));
+
 }
 
 NeroEvent::~NeroEvent(){
@@ -53,6 +56,13 @@ int NeroEvent::analyze(const edm::Event& iEvent){
 
     unsigned int filter=0;
 
+    // override ECAL Bad Filters
+    edm::Handle < bool > passecalBadCalibFilterUpdate ;
+    iEvent.getByToken(ecalBadCalibFilterUpdate_token,passecalBadCalibFilterUpdate);
+    if (not passecalBadCalibFilterUpdate.isValid()) cout<<"[NeroEvents]::[ERROR] EcalBadFilterUpdate not valid"<<std::endl;
+    bool    _passecalBadCalibFilterUpdate =  (*passecalBadCalibFilterUpdate );
+
+
     if ( metFiltersResults.isValid() and not metFiltersResults.failedToGet() ) {
 
         //std::auto_ptr<std::vector<bool> > metFilters(new std::vector<bool>() );
@@ -60,9 +70,14 @@ int NeroEvent::analyze(const edm::Event& iEvent){
 
         for ( unsigned int i = 0; i < names.size(); ++i) {            
             if ( std::find( metfilterNames->begin(), metfilterNames->end(), names.triggerName(i) ) != metfilterNames->end() ) {
+                bool passThisFilter=metFiltersResults->accept( i );
+                if (names.triggerName(i) == "Flag_ecalBadCalibFilter")
+                    passThisFilter=_passecalBadCalibFilterUpdate;
+
                 if (names.triggerName(i) != "Flag_eeBadScFilter" and not isRealData)                
                 {
-                    *passesMETFilters = *passesMETFilters && metFiltersResults->accept( i );
+                    //*passesMETFilters = *passesMETFilters && metFiltersResults->accept( i );
+                    *passesMETFilters = *passesMETFilters && passThisFilter;//metFiltersResults->accept( i );
                 }
                 unsigned bitflag = Unknown;
                 const auto& it = metNameToBit.find(names.triggerName(i) );
@@ -70,10 +85,10 @@ int NeroEvent::analyze(const edm::Event& iEvent){
                 else { 
                     std::cout<<"[NeroEvent]::[analyze]::[ERROR] trigger Name in cfg "<< names.triggerName(i) <<" has no selection bit associated. Will not be saved"<<std::endl;
                 }
-                filter |= metFiltersResults->accept(i) * bitflag;
+                filter |= passThisFilter * bitflag;
 
 #ifdef VERBOSE
-                if(VERBOSE>0)std::cout << "MetFilter : " << names.triggerName(i) << " is registered " << metFiltersResults->accept(i) << std::endl;
+                if(VERBOSE>0)std::cout << "MetFilter : " << names.triggerName(i) << " is registered " << passThisFilter << std::endl;
 #endif
 
             }

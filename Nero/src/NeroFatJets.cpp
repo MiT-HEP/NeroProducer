@@ -41,7 +41,8 @@ void NeroFatJets::init()
 {
   BareFatJets::init();
   // set up jet energy corrections
-  string jecBasePathMC="jec/Summer16_23Sep2016V4";
+  //string jecBasePathMC="jec/Summer16_23Sep2016V4";
+  string jecBasePathMC="jec/Fall17_17Nov2017_V32";
   //
   cout<<"[NeroFatJets]::[init]::[INFO] Taking JEC for MC="<<jecBasePathMC<<"_MC_L2Relative_AK8PFchs.txt [..]"<<endl;
   cout<<"[NeroFatJets]::[init]::[INFO] Taking JEC for DATA="<<jecBasePath<<"_DATA_L2Relative_AK8PFchs.txt [..]"<<endl;
