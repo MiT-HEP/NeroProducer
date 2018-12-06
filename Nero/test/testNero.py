@@ -305,18 +305,37 @@ process.softActivityJets = ak4PFJets.clone(src = 'chsForSATkJets', doAreaFastjet
 
 # ------------------------QG-----------------------------------------------
 # after jec, because need to be run on the corrected (latest) jet collection
-qgDatabaseVersion = 'cmssw8020_v2'
+#qgDatabaseVersion = 'cmssw8020_v2'
+#
+#process.QGPoolDBESSource = cms.ESSource("PoolDBESSource",
+#      CondDBSetup,
+#      toGet = cms.VPSet(
+#        cms.PSet(
+#            record = cms.string('QGLikelihoodRcd'),
+#            tag    = cms.string('QGLikelihoodObject_'+qgDatabaseVersion+'_AK4PFchs'),
+#            label  = cms.untracked.string('QGL_AK4PFchs')
+#        ),
+#      ),
+#      connect = cms.string('sqlite:qg/QGL_'+qgDatabaseVersion+'.db')
+#)
+#process.es_prefer_qg = cms.ESPrefer('PoolDBESSource','QGPoolDBESSource')
+#
+#process.load('RecoJets.JetProducers.QGTagger_cfi')
+#process.QGTagger.srcJets             = process.nero.NeroJets.jets   # Could be reco::PFJetCollection or pat::JetCollection (both AOD and miniAOD)               
+#process.QGTagger.srcVertexCollection = process.nero.NeroVertex.vertices
+#process.QGTagger.useQualityCuts = cms.bool(False)
 
+#IOV:QGLikelihoodObject_v1_AK4 QGL_AK4chs_94X.db
 process.QGPoolDBESSource = cms.ESSource("PoolDBESSource",
       CondDBSetup,
       toGet = cms.VPSet(
         cms.PSet(
             record = cms.string('QGLikelihoodRcd'),
-            tag    = cms.string('QGLikelihoodObject_'+qgDatabaseVersion+'_AK4PFchs'),
+            tag    = cms.string('QGLikelihoodObject_v1_AK4'),
             label  = cms.untracked.string('QGL_AK4PFchs')
         ),
       ),
-      connect = cms.string('sqlite:qg/QGL_'+qgDatabaseVersion+'.db')
+      connect = cms.string('sqlite:qg/QGL_AK4chs_94X.db')
 )
 process.es_prefer_qg = cms.ESPrefer('PoolDBESSource','QGPoolDBESSource')
 
