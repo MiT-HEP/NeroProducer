@@ -20,9 +20,15 @@ options.register('nerohead', "XXX", VarParsing.multiplicity.singleton,VarParsing
 options.register("nerotag", "YYY", VarParsing.multiplicity.singleton,VarParsing.varType.string,"Set to the tag of the repository. use check_output 'git rev-parse HEAD' in the crab py file. active only if isGrid.")
 options.register('isParticleGun', False, VarParsing.multiplicity.singleton,VarParsing.varType.bool,"Set it to true if MonteCarlo is ParticleGun")
 
-options.parseArguments()
-isData = options.isData
+options.register('isRun', 'Run2017B', VarParsing.multiplicity.singleton,VarParsing.varType.string," Run2016A/B/C   Run2017A/B/C/D/E/F")
 
+options.parseArguments()
+
+if '2017' in options.isRun: isYear=2017
+elif '2016' in options.isRun: isYear=2016
+else: raise ValueError("Unable to determine Year from isRun: %s"%options.isRun)
+
+isData = options.isData
 if options.isData:
     print "-> Loading DATA configuration"
 else:
@@ -38,12 +44,10 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxE
 if len(options.inputFiles) == 0:
     if isData:
         options.inputFiles = [
-                #'/store/data/Run2017B/SingleMuon/MINIAOD/31Mar2018-v1/90000/FEC62083-1E39-E811-B2A1-0CC47A4D75F8.root'
                 '/store/user/amarini/Sync/0E555487-7241-E811-9209-002481CFC92C.root' ## SingleMuon Run2017B 31Mar2018
         ]
     else:
         options.inputFiles = [
-                #'/store/mc/RunIIFall17MiniAOD/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/50000/0CAD1964-6FD9-E711-97C4-FA163EE0F5F8.root'
                 '/store/user/amarini/Sync/5AC9148F-9842-E811-892B-3417EBE535DA.root' ## GGH Hmm Apr2018
         ]
 
@@ -69,7 +73,6 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 
 #mc https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions#Global_Tags_for_Run2_MC_Producti
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
-#process.load("CondCore.DBCommon.CondDBCommon_cfi")
 
 
 ## https://twiki.cern.ch/twiki/bin/viewauth/CMS/JECDataMC
@@ -78,11 +81,16 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condD
 
 if (isData):
     # 2017 data
-    #process.GlobalTag.globaltag = '94X_dataRun2_ReReco_EOY17_v2' 
-    process.GlobalTag.globaltag = '94X_dataRun2_v10' 
+    if isYear==2017:
+       process.GlobalTag.globaltag = '94X_dataRun2_v6' 
+    elif isYear==2016:
+       process.GlobalTag.globaltag = '94X_dataRun2_v10' 
 else:
     ## new miniaod
-    process.GlobalTag.globaltag = '94X_mc2017_realistic_v15' 
+    if isYear==2017:
+        process.GlobalTag.globaltag = '94X_mc2017_realistic_v16' 
+    elif isYear==2016:
+        process.GlobalTag.globaltag = '94X_mcRun2_asymptotic_v3' 
 
 ### LOAD DATABASE
 from CondCore.DBCommon.CondDBSetup_cfi import *
@@ -90,12 +98,9 @@ from CondCore.DBCommon.CondDBSetup_cfi import *
 
 ######## LUMI MASK
 if isData and not options.isGrid and False: ## dont load the lumiMaks, will be called by crab
-    #pass
     import FWCore.PythonUtilities.LumiList as LumiList
-    print "-> UPDATE THE LUMI LIST"
     process.source.lumisToProcess =None 
     #process.source.lumisToProcess = LumiList.LumiList(filename='/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification//Collisions17/13TeV/PromptReco/Cert_294927-304507_13TeV_PromptReco_Collisions17_JSON.txt').getVLuminosityBlockRange()
-    #process.source.lumisToProcess = LumiList.LumiList(filename='/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/DCSOnly/json_DCSONLY.txt').getVLuminosityBlockRange()
 
 ## SKIM INFO
 process.load('NeroProducer.Skim.infoProducerSequence_cff')
@@ -105,17 +110,6 @@ from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
 setupEgammaPostRecoSeq(process,
                        runVID=True,
                        era='2017-Nov17ReReco')  
-#a sequence egammaPostRecoSeq has now been created and should be added to your path, eg process.p=cms.Path(process.egammaPostRecoSeq)
-#process.nero.NeroLeptons.electrons=cms.InputTag("slimmedElectrons","","nero")
-
-### ##ISO
-#process.load("RecoEgamma/PhotonIdentification/PhotonIDValueMapProducer_cfi")
-#process.load("RecoEgamma/ElectronIdentification/ElectronIDValueMapProducer_cfi")
-
-#process.load("RecoEgamma.ElectronIdentification.egmGsfElectronIDs_cff")
-#process.egmGsfElectronIDs.physicsObjectSrc = process.nero.NeroLeptons.electrons
-#process.electronIDValueMapProducer.srcMiniAOD= process.nero.NeroLeptons.electrons
-#process.electronMVAValueMapProducer.srcMiniAOD= process.nero.NeroLeptons.electrons
 
 ############################### JEC #####################
 #### Load from a sqlite db, if not read from the global tag
@@ -123,21 +117,46 @@ process.load("CondCore.DBCommon.CondDBCommon_cfi")
 from CondCore.DBCommon.CondDBSetup_cfi import *
 
 if options.isData:
-    connectString = cms.string('sqlite:jec/Fall17_17Nov2017_V32_94X_DATA.db')
-    # B C DE F
-    #tagName = 'Fall17_17Nov2017BCDEF_V32_DATA_AK4PFchs'
-    tagName = 'Fall17_17Nov2017_V32_94X_DATA_AK4PFchs'
-    #tagNamePuppi = 'Fall17_17Nov2017BCDEF_V32_DATA_AK4PFPuppi'
-    tagNamePuppi = 'Fall17_17Nov2017_V32_94X_DATA_AK4PFPuppi'
+    if isYear == 2017:
+        connectString = cms.string('sqlite:jec/Fall17_17Nov2017_V32_94X_DATA.db')
+        tagName = 'Fall17_17Nov2017_V32_94X_DATA_AK4PFchs'
+        tagNamePuppi = 'Fall17_17Nov2017_V32_94X_DATA_AK4PFPuppi'
+    if isYear == 2016:
+        connectString = cms.string('sqlite:jec/Summer16_07Aug2017All_V11_DATA.db')
+        tagName = 'Summer16_07Aug2017_V11_94X_DATA_AK4PFchs'
+        tagNamePuppi = 'Summer16_07Aug2017_V11_94X_DATA_AK4PFPuppi'
 else:
-    connectString = cms.string('sqlite:jec/Fall17_17Nov2017_V32_94X_MC.db')
-    #JetCorrectorParametersCollection_Fall17_17Nov2017_V32_94X_MC_AK4PFPuppi
-    tagName = 'Fall17_17Nov2017_V32_94X_MC_AK4PFchs'
-    tagNamePuppi = 'Fall17_17Nov2017_V32_94X_MC_AK4PFPuppi'
+    if isYear==2017:
+        connectString = cms.string('sqlite:jec/Fall17_17Nov2017_V32_94X_MC.db')
+        tagName = 'Fall17_17Nov2017_V32_94X_MC_AK4PFchs'
+        tagNamePuppi = 'Fall17_17Nov2017_V32_94X_MC_AK4PFPuppi'
+    if isYear==2016:
+        connectString = cms.string('sqlite:jec/Summer16_07Aug2017_V11_MC.db')
+        tagName = 'Summer16_07Aug2017_V11_94X_MC_AK4PFchs'
+        tagNamePuppi = 'Summer16_07Aug2017_V11_94X_MC_AK4PFPuppi'
 
 #data only, mc hard coded. Need to be fixed per Run
-print "-> FIX JEC FOR AK8. Using 2017B for Data [ignore if running on MC]"
-process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Fall17_17Nov2017B_V32")
+print "-> Setting Up JEC for AK8 using Year",isYear,"and Run",options.isRun
+if isYear == 2017:
+    process.nero.NeroFatJets.chsAK8JECMC = cms.string("jec/Fall17/Fall17_17Nov2017_V32")
+    if options.isRun=='Run2017B':
+        process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Fall17/Fall17_17Nov2017B_V32")
+    elif options.isRun=='Run2017C':
+        process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Fall17/Fall17_17Nov2017C_V32")
+    elif options.isRun=='Run2017D' or options.isRun=='Run2017E':
+        process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Fall17/Fall17_17Nov2017DE_V32")
+    elif options.isRun=='Run2017F':
+        process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Fall17/Fall17_17Nov2017F_V32")
+    else: raise ValueError("Unable to configure AK8 JEC")
+elif isYear==2016:
+    process.nero.NeroFatJets.chsAK8JECMC = cms.string("jec/Summer16/Summer16_07Aug2017_V11")
+    if options.isRun in ['Run2016A','Run2016B','Run2016C','Run2016D']:
+        process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Summer16/Summer16_07Aug2017ABCD_V11")
+    elif options.isRun in ['Run2016E', 'Run2016F']:
+        process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Summer16/Summer16_07Aug2017EF_V11")
+    elif options.isRun in ['Run2016G', 'Run2016H']:
+        process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Summer16/Summer16_07Aug2017GH_V11")
+    else: raise ValueError("Unable to configure AK8 JEC")
 
 ### 
 ### 
@@ -180,15 +199,27 @@ process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 #print "TODO: Update JER"
 toGet=[]
 if options.isData:
-    jerString = cms.string('sqlite:jer/Fall17_25nsV1_DATA.db')
-    resTag= cms.string('JR_Fall17_25nsV1_DATA_PtResolution_AK4PFchs')
-    phiTag= cms.string('JR_Fall17_25nsV1_DATA_PhiResolution_AK4PFchs')
-    sfTag = cms.string('JR_Fall17_25nsV1_DATA_SF_AK4PFchs')
+    if isYear==2017:
+        jerString = cms.string('sqlite:jer/Fall17_V3_94X_DATA.db')
+        resTag= cms.string('JR_Fall17_V3_94X_DATA_PtResolution_AK4PFchs')
+        phiTag= cms.string('JR_Fall17_V3_94X_DATA_PhiResolution_AK4PFchs')
+        sfTag = cms.string('JR_Fall17_V3_94X_DATA_SF_AK4PFchs')
+    if isYear==2016: # no _94X
+        jerString = cms.string('sqlite:jer/Summer16_25nsV1_DATA.db')
+        resTag= cms.string('JR_Summer16_25nsV1_DATA_PtResolution_AK4PFchs')
+        phiTag= cms.string('JR_Summer16_25nsV1_DATA_PhiResolution_AK4PFchs')
+        sfTag = cms.string('JR_Summer16_25nsV1_DATA_SF_AK4PFchs')
 else:
-    jerString = cms.string('sqlite:jer/Fall17_25nsV1_MC.db')
-    resTag=cms.string('JR_Fall17_25nsV1_MC_PtResolution_AK4PFchs')
-    phiTag= cms.string('JR_Fall17_25nsV1_MC_PhiResolution_AK4PFchs')
-    sfTag = cms.string('JR_Fall17_25nsV1_MC_SF_AK4PFchs')
+    if isYear==2017:
+        jerString = cms.string('sqlite:jer/Fall17_V3_94X_MC.db')
+        resTag= cms.string('JR_Fall17_V3_94X_MC_PtResolution_AK4PFchs')
+        phiTag= cms.string('JR_Fall17_V3_94X_MC_PhiResolution_AK4PFchs')
+        sfTag = cms.string('JR_Fall17_V3_94X_MC_SF_AK4PFchs')
+    if isYear==2016: # no _94X
+        jerString = cms.string('sqlite:jer/Summer16_25nsV1_MC.db')
+        resTag= cms.string('JR_Summer16_25nsV1_MC_PtResolution_AK4PFchs')
+        phiTag= cms.string('JR_Summer16_25nsV1_MC_PhiResolution_AK4PFchs')
+        sfTag = cms.string('JR_Summer16_25nsV1_MC_SF_AK4PFchs')
 
 process.jer = cms.ESSource("PoolDBESSource",
         CondDBSetup,

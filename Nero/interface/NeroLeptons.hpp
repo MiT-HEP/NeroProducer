@@ -10,8 +10,6 @@
 // Electron corrector
 #include "EgammaAnalysis/ElectronTools/interface/EnergyScaleCorrection_class.h"
 
-#include "TRandom3.h"
-
 class NeroLeptons : virtual public NeroCollection,
     virtual public BareLeptons
 {
@@ -29,9 +27,13 @@ class NeroLeptons : virtual public NeroCollection,
                 myLepton(){ chiso=-999; nhiso=-999; phoiso=-999; puiso=-999;mva = -999; miniiso=-999;
                             etasc=0; sieie=0; sipip=0; sieip=0; r9=0; ecorr=1; 
                             resolution =-999; nlayers=-999;
+                            kinfitP4.SetPxPyPzE(0,0,0,0);
+                            kinfitPtErr=-999;
                 }
                 float iso;
                 TLorentzVector p4;
+                TLorentzVector kinfitP4; //vertex fit 
+                float kinfitPtErr;
                 unsigned selBits;
                 int pdgId;
                 float pfPt;
@@ -120,7 +122,6 @@ class NeroLeptons : virtual public NeroCollection,
 
         // --- EGTools
         EnergyScaleCorrection_class *EleCorr{0};
-        TRandom3 *rnd_{0};
         
 };
 

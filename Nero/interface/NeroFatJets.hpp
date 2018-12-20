@@ -51,6 +51,7 @@ class NeroFatJets : virtual public NeroCollection,
 
         // --- location of the jec
         string jecBasePath;
+        string jecBasePathMC;
 
 };
 
