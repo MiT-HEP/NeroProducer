@@ -21,9 +21,9 @@ int NeroMet::analyze(const edm::Event& iEvent){
     // --- Handle
     edm::Handle<pat::METCollection> handle;	
     edm::Handle<pat::METCollection> handle_puppi;
-    edm::Handle<pat::METCollection> handle_cleanmu;
-    edm::Handle<pat::METCollection> handle_cleaneg;
-    edm::Handle<pat::METCollection> handle_unclean;
+    //edm::Handle<pat::METCollection> handle_cleanmu;
+    //edm::Handle<pat::METCollection> handle_cleaneg;
+    //edm::Handle<pat::METCollection> handle_unclean;
     edm::Handle<pat::PackedCandidateCollection> handle_pf;
 
     // maybe handle should be taken before
@@ -41,9 +41,9 @@ int NeroMet::analyze(const edm::Event& iEvent){
 
     const pat::MET &met = handle->front();
 
-    TLorentzVector caloMet(0,0,0,0);
-    caloMet.SetPtEtaPhiE(met.caloMETPt(),0,met.caloMETPhi(),met.caloMETPt());
-    *CaloMet = TLorentzVector(caloMet);
+    //TLorentzVector caloMet(0,0,0,0);
+    //caloMet.SetPtEtaPhiE(met.caloMETPt(),0,met.caloMETPhi(),met.caloMETPt());
+    //*CaloMet = TLorentzVector(caloMet);
     
     TLorentzVector rawMet(0,0,0,0);
     rawMet.SetPtEtaPhiE(met.uncorPt(),0,met.uncorPhi(),met.uncorPt());
@@ -108,15 +108,15 @@ int NeroMet::analyze(const edm::Event& iEvent){
 
     if (IsExtend())
     {
-        *SmearedMet = TLorentzVector(met.shiftedPx(pat::MET::NoShift,pat::MET::Type1Smear),met.shiftedPy(pat::MET::NoShift,pat::MET::Type1Smear),0,met.shiftedPt(pat::MET::NoShift,pat::MET::Type1Smear));
+        // *SmearedMet = TLorentzVector(met.shiftedPx(pat::MET::NoShift,pat::MET::Type1Smear),met.shiftedPy(pat::MET::NoShift,pat::MET::Type1Smear),0,met.shiftedPt(pat::MET::NoShift,pat::MET::Type1Smear));
         
         //Different MET Computations
-        TLorentzVector metnomu(met.px(),met.py(),met.pz(),met.energy());
+        //TLorentzVector metnomu(met.px(),met.py(),met.pz(),met.energy());
         TLorentzVector tkMet(0,0,0,0); 
-        TLorentzVector pfmet_3p0(0,0,0,0); 
-        TLorentzVector ntrlMet(0,0,0,0);
-        TLorentzVector phoMet(0,0,0,0);
-        TLorentzVector hfMet(0,0,0,0);    
+        //TLorentzVector pfmet_3p0(0,0,0,0); 
+        //TLorentzVector ntrlMet(0,0,0,0);
+        //TLorentzVector phoMet(0,0,0,0);
+        //TLorentzVector hfMet(0,0,0,0);    
     
         if ( not handle_pf.isValid() ) { Logger::getInstance().Log( string("[NeroMet]: PF handle is not valid"),0);}
 
@@ -124,36 +124,36 @@ int NeroMet::analyze(const edm::Event& iEvent){
             const pat::PackedCandidate &cand = (*handle_pf)[i];
 
             // only up to eta 3
-            if (std::abs(cand.pdgId()) == 13)
-                metnomu += TLorentzVector(cand.px(),cand.py(),cand.pz(),cand.energy());  
+            //if (std::abs(cand.pdgId()) == 13)
+            //    metnomu += TLorentzVector(cand.px(),cand.py(),cand.pz(),cand.energy());  
 
             // only charge hadrons
             if ( cand.charge() != 0 )
                 tkMet += TLorentzVector(cand.px(),cand.py(),cand.pz(),cand.energy());
 
             // neutral pf hadrons
-            if ( cand.pdgId()==130 )
-                ntrlMet += TLorentzVector(cand.px(),cand.py(),cand.pz(),cand.energy());
+            //if ( cand.pdgId()==130 )
+            //    ntrlMet += TLorentzVector(cand.px(),cand.py(),cand.pz(),cand.energy());
             
             // photon 
-            if ( cand.pdgId()==22 )
-                phoMet += TLorentzVector(cand.px(),cand.py(),cand.pz(),cand.energy());
+            //if ( cand.pdgId()==22 )
+            //    phoMet += TLorentzVector(cand.px(),cand.py(),cand.pz(),cand.energy());
 
             // HF Candidates
-            if ( cand.pdgId()==1 || cand.pdgId()==2 )
-                hfMet += TLorentzVector(cand.px(),cand.py(),cand.pz(),cand.energy());    
+            //if ( cand.pdgId()==1 || cand.pdgId()==2 )
+            //    hfMet += TLorentzVector(cand.px(),cand.py(),cand.pz(),cand.energy());    
             
-            if (std::abs(cand.eta()) < 3.0 ) 
-                pfmet_3p0 += TLorentzVector(cand.px(),cand.py(),cand.pz(),cand.energy());
+            //if (std::abs(cand.eta()) < 3.0 ) 
+            //    pfmet_3p0 += TLorentzVector(cand.px(),cand.py(),cand.pz(),cand.energy());
         }
         
 
-        *pfMet_e3p0 = TLorentzVector( -pfmet_3p0 );
-        *metNoMu = TLorentzVector(metnomu);  // no minus
+        //*pfMet_e3p0 = TLorentzVector( -pfmet_3p0 );
+        //*metNoMu = TLorentzVector(metnomu);  // no minus
         *trackMet = TLorentzVector( -tkMet );
-        *neutralMet = TLorentzVector( -ntrlMet );
-        *photonMet = TLorentzVector( -phoMet );
-        *HFMet = TLorentzVector( -hfMet );
+        //*neutralMet = TLorentzVector( -ntrlMet );
+        //*photonMet = TLorentzVector( -phoMet );
+        //*HFMet = TLorentzVector( -hfMet );
 
     }    
     // GEN INFO

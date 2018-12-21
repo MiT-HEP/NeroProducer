@@ -36,7 +36,7 @@ class BareJets : virtual public BareP4
         // -- variables
         //TClonesArray  *p4{0};
         vector<float> *rawPt{0};
-        vector<float> *refPt{0}; // as in MINIAOD->pt()
+        //vector<float> *refPt{0}; // as in MINIAOD->pt()
         vector<float> *bDiscr{0};
         vector<float> *bMva{0};
         
@@ -80,19 +80,6 @@ class BareJets : virtual public BareP4
         vector<float> *qglAxis1{0};
         vector<int> *qglCMult{0};
         vector<int> *qglNMult{0};
-
-        //super extra
-        //vector<float> dRToProduce{0.01,0.02,0.03,0.04,0.05,0.10,0.15,0.20};
-        vector<float> dRToProduce{};
-        map<string,vector<float>* > qglMult_dR;
-        map<string,vector<float>* > qglPtD_dR;
-        map<string,vector<float>* > qglAxis2_dR;
-        map<string,vector<float>* > qglAxis1_dR;
-
-        map<string,vector<float>* > qglGenMult_dR;
-        map<string,vector<float>* > qglGenPtD_dR;
-        map<string,vector<float>* > qglGenAxis2_dR;
-        map<string,vector<float>* > qglGenAxis1_dR;
 };
 
 
