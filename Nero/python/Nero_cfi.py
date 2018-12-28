@@ -215,7 +215,7 @@ nero = cms.EDAnalyzer("Nero",
 
     NeroTrackJets= cms.PSet( 
         jets = cms.InputTag("softActivityJets"),
-        minPt = cms.double(0.),
+        minPt = cms.double(1.),
     ),
 
     ## LEPTONS
