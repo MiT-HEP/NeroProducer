@@ -442,6 +442,7 @@ process.bRegressionProducer.JetTag = process.nero.NeroJets.jets
 
 ##DEBUG
 ##print "Process=",process, process.__dict__.keys()
+process.nero.info = cms.string( str(process.nero.info) +"  |options:" + ','.join(sys.argv))
 #------------------------------------------------------
 process.p = cms.Path(
                 process.infoProducerSequence *
