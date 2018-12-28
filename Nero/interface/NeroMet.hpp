@@ -22,9 +22,9 @@ class NeroMet : virtual public NeroCollection,
         edm::EDGetTokenT<pat::PackedCandidateCollection> token_pf;
         edm::EDGetTokenT<pat::METCollection> token;
         edm::EDGetTokenT<pat::METCollection> token_puppi;
-        edm::EDGetTokenT<pat::METCollection> token_cleanmu;
-        edm::EDGetTokenT<pat::METCollection> token_cleaneg;
-        edm::EDGetTokenT<pat::METCollection> token_unclean;
+        //edm::EDGetTokenT<pat::METCollection> token_cleanmu;
+        //edm::EDGetTokenT<pat::METCollection> token_cleaneg;
+        //edm::EDGetTokenT<pat::METCollection> token_unclean;
 };
 
 

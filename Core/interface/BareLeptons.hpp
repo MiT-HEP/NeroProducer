@@ -73,6 +73,10 @@ class BareLeptons : virtual public BareP4
 
         // ele scale and smear corrections
         vector<float>    *corr{0};
+
+        //kinfit
+        TClonesArray  *kinfitP4{0};
+        vector<float> *kinfitPtErr{0};
     
 
 };

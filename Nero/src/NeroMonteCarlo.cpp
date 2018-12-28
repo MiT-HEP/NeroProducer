@@ -262,24 +262,24 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
             // computed dressed objects
             //
 
-            if (apdg == 11 or apdg == 13) { // only for final state muons and electrons
-                    TLorentzVector dressedLepton(gen->px(),gen->py(),gen->pz(),gen->energy());
-                    TLorentzVector lepton(dressedLepton); //original lepton for dR
-                    for ( unsigned int j=0;j < packed_handle->size() ;++j)
-                    {
-                        const auto gen2  = & (*packed_handle)[j];
-                        TLorentzVector photon(gen2->px(),gen2->py(),gen2->pz(),gen2->energy());
-                        if (i != j and abs( gen->pdgId() ) ==22  and lepton.DeltaR( photon ) <0.1 ) dressedLepton += photon;
-                    }
-                    new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector( dressedLepton );
-                    pdgId -> push_back( pdg );
-                    flags -> push_back( Dressed );
-                    // doing the following for dressed leptons as well so vectors stay in sync
-                    genIndices[gen] = pdgId->size()-1; // save gen particle pointers
-                    savedParticles.push_back(gen);     // so we can associate mothers later
-                    genIso -> push_back (0.) ;
-                    // --- end of dressing
-            }
+            // -- if (apdg == 11 or apdg == 13) { // only for final state muons and electrons
+            // --         TLorentzVector dressedLepton(gen->px(),gen->py(),gen->pz(),gen->energy());
+            // --         TLorentzVector lepton(dressedLepton); //original lepton for dR
+            // --         for ( unsigned int j=0;j < packed_handle->size() ;++j)
+            // --         {
+            // --             const auto gen2  = & (*packed_handle)[j];
+            // --             TLorentzVector photon(gen2->px(),gen2->py(),gen2->pz(),gen2->energy());
+            // --             if (i != j and abs( gen->pdgId() ) ==22  and lepton.DeltaR( photon ) <0.1 ) dressedLepton += photon;
+            // --         }
+            // --         new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector( dressedLepton );
+            // --         pdgId -> push_back( pdg );
+            // --         flags -> push_back( Dressed );
+            // --         // doing the following for dressed leptons as well so vectors stay in sync
+            // --         genIndices[gen] = pdgId->size()-1; // save gen particle pointers
+            // --         savedParticles.push_back(gen);     // so we can associate mothers later
+            // --         genIso -> push_back (0.) ;
+            // --         // --- end of dressing
+            // -- }
              
         }
 
@@ -307,7 +307,7 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
         if ( apdg == 15 or  // tau (15)
                 (apdg >= 23 and apdg <26 ) or   // Z(23) W(24) H(25)
                 apdg == 37 or // chHiggs: H+(37)
-                apdg <= 6 or // quarks up (2) down (1)  charm (4) strange (3) top (6) bottom (5)
+                (apdg <= 6  and apdg >=1) or // quarks up (2) down (1)  charm (4) strange (3) top (6) bottom (5)
                 apdg == 21 or // gluons (21)
                 apdg > 1000000 // susy neutrinos,neutralinos, charginos ...  lightest neutralinos (1000022)
                 or ( apdg == 11 and  ( flag &  HardProcessBeforeFSR) )
@@ -357,7 +357,7 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
     }
 
     // GEN JETS AK8
-    for (const auto & j : *jet_handle)
+    for (const auto & j : *jetAK8_handle)
     {
         if (j.pt() < 100 ) continue;
         if (j.pt() < mMinGenJetPt ) continue;

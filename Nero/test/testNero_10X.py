@@ -20,6 +20,8 @@ options.register('nerohead', "XXX", VarParsing.multiplicity.singleton,VarParsing
 options.register("nerotag", "YYY", VarParsing.multiplicity.singleton,VarParsing.varType.string,"Set to the tag of the repository. use check_output 'git rev-parse HEAD' in the crab py file. active only if isGrid.")
 options.register('isParticleGun', False, VarParsing.multiplicity.singleton,VarParsing.varType.bool,"Set it to true if MonteCarlo is ParticleGun")
 
+options.register('isRun', "Run2018A", VarParsing.multiplicity.singleton,VarParsing.varType.string,"Run2018A / B / C / D (for data)")
+
 options.parseArguments()
 isData = options.isData
 
@@ -78,10 +80,13 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condD
 
 if (isData):
     # 2017 data
-    process.GlobalTag.globaltag = '94X_dataRun2_ReReco_EOY17_v2' 
+    if options.isRun in ['Run2018A', 'Run2018B','Run2018C']:
+        process.GlobalTag.globaltag = '102X_dataRun2_Sep2018ReReco_v1' 
+    elif options.isRun == 'Run2018D':
+        process.GlobalTag.globaltag = '102X_dataRun2_Prompt_v11' 
 else:
     ## new miniaod
-    process.GlobalTag.globaltag = '94X_mc2017_realistic_v12' 
+    process.GlobalTag.globaltag = '102X_upgrade2018_realistic_v12' 
 
 ### LOAD DATABASE
 from CondCore.DBCommon.CondDBSetup_cfi import *

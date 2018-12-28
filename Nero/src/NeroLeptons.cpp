@@ -5,6 +5,8 @@
 #include "NeroProducer/Nero/interface/NeroFunctions.hpp"
 #include <time.h>
 
+#include "NeroProducer/Nero/interface/KinematicFitMuonCorrections.h"
+
 //#define VERBOSE_LEP 2
 
 namespace myid{
@@ -85,7 +87,6 @@ NeroLeptons::NeroLeptons(edm::ConsumesCollector & cc,edm::ParameterSet iConfig):
     //ebRecHits_token = cc.mayConsume<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("ebRecHits"));
     //leps -> eeRecHits_token = cc.mayConsume<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("eeRecHits"));
 
-    rnd_ = new TRandom3( ) ;
 
 #ifdef VERBOSE_LEP
     if (VERBOSE_LEP >0) Logger::getInstance().Log("-> end constructor",Logger::DEBUG);
@@ -93,7 +94,6 @@ NeroLeptons::NeroLeptons(edm::ConsumesCollector & cc,edm::ParameterSet iConfig):
 }
 
 NeroLeptons::~NeroLeptons(){
-    delete rnd_; 
 }
 
 unsigned NeroLeptons::idStringToEnum(std::string idString)
@@ -156,6 +156,10 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 #ifdef VERBOSE_LEP
     if (VERBOSE_LEP >0) Logger::getInstance().Log("[NeroLeptons] Begin muon loop",Logger::DEBUG);
 #endif
+    int nMuons=0;
+    pat::MuonCollection selectedMuons; // vertex reFIt
+    vector<int> selectedIndex;
+
     for (const pat::Muon &mu : *mu_handle) {
         // selection
         if (mu.pt() < 5. ) continue;
@@ -209,7 +213,84 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         
         if ( not (l.selBits & kMinId) ) continue;
         leptons.push_back(l);
+
+        if (mu.innerTrack().isNull()) continue;
+        // for kinematic fit. Must have track
+        ++nMuons;
+        selectedMuons.push_back(mu);
+        selectedIndex.push_back(leptons.size()-1);
     }
+
+    // Muon Vertex fitter
+    double const MASS_MUON = 0.105658367; // GeV/c^2
+    if (nMuons>1){
+        TLorentzVector mu1_tlv;
+        TLorentzVector mu2_tlv;
+        Double_t mu1_ptErr_kinfit; mu1_ptErr_kinfit = 0.;
+        Double_t mu2_ptErr_kinfit; mu2_ptErr_kinfit = 0.;
+
+        RefCountedKinematicVertex dimu_vertex;
+
+        KinematicVertexFitter kinfit;
+        RefCountedKinematicTree kinfittree = kinfit.Fit(selectedMuons); 
+        if(kinfittree->isEmpty() == 1 || kinfittree->isConsistent() == 0)
+            std::cout << "Kinematic Fit unsuccesfull" << std::endl;
+        else{
+            //accessing the tree components 
+            kinfittree->movePointerToTheTop();
+            //We are now at the top of the decay tree getting the dimuon reconstructed KinematicPartlcle
+            RefCountedKinematicParticle dimu_kinfit = kinfittree->currentParticle();
+
+            //getting the dimuon decay vertex
+            //RefCountedKinematicVertex 
+            dimu_vertex = kinfittree->currentDecayVertex();
+
+            //Now navigating down the tree 
+            bool child = kinfittree->movePointerToTheFirstChild();
+            //TLorentzVector mu1_tlv;
+
+            if (child){
+                RefCountedKinematicParticle mu1_kinfit = kinfittree->currentParticle();
+                AlgebraicVector7 mu1_kinfit_par = mu1_kinfit->currentState().kinematicParameters().vector();
+                AlgebraicSymMatrix77 mu1_kinfit_cov = mu1_kinfit->currentState().kinematicParametersError().matrix();
+                mu1_ptErr_kinfit = sqrt(mu1_kinfit_cov(3,3) + mu1_kinfit_cov(4,4)); 
+                mu1_tlv.SetXYZM(mu1_kinfit_par.At(3),mu1_kinfit_par.At(4),mu1_kinfit_par.At(5), mu1_kinfit_par.At(6));
+                leptons[selectedIndex[0]].kinfitP4.SetPtEtaPhiM(mu1_tlv.Pt(),mu1_tlv.Eta(),mu1_tlv.Phi(),MASS_MUON);  
+                leptons[selectedIndex[0]].kinfitPtErr=mu1_ptErr_kinfit;
+            }
+
+
+
+            //Now navigating down the tree 
+            bool nextchild = kinfittree->movePointerToTheNextChild();
+
+            if (nextchild){
+                RefCountedKinematicParticle mu2_kinfit = kinfittree->currentParticle();
+                AlgebraicVector7 mu2_kinfit_par = mu2_kinfit->currentState().kinematicParameters().vector();
+                AlgebraicSymMatrix77 mu2_kinfit_cov = mu2_kinfit->currentState().kinematicParametersError().matrix(); 
+                mu2_ptErr_kinfit = sqrt(mu2_kinfit_cov(3,3) + mu2_kinfit_cov(4,4)); 
+                mu2_tlv.SetXYZM(mu2_kinfit_par.At(3),mu2_kinfit_par.At(4),mu2_kinfit_par.At(5),mu2_kinfit_par.At(6));
+                leptons[selectedIndex[1]].kinfitP4.SetPtEtaPhiM(mu2_tlv.Pt(),mu2_tlv.Eta(),mu2_tlv.Phi(),MASS_MUON);  
+                leptons[selectedIndex[1]].kinfitPtErr=mu2_ptErr_kinfit;
+            }
+
+            for(int imuon=2;imuon<nMuons;++imuon){
+                bool nextchild = kinfittree->movePointerToTheNextChild();
+                if (nextchild){
+                    RefCountedKinematicParticle mu_kinfit = kinfittree->currentParticle();
+                    AlgebraicVector7 mu_kinfit_par = mu_kinfit->currentState().kinematicParameters().vector();
+                    AlgebraicSymMatrix77 mu_kinfit_cov = mu_kinfit->currentState().kinematicParametersError().matrix(); 
+                    double mu_ptErr_kinfit = sqrt(mu_kinfit_cov(3,3) + mu_kinfit_cov(4,4)); 
+                    TLorentzVector mu_tlv;
+                    mu_tlv.SetXYZM(mu_kinfit_par.At(3),mu_kinfit_par.At(4),mu_kinfit_par.At(5),mu_kinfit_par.At(6));
+                    leptons[selectedIndex[imuon]].kinfitP4.SetPtEtaPhiM(mu_tlv.Pt(),mu_tlv.Eta(),mu_tlv.Phi(),MASS_MUON);  
+                    leptons[selectedIndex[imuon]].kinfitPtErr=mu_ptErr_kinfit;
+                }
+            }
+
+
+        } // end else - isEmpty()
+    } // nMuons >1
 
 #ifdef VERBOSE_LEP
     if (VERBOSE_LEP >0) Logger::getInstance().Log("[NeroLeptons] Begin electron loop",Logger::DEBUG);
@@ -405,6 +486,10 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 
         resolution -> push_back(l.resolution);
         nLayers -> push_back(l.nlayers);
+
+        //kinfit
+        new ( (*kinfitP4)[kinfitP4->GetEntriesFast()]) TLorentzVector(l.kinfitP4);
+        kinfitPtErr -> push_back(l.kinfitPtErr);
     }
 
 #ifdef VERBOSE_LEP

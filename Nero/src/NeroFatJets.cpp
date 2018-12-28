@@ -28,6 +28,7 @@ NeroFatJets::NeroFatJets(edm::ConsumesCollector & cc,edm::ParameterSet iConfig):
     subjets_token = cc.mayConsume<reco::PFJetCollection>(edm::InputTag("PFJetsSoftDrop"+ cachedPrefix ,"SubJets"));
     btags_token = cc.mayConsume<reco::JetTagCollection>(edm::InputTag(cachedPrefix + "PFCombinedInclusiveSecondaryVertexV2BJetTags") ) ;
     jecBasePath= iConfig.getParameter<string>("chsAK8JEC");
+    jecBasePathMC= iConfig.getParameter<string>("chsAK8JECMC");
 }
 
 NeroFatJets::~NeroFatJets(){
@@ -42,7 +43,7 @@ void NeroFatJets::init()
   BareFatJets::init();
   // set up jet energy corrections
   //string jecBasePathMC="jec/Summer16_23Sep2016V4";
-  string jecBasePathMC="jec/Fall17_17Nov2017_V32";
+  //string jecBasePathMC="jec/Fall17_17Nov2017_V32";
   //
   cout<<"[NeroFatJets]::[init]::[INFO] Taking JEC for MC="<<jecBasePathMC<<"_MC_L2Relative_AK8PFchs.txt [..]"<<endl;
   cout<<"[NeroFatJets]::[init]::[INFO] Taking JEC for DATA="<<jecBasePath<<"_DATA_L2Relative_AK8PFchs.txt [..]"<<endl;

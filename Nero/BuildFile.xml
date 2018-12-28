@@ -40,6 +40,14 @@
 <use name="EgammaAnalysis/ElectronTools"/>
 <!--L1 -->
 <use name="DataFormats/L1Trigger"/>
+<!-- Vertx Fit -->
+<use name="TrackingTools/PatternTools"/>
+<use name="TrackingTools/Records"/>
+<use name="TrackingTools/TransientTrack"/>
+<use name="MagneticField/ParametrizedEngine"/>
+<use name="RecoVertex/KinematicFitPrimitives"/>
+<use name="RecoVertex/KinematicFit"/>
+<use name="RecoVertex/VertexTools"/>
 <!--  -->
 <use name="clhep"/>
 <use name="RooFit"/>

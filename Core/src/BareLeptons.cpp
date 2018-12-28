@@ -23,6 +23,8 @@ BareLeptons::~BareLeptons(){
     BareFunctions::Delete(r9);
     BareFunctions::Delete(resolution);
     BareFunctions::Delete(nLayers);
+    BareFunctions::Delete(kinfitP4);
+    BareFunctions::Delete(kinfitPtErr);
 }
 
 void BareLeptons::init(){
@@ -46,6 +48,9 @@ void BareLeptons::init(){
     BareFunctions::New(r9);
     BareFunctions::New(resolution);
     BareFunctions::New(nLayers);
+
+    BareFunctions::New(kinfitP4);
+    BareFunctions::New(kinfitPtErr);
 }
 
 void BareLeptons::clear(){
@@ -72,6 +77,9 @@ void BareLeptons::clear(){
    
     resolution->clear() ;
     nLayers->clear();
+
+    kinfitP4->Clear();
+    kinfitPtErr->clear();
 
 }
 
@@ -107,6 +115,11 @@ void BareLeptons::defineBranches(TTree*t){
     t->Branch("lepNLayers","vector<int>",&nLayers);
 
 
+    //kintfit
+    t->Branch("lepKinfitPtErr","vector<float>",&kinfitPtErr);
+    t->Branch( "lepKinfitP4","TClonesArray", &kinfitP4, 128000, 0);
+
+
 }
 
 void BareLeptons::setBranchAddresses(TTree*t){
@@ -134,6 +147,9 @@ void BareLeptons::setBranchAddresses(TTree*t){
 
     BareFunctions::SetBranchAddress(t,"lepResolution",&resolution);
     BareFunctions::SetBranchAddress(t,"lepNLayers",&nLayers);
+
+    BareFunctions::SetBranchAddress(t,"lepKinfitPtErr",&kinfitPtErr);
+    BareFunctions::SetBranchAddress(t,"lepKinfitP4",&kinfitP4);
 }
 
 BAREREGISTER(BareLeptons);

@@ -63,6 +63,7 @@ function CMSSW_9_4_9 {
         git cms-init
         ## postReco for EGamma
         git cms-merge-topic cms-egamma:EgammaPostRecoTools_940
+        git cms-merge-topic cms-egamma:EgammaID_949
         ## additional variables for qg: (axis1,cmult,nmult). Optional 
         git cms-merge-topic amarini:topic_qgmorvar_94X 
         git cms-merge-topic cms-met:METFixEE2017_949_v2
@@ -70,6 +71,7 @@ function CMSSW_9_4_9 {
 
 function CMSSW_10_1_6 {
         git cms-init
+        git cms-merge-topic cms-egamma:EgammaID_1023
 }
 
 

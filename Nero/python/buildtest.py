@@ -122,6 +122,7 @@ def TryPullReq(sha, origin):
 			for i in range(0, len(parts) -1 ) :
 				if parts[i] == "[MaxEvents]":
 					maxEvtStr=parts[i+1]
+			options += ' maxEvents=' + maxEvtStr
 
 		l = line.split('#')[0]
 		l = re.sub('\n','',l)
@@ -228,14 +229,14 @@ def TryPullReq(sha, origin):
 		cmd += "sed -i'' 's:###FILELIST###:"+flStr+"\\n###FILELIST###:g' " + "testNero.py"
 		call(cmd,shell=True)
 
-	if maxEvtStr != "":
-		#replace
-		print ' * str=' + '"'+ maxEvtStr + '"'
-		rplStr="process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(%s) )"%maxEvtStr
-		cmd = "cd %s/%s/src && %s &&" %(tmpdir,CMSSW,cmsenv)
-		cmd += "cd NeroProducer/Nero/test && "
-		cmd += "sed -i'' 's:###FILELIST###:"+rplStr+":g' " + "testNero.py"
-		call(cmd,shell=True)
+	#if maxEvtStr != "":
+	#	#replace
+	#	print ' * str=' + '"'+ maxEvtStr + '"'
+	#	rplStr="process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(%s) )"%maxEvtStr
+	#	cmd = "cd %s/%s/src && %s &&" %(tmpdir,CMSSW,cmsenv)
+	#	cmd += "cd NeroProducer/Nero/test && "
+	#	cmd += "sed -i'' 's:###FILELIST###:"+rplStr+":g' " + "testNero.py"
+	#	call(cmd,shell=True)
 
 	print cyan+"-> Test"+white
 	cmd = "cd %s/%s/src && %s &&" %(tmpdir,CMSSW,cmsenv)

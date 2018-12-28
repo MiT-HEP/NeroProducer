@@ -64,6 +64,7 @@ Nero::Nero(const edm::ParameterSet& iConfig)
         if (o==NULL)  Logger::getInstance().Log("Object '" + name+"' unable to construct",0) ;
         obj.push_back(o);
         //if (name=="NeroMet") runObj.push_back(dynamic_cast<NeroRun*>(o));
+        if (name=="NeroMonteCarlo") runObj.push_back(dynamic_cast<NeroRun*>(o));
         if (name=="NeroAll") lumiObj.push_back(dynamic_cast<NeroLumi*>(o));
         if (name == "NeroTrigger") {
             NeroTrigger *tr = dynamic_cast<NeroTrigger*>(o); // TODO what if these are not in the list?

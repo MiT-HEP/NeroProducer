@@ -27,7 +27,7 @@ int NeroTaus::analyze(const edm::Event & iEvent)
 
     for (const pat::Tau &tau : *handle) {
 
-        if (tau.pt() < 18 ) continue;	
+        if (tau.pt() < 20 ) continue;	
         if (tau.pt() < mMinPt ) continue;	
         
         /// miniaod taus = decayModeFindingNewDMs
@@ -38,10 +38,10 @@ int NeroTaus::analyze(const edm::Event & iEvent)
 
         // ------------ END SELECTION 
 
-         float phoIso = 0.; for(auto cand : tau.isolationGammaCands() ) phoIso += cand->pt();//tau.isolationPFGammaCandsEtSum() ;
-         float chIso  = 0.; for(auto cand : tau.isolationChargedHadrCands() ) chIso += cand->pt();//tau.isolationPFChargedHadrCandsPtSum();
-         float nhIso  = 0.; for(auto cand : tau.isolationNeutrHadrCands() ) nhIso += cand->pt(); // PF Cands not exists in miniAOD
-         float totIso = phoIso + chIso + nhIso;
+         //float phoIso = 0.; for(auto cand : tau.isolationGammaCands() ) phoIso += cand->pt();//tau.isolationPFGammaCandsEtSum() ;
+         //float chIso  = 0.; for(auto cand : tau.isolationChargedHadrCands() ) chIso += cand->pt();//tau.isolationPFChargedHadrCandsPtSum();
+         //float nhIso  = 0.; for(auto cand : tau.isolationNeutrHadrCands() ) nhIso += cand->pt(); // PF Cands not exists in miniAOD
+         //float totIso = phoIso + chIso + nhIso;
         
         //FILL
         new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(tau.px(), tau.py(), tau.pz(), tau.energy());
@@ -96,8 +96,8 @@ int NeroTaus::analyze(const edm::Event & iEvent)
 
         selBits -> push_back(bits);
         Q -> push_back( tau.charge() );
-        M -> push_back( tau.mass() );
-        iso -> push_back( totIso ) ; 
+        //M -> push_back( tau.mass() );
+        //iso -> push_back( totIso ) ; 
         leadTrackPt -> push_back( tau.leadChargedHadrCand()->p4().Pt() ) ;
 
         chargedIsoPtSum  -> push_back( tau.tauID("chargedIsoPtSum") );
