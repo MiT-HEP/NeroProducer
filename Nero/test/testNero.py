@@ -436,6 +436,10 @@ process.NjettinessGroomed.srcJets = process.nero.NeroFatJets.chsAK8
 process.load('NeroProducer.Skim.bRegressionProducer_cfi')
 process.bRegressionProducer.JetTag = process.nero.NeroJets.jets
 
+## Two muons preselection
+#process.nero.info= cms.string("two_muons")
+#process.load('NeroProducer.Skim.MuonFilterSequence_cff')
+
 ##DEBUG
 ##print "Process=",process, process.__dict__.keys()
 #------------------------------------------------------
