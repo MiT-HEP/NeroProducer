@@ -136,25 +136,25 @@ if __name__ == '__main__':
     config.Data.unitsPerJob = 100
 
     #/SingleMuon/Run2017B-31Mar2018-v1/MINIAOD
-    #config.General.requestName = 'SingleMuon-Run2017B'
-    #config.Data.inputDataset = '/SingleMuon/Run2017B-31Mar2018-v1/MINIAOD'
-    #submit(config)
+    config.General.requestName = 'SingleMuon-Run2017B'
+    config.Data.inputDataset = '/SingleMuon/Run2017B-31Mar2018-v1/MINIAOD'
+    submit(config)
 
-    #config.General.requestName = 'SingleMuon-Run2017C'
-    #config.Data.inputDataset = '/SingleMuon/Run2017C-31Mar2018-v1/MINIAOD'
-    #submit(config)
+    config.General.requestName = 'SingleMuon-Run2017C'
+    config.Data.inputDataset = '/SingleMuon/Run2017C-31Mar2018-v1/MINIAOD'
+    submit(config)
 
-    #config.General.requestName = 'SingleMuon-Run2017D'
-    #config.Data.inputDataset = '/SingleMuon/Run2017D-31Mar2018-v1/MINIAOD'
-    #submit(config)
+    config.General.requestName = 'SingleMuon-Run2017D'
+    config.Data.inputDataset = '/SingleMuon/Run2017D-31Mar2018-v1/MINIAOD'
+    submit(config)
 
-    #config.General.requestName = 'SingleMuon-Run2017E'
-    #config.Data.inputDataset = '/SingleMuon/Run2017E-31Mar2018-v1/MINIAOD'
-    #submit(config)
+    config.General.requestName = 'SingleMuon-Run2017E'
+    config.Data.inputDataset = '/SingleMuon/Run2017E-31Mar2018-v1/MINIAOD'
+    submit(config)
 
-    #config.General.requestName = 'SingleMuon-Run2017F'
-    #config.Data.inputDataset = '/SingleMuon/Run2017F-31Mar2018-v1/MINIAOD'
-    #submit(config)
+    config.General.requestName = 'SingleMuon-Run2017F'
+    config.Data.inputDataset = '/SingleMuon/Run2017F-31Mar2018-v1/MINIAOD'
+    submit(config)
 
     ### LOW PU DATA
     #config.Data.unitsPerJob = 50
@@ -193,28 +193,27 @@ if __name__ == '__main__':
 
     ######################################## DOUBLE MUON
     ## /DoubleMuon/Run2017B-31Mar2018-v1/MINIAOD
-    #config.General.requestName = 'DoubleMuon-Run2017B'
-    #config.Data.inputDataset = '/DoubleMuon/Run2017B-31Mar2018-v1/MINIAOD'
-    #submit(config)
+    config.General.requestName = 'DoubleMuon-Run2017B'
+    config.Data.inputDataset = '/DoubleMuon/Run2017B-31Mar2018-v1/MINIAOD'
+    submit(config)
 
-    #config.General.requestName = 'DoubleMuon-Run2017C'
-    #config.Data.inputDataset = '/DoubleMuon/Run2017C-31Mar2018-v1/MINIAOD'
-    #submit(config)
+    config.General.requestName = 'DoubleMuon-Run2017C'
+    config.Data.inputDataset = '/DoubleMuon/Run2017C-31Mar2018-v1/MINIAOD'
+    submit(config)
 
-    #config.General.requestName = 'DoubleMuon-Run2017D'
-    #config.Data.inputDataset = '/DoubleMuon/Run2017D-31Mar2018-v1/MINIAOD'
-    #submit(config)
+    config.General.requestName = 'DoubleMuon-Run2017D'
+    config.Data.inputDataset = '/DoubleMuon/Run2017D-31Mar2018-v1/MINIAOD'
+    submit(config)
 
-    #config.General.requestName = 'DoubleMuon-Run2017E'
-    #config.Data.inputDataset = '/DoubleMuon/Run2017E-31Mar2018-v1/MINIAOD'
-    #submit(config)
+    config.General.requestName = 'DoubleMuon-Run2017E'
+    config.Data.inputDataset = '/DoubleMuon/Run2017E-31Mar2018-v1/MINIAOD'
+    submit(config)
 
-    #config.General.requestName = 'DoubleMuon-Run2017F'
-    #config.Data.inputDataset = '/DoubleMuon/Run2017F-31Mar2018-v1/MINIAOD'
-    #submit(config)
+    config.General.requestName = 'DoubleMuon-Run2017F'
+    config.Data.inputDataset = '/DoubleMuon/Run2017F-31Mar2018-v1/MINIAOD'
+    submit(config)
 
     ###################################################
-    setdata("True")
 
     #config.Data.unitsPerJob = 1
     #config.General.requestName = 'JetHT-Run2017B'
@@ -327,6 +326,7 @@ if __name__ == '__main__':
         if mh!=120:
             config.Data.inputDataset="/WminusH_HToMuMu_WToAll_M%d_13TeV_powheg_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-*/MINIAODSIM"%mh
         else:
+            print "Using bug fix for name wminus 120 "
             config.Data.inputDataset="/WminusH_HTMuMu_WToAll_M120_13TeV_powheg_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM"
         submit(config)
         
@@ -351,94 +351,94 @@ if __name__ == '__main__':
     #submit(config)
     #config.Data.inputDBS = 'global'
 
-    #config.General.requestName = 'TTTo2L2Nu'
-    #config.Data.inputDataset = '/TTTo2L2Nu_TuneCP5_PSweights_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
-    #submit(config)
+    config.General.requestName = 'TTTo2L2Nu'
+    config.Data.inputDataset = '/TTTo2L2Nu_TuneCP5_PSweights_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
+    submit(config)
 
-    #config.General.requestName = 'ST_s-channel'
-    #config.Data.inputDataset = '/ST_s-channel_4f_leptonDecays_TuneCP5_PSweights_13TeV-amcatnlo-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
-    #submit(config)
+    config.General.requestName = 'ST_s-channel'
+    config.Data.inputDataset = '/ST_s-channel_4f_leptonDecays_TuneCP5_PSweights_13TeV-amcatnlo-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
+    submit(config)
 
-    #config.General.requestName = 'ST_t-channel_antitop'
-    #config.Data.inputDataset = '/ST_t-channel_antitop_5f_TuneCP5_PSweights_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
-    #submit(config)
+    config.General.requestName = 'ST_t-channel_antitop'
+    config.Data.inputDataset = '/ST_t-channel_antitop_5f_TuneCP5_PSweights_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
+    submit(config)
 
-    #config.General.requestName = 'ST_t-channel_top'
-    #config.Data.inputDataset = '/ST_t-channel_top_5f_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
-    #submit(config)
+    config.General.requestName = 'ST_t-channel_top'
+    config.Data.inputDataset = '/ST_t-channel_top_5f_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
+    submit(config)
 
-    #config.General.requestName = 'ST_tW_antitop'
-    #config.Data.inputDataset = '/ST_tW_antitop_5f_inclusiveDecays_TuneCP5_PSweights_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM'
-    #submit(config)
+    config.General.requestName = 'ST_tW_antitop'
+    config.Data.inputDataset = '/ST_tW_antitop_5f_inclusiveDecays_TuneCP5_PSweights_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM'
+    submit(config)
 
-    #config.General.requestName = 'ST_tW_top'
-    #config.Data.inputDataset = '/ST_tW_top_5f_inclusiveDecays_TuneCP5_PSweights_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
-    #submit(config)
+    config.General.requestName = 'ST_tW_top'
+    config.Data.inputDataset = '/ST_tW_top_5f_inclusiveDecays_TuneCP5_PSweights_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
+    submit(config)
 
-    #config.General.requestName = 'TTZToQQ'
-    #config.Data.inputDataset = '/TTZToQQ_TuneCP5_13TeV-amcatnlo-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
-    #submit(config)
+    config.General.requestName = 'TTZToQQ'
+    config.Data.inputDataset = '/TTZToQQ_TuneCP5_13TeV-amcatnlo-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
+    submit(config)
 
-    #config.General.requestName = 'TTZToLL_M-1to10'
-    #config.Data.inputDataset = '/TTZToLL_M-1to10_TuneCP5_13TeV-amcatnlo-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
-    #submit(config)
+    config.General.requestName = 'TTZToLL_M-1to10'
+    config.Data.inputDataset = '/TTZToLL_M-1to10_TuneCP5_13TeV-amcatnlo-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
+    submit(config)
 
-    #config.General.requestName = 'TTZToLLNuNu_M-10'
-    #config.Data.inputDataset = '/TTZToLLNuNu_M-10_TuneCP5_13TeV-amcatnlo-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
-    #submit(config)
+    config.General.requestName = 'TTZToLLNuNu_M-10'
+    config.Data.inputDataset = '/TTZToLLNuNu_M-10_TuneCP5_13TeV-amcatnlo-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
+    submit(config)
 
-    #config.General.requestName = 'TTWToQQ'
-    #config.Data.inputDataset = '/TTZToQQ_TuneCP5_13TeV-amcatnlo-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
-    #submit(config)
+    config.General.requestName = 'TTWToQQ'
+    config.Data.inputDataset = '/TTZToQQ_TuneCP5_13TeV-amcatnlo-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
+    submit(config)
 
-    #config.General.requestName = 'TTWToLNu'
-    #config.Data.inputDataset = '/TTWJetsToLNu_TuneCP5_PSweights_13TeV-amcatnloFXFX-madspin-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
-    #submit(config)
+    config.General.requestName = 'TTWToLNu'
+    config.Data.inputDataset = '/TTWJetsToLNu_TuneCP5_PSweights_13TeV-amcatnloFXFX-madspin-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
+    submit(config)
 
-    #config.General.requestName = 'WWTo1L1Nu2Q'
-    #config.Data.inputDataset = '/WWTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
-    #submit(config)
+    config.General.requestName = 'WWTo1L1Nu2Q'
+    config.Data.inputDataset = '/WWTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
+    submit(config)
 
-    #config.General.requestName = 'WWTo2L2Nu'
-    #config.Data.inputDataset = '/WWTo2L2Nu_NNPDF31_TuneCP5_PSweights_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14_ext1-v1/MINIAODSIM'
-    #submit(config)
+    config.General.requestName = 'WWTo2L2Nu'
+    config.Data.inputDataset = '/WWTo2L2Nu_NNPDF31_TuneCP5_PSweights_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14_ext1-v1/MINIAODSIM'
+    submit(config)
 
-    #config.General.requestName = 'WWW'
-    #config.Data.inputDataset = '/WWW_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
-    #submit(config)
+    config.General.requestName = 'WWW'
+    config.Data.inputDataset = '/WWW_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
+    submit(config)
 
-    #config.General.requestName = 'WWZ'
-    #config.Data.inputDataset = '/WWZ_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
-    #submit(config)
+    config.General.requestName = 'WWZ'
+    config.Data.inputDataset = '/WWZ_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
+    submit(config)
 
-    #config.General.requestName = 'WZTo2L2Q'
-    #config.Data.inputDataset = '/WZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
-    #submit(config)
+    config.General.requestName = 'WZTo2L2Q'
+    config.Data.inputDataset = '/WZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
+    submit(config)
 
-    #config.General.requestName = 'WZTo3LNu'
-    #config.Data.inputDataset = '/WZTo3LNu_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
-    #submit(config)
+    config.General.requestName = 'WZTo3LNu'
+    config.Data.inputDataset = '/WZTo3LNu_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
+    submit(config)
 
-    #config.General.requestName = 'WZZ'
-    #config.Data.inputDataset = '/WZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
-    #submit(config)
+    config.General.requestName = 'WZZ'
+    config.Data.inputDataset = '/WZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
+    submit(config)
 
-    #config.General.requestName = 'ZZTo2L2Q'
-    #config.Data.inputDataset = '/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
-    #submit(config)
+    config.General.requestName = 'ZZTo2L2Q'
+    config.Data.inputDataset = '/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
+    submit(config)
 
-    #config.General.requestName = 'ZZT24L'
-    #config.Data.inputDataset = '/ZZTo4L_13TeV_powheg_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14_ext1-v1/MINIAODSIM'
-    #submit(config)
+    config.General.requestName = 'ZZT24L'
+    config.Data.inputDataset = '/ZZTo4L_13TeV_powheg_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14_ext1-v1/MINIAODSIM'
+    submit(config)
 
-    #config.General.requestName = 'ZZZ'
-    #config.Data.inputDataset = '/ZZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
-    #submit(config)
+    config.General.requestName = 'ZZZ'
+    config.Data.inputDataset = '/ZZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
+    submit(config)
 
 
-    #config.General.requestName = 'TTTT'
-    #config.Data.inputDataset = '/TTTT_TuneCP5_PSweights_13TeV-amcatnlo-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
-    #submit(config)
+    config.General.requestName = 'TTTT'
+    config.Data.inputDataset = '/TTTT_TuneCP5_PSweights_13TeV-amcatnlo-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
+    submit(config)
 
     #for dy in [ 
     #    '/DY1JetsToLL_M-50_LHEZpT_150-250_TuneCP5_13TeV-amcnloFXFX-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM',
@@ -466,13 +466,13 @@ if __name__ == '__main__':
     #    config.Data.inputDataset = dy
     #    submit(config)
 
-    #config.General.requestName = 'DYJetsToLL'
-    #config.Data.inputDataset = '/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14_ext1-v1/MINIAODSIM'
-    #submit(config)
+    config.General.requestName = 'DYJetsToLL'
+    config.Data.inputDataset = '/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14_ext1-v1/MINIAODSIM'
+    submit(config)
 
-    #config.General.requestName = 'DYJetsToLL2'
-    #config.Data.inputDataset = '/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
-    #submit(config)
+    config.General.requestName = 'DYJetsToLL2'
+    config.Data.inputDataset = '/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
+    submit(config)
 
     #config.General.requestName = 'QCD-15-700-hpp'
     #config.Data.inputDataset = '/QCD_Pt-15to7000_TuneCUETHS1_Flat_13TeV_herwigpp/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM'
