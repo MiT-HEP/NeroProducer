@@ -30,7 +30,7 @@ config.General.transferLogs = False
 config.JobType.pluginName = 'Analysis'
 config.JobType.psetName = 'testNero.py'
 #config.JobType.psetName = 'testNero_twomu.py'
-config.JobType.pyCfgParams=['isGrid=True','isData=False','nerohead='+check_output("git rev-parse HEAD",shell=True), 'nerotag='+check_output('git describe --tags',shell=True)]
+config.JobType.pyCfgParams=['isGrid=True','isData=False','nerohead='+check_output("git rev-parse HEAD",shell=True), 'nerotag='+check_output('git describe --tags',shell=True),'isRun=2017B']
 
 # request shipping of the JEC V4 -- local
 #config.JobType.inputFiles=['jec/Summer15_50nsV4_DATA.db','jec/Summer15_50nsV4_MC.db']
@@ -48,8 +48,8 @@ config.Data.totalUnits = -1
 
 tag = check_output("git describe --tags | cut -d'-' -f 1 | tr -d '\n' ",shell=True)
 print "-> current tag is '"+tag + "'"
-config.Data.outLFNDirBase = '/store/user/%s/Nero/%s/' % (getUsernameFromSiteDB(), tag)
-#config.Data.outLFNDirBase = '/store/group/phys_higgs/cmshmm/%s/Nero/%s/' % (getUsernameFromSiteDB(), tag)
+#config.Data.outLFNDirBase = '/store/user/%s/Nero/%s/' % (getUsernameFromSiteDB(), tag)
+config.Data.outLFNDirBase = '/store/group/phys_higgs/cmshmm/%s/Nero/%s/' % (getUsernameFromSiteDB(), tag)
 config.Data.publication = False
 config.Data.outputDatasetTag ='NeroNtuples'
 config.Data.allowNonValidInputDataset = True 
@@ -86,6 +86,10 @@ if __name__ == '__main__':
                 print "Running cmd '"+cmd+"'"
                 dataset=check_output(cmd,shell=True).split('\n')[0].split()[0]
                 config.Data.inputDataset=dataset
+            #config.Data.inputDataset = '/SingleMuon/Run2017B-31Mar2018-v1/MINIAOD'
+            if 'Run2017' in config.Data.inputDataset or 'Run2016' in config.Data.inputDataset or 'Run2018' in config.Data.inputDataset:
+                run=config.Data.inputDataset.split('/')[2].split('-')[0]
+                setrun(run)
             print "--- Submitting " + "\033[01;32m" + config.Data.inputDataset.split('/')[1] + "\033[00m"  + " ---"
             config.Data.outputDatasetTag = config.General.requestName
             print "lumi-mask is",config.Data.lumiMask
@@ -113,6 +117,12 @@ if __name__ == '__main__':
             if "isData" in par:
                 config.JobType.pyCfgParams[idx] = "isData=" + value
         return 
+
+    def setrun(value='Run2017B'):
+        print "-> Setting run Option to:", value
+        for idx,par in enumerate(config.JobType.pyCfgParams):
+            if "isRun" in par:
+                config.JobType.pyCfgParams[idx] = "isRun=" + value
             
     def submitDatasets(datasetNames):
         usedNames = {}
@@ -295,6 +305,7 @@ if __name__ == '__main__':
 
     ###################################################
     setdata("False")
+    setrun("Run2017B")
     ###################################################
 
     ##################################
