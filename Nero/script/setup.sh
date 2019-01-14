@@ -69,9 +69,11 @@ function CMSSW_9_4_9 {
         git cms-merge-topic cms-met:METFixEE2017_949_v2
 }
 
-function CMSSW_10_1_6 {
+function CMSSW_10_2_9 {
         git cms-init
         git cms-merge-topic cms-egamma:EgammaID_1023
+        git cms-merge-topic cms-met:METFixEE2017_949_v2_backport_to_102X
+        git cms-merge-topic amarini:topic_qgmorvar_94X 
 }
 
 
