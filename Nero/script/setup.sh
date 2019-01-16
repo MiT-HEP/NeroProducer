@@ -35,12 +35,6 @@ function CMSSW_8_0_28_patch1 {
         git cms-merge-topic ikrav:egm_id_80X_v2
 }
 
-function CMSSW_9_2_4 {
-        git cms-init
-        #git cms-merge-topic ikrav:egm_id_80X_v3_photons_rebasedTo_CMSSW_9_2_X_2017-05-29-1100
-        #git cms-merge-topic ikrav:egm_id_80X_v2_rebased_CMSSW_9_0_X_2016-12-07-2300
-}
-
 function CMSSW_9_4_1 {
         git cms-init
         git cms-merge-topic lsoffi:CMSSW_9_4_0_pre3_TnP
@@ -75,7 +69,8 @@ function CMSSW_10_2_9 {
         git cms-init
         git cms-merge-topic cms-egamma:EgammaID_1023
         git cms-merge-topic cms-met:METFixEE2017_949_v2_backport_to_102X
-        git cms-merge-topic amarini:topic_qgmorvar_94X 
+        ## additional variables for qg: (axis1,cmult,nmult). Optional 
+        git cms-merge-topic amarini:topic_qgmorvar_102X 
 }
 
 
