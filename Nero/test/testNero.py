@@ -407,6 +407,10 @@ if not isData:
                     process.selectedHadronsAndPartons * process.genJetFlavourInfos * process.matchGenBHadron * process.matchGenCHadron* ## gen HF flavour matching
                     process.categorizeGenTtbar  ## return already a categorization id for tt
                     )
+################## FSR PHOTONS ###############
+
+process.load("NeroProducer.Nero.fsrPhotons_cfi")
+
 ###############################################################
 
 if options.isGrid:
@@ -437,8 +441,8 @@ process.load('NeroProducer.Skim.bRegressionProducer_cfi')
 process.bRegressionProducer.JetTag = process.nero.NeroJets.jets
 
 ## Two muons preselection
-#process.nero.info= cms.string("two_muons")
-#process.load('NeroProducer.Skim.MuonFilterSequence_cff')
+process.nero.info= cms.string("two_muons")
+process.load('NeroProducer.Skim.MuonFilterSequence_cff')
 
 ##DEBUG
 ##print "Process=",process, process.__dict__.keys()
@@ -457,6 +461,7 @@ process.p = cms.Path(
                 process.NjettinessGroomed*
                 process.chsForSATkJets * process.softActivityJets * ## track jtes
                 process.bRegressionProducer*
+                process.fsrSequence*
                 process.nero
                 )
 

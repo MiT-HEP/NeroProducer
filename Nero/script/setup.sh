@@ -67,6 +67,8 @@ function CMSSW_9_4_9 {
         ## additional variables for qg: (axis1,cmult,nmult). Optional 
         git cms-merge-topic amarini:topic_qgmorvar_94X 
         git cms-merge-topic cms-met:METFixEE2017_949_v2
+        git clone -b final_CMSSW_9_4_9 ssh://git@gitlab.cern.ch:7999/uhh-cmssw/CAST.git
+        cd CAST &&  echo "/.gitignore" > .git/info/sparse_checkout && echo "/FSRPhotons/" >> .git/info/sparse-checkout && git read-tree -mu HEAD && cd -
 }
 
 function CMSSW_10_2_9 {
