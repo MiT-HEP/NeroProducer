@@ -32,7 +32,7 @@ class NeroEvent : virtual public NeroCollection, virtual public BareEvent
         map<string,unsigned> metNameToBit;
 
         // Ecal Bad Filter Token
-        edm::EDGetTokenT<bool> ecalBadCalibFilterUpdate_token ;
+        //edm::EDGetTokenT<bool> ecalBadCalibFilterUpdate_token ;
 };
 
 

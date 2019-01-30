@@ -390,7 +390,9 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 #endif
         //bool isPassHLT = (*el_hlt_id)[ref] and el.passConversionVeto();
 
-        float Ecorr=el.userFloat("ecalTrkEnergyPostCorr") / el.energy();
+#warning ECORR set to_1
+        Logger::getInstance().Log("Ecorr set to 1 for electrons",Logger::DEBUG);
+        float Ecorr=1.; //el.userFloat("ecalTrkEnergyPostCorr") / el.energy();
         //l.ecorr = Ecorr;
         l.p4.SetPxPyPzE( el.px(),el.py(),el.pz(),el.energy());
         l.p4 *= Ecorr;

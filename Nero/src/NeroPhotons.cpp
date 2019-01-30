@@ -145,10 +145,11 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
         bits |= !pho.hasPixelSeed() * PhoPixelSeedVeto;
 
         TLorentzVector phoP4 = TLorentzVector(pho.px(),pho.py(),pho.pz(),pho.energy());
-        phoP4 *= pho.userFloat("ecalEnergyPostCorr") / pho.energy();
+#warning PHOTON_ECORR_set_to_1
+        phoP4 *= 1. ;//pho.userFloat("ecalEnergyPostCorr") / pho.energy();
         
         //double Ecorr=NeroFunctions::getEGSeedCorrections(pho,ebRecHits); 
-        double Ecorr=pho.userFloat("ecalEnergyPostCorr") / pho.energy();
+        double Ecorr=1.; //pho.userFloat("ecalEnergyPostCorr") / pho.energy();
         //
         new ( (*p4)[p4->GetEntriesFast()]) TLorentzVector(phoP4);
         corr->push_back(Ecorr);

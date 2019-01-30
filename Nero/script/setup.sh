@@ -65,6 +65,7 @@ function CMSSW_9_4_9 {
 
 function CMSSW_10_2_9 {
         git cms-init
+        git cms-merge-topic cms-egamma:EgammaPostRecoTools
         git cms-merge-topic cms-egamma:EgammaID_1023
         git cms-merge-topic cms-met:METFixEE2017_949_v2_backport_to_102X
         ## additional variables for qg: (axis1,cmult,nmult). Optional 

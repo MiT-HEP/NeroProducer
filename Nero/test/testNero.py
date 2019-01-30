@@ -50,7 +50,6 @@ if len(options.inputFiles) == 0:
                 '/store/user/amarini/Sync/5AC9148F-9842-E811-892B-3417EBE535DA.root' ## GGH Hmm Apr2018
         ]
 
-### do not remove the line below!
 #process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(5000) )
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxEvents) )
 

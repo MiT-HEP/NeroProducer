@@ -30,7 +30,7 @@ NeroEvent::NeroEvent(edm::ConsumesCollector & cc,edm::ParameterSet iConfig):
     *( metfilterNames) = iConfig.getParameter < std::vector<std::string> > ("metfilterNames");
 
     // bad filters
-    ecalBadCalibFilterUpdate_token= cc.consumes<bool>(edm::InputTag("ecalBadCalibReducedMINIAODFilter"));
+    //ecalBadCalibFilterUpdate_token= cc.mayConsumes<bool>(edm::InputTag("ecalBadCalibReducedMINIAODFilter"));
 
 }
 
@@ -57,10 +57,13 @@ int NeroEvent::analyze(const edm::Event& iEvent){
     unsigned int filter=0;
 
     // override ECAL Bad Filters
-    edm::Handle < bool > passecalBadCalibFilterUpdate ;
-    iEvent.getByToken(ecalBadCalibFilterUpdate_token,passecalBadCalibFilterUpdate);
-    if (not passecalBadCalibFilterUpdate.isValid()) cout<<"[NeroEvents]::[ERROR] EcalBadFilterUpdate not valid"<<std::endl;
-    bool    _passecalBadCalibFilterUpdate =  (*passecalBadCalibFilterUpdate );
+    //edm::Handle < bool > passecalBadCalibFilterUpdate ;
+    //iEvent.getByToken(ecalBadCalibFilterUpdate_token,passecalBadCalibFilterUpdate);
+    //bool    _passecalBadCalibFilterUpdate =false;
+    //if (not passecalBadCalibFilterUpdate.isValid()) { cout<<"[NeroEvents]::[ERROR] EcalBadFilterUpdate not valid"<<std::endl;}
+    //else {
+    //     _passecalBadCalibFilterUpdate =  (*passecalBadCalibFilterUpdate );
+    //}
 
 
     if ( metFiltersResults.isValid() and not metFiltersResults.failedToGet() ) {
@@ -71,8 +74,8 @@ int NeroEvent::analyze(const edm::Event& iEvent){
         for ( unsigned int i = 0; i < names.size(); ++i) {            
             if ( std::find( metfilterNames->begin(), metfilterNames->end(), names.triggerName(i) ) != metfilterNames->end() ) {
                 bool passThisFilter=metFiltersResults->accept( i );
-                if (names.triggerName(i) == "Flag_ecalBadCalibFilter")
-                    passThisFilter=_passecalBadCalibFilterUpdate;
+                //if (names.triggerName(i) == "Flag_ecalBadCalibFilter")
+                //    passThisFilter=_passecalBadCalibFilterUpdate;
 
                 if (names.triggerName(i) != "Flag_eeBadScFilter" and not isRealData)                
                 {
