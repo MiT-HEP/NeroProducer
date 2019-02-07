@@ -28,7 +28,7 @@ config.General.transferLogs = False
 
 ## JobType
 config.JobType.pluginName = 'Analysis'
-config.JobType.psetName = 'testNero.py'
+config.JobType.psetName = 'testNero_102X.py'
 #config.JobType.psetName = 'testNero_twomu.py'
 config.JobType.pyCfgParams=['isGrid=True','isData=False','nerohead='+check_output("git rev-parse HEAD",shell=True), 'nerotag='+check_output('git describe --tags',shell=True),'isRun=2017B']
 

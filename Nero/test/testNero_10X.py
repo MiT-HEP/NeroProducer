@@ -82,7 +82,7 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condD
 if (isData):
     # 2017 data
     if options.isRun in ['Run2018A', 'Run2018B','Run2018C']:
-        process.GlobalTag.globaltag = '102X_dataRun2_Sep2018ReReco_v1' 
+        process.GlobalTag.globaltag = '102X_dataRun2_Sep2018Rereco_v1' 
     elif options.isRun == 'Run2018D':
         process.GlobalTag.globaltag = '102X_dataRun2_Prompt_v11' 
 else:
@@ -350,6 +350,8 @@ process.bRegressionProducer.JetTag = process.nero.NeroJets.jets
 ## Two muons preselection
 #process.nero.info= cms.string("two_muons")
 #process.load('NeroProducer.Skim.MuonFilterSequence_cff')
+
+process.nero.info = cms.string( str(process.nero.info) +"  |options:" + ','.join(sys.argv))
 
 ##DEBUG
 ##print "Process=",process, process.__dict__.keys()
