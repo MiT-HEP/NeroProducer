@@ -83,9 +83,6 @@ nero = cms.EDAnalyzer("Nero",
             'HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v',
             'HLT_Ele17_CaloIdL_TrackIdL_IsoVL_PFJet30_v',
             'HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v',
-            ## TAU WITH MATCHING
-            'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET110',
-            'HLT_VLooseIsoPFTau140_Trk50_eta2p1_v',
             ## TAG-AND-PROBE STUDIES
             'HLT_Ele25_eta2p1_WPTight_Gsf_v',
             'HLT_Ele27_eta2p1_WPLoose_Gsf_v',
@@ -93,6 +90,8 @@ nero = cms.EDAnalyzer("Nero",
             'HLT_IsoTkMu24_v',
             'HLT_IsoMu27_v',
             'HLT_IsoTkMu27_v',
+            'HLT_Mu50_v',
+            'HLT_TrkMu100_v',
             ### NO  TRIGGER MATCHING ###
             ## ELECTRONS
             'HLT_Ele27_WPTight_Gsf_v',
@@ -110,7 +109,9 @@ nero = cms.EDAnalyzer("Nero",
             'HLT_IsoTkMu22_v',
             'HLT_Mu19_TrkIsoVVL_v',
             'HLT_Mu45_eta2p1_v',
-            'HLT_Mu50_v',
+            ## TAU 
+            'HLT_LooseIsoPFTau50_Trk30_eta2p1_MET110',
+            'HLT_VLooseIsoPFTau140_Trk50_eta2p1_v',
             ## dimuon
             #
             'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v',
