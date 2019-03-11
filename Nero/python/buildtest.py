@@ -138,6 +138,7 @@ def TryPullReq(sha, origin):
 		if l.startswith('git') and not dangerous.search(l)  : continue
 		if l.startswith('mv RecoEgamma') and not dangerous.search(l)  : continue
 		if l.startswith('rsync') and not dangerous.search(l)  : continue
+		if l.startswith('cd') and not dangerous.search(l)  : continue
 		if l == '$1' : continue # execute argument, checked that CMSSW release is not dangerous
 		if l.startswith('[ "X$1" == "X" ] && $1=$CMSSW_VERSION') : continue # execute argument, checked that CMSSW release is not dangerous
 		if l == 'true' : continue # execute argument, checked that CMSSW release is not dangerous
