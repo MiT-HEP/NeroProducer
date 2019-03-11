@@ -42,9 +42,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxE
 if len(options.inputFiles) == 0:
     if isData:
         options.inputFiles = [
-                '/store/data/Run2017B/DoubleMuon/MINIAOD/17Nov2017-v1/50000/C81DD09D-DFD3-E711-8CA8-F04DA275BFEC.root',
-                '/store/data/Run2017B/DoubleMuon/MINIAOD/17Nov2017-v1/50000/D0138D26-50D4-E711-B871-0025905C95F8.root',
-                '/store/data/Run2017B/DoubleMuon/MINIAOD/17Nov2017-v1/50000/D0E4CDFD-1BD4-E711-9157-0025905D1E00.root'
+                '/store/data/Run2018A/SingleMuon/MINIAOD/17Sep2018-v2/00000/033CDF0C-6890-0E49-9C83-C769AD220FD8.root'
         ]
     else:
         options.inputFiles = [
@@ -117,72 +115,81 @@ setupEgammaPostRecoSeq(process,
 
 ############################### JEC #####################
 #### Load from a sqlite db, if not read from the global tag
-#process.load("CondCore.DBCommon.CondDBCommon_cfi")
-#from CondCore.DBCommon.CondDBSetup_cfi import *
-#
-#if options.isData:
-#    connectString = cms.string('sqlite:jec/Fall17_17Nov2017BCDEF_V6_DATA.db')
-#    tagName = 'Fall17_17Nov2017BCDEF_V6_DATA_AK4PFchs'
-#    tagNamePuppi = 'Fall17_17Nov2017BCDEF_V6_DATA_AK4PFPuppi'
-#else:
-#    connectString = cms.string('sqlite:jec/Fall17_17Nov2017_V6_MC.db')
-#    tagName = 'Fall17_17Nov2017_V6_MC_AK4PFchs'
-#    tagNamePuppi = 'Fall17_17Nov2017_V6_MC_AK4PFPuppi'
-##data only, mc hard coded
-print "-> FIX JEC FOR AK8"
-process.nero.NeroFatJets.chsAK8JECMC = cms.string("jec/Fall17/Fall17_17Nov2017_V32")
-process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Fall17/Fall17_17Nov2017B_V32")
-#process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Summer16_23Sep2016BCDV4")
+process.load("CondCore.DBCommon.CondDBCommon_cfi")
+from CondCore.DBCommon.CondDBSetup_cfi import *
+
+if options.isData:
+    connectString = cms.string('sqlite:jec/Autumn18_RunABCD_V8_DATA.db')
+    tagName = 'Autumn18_RunABCD_V8_DATA_AK4PFchs'
+    tagNamePuppi = 'Autumn18_RunABCD_V8_DATA_AK4PFPuppi'
+else:
+    connectString = cms.string('sqlite:jec/Autumn18_V8_MC.db')
+    tagName = 'Autumn18_V8_MC_AK4PFchs'
+    tagNamePuppi = 'Autumn18_V8_MC_AK4PFPuppi'
+
+#print "-> FIX JEC FOR AK8"
+print "-> Setting Up JEC for AK8 using Run",options.isRun
+process.nero.NeroFatJets.chsAK8JECMC = cms.string("jec/Autumn18/Autumn18_V8")
+
+if options.isRun=="Run2018A":
+    process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Autumn18/Autumn18_RunA_V8")
+elif options.isRun=="Run2018B":
+    process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Autumn18/Autumn18_RunB_V8")
+elif options.isRun=="Run2018C":
+    process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Autumn18/Autumn18_RunC_V8")
+elif options.isRun=="Run2018D":
+    process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Autumn18/Autumn18_RunD_V8")
+else: raise ValueError("Unable to configure AK8 JEC")
+
 #### 
-#### 
-#process.jec = cms.ESSource("PoolDBESSource",
-#      DBParameters = cms.PSet(
-#        messageLevel = cms.untracked.int32(0)
-#        ),
-#      timetype = cms.string('runnumber'),
-#      toGet = cms.VPSet(
-#      cms.PSet(
-#            record = cms.string('JetCorrectionsRecord'),
-#            tag    = cms.string('JetCorrectorParametersCollection_%s'%tagName),
-#            label  = cms.untracked.string('AK4PFchs')
-#            ),
-#      cms.PSet( ## AK8
-#            record = cms.string('JetCorrectionsRecord'),
-#            tag    = cms.string('JetCorrectorParametersCollection_%s'%re.sub('AK4','AK8',tagName)),
-#            label  = cms.untracked.string('AK8PFchs')
-#            ),
-#      cms.PSet(#puppi
-#            record = cms.string('JetCorrectionsRecord'),
-#            tag    = cms.string('JetCorrectorParametersCollection_%s'%tagNamePuppi),
-#            label  = cms.untracked.string('AK4PFPuppi')
-#            ),
-#      cms.PSet( ## AK8 puppi
-#            record = cms.string('JetCorrectionsRecord'),
-#            tag    = cms.string('JetCorrectorParametersCollection_%s'%re.sub('AK4','AK8',tagNamePuppi)),
-#            label  = cms.untracked.string('AK8PFPuppi')
-#            ),
-#      ## here you add as many jet types as you need
-#      ## note that the tag name is specific for the particular sqlite file 
-#      ), 
-#      connect = connectString
-#     # uncomment above tag lines and this comment to use MC JEC
-#)
-### add an es_prefer statement to resolve a possible conflict from simultaneous connection to a global tag
-#process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
+process.jec = cms.ESSource("PoolDBESSource",
+      DBParameters = cms.PSet(
+        messageLevel = cms.untracked.int32(0)
+        ),
+      timetype = cms.string('runnumber'),
+      toGet = cms.VPSet(
+      cms.PSet(
+            record = cms.string('JetCorrectionsRecord'),
+            tag    = cms.string('JetCorrectorParametersCollection_%s'%tagName),
+            label  = cms.untracked.string('AK4PFchs')
+            ),
+      cms.PSet( ## AK8
+            record = cms.string('JetCorrectionsRecord'),
+            tag    = cms.string('JetCorrectorParametersCollection_%s'%re.sub('AK4','AK8',tagName)),
+            label  = cms.untracked.string('AK8PFchs')
+            ),
+      cms.PSet(#puppi
+            record = cms.string('JetCorrectionsRecord'),
+            tag    = cms.string('JetCorrectorParametersCollection_%s'%tagNamePuppi),
+            label  = cms.untracked.string('AK4PFPuppi')
+            ),
+      cms.PSet( ## AK8 puppi
+            record = cms.string('JetCorrectionsRecord'),
+            tag    = cms.string('JetCorrectorParametersCollection_%s'%re.sub('AK4','AK8',tagNamePuppi)),
+            label  = cms.untracked.string('AK8PFPuppi')
+            ),
+      ## here you add as many jet types as you need
+      ## note that the tag name is specific for the particular sqlite file 
+      ), 
+      connect = connectString
+     # uncomment above tag lines and this comment to use MC JEC
+)
+## add an es_prefer statement to resolve a possible conflict from simultaneous connection to a global tag
+process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 
 #------------------- JER -----------------
 print "TODO: Update JER"
 toGet=[]
 if options.isData:
-    jerString = cms.string('sqlite:jer/Fall17_V3_94X_DATA.db')
-    resTag= cms.string('JR_Fall17_V3_94X_DATA_PtResolution_AK4PFchs')
-    phiTag= cms.string('JR_Fall17_V3_94X_DATA_PhiResolution_AK4PFchs')
-    sfTag = cms.string('JR_Fall17_V3_94X_DATA_SF_AK4PFchs')
+    jerString = cms.string('sqlite:jer/Fall17_V3_102X_DATA.db')
+    resTag= cms.string('JR_Fall17_V3_102X_DATA_PtResolution_AK4PFchs')
+    phiTag= cms.string('JR_Fall17_V3_102X_DATA_PhiResolution_AK4PFchs')
+    sfTag = cms.string('JR_Fall17_V3_102X_DATA_SF_AK4PFchs')
 else:
-    jerString = cms.string('sqlite:jer/Fall17_V3_94X_MC.db')
-    resTag= cms.string('JR_Fall17_V3_94X_MC_PtResolution_AK4PFchs')
-    phiTag= cms.string('JR_Fall17_V3_94X_MC_PhiResolution_AK4PFchs')
-    sfTag = cms.string('JR_Fall17_V3_94X_MC_SF_AK4PFchs')
+    jerString = cms.string('sqlite:jer/Fall17_V3_102X_MC.db')
+    resTag= cms.string('JR_Fall17_V3_102X_MC_PtResolution_AK4PFchs')
+    phiTag= cms.string('JR_Fall17_V3_102X_MC_PhiResolution_AK4PFchs')
+    sfTag = cms.string('JR_Fall17_V3_102X_MC_SF_AK4PFchs')
 
 process.jer = cms.ESSource("PoolDBESSource",
         CondDBSetup,
