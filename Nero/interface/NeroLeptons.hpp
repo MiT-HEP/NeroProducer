@@ -29,10 +29,12 @@ class NeroLeptons : virtual public NeroCollection,
                             resolution =-999; nlayers=-999;
                             kinfitP4.SetPxPyPzE(0,0,0,0);
                             kinfitPtErr=-999;
+                            fsrP4.SetPxPyPzE(0,0,0,0);
                 }
                 float iso;
                 TLorentzVector p4;
                 TLorentzVector kinfitP4; //vertex fit 
+                TLorentzVector fsrP4; //vertex fit 
                 float kinfitPtErr;
                 unsigned selBits;
                 int pdgId;
@@ -88,6 +90,10 @@ class NeroLeptons : virtual public NeroCollection,
         // --- Handle
         edm::Handle<pat::MuonCollection> mu_handle;
         edm::Handle<pat::ElectronCollection> el_handle;
+
+        edm::EDGetTokenT<std::vector<pat::PFParticle>> tokenFSRphotons;
+        edm::Handle<std::vector<pat::PFParticle>> selectedFSRphotons;
+
 
         //edm::Handle<edm::ValueMap<bool> > el_veto_id;
         //edm::Handle<edm::ValueMap<bool> > el_loose_id;

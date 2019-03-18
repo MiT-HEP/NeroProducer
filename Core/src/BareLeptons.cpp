@@ -25,6 +25,7 @@ BareLeptons::~BareLeptons(){
     BareFunctions::Delete(nLayers);
     BareFunctions::Delete(kinfitP4);
     BareFunctions::Delete(kinfitPtErr);
+    BareFunctions::Delete(fsrP4);
 }
 
 void BareLeptons::init(){
@@ -51,6 +52,7 @@ void BareLeptons::init(){
 
     BareFunctions::New(kinfitP4);
     BareFunctions::New(kinfitPtErr);
+    BareFunctions::New(fsrP4);
 }
 
 void BareLeptons::clear(){
@@ -80,6 +82,7 @@ void BareLeptons::clear(){
 
     kinfitP4->Clear();
     kinfitPtErr->clear();
+    fsrP4->Clear();
 
 }
 
@@ -118,6 +121,7 @@ void BareLeptons::defineBranches(TTree*t){
     //kintfit
     t->Branch("lepKinfitPtErr","vector<float>",&kinfitPtErr);
     t->Branch( "lepKinfitP4","TClonesArray", &kinfitP4, 128000, 0);
+    t->Branch( "lepFsrP4","TClonesArray", &fsrP4, 128000, 0);
 
 
 }
@@ -150,6 +154,7 @@ void BareLeptons::setBranchAddresses(TTree*t){
 
     BareFunctions::SetBranchAddress(t,"lepKinfitPtErr",&kinfitPtErr);
     BareFunctions::SetBranchAddress(t,"lepKinfitP4",&kinfitP4);
+    BareFunctions::SetBranchAddress(t,"lepFsrP4",&fsrP4);
 }
 
 BAREREGISTER(BareLeptons);
