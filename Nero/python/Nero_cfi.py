@@ -10,6 +10,21 @@ nero = cms.EDAnalyzer("Nero",
     head = cms.string(''),
     tag = cms.string(''),
 
+    modules=cms.vstring([
+        "NeroAll",
+        "NeroEvent",
+        "NeroVertex",
+        "NeroFatJets",
+        "NeroTaus",
+        "NeroLeptons",
+        "NeroMet",
+        "NeroMonteCarlo",
+        "NeroJets",
+        "NeroPhotons",
+        "NeroTrigger",
+        #"NeroTrackJets",
+        ]),
+
     NeroVertex = cms.PSet(
         vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
         ),
