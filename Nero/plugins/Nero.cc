@@ -51,7 +51,11 @@ Nero::Nero(const edm::ParameterSet& iConfig)
     auto&& cc ( consumesCollector() );
 
 
-    std::vector<string> objName{"NeroAll","NeroEvent","NeroVertex","NeroFatJets","NeroTaus","NeroLeptons","NeroMet","NeroMonteCarlo","NeroJets","NeroPhotons","NeroTrigger","NeroTrackJets"};
+    std::vector<string> objName = iConfig.getParameter<std::vector<std::string> >("modules");
+
+    // log
+    std::string allmodules=""; for(auto &x : objName) allmodules += x+", ";
+    Logger::getInstance().Log("Will Run the following modules: " + allmodules,1) ;
 
 
     for (const auto& name : objName)

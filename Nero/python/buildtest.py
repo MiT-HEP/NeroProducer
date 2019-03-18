@@ -392,7 +392,9 @@ if __name__ == "__main__":
 		if status == 2: #repo
 			pass
 		if status == 3: #merge
-			pass
+			SetStatus(dict[id]['sha'],'error','build')
+			continue
+
 		if status == 4: #build
 			SetStatus(dict[id]['sha'],'error','build')
 			continue
