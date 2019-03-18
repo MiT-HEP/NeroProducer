@@ -327,6 +327,16 @@ if not isData:
                     )
 ###############################################################
 
+################## FSR PHOTONS ###############
+
+from FSRPhotonRecovery.FSRPhotons.FSRphotonSequence_cff import addFSRphotonSequence 
+
+print "-> Adding FSR photons to:",process.nero.NeroLeptons.muons.value()
+PhotonMVA="FSRPhotonRecovery/FSRPhotons/data/PhotonMVAv9_BDTG800TreesDY.weights.xml"
+addFSRphotonSequence(process, process.nero.NeroLeptons.muons.value(), PhotonMVA)
+
+
+###############################################################
 if options.isGrid:
 	process.nero.head=options.nerohead ##'git rev-parse HEAD'
 	process.nero.tag=options.nerotag ## git describe --tags
@@ -373,6 +383,7 @@ process.p = cms.Path(
                 process.NjettinessGroomed*
                 process.chsForSATkJets * process.softActivityJets * ## track jtes
                 process.bRegressionProducer*
+                process.FSRphotonSequence*
                 process.nero
                 )
 
