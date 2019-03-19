@@ -251,6 +251,13 @@ process.jecSequence = cms.Sequence(
         * process.patJetCorrFactorsUpdatedJECAK8* process.updatedPatJetsUpdatedJECAK8
         )
 
+########################################## MET ##########################
+## Update met collection ?
+from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+runMetCorAndUncFromMiniAOD(process,
+        isData=options.isData,
+        )
+
 #-----------------------ELECTRON ID-------------------------------
 
 # ------------- Soft jet activity: Track jets ------------------------
@@ -367,6 +374,7 @@ process.p = cms.Path(
                 process.infoProducerSequence *
                 process.egammaPostRecoSeq *  #-> should be everything from EGamma
                 process.jecSequence *
+                process.fullPatMetSequence *
                 process.QGTagger    * ## after jec, because it will produce the new jet collection
                 process.ttbarcat *
                 process.QGVariablesSequence*
