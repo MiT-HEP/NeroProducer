@@ -123,8 +123,8 @@ if options.isData:
         tagNamePuppi = 'Fall17_17Nov2017_V32_94X_DATA_AK4PFPuppi'
     if isYear == 2016:
         connectString = cms.string('sqlite:jec/Summer16_07Aug2017All_V11_DATA.db')
-        tagName = 'Summer16_07Aug2017_V11_94X_DATA_AK4PFchs'
-        tagNamePuppi = 'Summer16_07Aug2017_V11_94X_DATA_AK4PFPuppi'
+        tagName = 'Summer16_07Aug2017All_V11_DATA_AK4PFchs'
+        tagNamePuppi = 'Summer16_07Aug2017All_V11_DATA_AK4PFPuppi'
 else:
     if isYear==2017:
         connectString = cms.string('sqlite:jec/Fall17_17Nov2017_V32_94X_MC.db')
@@ -132,8 +132,8 @@ else:
         tagNamePuppi = 'Fall17_17Nov2017_V32_94X_MC_AK4PFPuppi'
     if isYear==2016:
         connectString = cms.string('sqlite:jec/Summer16_07Aug2017_V11_MC.db')
-        tagName = 'Summer16_07Aug2017_V11_94X_MC_AK4PFchs'
-        tagNamePuppi = 'Summer16_07Aug2017_V11_94X_MC_AK4PFPuppi'
+        tagName = 'Summer16_07Aug2017_V11_MC_AK4PFchs'
+        tagNamePuppi = 'Summer16_07Aug2017_V11_MC_AK4PFPuppi'
 
 #data only, mc hard coded. Need to be fixed per Run
 print "-> Setting Up JEC for AK8 using Year",isYear,"and Run",options.isRun
@@ -151,7 +151,7 @@ if isYear == 2017:
 elif isYear==2016:
     process.nero.NeroFatJets.chsAK8JECMC = cms.string("jec/Summer16/Summer16_07Aug2017_V11")
     if options.isRun in ['Run2016A','Run2016B','Run2016C','Run2016D']:
-        process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Summer16/Summer16_07Aug2017ABCD_V11")
+        process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Summer16/Summer16_07Aug2017BCD_V11")
     elif options.isRun in ['Run2016E', 'Run2016F']:
         process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Summer16/Summer16_07Aug2017EF_V11")
     elif options.isRun in ['Run2016G', 'Run2016H']:
