@@ -406,6 +406,18 @@ if not isData:
                     process.selectedHadronsAndPartons * process.genJetFlavourInfos * process.matchGenBHadron * process.matchGenCHadron* ## gen HF flavour matching
                     process.categorizeGenTtbar  ## return already a categorization id for tt
                     )
+################## FSR PHOTONS ###############
+
+#process.load("NeroProducer.Nero.fsrPhotons_cfi")
+
+from FSRPhotonRecovery.FSRPhotons.FSRphotonSequence_cff import addFSRphotonSequence 
+
+print "-> Adding FSR photons to:",process.nero.NeroLeptons.muons.value()
+PhotonMVA="FSRPhotonRecovery/FSRPhotons/data/PhotonMVAv5_BDTG1000TreesDY.weights.xml"
+PhotonMVA="FSRPhotonRecovery/FSRPhotons/data/PhotonMVAv9_BDTG800TreesDY.weights.xml"
+addFSRphotonSequence(process, process.nero.NeroLeptons.muons.value(), PhotonMVA)
+
+
 ###############################################################
 
 if options.isGrid:
@@ -456,6 +468,7 @@ process.p = cms.Path(
                 process.NjettinessGroomed*
                 process.chsForSATkJets * process.softActivityJets * ## track jtes
                 process.bRegressionProducer*
+                process.FSRphotonSequence*
                 process.nero
                 )
 

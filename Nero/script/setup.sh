@@ -5,7 +5,7 @@
 # [Options] isData=False
 # [fileList] /store/mc/RunIIAutumn18MiniAOD/DYJetsToLL_M-105To160_TuneCP5_PSweights_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/100000/48A13F85-97BC-8348-A555-9AC79DF6628B.root
 # [MaxEvents] 5000
-# [Tag] CMSSW_92X
+# [Tag] CMSSW_102X
 
 function CMSSW_8_0_26_patch1 {
         git cms-init
@@ -61,6 +61,9 @@ function CMSSW_9_4_9 {
         ## additional variables for qg: (axis1,cmult,nmult). Optional 
         git cms-merge-topic amarini:topic_qgmorvar_94X 
         git cms-merge-topic cms-met:METFixEE2017_949_v2
+        git clone ssh://git@gitlab.cern.ch:7999/uhh-cmssw/fsr-photon-recovery.git FSRPhotonRecovery
+        #git clone -b final_CMSSW_9_4_9 ssh://git@gitlab.cern.ch:7999/uhh-cmssw/CAST.git
+        #cd CAST &&  echo "/.gitignore" > .git/info/sparse_checkout && echo "/FSRPhotons/" >> .git/info/sparse-checkout && git read-tree -mu HEAD && cd -
 }
 
 function CMSSW_10_2_9 {
@@ -70,6 +73,7 @@ function CMSSW_10_2_9 {
         git cms-merge-topic cms-met:METFixEE2017_949_v2_backport_to_102X
         ## additional variables for qg: (axis1,cmult,nmult). Optional 
         git cms-merge-topic amarini:topic_qgmorvar_102X 
+        git clone ssh://git@gitlab.cern.ch:7999/uhh-cmssw/fsr-photon-recovery.git FSRPhotonRecovery
 }
 
 
