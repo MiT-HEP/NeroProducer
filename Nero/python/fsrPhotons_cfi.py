@@ -1,3 +1,4 @@
+## TO BE REMOVED
 import FWCore.ParameterSet.Config as cms
 ## FSR Photons ##
 extractFSRPhotons = cms.EDProducer("FSRPhotonProducer",

@@ -409,7 +409,15 @@ if not isData:
                     )
 ################## FSR PHOTONS ###############
 
-process.load("NeroProducer.Nero.fsrPhotons_cfi")
+#process.load("NeroProducer.Nero.fsrPhotons_cfi")
+
+from FSRPhotonRecovery.FSRPhotons.FSRphotonSequence_cff import addFSRphotonSequence 
+
+print "-> Adding FSR photons to:",process.nero.NeroLeptons.muons.value()
+PhotonMVA="FSRPhotonRecovery/FSRPhotons/data/PhotonMVAv5_BDTG1000TreesDY.weights.xml"
+PhotonMVA="FSRPhotonRecovery/FSRPhotons/data/PhotonMVAv9_BDTG800TreesDY.weights.xml"
+addFSRphotonSequence(process, process.nero.NeroLeptons.muons.value(), PhotonMVA)
+
 
 ###############################################################
 
@@ -461,7 +469,7 @@ process.p = cms.Path(
                 process.NjettinessGroomed*
                 process.chsForSATkJets * process.softActivityJets * ## track jtes
                 process.bRegressionProducer*
-                process.fsrSequence*
+                process.FSRphotonSequence*
                 process.nero
                 )
 

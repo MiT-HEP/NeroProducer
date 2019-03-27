@@ -65,6 +65,8 @@ NeroLeptons::NeroLeptons(edm::ConsumesCollector & cc,edm::ParameterSet iConfig):
     //el_mva_token = cc.consumes<edm::ValueMap<float> > (iConfig.getParameter<edm::InputTag>("eleMvaMap"));
     rho_token = cc.consumes<double> (edm::InputTag("fixedGridRhoFastjetCentralNeutral")); // for miniIso
 
+    tokenFSRphotons= cc.consumes< std::vector<pat::PFParticle> > (edm::InputTag("FSRRecovery","selectedFSRphotons"));
+
     //el_vetoid_token = cc.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleVetoIdMap"));
     //el_looseid_token = cc.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleLooseIdMap"));
     //el_mediumid_token = cc.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMediumIdMap"));
@@ -150,6 +152,39 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
     //if ( not el_loose_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_looseid_handle is not valid"<<endl;
     //if ( not el_medium_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_mediumid_handle is not valid"<<endl;
     //if ( not el_tight_id.isValid() ) cout<<"[NeroLeptons]::[analyze]::[ERROR] el_tightid_handle is not valid"<<endl;
+    //
+    iEvent.getByToken(tokenFSRphotons,selectedFSRphotons);
+    if (not selectedFSRphotons.isValid())
+        Logger::getInstance().Log("[NeroLeptons] unable to access FSR photons",Logger::ERROR);
+
+    // FSR Photons, selection 
+    // select photon
+    double fsrDrEt2Cut = 0.019;
+    double fsrIsoCut = 0.8;
+
+    for (unsigned int i = 0; i < selectedFSRphotons->size(); i++)
+    {
+        pat::PFParticle photon = selectedFSRphotons->at(i);
+        pat::Muon *associatedMuon = (pat::Muon *)(photon.userCand("associatedMuon").get());
+        if (photon.userFloat("PFphotonIso03") < fsrIsoCut && photon.userFloat("ETgammadeltaR") < fsrDrEt2Cut)
+        {
+            reco::CandidatePtr cutBasedFsrPhoton(selectedFSRphotons, i);
+            if (associatedMuon->hasUserCand("cutBasedFsrPhoton"))
+            {
+                pat::PFParticle *tmpPhoton = (pat::PFParticle *)(associatedMuon->userCand("cutBasedFsrPhoton").get());
+                if (photon.userFloat("ETgammadeltaR") < tmpPhoton->userFloat("ETgammadeltaR"))
+                {
+                    associatedMuon->addUserCand("cutBasedFsrPhoton", cutBasedFsrPhoton, true);
+                }
+            }
+            else
+            {
+                associatedMuon->addUserCand("cutBasedFsrPhoton", cutBasedFsrPhoton);
+            }
+        }
+    }
+    // ---- FSR end --> now each muon ass a userCand "cutBasedFsrPhoton"
+
 
     vector<myLepton> leptons;
 
@@ -199,6 +234,12 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
             l.selBits |= unsigned(LepHighPt * myid::isHighPtMuon(mu,*pv)) ;
             
         l.pfPt = mu.pfP4().pt();
+
+        if (mu.hasUserCand("cutBasedFsrPhoton"))
+        {
+            pat::PFParticle *pho = (pat::PFParticle *)(mu.userCand("cutBasedFsrPhoton").get());
+            l.fsrP4.SetPtEtaPhiM(pho->pt(),pho->eta(),pho->phi(),0.); 
+        }
 
         l.chiso  = chiso;
         l.nhiso  = niso;
@@ -490,6 +531,7 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         //kinfit
         new ( (*kinfitP4)[kinfitP4->GetEntriesFast()]) TLorentzVector(l.kinfitP4);
         kinfitPtErr -> push_back(l.kinfitPtErr);
+        new ( (*fsrP4)[fsrP4->GetEntriesFast()]) TLorentzVector(l.fsrP4);
     }
 
 #ifdef VERBOSE_LEP

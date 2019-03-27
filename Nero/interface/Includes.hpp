@@ -34,6 +34,9 @@ using namespace std;
 #include "DataFormats/PatCandidates/interface/MET.h"
 #include "DataFormats/PatCandidates/interface/PackedCandidate.h"
 
+// FSR
+#include "DataFormats/PatCandidates/interface/PFParticle.h"
+
 //VALUE MAP
 #include "DataFormats/Common/interface/ValueMap.h"
 #include "DataFormats/JetReco/interface/PFJet.h"
