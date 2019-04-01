@@ -257,9 +257,11 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 
         if (mu.innerTrack().isNull()) continue;
         // for kinematic fit. Must have track
-        ++nMuons;
-        selectedMuons.push_back(mu);
-        selectedIndex.push_back(leptons.size()-1);
+        if (mu.isLooseMuon()){
+            ++nMuons;
+            selectedMuons.push_back(mu);
+            selectedIndex.push_back(leptons.size()-1);
+        }
     }
 
     // Muon Vertex fitter
