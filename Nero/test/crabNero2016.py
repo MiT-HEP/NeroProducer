@@ -66,7 +66,7 @@ if __name__ == '__main__':
 
     # We want to put all the CRAB project directories from the tasks we submit here into one common directory.
     # That's why we need to set this parameter (here or above in the configuration file, it does not matter, we will not overwrite it).
-    config.General.workArea = 'NeroSubmissionSkim'
+    config.General.workArea = 'NeroSubmission2016'
 
     def submit(config):
         ### for some reason only the first dataset is submitted correctly, work around
