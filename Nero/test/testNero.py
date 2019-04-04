@@ -274,15 +274,16 @@ updateJetCollection(
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
 
 runMetCorAndUncFromMiniAOD (
-        process,
-        isData = isData, # false for MC
-        reclusterJets = True,
-        pfCandColl=cms.InputTag("packedPFCandidates"),
-        CHS = True,
-        fixEE2017 = (isYear == 2017),
-        #fixEE2017Params = {'userawPt': True, 'PtThreshold':50.0, 'MinEtaThreshold':2.65, 'MaxEtaThreshold': 3.139} , ## default have modified names
-        postfix = "ModifiedMET"
-)
+            process,
+            isData = isData, # false for MC
+            reclusterJets = True,
+            pfCandColl=cms.InputTag("packedPFCandidates"),
+            CHS = True,
+            fixEE2017 = (isYear==2017),
+            #fixEE2017Params = {'userawPt': True, 'PtThreshold':50.0, 'MinEtaThreshold':2.65, 'MaxEtaThreshold': 3.139} , ## default have modified names
+            postfix = "ModifiedMET" if isYear==2017 else ""
+    )
+
 
 print "-> Ecal Bad "
 
@@ -310,14 +311,24 @@ process.ecalBadCalibReducedMINIAODFilter = cms.EDFilter(
 print "-> Updating the jets collection to run on to 'updatedPatJetsUpdatedJEC' with the new jec in the GT/or DB"
 process.nero.NeroJets.jets=cms.InputTag('updatedPatJetsUpdatedJEC')
 process.nero.NeroFatJets.chsAK8=cms.InputTag('updatedPatJetsUpdatedJECAK8')
-process.nero.NeroMet.mets=cms.InputTag("slimmedMETsModifiedMET")
-process.jecSequence = cms.Sequence( 
-        #process.patJetCorrFactorsReapplyJEC + process.patJetsReapplyJEC
-        process.patJetCorrFactorsUpdatedJEC* process.updatedPatJetsUpdatedJEC 
-        * process.patJetCorrFactorsUpdatedJECAK8* process.updatedPatJetsUpdatedJECAK8
-        * process.fullPatMetSequenceModifiedMET 
-        * process.ecalBadCalibReducedMINIAODFilter
-        )
+if isYear==2017:
+    process.nero.NeroMet.mets=cms.InputTag("slimmedMETsModifiedMET")
+    process.jecSequence = cms.Sequence( 
+            #process.patJetCorrFactorsReapplyJEC + process.patJetsReapplyJEC
+            process.patJetCorrFactorsUpdatedJEC* process.updatedPatJetsUpdatedJEC 
+            * process.patJetCorrFactorsUpdatedJECAK8* process.updatedPatJetsUpdatedJECAK8
+            * process.fullPatMetSequenceModifiedMET 
+            * process.ecalBadCalibReducedMINIAODFilter
+            )
+else:
+    process.nero.NeroMet.mets=cms.InputTag("slimmedMETs")
+    process.jecSequence = cms.Sequence( 
+            #process.patJetCorrFactorsReapplyJEC + process.patJetsReapplyJEC
+            process.patJetCorrFactorsUpdatedJEC* process.updatedPatJetsUpdatedJEC 
+            * process.patJetCorrFactorsUpdatedJECAK8* process.updatedPatJetsUpdatedJECAK8
+            * process.fullPatMetSequence
+            * process.ecalBadCalibReducedMINIAODFilter
+            )
 
 
 #-----------------------ELECTRON ID-------------------------------
