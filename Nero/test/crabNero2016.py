@@ -49,7 +49,7 @@ config.Data.totalUnits = -1
 tag = check_output("git describe --tags | cut -d'-' -f 1 | tr -d '\n' ",shell=True)
 print "-> current tag is '"+tag + "'"
 #config.Data.outLFNDirBase = '/store/user/%s/Nero/%s/' % (getUsernameFromSiteDB(), tag)
-config.Data.outLFNDirBase = '/store/group/phys_higgs/cmshmm/%s/Nero/%s/2016/' % (getUsernameFromSiteDB(), tag)
+config.Data.outLFNDirBase = '/store/group/phys_higgs/cmshmm/%s/Nero/%s/year2016/' % (getUsernameFromSiteDB(), tag)
 config.Data.publication = False
 config.Data.outputDatasetTag ='NeroNtuples'
 config.Data.allowNonValidInputDataset = True 
@@ -66,7 +66,7 @@ if __name__ == '__main__':
 
     # We want to put all the CRAB project directories from the tasks we submit here into one common directory.
     # That's why we need to set this parameter (here or above in the configuration file, it does not matter, we will not overwrite it).
-    config.General.workArea = 'NeroSubmission2016'
+    config.General.workArea = 'NeroSubmission2016_v2'
 
     def submit(config):
         ### for some reason only the first dataset is submitted correctly, work around
