@@ -74,6 +74,23 @@ function CMSSW_10_2_9 {
         ## additional variables for qg: (axis1,cmult,nmult). Optional 
         git cms-merge-topic amarini:topic_qgmorvar_102X 
         git clone ssh://git@gitlab.cern.ch:7999/uhh-cmssw/fsr-photon-recovery.git FSRPhotonRecovery
+
+        cd FSRPhotonRecovery &&  patch -l -p1 <<EOF
+diff --git a/FSRPhotons/plugins/FSRRecoveryProducer.cc b/FSRPhotons/plugins/FSRRecoveryProducer.cc
+index 33994ce..2b8dd24 100644
+--- a/FSRPhotons/plugins/FSRRecoveryProducer.cc
++++ b/FSRPhotons/plugins/FSRRecoveryProducer.cc
+@@ -129,7 +129,8 @@ std::vector<pat::PFParticle> FSRRecoveryProducer::MakeHybridPhotons(
+        pat::PackedCandidate associatedPhotonMatch = *(patpho.associatedPackedPFCandidates().at(matching_index));
+        double dR = deltaR(hybridpho.p4(), associatedPhotonMatch.p4());
+        if(abs(hybridpho.pt() - associatedPhotonMatch.pt()) < 1e-3 && dR < 0.05){
+-         math::XYZTLorentzVector pho_corrP4 = patpho.p4() * patpho.userFloat("ecalEnergyPostCorr") / patpho.energy();
++         //math::XYZTLorentzVector pho_corrP4 = patpho.p4() * patpho.userFloat("ecalEnergyPostCorr") / patpho.energy();
++         math::XYZTLorentzVector pho_corrP4 = patpho.p4() / patpho.energy();
+          if(modifyP4){
+            hybridpho.setP4(pho_corrP4);
+          }
+EOF
 }
 
 
