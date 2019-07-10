@@ -10,7 +10,7 @@ ROOT.gROOT.SetBatch();
 from subprocess import call, check_output
 import re
 import math
-EOS = "/afs/cern.ch/project/eos/installation/0.3.84-aquamarine/bin/eos.select"
+EOS = "/usr/bin/eos"
 
 usage = '''
 	script to remove duplicates when running on data. The script is meant for multiple submission, 

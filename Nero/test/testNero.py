@@ -107,9 +107,15 @@ process.load('NeroProducer.Skim.infoProducerSequence_cff')
 process.load('NeroProducer.Nero.Nero_cfi')
 
 from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
-setupEgammaPostRecoSeq(process,
-                       runVID=True,
-                       era='2017-Nov17ReReco')  
+if isYear==2017:
+    setupEgammaPostRecoSeq(process,
+                           runVID=True,
+                           era='2017-Nov17ReReco')  
+if isYear==2016:
+    setupEgammaPostRecoSeq(process,
+                           runVID=True,
+                           runEnergyCorrections=False,
+                           era='2016-Legacy')  
 
 ############################### JEC #####################
 #### Load from a sqlite db, if not read from the global tag
