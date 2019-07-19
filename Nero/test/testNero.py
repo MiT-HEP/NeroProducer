@@ -416,6 +416,8 @@ print "-> Adding FSR photons to:",process.nero.NeroLeptons.muons.value()
 PhotonMVA="FSRPhotonRecovery/FSRPhotons/data/PhotonMVAv5_BDTG1000TreesDY.weights.xml"
 PhotonMVA="FSRPhotonRecovery/FSRPhotons/data/PhotonMVAv9_BDTG800TreesDY.weights.xml"
 addFSRphotonSequence(process, process.nero.NeroLeptons.muons.value(), PhotonMVA)
+#electrons = cms.InputTag("slimmedElectrons","","nero"),
+process.FSRRecovery.patphotons= cms.InputTag("slimmedPhotons","","nero")
 
 
 ###############################################################
