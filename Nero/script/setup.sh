@@ -66,6 +66,14 @@ function CMSSW_9_4_9 {
         #cd CAST &&  echo "/.gitignore" > .git/info/sparse_checkout && echo "/FSRPhotons/" >> .git/info/sparse-checkout && git read-tree -mu HEAD && cd -
 }
 
+
+#git cms-merge-topic cms-egamma:EgammaPostRecoTools #just adds in an extra file to have a setup function to make things easier 
+#git cms-merge-topic cms-egamma:PhotonIDValueMapSpeedup1029 #optional but speeds up the photon ID value module so things fun faster
+#git cms-merge-topic cms-egamma:slava77-btvDictFix_10210 #fixes the Run2018D dictionary issue, see https://github.com/cms-sw/cmssw/issues/26182, may not be necessary for later releases, try it first and see if it works
+#git cms-addpkg EgammaAnalysis/ElectronTools
+#rm EgammaAnalysis/ElectronTools/data -rf
+#git clone git@github.com:cms-data/EgammaAnalysis-ElectronTools.git EgammaAnalysis/ElectronTools/data
+
 function CMSSW_10_2_9 {
         git cms-init
         git cms-merge-topic cms-egamma:EgammaPostRecoTools
