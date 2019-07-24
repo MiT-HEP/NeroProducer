@@ -238,7 +238,8 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         if (mu.hasUserCand("cutBasedFsrPhoton"))
         {
             pat::PFParticle *pho = (pat::PFParticle *)(mu.userCand("cutBasedFsrPhoton").get());
-            l.fsrP4.SetPtEtaPhiM(pho->pt(),pho->eta(),pho->phi(),0.); 
+            //l.fsrP4.SetPtEtaPhiM(pho->pt(),pho->eta(),pho->phi(),0.); 
+            l.fsrP4.SetPtEtaPhiM(pho->userFloat("correctedPt"),pho->eta(),pho->phi(),0.); 
         }
 
         l.chiso  = chiso;

@@ -66,6 +66,14 @@ function CMSSW_9_4_9 {
         #cd CAST &&  echo "/.gitignore" > .git/info/sparse_checkout && echo "/FSRPhotons/" >> .git/info/sparse-checkout && git read-tree -mu HEAD && cd -
 }
 
+
+#git cms-merge-topic cms-egamma:EgammaPostRecoTools #just adds in an extra file to have a setup function to make things easier 
+#git cms-merge-topic cms-egamma:PhotonIDValueMapSpeedup1029 #optional but speeds up the photon ID value module so things fun faster
+#git cms-merge-topic cms-egamma:slava77-btvDictFix_10210 #fixes the Run2018D dictionary issue, see https://github.com/cms-sw/cmssw/issues/26182, may not be necessary for later releases, try it first and see if it works
+#git cms-addpkg EgammaAnalysis/ElectronTools
+#rm EgammaAnalysis/ElectronTools/data -rf
+#git clone git@github.com:cms-data/EgammaAnalysis-ElectronTools.git EgammaAnalysis/ElectronTools/data
+
 function CMSSW_10_2_9 {
         git cms-init
         git cms-merge-topic cms-egamma:EgammaPostRecoTools
@@ -74,6 +82,23 @@ function CMSSW_10_2_9 {
         ## additional variables for qg: (axis1,cmult,nmult). Optional 
         git cms-merge-topic amarini:topic_qgmorvar_102X 
         git clone ssh://git@gitlab.cern.ch:7999/uhh-cmssw/fsr-photon-recovery.git FSRPhotonRecovery
+
+        cd FSRPhotonRecovery &&  patch -l -p1 <<EOF
+diff --git a/FSRPhotons/plugins/FSRRecoveryProducer.cc b/FSRPhotons/plugins/FSRRecoveryProducer.cc
+index 33994ce..2b8dd24 100644
+--- a/FSRPhotons/plugins/FSRRecoveryProducer.cc
++++ b/FSRPhotons/plugins/FSRRecoveryProducer.cc
+@@ -129,7 +129,8 @@ std::vector<pat::PFParticle> FSRRecoveryProducer::MakeHybridPhotons(
+        pat::PackedCandidate associatedPhotonMatch = *(patpho.associatedPackedPFCandidates().at(matching_index));
+        double dR = deltaR(hybridpho.p4(), associatedPhotonMatch.p4());
+        if(abs(hybridpho.pt() - associatedPhotonMatch.pt()) < 1e-3 && dR < 0.05){
+-         math::XYZTLorentzVector pho_corrP4 = patpho.p4() * patpho.userFloat("ecalEnergyPostCorr") / patpho.energy();
++         //math::XYZTLorentzVector pho_corrP4 = patpho.p4() * patpho.userFloat("ecalEnergyPostCorr") / patpho.energy();
++         math::XYZTLorentzVector pho_corrP4 = patpho.p4() / patpho.energy();
+          if(modifyP4){
+            hybridpho.setP4(pho_corrP4);
+          }
+EOF
 }
 
 
