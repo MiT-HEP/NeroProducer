@@ -26,6 +26,10 @@ BareLeptons::~BareLeptons(){
     BareFunctions::Delete(kinfitP4);
     BareFunctions::Delete(kinfitPtErr);
     BareFunctions::Delete(fsrP4);
+    BareFunctions::Delete(dxy);
+    BareFunctions::Delete(dz);
+    BareFunctions::Delete(dxybs);
+    BareFunctions::Delete(dzbs);
 }
 
 void BareLeptons::init(){
@@ -53,6 +57,11 @@ void BareLeptons::init(){
     BareFunctions::New(kinfitP4);
     BareFunctions::New(kinfitPtErr);
     BareFunctions::New(fsrP4);
+    BareFunctions::New(dxy);
+    BareFunctions::New(dz);
+
+    BareFunctions::New(dxybs);
+    BareFunctions::New(dzbs);
 }
 
 void BareLeptons::clear(){
@@ -83,6 +92,11 @@ void BareLeptons::clear(){
     kinfitP4->Clear();
     kinfitPtErr->clear();
     fsrP4->Clear();
+
+    dxy->clear();
+    dz->clear();
+    dxybs->clear();
+    dzbs->clear();
 
 }
 
@@ -123,6 +137,10 @@ void BareLeptons::defineBranches(TTree*t){
     t->Branch( "lepKinfitP4","TClonesArray", &kinfitP4, 128000, 0);
     t->Branch( "lepFsrP4","TClonesArray", &fsrP4, 128000, 0);
 
+    t->Branch("lepDxy","vector<float>",&dxy);
+    t->Branch("lepDz","vector<float>",&dz);
+    t->Branch("lepDxyBS","vector<float>",&dxybs);
+    t->Branch("lepDzBS","vector<float>",&dzbs);
 
 }
 
@@ -155,6 +173,12 @@ void BareLeptons::setBranchAddresses(TTree*t){
     BareFunctions::SetBranchAddress(t,"lepKinfitPtErr",&kinfitPtErr);
     BareFunctions::SetBranchAddress(t,"lepKinfitP4",&kinfitP4);
     BareFunctions::SetBranchAddress(t,"lepFsrP4",&fsrP4);
+
+    BareFunctions::SetBranchAddress(t,"lepDxy",&dxy);
+    BareFunctions::SetBranchAddress(t,"lepDz",&dz);
+
+    BareFunctions::SetBranchAddress(t,"lepDxyBS",&dxybs);
+    BareFunctions::SetBranchAddress(t,"lepDzBS",&dzbs);
 }
 
 BAREREGISTER(BareLeptons);
