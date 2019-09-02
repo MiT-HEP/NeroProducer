@@ -79,6 +79,11 @@ class BareLeptons : virtual public BareP4
         vector<float> *kinfitPtErr{0};
 
         TClonesArray  *fsrP4{0}; // at most 1.
+        vector<float> *dxy;
+        vector<float> *dz;
+
+        vector<float> *dxybs;
+        vector<float> *dzbs;
 
 };
 
