@@ -240,11 +240,14 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         l.pfPt = mu.pfP4().pt();
         
         //
-        l.dz = mu.innerTrack()->dz(pv->position());
-        l.dxy = mu.innerTrack()->dxy(pv->position());
-        //offlineBeamSpot
-        l.dz2 = mu.innerTrack()->dz(bs->position());
-        l.dxy2 = mu.innerTrack()->dxy(bs->position());
+        if (not mu.innerTrack().isNull())
+        {
+            l.dz = mu.innerTrack()->dz(pv->position());
+            l.dxy = mu.innerTrack()->dxy(pv->position());
+            //offlineBeamSpot
+            l.dz2 = mu.innerTrack()->dz(bs->position());
+            l.dxy2 = mu.innerTrack()->dxy(bs->position());
+        }
 
         if (mu.hasUserCand("cutBasedFsrPhoton"))
         {
@@ -389,12 +392,14 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         l.sipip = el.full5x5_sigmaIphiIphi();
         l.sieip = el.full5x5_sigmaIetaIphi();
         l.r9 = el.r9();
-
-        l.dz = el.gsfTrack()->dz(pv->position());
-        l.dxy = el.gsfTrack()->dxy(pv->position());
-        //offlineBeamSpot
-        l.dz2 = el.gsfTrack()->dz(bs->position());
-        l.dxy2 = el.gsfTrack()->dxy(bs->position());
+        
+        if ( not el.gsfTrack().isNull()){
+            l.dz = el.gsfTrack()->dz(pv->position());
+            l.dxy = el.gsfTrack()->dxy(pv->position());
+            //offlineBeamSpot
+            l.dz2 = el.gsfTrack()->dz(bs->position());
+            l.dxy2 = el.gsfTrack()->dxy(bs->position());
+        }
         
         // float chIso = el.chargedHadronIso();
         // float nhIso = el.neutralHadronIso();
