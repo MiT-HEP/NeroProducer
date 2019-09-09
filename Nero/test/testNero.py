@@ -107,9 +107,15 @@ process.load('NeroProducer.Skim.infoProducerSequence_cff')
 process.load('NeroProducer.Nero.Nero_cfi')
 
 from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
-setupEgammaPostRecoSeq(process,
-                       runVID=True,
-                       era='2017-Nov17ReReco')  
+if isYear==2017:
+    setupEgammaPostRecoSeq(process,
+                           runVID=True,
+                           era='2017-Nov17ReReco')  
+if isYear==2016:
+    setupEgammaPostRecoSeq(process,
+                           runVID=True,
+                           runEnergyCorrections=False,
+                           era='2016-Legacy')  
 
 ############################### JEC #####################
 #### Load from a sqlite db, if not read from the global tag
@@ -274,15 +280,16 @@ updateJetCollection(
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
 
 runMetCorAndUncFromMiniAOD (
-        process,
-        isData = isData, # false for MC
-        reclusterJets = True,
-        pfCandColl=cms.InputTag("packedPFCandidates"),
-        CHS = True,
-        fixEE2017 = True,
-        #fixEE2017Params = {'userawPt': True, 'PtThreshold':50.0, 'MinEtaThreshold':2.65, 'MaxEtaThreshold': 3.139} , ## default have modified names
-        postfix = "ModifiedMET"
-)
+            process,
+            isData = isData, # false for MC
+            reclusterJets = True,
+            pfCandColl=cms.InputTag("packedPFCandidates"),
+            CHS = True,
+            fixEE2017 = (isYear==2017),
+            #fixEE2017Params = {'userawPt': True, 'PtThreshold':50.0, 'MinEtaThreshold':2.65, 'MaxEtaThreshold': 3.139} , ## default have modified names
+            postfix = "ModifiedMET" if isYear==2017 else ""
+    )
+
 
 print "-> Ecal Bad "
 
@@ -310,14 +317,24 @@ process.ecalBadCalibReducedMINIAODFilter = cms.EDFilter(
 print "-> Updating the jets collection to run on to 'updatedPatJetsUpdatedJEC' with the new jec in the GT/or DB"
 process.nero.NeroJets.jets=cms.InputTag('updatedPatJetsUpdatedJEC')
 process.nero.NeroFatJets.chsAK8=cms.InputTag('updatedPatJetsUpdatedJECAK8')
-process.nero.NeroMet.mets=cms.InputTag("slimmedMETsModifiedMET")
-process.jecSequence = cms.Sequence( 
-        #process.patJetCorrFactorsReapplyJEC + process.patJetsReapplyJEC
-        process.patJetCorrFactorsUpdatedJEC* process.updatedPatJetsUpdatedJEC 
-        * process.patJetCorrFactorsUpdatedJECAK8* process.updatedPatJetsUpdatedJECAK8
-        * process.fullPatMetSequenceModifiedMET 
-        * process.ecalBadCalibReducedMINIAODFilter
-        )
+if isYear==2017:
+    process.nero.NeroMet.mets=cms.InputTag("slimmedMETsModifiedMET")
+    process.jecSequence = cms.Sequence( 
+            #process.patJetCorrFactorsReapplyJEC + process.patJetsReapplyJEC
+            process.patJetCorrFactorsUpdatedJEC* process.updatedPatJetsUpdatedJEC 
+            * process.patJetCorrFactorsUpdatedJECAK8* process.updatedPatJetsUpdatedJECAK8
+            * process.fullPatMetSequenceModifiedMET 
+            * process.ecalBadCalibReducedMINIAODFilter
+            )
+else:
+    process.nero.NeroMet.mets=cms.InputTag("slimmedMETs")
+    process.jecSequence = cms.Sequence( 
+            #process.patJetCorrFactorsReapplyJEC + process.patJetsReapplyJEC
+            process.patJetCorrFactorsUpdatedJEC* process.updatedPatJetsUpdatedJEC 
+            * process.patJetCorrFactorsUpdatedJECAK8* process.updatedPatJetsUpdatedJECAK8
+            * process.fullPatMetSequence
+            * process.ecalBadCalibReducedMINIAODFilter
+            )
 
 
 #-----------------------ELECTRON ID-------------------------------
@@ -417,6 +434,8 @@ print "-> Adding FSR photons to:",process.nero.NeroLeptons.muons.value()
 PhotonMVA="FSRPhotonRecovery/FSRPhotons/data/PhotonMVAv5_BDTG1000TreesDY.weights.xml"
 PhotonMVA="FSRPhotonRecovery/FSRPhotons/data/PhotonMVAv9_BDTG800TreesDY.weights.xml"
 addFSRphotonSequence(process, process.nero.NeroLeptons.muons.value(), PhotonMVA)
+#electrons = cms.InputTag("slimmedElectrons","","nero"),
+process.FSRRecovery.patphotons= cms.InputTag("slimmedPhotons","","nero")
 
 
 ###############################################################

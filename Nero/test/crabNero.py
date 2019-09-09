@@ -483,7 +483,12 @@ if __name__ == '__main__':
 
     config.General.requestName = 'DYJetsToLL2'
     config.Data.inputDataset = '/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
+    submit(config)\
+
+    config.General.requestName = 'DYJetsToMuMu_105_160'
+    config.Data.inputDataset='/DYJetsToLL_M-105To160_TuneCP5_PSweights_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
     submit(config)
+
 
     #config.General.requestName = 'QCD-15-700-hpp'
     #config.Data.inputDataset = '/QCD_Pt-15to7000_TuneCUETHS1_Flat_13TeV_herwigpp/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM'
@@ -519,9 +524,29 @@ if __name__ == '__main__':
     #config.Data.inputDataset = '/GluGluToHHTo2B2G_node_4_13TeV-madgraph/amarini-Fall17_94X_Apr2018_MINIAOD-18783c0a07109245951450a1a4f55409/USER'
     #submit(config)
 
+    config.General.requestName = 'GGZZ2e2mu'
+    config.Data.inputDataset = '/GluGluToContinToZZTo2e2mu_13TeV_MCFM701_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
+    submit(config)
 
+    config.General.requestName = 'GGZZ2mu2tau'
+    config.Data.inputDataset = '/GluGluToContinToZZTo2mu2tau_13TeV_MCFM701_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM'
+    submit(config)
+
+    config.General.requestName = 'GGZZ2e2tau'
+    config.Data.inputDataset = '/GluGluToContinToZZTo2e2tau_13TeV_MCFM701_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM'
+    submit(config)
+
+    config.General.requestName = 'GGZZ4mu'
+    config.Data.inputDataset = '/GluGluToContinToZZTo4mu_13TeV_MCFM701_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
+    submit(config)
         
+    config.General.requestName = 'GGZZ4tau'
+    config.Data.inputDataset = '/GluGluToContinToZZTo4tau_13TeV_MCFM701_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14_ext1-v2/MINIAODSIM'
+    submit(config)
 
+    config.General.requestName = 'GGZZ2mu2nu'
+    config.Data.inputDataset = '/GluGluToContinToZZTo2mu2nu_13TeV_MCFM701_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM'
+    submit(config)
 
 # Local Variables:
 # mode:python

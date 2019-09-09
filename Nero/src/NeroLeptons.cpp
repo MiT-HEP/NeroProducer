@@ -57,6 +57,7 @@ NeroLeptons::NeroLeptons(edm::ConsumesCollector & cc,edm::ParameterSet iConfig):
 #endif
 
     vtx_token = cc.consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("vertices"));
+    beamspot_token = cc.consumes<reco::BeamSpot>(edm::InputTag("offlineBeamSpot"));
     token_pf = cc.consumes<pat::PackedCandidateCollection>(iConfig.getParameter<edm::InputTag>("pfCands"));
     ea_ . reset (new EffectiveAreas( edm::FileInPath(iConfig.getParameter<std::string>("eleEA")).fullPath () ) );
     mu_token = cc.consumes<pat::MuonCollection>(iConfig.getParameter<edm::InputTag>("muons"));
@@ -120,6 +121,9 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
     iEvent.getByToken(vtx_token, vtx_handle);
     const reco::Vertex *pv  = &vtx_handle->front();
     iEvent.getByToken(token_pf, handle_pf);
+
+    iEvent.getByToken(beamspot_token, beamspot_handle);
+    const reco::BeamSpot *bs  = &(*beamspot_handle); // recast
 
     iEvent.getByToken(mu_token,mu_handle);	
     iEvent.getByToken(el_token,el_handle);	
@@ -234,11 +238,22 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
             l.selBits |= unsigned(LepHighPt * myid::isHighPtMuon(mu,*pv)) ;
             
         l.pfPt = mu.pfP4().pt();
+        
+        //
+        if (not mu.innerTrack().isNull())
+        {
+            l.dz = mu.innerTrack()->dz(pv->position());
+            l.dxy = mu.innerTrack()->dxy(pv->position());
+            //offlineBeamSpot
+            l.dz2 = mu.innerTrack()->dz(bs->position());
+            l.dxy2 = mu.innerTrack()->dxy(bs->position());
+        }
 
         if (mu.hasUserCand("cutBasedFsrPhoton"))
         {
             pat::PFParticle *pho = (pat::PFParticle *)(mu.userCand("cutBasedFsrPhoton").get());
-            l.fsrP4.SetPtEtaPhiM(pho->pt(),pho->eta(),pho->phi(),0.); 
+            //l.fsrP4.SetPtEtaPhiM(pho->pt(),pho->eta(),pho->phi(),0.); 
+            l.fsrP4.SetPtEtaPhiM(pho->userFloat("correctedPt"),pho->eta(),pho->phi(),0.); 
         }
 
         l.chiso  = chiso;
@@ -377,6 +392,14 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
         l.sipip = el.full5x5_sigmaIphiIphi();
         l.sieip = el.full5x5_sigmaIetaIphi();
         l.r9 = el.r9();
+        
+        if ( not el.gsfTrack().isNull()){
+            l.dz = el.gsfTrack()->dz(pv->position());
+            l.dxy = el.gsfTrack()->dxy(pv->position());
+            //offlineBeamSpot
+            l.dz2 = el.gsfTrack()->dz(bs->position());
+            l.dxy2 = el.gsfTrack()->dxy(bs->position());
+        }
         
         // float chIso = el.chargedHadronIso();
         // float nhIso = el.neutralHadronIso();
@@ -529,6 +552,11 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 
         resolution -> push_back(l.resolution);
         nLayers -> push_back(l.nlayers);
+
+        dxy -> push_back(l.dxy);
+        dz -> push_back(l.dz);
+        dxybs -> push_back(l.dxy2);
+        dzbs -> push_back(l.dz2);
 
         //kinfit
         new ( (*kinfitP4)[kinfitP4->GetEntriesFast()]) TLorentzVector(l.kinfitP4);

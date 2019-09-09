@@ -9,6 +9,7 @@
 
 // Electron corrector
 #include "EgammaAnalysis/ElectronTools/interface/EnergyScaleCorrection_class.h"
+#include "DataFormats/BeamSpot/interface/BeamSpot.h"
 
 class NeroLeptons : virtual public NeroCollection,
     virtual public BareLeptons
@@ -26,7 +27,7 @@ class NeroLeptons : virtual public NeroCollection,
             public:
                 myLepton(){ chiso=-999; nhiso=-999; phoiso=-999; puiso=-999;mva = -999; miniiso=-999;
                             etasc=0; sieie=0; sipip=0; sieip=0; r9=0; ecorr=1; 
-                            resolution =-999; nlayers=-999;
+                            resolution =-999; nlayers=-999; 
                             kinfitP4.SetPxPyPzE(0,0,0,0);
                             kinfitPtErr=-999;
                             fsrP4.SetPxPyPzE(0,0,0,0);
@@ -57,6 +58,11 @@ class NeroLeptons : virtual public NeroCollection,
 
                 float resolution;
                 int nlayers;
+
+                float dxy{-999};
+                float dz{-999};
+                float dxy2{-999};
+                float dz2{-999};
             
         };
 
@@ -68,6 +74,7 @@ class NeroLeptons : virtual public NeroCollection,
         // --- Token
         edm::EDGetTokenT<reco::VertexCollection> vtx_token;
         edm::EDGetTokenT<pat::PackedCandidateCollection> token_pf;
+        edm::EDGetTokenT<reco::BeamSpot> beamspot_token;
 
         // Token
         edm::EDGetTokenT<pat::MuonCollection> mu_token;
@@ -106,6 +113,7 @@ class NeroLeptons : virtual public NeroCollection,
 
         edm::Handle<reco::VertexCollection> vtx_handle;
         edm::Handle<pat::PackedCandidateCollection> handle_pf;
+        edm::Handle<reco::BeamSpot> beamspot_handle;
 
         // for miniiso
         edm::Handle<double> rho_handle;
