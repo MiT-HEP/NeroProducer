@@ -119,13 +119,13 @@ process.load("CondCore.DBCommon.CondDBCommon_cfi")
 from CondCore.DBCommon.CondDBSetup_cfi import *
 
 if options.isData:
-    connectString = cms.string('sqlite:jec/Autumn18_RunABCD_V8_DATA.db')
-    tagName = 'Autumn18_RunABCD_V8_DATA_AK4PFchs'
-    tagNamePuppi = 'Autumn18_RunABCD_V8_DATA_AK4PFPuppi'
+    connectString = cms.string('sqlite:jec/Autumn18_RunABCD_V16_DATA.db')
+    tagName = 'Autumn18_RunABCD_V16_DATA_AK4PFchs'
+    tagNamePuppi = 'Autumn18_RunABCD_V16_DATA_AK4PFPuppi'
 else:
-    connectString = cms.string('sqlite:jec/Autumn18_V8_MC.db')
-    tagName = 'Autumn18_V8_MC_AK4PFchs'
-    tagNamePuppi = 'Autumn18_V8_MC_AK4PFPuppi'
+    connectString = cms.string('sqlite:jec/Autumn18_V16_MC.db')
+    tagName = 'Autumn18_V16_MC_AK4PFchs'
+    tagNamePuppi = 'Autumn18_V16_MC_AK4PFPuppi'
 
 #print "-> FIX JEC FOR AK8"
 print "-> Setting Up JEC for AK8 using Run",options.isRun
