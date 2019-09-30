@@ -119,26 +119,26 @@ process.load("CondCore.DBCommon.CondDBCommon_cfi")
 from CondCore.DBCommon.CondDBSetup_cfi import *
 
 if options.isData:
-    connectString = cms.string('sqlite:jec/Autumn18_RunABCD_V16_DATA.db')
-    tagName = 'Autumn18_RunABCD_V16_DATA_AK4PFchs'
-    tagNamePuppi = 'Autumn18_RunABCD_V16_DATA_AK4PFPuppi'
+    connectString = cms.string('sqlite:jec/Autumn18_RunABCD_V19_DATA.db')
+    tagName = 'Autumn18_RunABCD_V19_DATA_AK4PFchs'
+    tagNamePuppi = 'Autumn18_RunABCD_V19_DATA_AK4PFPuppi'
 else:
-    connectString = cms.string('sqlite:jec/Autumn18_V16_MC.db')
-    tagName = 'Autumn18_V16_MC_AK4PFchs'
-    tagNamePuppi = 'Autumn18_V16_MC_AK4PFPuppi'
+    connectString = cms.string('sqlite:jec/Autumn18_V19_MC.db')
+    tagName = 'Autumn18_V19_MC_AK4PFchs'
+    tagNamePuppi = 'Autumn18_V19_MC_AK4PFPuppi'
 
 #print "-> FIX JEC FOR AK8"
 print "-> Setting Up JEC for AK8 using Run",options.isRun
-process.nero.NeroFatJets.chsAK8JECMC = cms.string("jec/Autumn18/Autumn18_V8")
+process.nero.NeroFatJets.chsAK8JECMC = cms.string("jec/Autumn18/Autumn18_V19")
 
 if options.isRun=="Run2018A":
-    process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Autumn18/Autumn18_RunA_V8")
+    process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Autumn18/Autumn18_RunA_V19")
 elif options.isRun=="Run2018B":
-    process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Autumn18/Autumn18_RunB_V8")
+    process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Autumn18/Autumn18_RunB_V19")
 elif options.isRun=="Run2018C":
-    process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Autumn18/Autumn18_RunC_V8")
+    process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Autumn18/Autumn18_RunC_V19")
 elif options.isRun=="Run2018D":
-    process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Autumn18/Autumn18_RunD_V8")
+    process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Autumn18/Autumn18_RunD_V19")
 else: raise ValueError("Unable to configure AK8 JEC")
 
 #### 
@@ -178,18 +178,18 @@ process.jec = cms.ESSource("PoolDBESSource",
 process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 
 #------------------- JER -----------------
-print "TODO: Update JER"
+#print "TODO: Update JER"
 toGet=[]
 if options.isData:
-    jerString = cms.string('sqlite:jer/Fall17_V3_102X_DATA.db')
-    resTag= cms.string('JR_Fall17_V3_102X_DATA_PtResolution_AK4PFchs')
-    phiTag= cms.string('JR_Fall17_V3_102X_DATA_PhiResolution_AK4PFchs')
-    sfTag = cms.string('JR_Fall17_V3_102X_DATA_SF_AK4PFchs')
+    jerString = cms.string('sqlite:jer/Autumn18_V7_DATA.db')#JR_Autumn18_V7_MC_EtaResolution
+    resTag= cms.string('JR_Autumn18_V7_DATA_PtResolution_AK4PFchs')
+    phiTag= cms.string('JR_Autumn18_V7_DATA_PhiResolution_AK4PFchs')
+    sfTag = cms.string('JR_Autumn18_V7_DATA_SF_AK4PFchs')
 else:
-    jerString = cms.string('sqlite:jer/Fall17_V3_102X_MC.db')
-    resTag= cms.string('JR_Fall17_V3_102X_MC_PtResolution_AK4PFchs')
-    phiTag= cms.string('JR_Fall17_V3_102X_MC_PhiResolution_AK4PFchs')
-    sfTag = cms.string('JR_Fall17_V3_102X_MC_SF_AK4PFchs')
+    jerString = cms.string('sqlite:jer/Autumn18_V7_MC.db')
+    resTag= cms.string('JR_Autumn18_V7_MC_PtResolution_AK4PFchs')
+    phiTag= cms.string('JR_Autumn18_V7_MC_PhiResolution_AK4PFchs')
+    sfTag = cms.string('JR_Autumn18_V7_MC_SF_AK4PFchs')
 
 process.jer = cms.ESSource("PoolDBESSource",
         CondDBSetup,
