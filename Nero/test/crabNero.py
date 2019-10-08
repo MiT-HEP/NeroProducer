@@ -320,7 +320,6 @@ if __name__ == '__main__':
 
     #### HMM
     for mh in [120,125,130]:
-    #for mh in [120]:
         config.General.requestName = 'ttH_%d'%mh
         config.Data.inputDataset = '/ttHToMuMu_M%d_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-*/MINIAODSIM'%mh
         submit(config)
