@@ -211,6 +211,39 @@ if __name__ == '__main__':
     config.Data.inputDataset = '/DoubleMuon/Run2016H-17Jul2018-v1/MINIAOD'
     submit(config)
 
+    ##### Zero Bias
+    config.General.requestName = 'ZeroBias-Run2016B_ver1'
+    config.Data.inputDataset = '/ZeroBias/Run2016B-17Jul2018_ver1-v1/MINIAOD'
+    submit(config)
+
+    config.General.requestName = 'ZeroBias-Run2016B_ver2'
+    config.Data.inputDataset = '/ZeroBias/Run2016B-17Jul2018_ver2-v1/MINIAOD'
+    submit(config)
+
+    config.General.requestName = 'ZeroBias-Run2016C'
+    config.Data.inputDataset = '/ZeroBias/Run2016C-17Jul2018-v1/MINIAOD'
+    submit(config)
+
+    config.General.requestName = 'ZeroBias-Run2016D'
+    config.Data.inputDataset = '/ZeroBias/Run2016D-17Jul2018-v1/MINIAOD'
+    submit(config)
+
+    config.General.requestName = 'ZeroBias-Run2016E'
+    config.Data.inputDataset = '/ZeroBias/Run2016E-17Jul2018-v1/MINIAOD'
+    submit(config)
+
+    config.General.requestName = 'ZeroBias-Run2016F'
+    config.Data.inputDataset = '/ZeroBias/Run2016F-17Jul2018-v1/MINIAOD'
+    submit(config)
+
+    config.General.requestName = 'ZeroBias-Run2016G'
+    config.Data.inputDataset = '/ZeroBias/Run2016G-17Jul2018-v1/MINIAOD'
+    submit(config)
+
+    config.General.requestName = 'ZeroBias-Run2016H'
+    config.Data.inputDataset = '/ZeroBias/Run2016H-17Jul2018-v1/MINIAOD'
+    submit(config)
+
     ###################################################
 
     #####################################################
@@ -388,6 +421,12 @@ if __name__ == '__main__':
     config.Data.inputDataset = '/DYJetsToLL_M-105To160_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3_ext1-v1/MINIAODSIM'
     submit(config)
 
+    htbins=['50','100','200','300','500','700','1000','1500','2000','Inf']
+    for idx in range(0,len(htbins)-1):
+        config.General.requestName = 'QCD-HT-%s-%s'%(htbins[idx],htbins[idx+1])
+        config.Data.inputDataset = '/QCD_HT%sto%s_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v*/MINIAODSIM'%(htbins[idx],htbins[idx+1])
+        submit(config)
+
     #config.General.requestName = 'QCD-15-700-hpp'
     #config.Data.inputDataset = '/QCD_Pt-15to7000_TuneCUETHS1_Flat_13TeV_herwigpp/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM'
     #submit(config)
@@ -444,6 +483,10 @@ if __name__ == '__main__':
 
     config.General.requestName = 'GGZZ2mu2nu'
     config.Data.inputDataset = '/GluGluToContinToZZTo2mu2nu_13TeV_MCFM701_pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'
+    submit(config)
+
+    config.General.requestName = 'DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-herwigpp'
+    config.Data.inputDataset= '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-herwigpp_30M/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'
     submit(config)
 
 # Local Variables:
