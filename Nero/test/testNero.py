@@ -392,6 +392,21 @@ process.QGTagger.srcJets             = process.nero.NeroJets.jets   # Could be r
 process.QGTagger.srcVertexCollection = process.nero.NeroVertex.vertices
 process.QGTagger.useQualityCuts = cms.bool(False)
 
+#---------------------------------------------------------------
+#                     PUJET ID
+#---------------------------------------------------------------
+process.puid=cms.Sequence()
+if isYear==2017:
+    process.nero.NeroJets.redoPu=True
+    from RecoJets.JetProducers.PileupJetID_cfi import _chsalgos_94x
+    process.load("RecoJets.JetProducers.PileupJetID_cfi")
+    process.pileupJetId.jets = process.nero.NeroJets.jets
+    process.pileupJetId.inputIsCorrected = True
+    process.pileupJetId.applyJec = False
+    process.pileupJetId.vertexes = cms.InputTag("offlineSlimmedPrimaryVertices")
+    process.pileupJetId.algos = cms.VPSet(_chsalgos_94x)
+    process.puid=cms.Sequence(process.pileupJetId)
+
 # ----------------------- GenHFHadronMatcher -----------------
 
 process.load("PhysicsTools.JetMCAlgos.GenHFHadronMatcher_cff")
@@ -485,6 +500,7 @@ process.p = cms.Path(
                 process.QGTagger    * ## after jec, because it will produce the new jet collection
                 process.ttbarcat *
                 process.QGVariablesSequence*
+                process.puid*
                 process.NjettinessGroomed*
                 process.chsForSATkJets * process.softActivityJets * ## track jtes
                 process.bRegressionProducer*
@@ -493,15 +509,15 @@ process.p = cms.Path(
                 )
 
 ## DEBUG -- dump the event content with all the value maps ..
-## process.output = cms.OutputModule(
-##                 "PoolOutputModule",
-##                       fileName = cms.untracked.string('output.root'),
-##                       )
-## process.output_step = cms.EndPath(process.output)
-## 
-## process.schedule = cms.Schedule(
-## 		process.p,
-## 		process.output_step)
+#process.output = cms.OutputModule(
+#                "PoolOutputModule",
+#                      fileName = cms.untracked.string('output.root'),
+#                      )
+#process.output_step = cms.EndPath(process.output)
+#
+#process.schedule = cms.Schedule(
+#		process.p,
+#		process.output_step)
 
 # Local Variables:
 # mode:python

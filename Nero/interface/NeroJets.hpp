@@ -28,6 +28,7 @@ class NeroJets : virtual public NeroCollection, virtual public BareJets
         // --- Handle
         edm::Handle<pat::JetCollection> handle;	
         edm::Handle<edm::ValueMap<float>> qg_handle;
+        edm::Handle<edm::ValueMap<float>> puid_handle;
 
         edm::Handle<edm::ValueMap<int>> qg_handle_Mult;
         edm::Handle<edm::ValueMap<float>> qg_handle_PtD;
@@ -48,6 +49,8 @@ class NeroJets : virtual public NeroCollection, virtual public BareJets
         // --- Token
         edm::EDGetTokenT<pat::JetCollection> token;
         edm::EDGetTokenT<edm::ValueMap<float> > qg_token;
+        edm::EDGetTokenT<edm::ValueMap<float> > puid_token;
+        bool redoPU{false};
 
         edm::EDGetTokenT<edm::ValueMap<int> >   qg_token_Mult;
         edm::EDGetTokenT<edm::ValueMap<float> > qg_token_PtD;

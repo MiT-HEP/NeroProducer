@@ -227,6 +227,7 @@ nero = cms.EDAnalyzer("Nero",
         minId  = cms.string ('none'),
         prunedgen = cms.InputTag("prunedGenParticles"),
         genjets = cms.InputTag("slimmedGenJets"),
+        redoPu=cms.bool(False),
     ),
 
     NeroTrackJets= cms.PSet( 
