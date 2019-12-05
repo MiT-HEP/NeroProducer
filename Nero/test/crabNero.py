@@ -348,6 +348,9 @@ if __name__ == '__main__':
         config.Data.inputDataset = '/VBFHToMuMu_M%d_13TeV_amcatnlo_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-*/MINIAODSIM'%mh
         submit(config)
 
+    config.General.requestName = 'bbH_HToMuMu_M125_amcatnlo-pythia8'
+    config.Data.inputDataset = '/bbHToMuMu_M-125_4FS_yb2_TuneCP5_13TeV-amcatnlo-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
+    submit(config)
     #config.Data.inputDBS = 'phys03'
     #config.Data.unitsPerJob = 10
     #config.General.requestName = 'VBFH_HToMuMu_M125_13TeV_powheg_pythia8'
@@ -487,6 +490,7 @@ if __name__ == '__main__':
     config.General.requestName = 'DYJetsToMuMu_105_160'
     config.Data.inputDataset='/DYJetsToLL_M-105To160_TuneCP5_PSweights_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
     submit(config)
+
 
 
     #config.General.requestName = 'QCD-15-700-hpp'

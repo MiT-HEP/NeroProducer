@@ -306,6 +306,10 @@ if __name__ == '__main__':
         submit(config)
         #/VBFHToMuMu_M-125_TuneCP5_PSweights_13TeV_powheg_pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM
 
+    config.General.requestName = 'bbH_HToMuMu_M125_amcatnlo-pythia8'
+    config.Data.inputDataset = '/bbHToMuMu_M-125_4FS_yb2_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'
+    submit(config)
+
     #config.Data.inputDBS = 'phys03'
     #config.Data.unitsPerJob = 10
     #config.General.requestName = 'VBFH_HToMuMu_M125_13TeV_powheg_pythia8'
@@ -397,10 +401,6 @@ if __name__ == '__main__':
 
     config.General.requestName = 'ZZTo4L'
     config.Data.inputDataset = '/ZZTo4L_13TeV-amcatnloFXFX-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3_ext1-v2/MINIAODSIM'
-    submit(config)
-
-    config.General.requestName = 'ZZZ'
-    config.Data.inputDataset = '/TTTT_TuneCUETP8M2T4_13TeV-amcatnlo-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'
     submit(config)
 
 
@@ -526,6 +526,117 @@ if __name__ == '__main__':
     config.General.requestName = 'WmWmJJ_EWK_TuneCUETP8M1_13TeV-powheg-pythia8'
     config.Data.inputDataset= '/WmWmJJ_EWK_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'
     submit(config)
+   
+    config.Data.inputDBS = 'phys03'
+    config.General.requestName = 'WPhadWPhadJJ_EWK_TuneCUETP8M1_13TeV-powheg-pythia8'
+    config.Data.inputDataset='/WPhadWPhadJJ_EWK_LO_SM_mjj100_pTj10_13TeV_madgraphMLM_pythia8/amarini-FullSim_94X-MINIAODSIM-bd3e7bcff6c9bcad356ea4ed7e4f08b4/USER'
+    submit(config)
+    config.Data.inputDBS = 'global'
+
+    config.Data.inputDBS = 'phys03'
+    config.General.requestName = 'ZbbZhadJJ_EWK_LO_SM_mjj100_pTj10_13TeV_madgraphMLM_pythia8'
+    config.Data.inputDataset='/ZbbZhadJJ_EWK_LO_SM_mjj100_pTj10_13TeV_madgraphMLM_pythia8/amarini-FullSim_94X-MINIAODSIM-bd3e7bcff6c9bcad356ea4ed7e4f08b4/USER'
+    submit(config)
+    config.Data.inputDBS = 'global'
+
+    config.Data.inputDBS = 'phys03'
+    config.General.requestName = 'ZnnZhadJJ_EWK_LO_SM_mjj100_pTj10_13TeV_madgraphMLM_pythia8'
+    config.Data.inputDataset='/ZnnZhadJJ_EWK_LO_SM_mjj100_pTj10_13TeV_madgraphMLM_pythia8/amarini-FullSim_94X-MINIAODSIM-bd3e7bcff6c9bcad356ea4ed7e4f08b4/USER'
+    submit(config)
+    config.Data.inputDBS = 'global'
+
+    config.General.requestName = 'TT'
+    config.Data.inputDataset = '/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'
+    submit(config)
+
+    config.General.requestName = 'ZZZ'
+    config.Data.inputDataset = '/ZZZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'
+    submit(config)
+
+    config.General.requestName = 'ZJetsToNuNu_HT-2500ToInf_13TeV-madgraph'
+    config.Data.inputDataset = '/ZJetsToNuNu_HT-2500ToInf_13TeV-madgraph/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'
+    submit(config)
+
+    config.General.requestName = 'ZJetsToNuNu_HT-1200To2500_13TeV-madgraph_ext'
+    config.Data.inputDataset = '/ZJetsToNuNu_HT-1200To2500_13TeV-madgraph/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3_ext1-v1/MINIAODSIM'
+    submit(config)
+
+    config.General.requestName = 'ZJetsToNuNu_HT-1200To2500_13TeV-madgraph'
+    config.Data.inputDataset = '/ZJetsToNuNu_HT-1200To2500_13TeV-madgraph/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'
+    submit(config)
+
+    config.General.requestName = 'ZJetsToNuNu_HT-800To1200_13TeV-madgraph'
+    config.Data.inputDataset = '/ZJetsToNuNu_HT-800To1200_13TeV-madgraph/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'
+    submit(config)
+
+    config.General.requestName = 'ZJetsToNuNu_HT-600To800_13TeV-madgraph'
+    config.Data.inputDataset = '/ZJetsToNuNu_HT-600To800_13TeV-madgraph/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'
+    submit(config)
+
+    config.General.requestName = 'ZJetsToNuNu_HT-400To600_13TeV-madgraph_ext'
+    config.Data.inputDataset = '/ZJetsToNuNu_HT-400To600_13TeV-madgraph/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3_ext1-v2/MINIAODSIM'
+    submit(config)
+
+    config.General.requestName = 'ZJetsToNuNu_HT-400To600_13TeV-madgraph'
+    config.Data.inputDataset = '/ZJetsToNuNu_HT-400To600_13TeV-madgraph/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'
+    submit(config)
+
+    config.General.requestName = 'ZJetsToNuNu_HT-200To400_13TeV-madgraph_ext'
+    config.Data.inputDataset = '/ZJetsToNuNu_HT-200To400_13TeV-madgraph/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3_ext1-v2/MINIAODSIM'
+    submit(config)
+
+    config.General.requestName = 'ZJetsToNuNu_HT-200To400_13TeV-madgraph'
+    config.Data.inputDataset = '/ZJetsToNuNu_HT-200To400_13TeV-madgraph/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'
+    submit(config)
+
+    config.General.requestName = 'ZJetsToNuNu_HT-100To200_13TeV-madgraph_ext'
+    config.Data.inputDataset = '/ZJetsToNuNu_HT-100To200_13TeV-madgraph/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3_ext1-v2/MINIAODSIM'
+    submit(config)
+
+    config.General.requestName = 'ZJetsToNuNu_HT-100To200_13TeV-madgraph'
+    config.Data.inputDataset = '/ZJetsToNuNu_HT-100To200_13TeV-madgraph/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'
+    submit(config)
+
+    config.General.requestName = 'ttZJets_13TeV_madgraphMLM-pythia8'
+    config.Data.inputDataset = '/ttZJets_13TeV_madgraphMLM-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'
+    submit(config)
+
+    config.General.requestName = 'WWTo4Q_4f_13TeV_amcatnloFXFX_madspin_pythia8'
+    config.Data.inputDataset = '/WWTo4Q_4f_13TeV_amcatnloFXFX_madspin_pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'
+    submit(config)
+
+    config.General.requestName = 'WWTo4Q_13TeV-powheg'
+    config.Data.inputDataset = '/WWTo4Q_13TeV-powheg/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'
+    submit(config)
+
+    config.General.requestName = 'ZZTo4Q_13TeV_amcatnloFXFX_madspin_pythia8'
+    config.Data.inputDataset = '/ZZTo4Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'
+    submit(config)
+
+    config.General.requestName = 'ZZTo2Q2Nu_13TeV_powheg_pythia8'
+    config.Data.inputDataset = '/ZZTo2Q2Nu_13TeV_powheg_pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'
+    submit(config)
+
+    config.General.requestName = 'ZZTo2Q2Nu_13TeV_amcatnloFXFX_madspin_pythia8'
+    config.Data.inputDataset = '/ZZTo2Q2Nu_13TeV_amcatnloFXFX_madspin_pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'
+    submit(config)
+
+    config.General.requestName = 'WZToLNu2Q_13TeV_powheg_pythia8'
+    config.Data.inputDataset = '/WZToLNu2Q_13TeV_powheg_pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'
+    submit(config)
+
+    config.General.requestName = 'WZTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8'
+    config.Data.inputDataset = '/WZTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'
+    submit(config)
+
+    config.General.requestName = 'WZTo2Q2Nu_13TeV_amcatnloFXFX_madspin_pythia8'
+    config.Data.inputDataset = '/WZTo2Q2Nu_13TeV_amcatnloFXFX_madspin_pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'
+    submit(config)
+
+    config.General.requestName = 'WZTo1L3Nu_13TeV_amcatnloFXFX_madspin_pythia8'
+    config.Data.inputDataset = '/WZTo1L3Nu_13TeV_amcatnloFXFX_madspin_pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'
+    submit(config)
+
 
 # Local Variables:
 # mode:python
