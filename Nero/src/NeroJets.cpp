@@ -77,6 +77,12 @@ NeroJets::NeroJets(edm::ConsumesCollector & cc,edm::ParameterSet iConfig):
     // MORE QG STUFF
     gen_token    = cc.mayConsume<reco::GenJetCollection>(iConfig.getParameter<edm::InputTag>("genjets"));
 
+    if (iConfig.getParameter<bool>("redoPu"))
+    {
+        redoPU=true;
+        puid_token=cc.consumes<edm::ValueMap<float> >(edm::InputTag("pileupJetId","fullDiscriminant"));
+    }
+
 
 }
 
@@ -106,6 +112,7 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
     iEvent.getByToken(qg_token_cmult,qg_handle_cmult);
     iEvent.getByToken(qg_token_nmult,qg_handle_nmult);
     iEvent.getByToken(rho_token,rho_handle);
+    if (redoPU) iEvent.getByToken(puid_token,puid_handle);
 
     map<string,edm::Handle<edm::ValueMap<float> > >  qg_handle_f ;
     map<string,edm::Handle<edm::ValueMap<int> > >  qg_handle_i ;
@@ -205,7 +212,12 @@ int NeroJets::analyze(const edm::Event& iEvent, const edm::EventSetup &iSetup){
 
         // Fill output object	
         rawPt  -> push_back (j.pt()*j.jecFactor("Uncorrected"));
-        puId   -> push_back (j.userFloat("pileupJetId:fullDiscriminant") );
+        if (redoPU){
+            puId   -> push_back ( (*puid_handle)[jetRef]);
+        }
+        else {
+            puId   -> push_back (j.userFloat("pileupJetId:fullDiscriminant") );
+        }
         bDiscr -> push_back( j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") );
         bMva -> push_back( j.bDiscriminator("pfCombinedMVAV2BJetTags ") );
         qgl     -> push_back( qgLikelihood );

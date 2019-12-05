@@ -489,6 +489,44 @@ if __name__ == '__main__':
     config.Data.inputDataset= '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-herwigpp_30M/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'
     submit(config)
 
+    #----- wz
+    config.General.requestName = 'WZJJ_EWK_13TeV-madgraph-pythia8'
+    config.Data.inputDataset= '/WZJJ_EWK_13TeV-madgraph-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'
+    submit(config)
+
+    config.General.requestName = 'WZJJ_QCD_13TeV-madgraph-pythia8'
+    config.Data.inputDataset= '/WZJJ_QCD_13TeV-madgraph-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'
+    submit(config)
+
+    config.General.requestName = 'WZJJ_EWK_QCD_13TeV-madgraph-pythia8'
+    config.Data.inputDataset= '/WZJJ_EWK_QCD_13TeV-madgraph-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'
+    submit(config)
+
+    #----- SS ww
+    config.General.requestName = 'WpWpJJ_EWK_TuneCUETP8M1_13TeV-powheg-pythia8'
+    config.Data.inputDataset= '/WpWpJJ_EWK_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'
+    submit(config)
+
+    config.General.requestName = 'WpWpJJ_EWK_TuneCUETP8M1_13TeV-madgraph-pythia8'
+    config.Data.inputDataset= '/WpWpJJ_EWK_TuneCUETP8M1_13TeV-madgraph-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'
+    submit(config)
+
+    config.General.requestName = 'WpWpJJ_QCD_TuneCUETP8M1_13TeV-madgraph-pythia8'
+    config.Data.inputDataset= '/WpWpJJ_QCD_TuneCUETP8M1_13TeV-madgraph-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'
+    submit(config)
+
+    config.General.requestName = 'WpWpJJ_EWK-QCD_TuneCUETP8M1_13TeV-madgraph-pythia8'
+    config.Data.inputDataset= '/WpWpJJ_EWK-QCD_TuneCUETP8M1_13TeV-madgraph-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'
+    submit(config)
+
+    config.General.requestName = 'WmWmJJ_EWK_TuneCUETP8M1_13TeV-vbfnlo-pythia8'
+    config.Data.inputDataset= '/WmWmJJ_EWK_TuneCUETP8M1_13TeV-vbfnlo-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'
+    submit(config)
+
+    config.General.requestName = 'WmWmJJ_EWK_TuneCUETP8M1_13TeV-powheg-pythia8'
+    config.Data.inputDataset= '/WmWmJJ_EWK_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'
+    submit(config)
+
 # Local Variables:
 # mode:python
 # indent-tabs-mode:nil
