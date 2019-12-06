@@ -238,6 +238,10 @@ if __name__ == '__main__':
         config.Data.inputDataset = '/VBFHToMuMu_M%d_TuneCP5_PSweights_13TeV_amcatnlo_pythia8/RunIIAutumn18MiniAOD*/MINIAODSIM'%mh
         submit(config)
 
+    config.General.requestName='bbHToMuMu_M-125_4FS_yb2_TuneCP5_13TeV-amcatnlo-pythia8'
+    config.Data.inputDataset='/bbHToMuMu_M-125_4FS_yb2_TuneCP5_PSweights_13TeV-amcatnlo-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM'
+    submit(config)
+
     config.General.requestName='VBF_powheg_125'
     config.Data.inputDataset='/VBFHToMuMu_M-125_TuneCP5_PSweights_13TeV_powheg_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM'
     submit(config)
