@@ -163,8 +163,8 @@ int NeroLeptons::analyze(const edm::Event & iEvent)
 
     // FSR Photons, selection 
     // select photon
-    double fsrDrEt2Cut = 0.019;
-    double fsrIsoCut = 0.8;
+    double fsrDrEt2Cut = 0.012;
+    double fsrIsoCut = 1.8;
 
     for (unsigned int i = 0; i < selectedFSRphotons->size(); i++)
     {
