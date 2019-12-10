@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Instruct builder to use a particular CMSSW release
-# [CMSSW] CMSSW_9_4_15
+# [CMSSW] CMSSW_9_4_13
 # [Options] isData=False
 # [fileList] /store/user/amarini/Sync/5AC9148F-9842-E811-892B-3417EBE535DA.root
 # [MaxEvents] 5000
@@ -71,7 +71,7 @@ function CMSSW_9_4_9 {
         rsync -avP RecoJets/JetProducers/data.new/pileupJetId_94X_Eta* RecoJets/JetProducers/data/
 }
 
-function CMSSW_9_4_15 {
+function CMSSW_9_4_13 {
         CMSSW_9_4_9
 }
 
