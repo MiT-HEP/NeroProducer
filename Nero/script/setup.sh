@@ -71,6 +71,10 @@ function CMSSW_9_4_9 {
         rsync -avP RecoJets/JetProducers/data.new/pileupJetId_94X_Eta* RecoJets/JetProducers/data/
 }
 
+function CMSSW_9_4_15 {
+        CMSSW_9_4_9
+}
+
 function CMSSW_10_2_9 {
         git cms-init
         git cms-merge-topic cms-egamma:EgammaID_1023

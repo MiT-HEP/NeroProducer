@@ -25,8 +25,9 @@ It is designed to run on MiniAOD within the CMSSW framework.
 * Notice that cmssw should be init when the src directory is empty.
 Currently the supported version are CMSSW\_8\_0\_26\_patch1(master).
 ```
-cmsrel CMSSW_8_0_26_patch1
-cd CMSSW_8_0_26_patch1/src
+SCRAM_ARCH=slc7_amd64_gcc630
+cmsrel CMSSW_9_4_15
+cd CMSSW_9_4_15/src
 cmsenv
 wget --no-check-certificate 'https://raw.githubusercontent.com/MiT-HEP/NeroProducer/master/Nero/script/setup.sh' -O /tmp/$USER/setup.sh
 source /tmp/$USER/setup.sh $CMSSW_VERSION
@@ -48,19 +49,19 @@ this script will set up a new and consistent are from scratch
 * Fast setup from an other area:
 ```
 cd ${CMSSW_BASE}/src/NeroProducer/Nero
-python fastsetup.py -v CMSSW_8_0_26_patch1 -t tag -d where
+python fastsetup.py -v CMSSW_9_4_15 -t tag -d where
 ```
 if fastsetup is not yet avaliable:
 ```
 cd /tmp/$USER
-SCRAM_ARCH=slc6_amd64_gcc530
+SCRAM_ARCH=slc7_amd64_gcc630
 mkdir -p NeroProducer/Nero
 touch NeroProducer/__init__.py
 touch NeroProducer/Nero/__init__.py
 wget https://raw.githubusercontent.com/MiT-HEP/NeroProducer/master/Nero/script/fastsetup.py
 wget -O NeroProducer/Nero/CMSSWHandler.py https://raw.githubusercontent.com/MiT-HEP/NeroProducer/master/Nero/python/CMSSWHandler.py
 PYTHONPATH=.:$PYTHONPATH
-python fastsetup.py -v CMSSW_8_0_26_patch1
+python fastsetup.py -v CMSSW_9_4_15
 ```
 
 ### How to Run
@@ -104,6 +105,11 @@ vers=v0.2;dir=TTbar_HBWB_HToTauNu_M-90_13TeV_pythia6 ;python sendOnBatch.py -i .
 ```
 python crabNero.py
 ```
+or 
+```
+python crabNero.py requestName
+```
+
 * check the status with
 ```
 python multicrab.py  -c status -w NeroSubmission
