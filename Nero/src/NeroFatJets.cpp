@@ -78,10 +78,10 @@ int NeroFatJets::analyze(const edm::Event& iEvent){
         ZvsQCD->push_back(j.bDiscriminator("pfDeepBoostedDiscriminatorsJetTags:ZvsQCD"));
         ZbbvsQCD->push_back(j.bDiscriminator("pfDeepBoostedDiscriminatorsJetTags:ZbbvsQCD"));
 
-        TvsQCDMD->push_back(j.bDiscriminator("pfDeepBoostedDiscriminatorsJetTags:TvsQCDMD"));
-        WvsQCDMD->push_back(j.bDiscriminator("pfDeepBoostedDiscriminatorsJetTags:WvsQCDMD"));
-        ZHbbvsQCDMD->push_back(j.bDiscriminator("pfDeepBoostedDiscriminatorsJetTags:ZHbbvsQCDMD"));
-        ZHccvsQCDMD->push_back(j.bDiscriminator("pfDeepBoostedDiscriminatorsJetTags:ZHccvsQCDMD"));
+        TvsQCDMD->push_back(j.bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:TvsQCD"));
+        WvsQCDMD->push_back(j.bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:WvsQCD"));
+        ZHbbvsQCDMD->push_back(j.bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:ZHbbvsQCD"));
+        ZHccvsQCDMD->push_back(j.bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:ZHccvsQCD"));
 
         hbb -> push_back( j.bDiscriminator("pfBoostedDoubleSecondaryVertexAK8BJetTags") ) ;
 
