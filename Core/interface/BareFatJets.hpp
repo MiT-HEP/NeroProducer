@@ -27,13 +27,6 @@ class BareFatJets : virtual public BareP4
         vector<float> *tau1{0};
         vector<float> *tau2{0};
         vector<float> *tau3{0};
-        vector<float> *sdtau1{0};
-        vector<float> *sdtau2{0};
-        vector<float> *sdtau3{0};
-
-        vector<float> *trimmedMass{0};
-        vector<float> *prunedMass{0};
-        vector<float> *corrprunedMass{0};
         vector<float> *softdropMass{0};
 
         TClonesArray  *subjet{0};
@@ -42,10 +35,15 @@ class BareFatJets : virtual public BareP4
         vector<float> *subjet_btag{0};
     
         vector<float> *hbb{0};
-        vector<float> *topMVA{0};
+        vector<float> *TvsQCD{0};
+        vector<float> *WvsQCD{0};
+        vector<float> *ZvsQCD{0};
+        vector<float> *ZbbvsQCD{0};
+        vector<float> *TvsQCDMD{0};
+        vector<float> *WvsQCDMD{0};
+        vector<float> *ZHbbvsQCDMD{0};
+        vector<float> *ZHccvsQCDMD{0};
 
-        vector<float> *puppi_softdrop_masscorr{0};
-        vector<float> *puppi_softdrop_mass{0};
 };
 
 
