@@ -54,15 +54,14 @@ nero = cms.EDAnalyzer("Nero",
 
 
     NeroFatJets = cms.PSet(
-        chsAK8 = cms.InputTag("slimmedJetsAK8"),
+        AK8Jet = cms.InputTag("slimmedJetsAK8"),
         ## Mass Corrections
-        chsAK8JEC = cms.string("jec/Summer16_23Sep2016V4"),
-        chsAK8JECMC = cms.string("jec/Fall17_17Nov2017_V32"),
-        minAK8CHSPt  = cms.double (170.),
-        minAK8CHSEta = cms.double (4.7),
-        minAK8CHSN   = cms.int32  (0),
-        minAK8CHSId  = cms.string ('loose'),
-        AK8CHSName   = cms.string ('AK8CHS'),
+        AK8JEC = cms.string("jec/Summer16_23Sep2016V4"),
+        AK8JECMC = cms.string("jec/Fall17_17Nov2017_V32"),
+        minAK8Pt  = cms.double (170.),
+        minAK8Eta = cms.double (4.7),
+        minAK8Id  = cms.string ('loose'),
+        AK8Name   = cms.string ('AK8WithDeepTag'),
         rho = cms.InputTag("fixedGridRhoFastjetAll"),
         vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
         ),

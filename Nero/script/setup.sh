@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Instruct builder to use a particular CMSSW release
-# [CMSSW] CMSSW_9_4_9
+# [CMSSW] CMSSW_9_4_13
 # [Options] isData=False
 # [fileList] /store/user/amarini/Sync/5AC9148F-9842-E811-892B-3417EBE535DA.root
 # [MaxEvents] 5000
@@ -58,9 +58,25 @@ function CMSSW_9_4_9 {
         ## postReco for EGamma
         git cms-merge-topic cms-egamma:EgammaPostRecoTools_940
         git cms-merge-topic cms-egamma:EgammaID_949
+        ## additional variables for qg: (axis1,cmult,nmult). Optional
+        git cms-merge-topic amarini:topic_qgmorvar_94X
+        git cms-merge-topic cms-met:METFixEE2017_949_v2
+        git clone ssh://git@gitlab.cern.ch:7999/uhh-cmssw/fsr-photon-recovery.git FSRPhotonRecovery
+        #git clone -b final_CMSSW_9_4_9 ssh://git@gitlab.cern.ch:7999/uhh-cmssw/CAST.git
+        #cd CAST &&  echo "/.gitignore" > .git/info/sparse_checkout && echo "/FSRPhotons/" >> .git/info/sparse-checkout && git read-tree -mu HEAD && cd -
+        ## new pileupid
+        #git cms-merge-topic singh-ramanpreet:PUID_102_15
+        git cms-merge-topic amarini:PUID_port92X #as above
+        git clone -b 94X_weights_DYJets_inc git@github.com:singh-ramanpreet/RecoJets-JetProducers.git RecoJets/JetProducers/data.new
+        rsync -avP RecoJets/JetProducers/data.new/pileupJetId_94X_Eta* RecoJets/JetProducers/data/
+}
+
+function CMSSW_9_4_13 {
+        git cms-init
+        ## postReco for EGamma
+        git cms-merge-topic cms-egamma:EgammaPostRecoTools
         ## additional variables for qg: (axis1,cmult,nmult). Optional 
         git cms-merge-topic amarini:topic_qgmorvar_94X 
-        git cms-merge-topic cms-met:METFixEE2017_949_v2
         git clone ssh://git@gitlab.cern.ch:7999/uhh-cmssw/fsr-photon-recovery.git FSRPhotonRecovery
         #git clone -b final_CMSSW_9_4_9 ssh://git@gitlab.cern.ch:7999/uhh-cmssw/CAST.git
         #cd CAST &&  echo "/.gitignore" > .git/info/sparse_checkout && echo "/FSRPhotons/" >> .git/info/sparse-checkout && git read-tree -mu HEAD && cd -

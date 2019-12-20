@@ -20,7 +20,7 @@ options.register('nerohead', "XXX", VarParsing.multiplicity.singleton,VarParsing
 options.register("nerotag", "YYY", VarParsing.multiplicity.singleton,VarParsing.varType.string,"Set to the tag of the repository. use check_output 'git rev-parse HEAD' in the crab py file. active only if isGrid.")
 options.register('isParticleGun', False, VarParsing.multiplicity.singleton,VarParsing.varType.bool,"Set it to true if MonteCarlo is ParticleGun")
 
-options.register('isRun', 'Run2017B', VarParsing.multiplicity.singleton,VarParsing.varType.string," Run2016A/B/C   Run2017A/B/C/D/E/F")
+options.register('isRun', 'Run2016B', VarParsing.multiplicity.singleton,VarParsing.varType.string," Run2016A/B/C   Run2017A/B/C/D/E/F")
 
 options.parseArguments()
 
@@ -47,7 +47,8 @@ if len(options.inputFiles) == 0:
         ]
     else:
         options.inputFiles = [
-                '/store/user/amarini/Sync/5AC9148F-9842-E811-892B-3417EBE535DA.root' ## GGH Hmm Apr2018
+            '/store/group/phys_higgs/cmshmm/amarini/ZbbZhadJJ_EWK_LO_SM_mjj100_pTj10_13TeV_madgraphMLM_pythia8/FullSim_94X-MINIAODSIM/191118_105306/0000/step4_1.root'
+##                '/store/user/amarini/Sync/5AC9148F-9842-E811-892B-3417EBE535DA.root' ## GGH Hmm Apr2018
         ]
 
 ### do not remove the line below!
@@ -255,9 +256,27 @@ process.jer = cms.ESSource("PoolDBESSource",
 
 process.es_prefer_jer = cms.ESPrefer('PoolDBESSource', 'jer')
 
+################
+#####https://twiki.cern.ch/twiki/bin/viewauth/CMS/DeepAKXTagging
+
+from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
+
+print "-> Updating the AK8WithDeepTags"
+from RecoBTag.MXNet.pfDeepBoostedJet_cff import _pfDeepBoostedJetTagsAll, _pfDeepBoostedJetTagsProbs, _pfDeepBoostedJetTagsMetaDiscrs, _pfMassDecorrelatedDeepBoostedJetTagsProbs, _pfMassDecorrelatedDeepBoostedJetTagsMetaDiscrs
+updateJetCollection(
+    process,
+    jetSource = cms.InputTag('slimmedJetsAK8'),
+    pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
+    svSource = cms.InputTag('slimmedSecondaryVertices'),
+    rParam = 0.8,
+    jetCorrections = ('AK8PFPuppi', cms.vstring(['L2Relative', 'L3Absolute', 'L2L3Residual']), 'None'),
+    btagDiscriminators = _pfDeepBoostedJetTagsAll,
+    postfix='AK8WithDeepTags',
+    printWarning = False
+   )
+
 ################ end sqlite connection
 #### RECOMPUTE JEC From GT ###
-from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
  
 jecLevels= ['L1FastJet',  'L2Relative', 'L3Absolute']
 if options.isData:
@@ -270,12 +289,12 @@ updateJetCollection(
     jetCorrections = ('AK4PFchs', cms.vstring(jecLevels), 'None')  # Do not forget 'L2L3Residual' on data!
 )
 
-updateJetCollection(
-    process,
-    jetSource = process.nero.NeroFatJets.chsAK8,
-    labelName = 'UpdatedJECAK8',
-    jetCorrections = ('AK8PFchs', cms.vstring(jecLevels), 'None')  # Do not forget 'L2L3Residual' on data!
-)
+#updateJetCollection(
+#    process,
+#    jetSource = process.nero.NeroFatJets.chsAK8,
+#    labelName = 'UpdatedJECAK8',
+#    jetCorrections = ('AK8PFchs', cms.vstring(jecLevels), 'None')  # Do not forget 'L2L3Residual' on data!
+#)
 
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
 
@@ -316,13 +335,15 @@ process.ecalBadCalibReducedMINIAODFilter = cms.EDFilter(
 
 print "-> Updating the jets collection to run on to 'updatedPatJetsUpdatedJEC' with the new jec in the GT/or DB"
 process.nero.NeroJets.jets=cms.InputTag('updatedPatJetsUpdatedJEC')
-process.nero.NeroFatJets.chsAK8=cms.InputTag('updatedPatJetsUpdatedJECAK8')
+#process.nero.NeroFatJets.chsAK8=cms.InputTag('updatedPatJetsUpdatedJECAK8')
+process.nero.NeroFatJets.AK8Jet=cms.InputTag('selectedUpdatedPatJetsAK8WithDeepTags')
+
 if isYear==2017:
     process.nero.NeroMet.mets=cms.InputTag("slimmedMETsModifiedMET")
     process.jecSequence = cms.Sequence( 
             #process.patJetCorrFactorsReapplyJEC + process.patJetsReapplyJEC
             process.patJetCorrFactorsUpdatedJEC* process.updatedPatJetsUpdatedJEC 
-            * process.patJetCorrFactorsUpdatedJECAK8* process.updatedPatJetsUpdatedJECAK8
+#            * process.patJetCorrFactorsUpdatedJECAK8* process.updatedPatJetsUpdatedJECAK8
             * process.fullPatMetSequenceModifiedMET 
             * process.ecalBadCalibReducedMINIAODFilter
             )
@@ -331,10 +352,20 @@ else:
     process.jecSequence = cms.Sequence( 
             #process.patJetCorrFactorsReapplyJEC + process.patJetsReapplyJEC
             process.patJetCorrFactorsUpdatedJEC* process.updatedPatJetsUpdatedJEC 
-            * process.patJetCorrFactorsUpdatedJECAK8* process.updatedPatJetsUpdatedJECAK8
+#            * process.patJetCorrFactorsUpdatedJECAK8* process.updatedPatJetsUpdatedJECAK8
             * process.fullPatMetSequence
             * process.ecalBadCalibReducedMINIAODFilter
             )
+
+
+process.jetAK8Sequence = cms.Sequence(
+    process.patJetCorrFactorsAK8WithDeepTags * process.updatedPatJetsAK8WithDeepTags
+    * process.pfDeepBoostedJetTagInfosAK8WithDeepTags * process.pfDeepBoostedJetTagsAK8WithDeepTags * process.pfDeepBoostedDiscriminatorsJetTagsAK8WithDeepTags
+    * process.pfMassDecorrelatedDeepBoostedJetTagsAK8WithDeepTags * process.pfMassDecorrelatedDeepBoostedDiscriminatorsJetTagsAK8WithDeepTags
+    * process.patJetCorrFactorsTransientCorrectedAK8WithDeepTags
+    * process.updatedPatJetsTransientCorrectedAK8WithDeepTags
+    * process.selectedUpdatedPatJetsAK8WithDeepTags
+)
 
 
 #-----------------------ELECTRON ID-------------------------------
@@ -475,8 +506,8 @@ process.QGVariables.srcGenJets = cms.InputTag("slimmedGenJets")
 process.QGVariables.isData = cms.bool(isData)
 
 ### Groomed variables
-process.load('NeroProducer.Skim.NjettinesGroomed_cff')
-process.NjettinessGroomed.srcJets = process.nero.NeroFatJets.chsAK8
+#process.load('NeroProducer.Skim.NjettinesGroomed_cff')
+#process.NjettinessGroomed.srcJets = process.nero.NeroFatJets.chsAK8
 
 ### BRegression
 process.load('NeroProducer.Skim.bRegressionProducer_cfi')
@@ -493,15 +524,14 @@ process.nero.info = cms.string( str(process.nero.info) +"  |options:" + ','.join
 process.p = cms.Path(
                 process.infoProducerSequence *
                 process.egammaPostRecoSeq *  #-> should be everything from EGamma
-
                 #process.electronIDValueMapProducer *  
                 #process.electronMVAValueMapProducer * # needs to be produced on to of new slimmed electrons.
                 process.jecSequence *
+                process.jetAK8Sequence *
                 process.QGTagger    * ## after jec, because it will produce the new jet collection
                 process.ttbarcat *
                 process.QGVariablesSequence*
                 process.puid*
-                process.NjettinessGroomed*
                 process.chsForSATkJets * process.softActivityJets * ## track jtes
                 process.bRegressionProducer*
                 process.FSRphotonSequence*

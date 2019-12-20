@@ -12,20 +12,20 @@ BareFatJets::~BareFatJets(){
     BareFunctions::Delete(tau1           );
     BareFunctions::Delete(tau2           );
     BareFunctions::Delete(tau3           );
-    BareFunctions::Delete(sdtau1);
-    BareFunctions::Delete(sdtau2);
-    BareFunctions::Delete(sdtau3);
-    BareFunctions::Delete(trimmedMass    );
-    BareFunctions::Delete(prunedMass     );
-    BareFunctions::Delete(corrprunedMass );
     BareFunctions::Delete(softdropMass   );
     BareFunctions::Delete(subjet         );
     BareFunctions::Delete(nSubjets       );
     BareFunctions::Delete(firstSubjet    );
     BareFunctions::Delete(subjet_btag    );
-    BareFunctions::Delete(topMVA         );
-    BareFunctions::Delete(puppi_softdrop_masscorr);
-    BareFunctions::Delete(puppi_softdrop_mass);
+    BareFunctions::Delete(hbb            );
+    BareFunctions::Delete(TvsQCD         );
+    BareFunctions::Delete(WvsQCD         );
+    BareFunctions::Delete(ZvsQCD         );
+    BareFunctions::Delete(ZbbvsQCD       );
+    BareFunctions::Delete(TvsQCDMD       );
+    BareFunctions::Delete(WvsQCDMD       );
+    BareFunctions::Delete(ZHbbvsQCDMD    );
+    BareFunctions::Delete(ZHccvsQCDMD    );
 
 }
 
@@ -38,22 +38,20 @@ void BareFatJets::init(){
     BareFunctions::New(tau1);
     BareFunctions::New(tau2);
     BareFunctions::New(tau3);
-    BareFunctions::New(sdtau1);
-    BareFunctions::New(sdtau2);
-    BareFunctions::New(sdtau3);
-    BareFunctions::New(trimmedMass    );
-    BareFunctions::New(prunedMass     );
-    BareFunctions::New(corrprunedMass );
     BareFunctions::New(softdropMass   );
     BareFunctions::New(subjet         );
     BareFunctions::New(nSubjets       );
     BareFunctions::New(firstSubjet    );
     BareFunctions::New(subjet_btag    );
-    BareFunctions::New(topMVA         );
-    BareFunctions::New(hbb         );
-    BareFunctions::New(puppi_softdrop_masscorr);
-    BareFunctions::New(puppi_softdrop_mass);
-
+    BareFunctions::New(hbb            );
+    BareFunctions::New(TvsQCD         );
+    BareFunctions::New(WvsQCD         );
+    BareFunctions::New(ZvsQCD         );
+    BareFunctions::New(ZbbvsQCD       );
+    BareFunctions::New(TvsQCDMD       );
+    BareFunctions::New(WvsQCDMD       );
+    BareFunctions::New(ZHbbvsQCDMD    );
+    BareFunctions::New(ZHccvsQCDMD    );
 }
 
 void BareFatJets::clear(){
@@ -65,21 +63,21 @@ void BareFatJets::clear(){
     tau1 -> clear();
     tau2 -> clear();
     tau3 -> clear();
-    sdtau1 -> clear();
-    sdtau2 -> clear();
-    sdtau3 -> clear();
-    trimmedMass -> clear();
-    prunedMass -> clear();
-    corrprunedMass -> clear();
     softdropMass -> clear();
     subjet->Clear();
     nSubjets->clear();
     firstSubjet->clear();
     subjet_btag ->clear();
     hbb -> clear();
-    topMVA->clear();
-    puppi_softdrop_masscorr->clear();
-    puppi_softdrop_mass->clear();
+    TvsQCD->clear();
+    WvsQCD->clear();
+    ZvsQCD->clear();
+    ZbbvsQCD->clear();
+    TvsQCDMD->clear();
+    WvsQCDMD->clear();
+    ZHbbvsQCDMD->clear();
+    ZHccvsQCDMD->clear();
+
 }
 
 void BareFatJets::defineBranches(TTree *t){
@@ -95,13 +93,7 @@ void BareFatJets::defineBranches(TTree *t){
     t->Branch(jetName + "Tau1","vector<float>",&tau1);
     t->Branch(jetName + "Tau2","vector<float>",&tau2);
     t->Branch(jetName + "Tau3","vector<float>",&tau3);
-    t->Branch(jetName + "SDTau1","vector<float>",&sdtau1);
-    t->Branch(jetName + "SDTau2","vector<float>",&sdtau2);
-    t->Branch(jetName + "SDTau3","vector<float>",&sdtau3);
-    //
-    t->Branch(jetName + "TrimmedMass","vector<float>",&trimmedMass);
-    t->Branch(jetName + "PrunedMass","vector<float>",&prunedMass);
-    t->Branch(jetName + "CorrectedPrunedMass","vector<float>",&corrprunedMass);
+
     t->Branch(jetName + "SoftdropMass","vector<float>",&softdropMass);
 
     t->Branch(jetName + "subjet","TClonesArray", &subjet, 128000, 0);
@@ -110,11 +102,18 @@ void BareFatJets::defineBranches(TTree *t){
     t->Branch(jetName + "subjet_btag","vector<float>",&subjet_btag);
 
     t->Branch(jetName + "Hbb","vector<float>",&hbb);
+    t->Branch(jetName + "TvsQCD","vector<float>",&TvsQCD);
+    t->Branch(jetName + "WvsQCD","vector<float>",&WvsQCD);
+    t->Branch(jetName + "ZvsQCD","vector<float>",&ZvsQCD);
+    t->Branch(jetName + "ZbbvsQCD","vector<float>",&ZbbvsQCD);
 
-    t->Branch(jetName + "topMVA","vector<float>",&topMVA);
+    t->Branch(jetName + "TvsQCDMD","vector<float>",&TvsQCDMD);
+    t->Branch(jetName + "WvsQCDMD","vector<float>",&WvsQCDMD);
+    t->Branch(jetName + "ZHbbvsQCDMD","vector<float>",&ZHbbvsQCDMD);
+    t->Branch(jetName + "ZHccvsQCDMD","vector<float>",&ZHccvsQCDMD);
 
-    t->Branch("puppi_softdrop_masscorr","vector<float>",&puppi_softdrop_masscorr);
-    t->Branch("puppi_softdrop_mass","vector<float>",&puppi_softdrop_mass);
+    //    t->Branch("puppi_softdrop_masscorr","vector<float>",&puppi_softdrop_masscorr);
+    //    t->Branch("puppi_softdrop_mass","vector<float>",&puppi_softdrop_mass);
 
 }
 
@@ -132,9 +131,6 @@ void BareFatJets::setBranchAddresses(TTree *t, std::string prefix){
     BareFunctions::SetBranchAddress(t,jetName + "Tau2"  ,&tau2);
     BareFunctions::SetBranchAddress(t,jetName + "Tau3"  ,&tau3);
 
-    BareFunctions::SetBranchAddress(t,jetName + "TrimmedMass"   ,&trimmedMass);
-    BareFunctions::SetBranchAddress(t,jetName + "PrunedMass"    ,&prunedMass);
-    BareFunctions::SetBranchAddress(t,jetName + "CorrectedPrunedMass"  ,&corrprunedMass);
     BareFunctions::SetBranchAddress(t,jetName + "SoftdropMass"  ,&softdropMass);
 
     BareFunctions::SetBranchAddress(t,jetName + "subjet"  ,&subjet);
@@ -143,12 +139,15 @@ void BareFatJets::setBranchAddresses(TTree *t, std::string prefix){
     BareFunctions::SetBranchAddress(t,jetName + "subjet_btag",&subjet_btag);
 
     BareFunctions::SetBranchAddress(t,jetName + "Hbb",&hbb);
-    BareFunctions::SetBranchAddress(t,jetName + "topMVA",&topMVA);
+    BareFunctions::SetBranchAddress(t,jetName + "TvsQCD",&TvsQCD);
+    BareFunctions::SetBranchAddress(t,jetName + "WvsQCD",&WvsQCD);
+    BareFunctions::SetBranchAddress(t,jetName + "ZvsQCD",&ZvsQCD);
+    BareFunctions::SetBranchAddress(t,jetName + "ZbbvsQCD",&ZbbvsQCD);
 
-    //puppi
-
-    BareFunctions::SetBranchAddress(t,"puppi_softdrop_masscorr",&puppi_softdrop_masscorr);
-    BareFunctions::SetBranchAddress(t,"puppi_softdrop_mass",&puppi_softdrop_mass);
+    BareFunctions::SetBranchAddress(t,jetName + "TvsQCDMD",&TvsQCDMD);
+    BareFunctions::SetBranchAddress(t,jetName + "WvsQCDMD",&WvsQCDMD);
+    BareFunctions::SetBranchAddress(t,jetName + "ZHbbvsQCDMD",&ZHbbvsQCDMD);
+    BareFunctions::SetBranchAddress(t,jetName + "ZHccvsQCDMD",&ZHccvsQCDMD);
 
 }
 void BareFatJets::compress(){
