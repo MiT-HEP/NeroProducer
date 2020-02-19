@@ -427,6 +427,22 @@ if __name__ == '__main__':
         config.Data.inputDataset = '/QCD_HT%sto%s_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v*/MINIAODSIM'%(htbins[idx],htbins[idx+1])
         submit(config)
 
+    for idx in range(0,len(htbins)-1):
+        config.General.requestName = 'QCD-HT-%s-%s'%(htbins[idx],htbins[idx+1])
+        config.Data.inputDataset = '/QCD_HT%sto%s_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3_ext1-v*/MINIAODSIM'%(htbins[idx],htbins[idx+1])
+        submit(config)
+
+    wbins=['100','200','400','600','800','1200','2500','Inf']
+    for idx in range(0,len(htbins)-1):
+        config.General.requestName = 'WJetsToLNu_HT-%s-%s'%(htbins[idx],htbins[idx+1])
+        config.Data.inputDataset = '/WJetsToLNu_HT%sTo%s_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v*/MINIAODSIM'%(htbins[idx],htbins[idx+1])
+        submit(config)
+
+    for idx in range(0,len(htbins)-1):
+        config.General.requestName = 'WJetsToLNu_HT-%s-%s'%(htbins[idx],htbins[idx+1])
+        config.Data.inputDataset = '/WJetsToLNu_HT%sTo%s_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3_ext1-v*/MINIAODSIM'%(htbins[idx],htbins[idx+1])
+        submit(config)
+
     #config.General.requestName = 'QCD-15-700-hpp'
     #config.Data.inputDataset = '/QCD_Pt-15to7000_TuneCUETHS1_Flat_13TeV_herwigpp/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM'
     #submit(config)
@@ -547,6 +563,10 @@ if __name__ == '__main__':
 
     config.General.requestName = 'TT'
     config.Data.inputDataset = '/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'
+    submit(config)
+
+    config.General.requestName = 'TT'
+    config.Data.inputDataset = '/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/RunIISummer16MiniAODv3-PUMoriond17_backup_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'
     submit(config)
 
     config.General.requestName = 'ZZZ'
