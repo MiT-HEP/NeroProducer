@@ -27,8 +27,9 @@ config.General.transferOutputs = True
 config.General.transferLogs = False
 
 ## JobType
+config.JobType.allowUndistributedCMSSW = True
 config.JobType.pluginName = 'Analysis'
-config.JobType.psetName = 'testNero.py'
+config.JobType.psetName = 'testNero2017.py'
 #config.JobType.psetName = 'testNero_twomu.py'
 config.JobType.pyCfgParams=['isGrid=True','isData=False','nerohead='+check_output("git rev-parse HEAD",shell=True), 'nerotag='+check_output('git describe --tags',shell=True),'isRun=2017B']
 
@@ -267,25 +268,25 @@ if __name__ == '__main__':
     #config.Data.inputDataset = '/ZeroBias/Run2017F-31Mar2018-v1/MINIAOD'
     #submit(config)
 
-    #config.General.requestName = 'Charmonium-Run2017B'
-    #config.Data.inputDataset = '/Charmonium/Run2017B-31Mar2018-v1/MINIAOD'
-    #submit(config)
+    config.General.requestName = 'Charmonium-Run2017B'
+    config.Data.inputDataset = '/Charmonium/Run2017B-31Mar2018-v1/MINIAOD'
+    submit(config)
 
-    #config.General.requestName = 'Charmonium-Run2017C'
-    #config.Data.inputDataset = '/Charmonium/Run2017C-31Mar2018-v1/MINIAOD'
-    #submit(config)
+    config.General.requestName = 'Charmonium-Run2017C'
+    config.Data.inputDataset = '/Charmonium/Run2017C-31Mar2018-v1/MINIAOD'
+    submit(config)
 
-    #config.General.requestName = 'Charmonium-Run2017D'
-    #config.Data.inputDataset = '/Charmonium/Run2017D-31Mar2018-v1/MINIAOD'
-    #submit(config)
+    config.General.requestName = 'Charmonium-Run2017D'
+    config.Data.inputDataset = '/Charmonium/Run2017D-31Mar2018-v1/MINIAOD'
+    submit(config)
 
-    #config.General.requestName = 'Charmonium-Run2017E'
-    #config.Data.inputDataset = '/Charmonium/Run2017E-31Mar2018-v1/MINIAOD'
-    #submit(config)
+    config.General.requestName = 'Charmonium-Run2017E'
+    config.Data.inputDataset = '/Charmonium/Run2017E-31Mar2018-v1/MINIAOD'
+    submit(config)
 
-    #config.General.requestName = 'Charmonium-Run2017F'
-    #config.Data.inputDataset = '/Charmonium/Run2017F-31Mar2018-v1/MINIAOD'
-    #submit(config)
+    config.General.requestName = 'Charmonium-Run2017F'
+    config.Data.inputDataset = '/Charmonium/Run2017F-31Mar2018-v1/MINIAOD'
+    submit(config)
 
     #####################################################
     ##setdata("False")
