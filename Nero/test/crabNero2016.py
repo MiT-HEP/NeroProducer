@@ -27,6 +27,7 @@ config.General.transferOutputs = True
 config.General.transferLogs = False
 
 ## JobType
+config.JobType.allowUndistributedCMSSW = True
 config.JobType.pluginName = 'Analysis'
 config.JobType.psetName = 'testNero.py'
 #config.JobType.psetName = 'testNero_twomu.py'
@@ -427,6 +428,22 @@ if __name__ == '__main__':
         config.Data.inputDataset = '/QCD_HT%sto%s_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v*/MINIAODSIM'%(htbins[idx],htbins[idx+1])
         submit(config)
 
+    for idx in range(0,len(htbins)-1):
+        config.General.requestName = 'QCD-HT-%s-%s'%(htbins[idx],htbins[idx+1])
+        config.Data.inputDataset = '/QCD_HT%sto%s_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3_ext1-v*/MINIAODSIM'%(htbins[idx],htbins[idx+1])
+        submit(config)
+
+    wbins=['100','200','400','600','800','1200','2500','Inf']
+    for idx in range(0,len(htbins)-1):
+        config.General.requestName = 'WJetsToLNu_HT-%s-%s'%(htbins[idx],htbins[idx+1])
+        config.Data.inputDataset = '/WJetsToLNu_HT%sTo%s_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v*/MINIAODSIM'%(htbins[idx],htbins[idx+1])
+        submit(config)
+
+    for idx in range(0,len(htbins)-1):
+        config.General.requestName = 'WJetsToLNu_HT-%s-%s'%(htbins[idx],htbins[idx+1])
+        config.Data.inputDataset = '/WJetsToLNu_HT%sTo%s_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3_ext1-v*/MINIAODSIM'%(htbins[idx],htbins[idx+1])
+        submit(config)
+
     #config.General.requestName = 'QCD-15-700-hpp'
     #config.Data.inputDataset = '/QCD_Pt-15to7000_TuneCUETHS1_Flat_13TeV_herwigpp/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM'
     #submit(config)
@@ -549,6 +566,10 @@ if __name__ == '__main__':
     config.Data.inputDataset = '/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'
     submit(config)
 
+    config.General.requestName = 'TT'
+    config.Data.inputDataset = '/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/RunIISummer16MiniAODv3-PUMoriond17_backup_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM'
+    submit(config)
+
     config.General.requestName = 'ZZZ'
     config.Data.inputDataset = '/ZZZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'
     submit(config)
@@ -636,6 +657,30 @@ if __name__ == '__main__':
     config.General.requestName = 'WZTo1L3Nu_13TeV_amcatnloFXFX_madspin_pythia8'
     config.Data.inputDataset = '/WZTo1L3Nu_13TeV_amcatnloFXFX_madspin_pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'
     submit(config)
+
+    config.Data.inputDBS = 'phys03'
+    config.General.requestName='DoublyChargedHiggsGMmodel_HWW_M1500_13TeV-madgraph'
+    config.Data.inputDataset='/DoublyChargedHiggsGMmodel_HWW_M1500_13TeV-madgraph/amarini-FullSim_94X-MINIAODSIM-bd3e7bcff6c9bcad356ea4ed7e4f08b4/USER'
+    submit(config)
+    config.Data.inputDBS = 'global'
+
+    config.Data.inputDBS = 'phys03'
+    config.General.requestName='WWjj_SS_ll_hadronic'
+    config.Data.inputDataset='/WWjj_SS_ll_hadronic/amarini-FullSim_94X-2016-MINIAODSIM-bd3e7bcff6c9bcad356ea4ed7e4f08b4/USER'
+    submit(config)
+    config.Data.inputDBS = 'global'
+
+    config.Data.inputDBS = 'phys03'
+    config.General.requestName='WWjj_SS_lt_hadronic'
+    config.Data.inputDataset='/WWjj_SS_lt_hadronic/amarini-FullSim_94X-2016-MINIAODSIM-bd3e7bcff6c9bcad356ea4ed7e4f08b4/USER'
+    submit(config)
+    config.Data.inputDBS = 'global'
+
+    config.Data.inputDBS = 'phys03'
+    config.General.requestName='WWjj_SS_tt_hadronic'
+    config.Data.inputDataset='/WWjj_SS_tt_hadronic/amarini-FullSim_94X-2016-MINIAODSIM-bd3e7bcff6c9bcad356ea4ed7e4f08b4/USER'
+    submit(config)
+    config.Data.inputDBS = 'global'
 
 
 # Local Variables:
