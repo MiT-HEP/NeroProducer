@@ -73,6 +73,8 @@ class BareMonteCarlo : virtual public BareP4
         std::vector<float> *pdfRwgt{0};
         // PS
         std::vector<float> *psRwgt{0};
+        // Additional weights from me
+        std::vector<float> *meRwgt{0};
 
         // Iso and Iso Frixione
         std::vector<float> *genIso{0};

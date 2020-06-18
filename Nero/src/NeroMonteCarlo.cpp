@@ -34,6 +34,9 @@ NeroMonteCarlo::NeroMonteCarlo(edm::ConsumesCollector & cc,edm::ParameterSet iCo
     minPdfId = iConfig.getParameter<std::string>("minPdfId");
     maxPdfId = iConfig.getParameter<std::string>("maxPdfId");
 
+    minMEId = iConfig.getParameter<std::string>("minMEId");
+    maxMEId = iConfig.getParameter<std::string>("maxMEId");
+
     genBHadFlavour_token = cc.consumes<std::vector<int> > (edm::InputTag("matchGenBHadron", "genBHadFlavour"));
     genCHadJetIndex_token = cc.consumes<std::vector<int> > (edm::InputTag("matchGenCHadron", "genCHadJetIndex"));
     genCHadBHadronId_token = cc.consumes<std::vector<int> > (edm::InputTag("matchGenCHadron", "genCHadBHadronId"));
@@ -141,6 +144,41 @@ int NeroMonteCarlo::analyze(const edm::Event& iEvent){
         for( int pdfw = minPdfIdx ; pdfw<=maxPdfIdx ;++pdfw)
         {
             pdfRwgt -> push_back( double(lhe_handle -> weights() . at(pdfw) . wgt ) );    
+        }
+    }
+
+    if (lhe_handle.isValid() and minMEIdx==-1 and maxMEIdx==-1) 
+    {
+        for( unsigned mew=0; mew<lhe_handle->weights().size() ;++mew)
+        {
+            if ( minMEIdx<0 and string(lhe_handle -> weights() . at(mew) .id).find(minMEId) != string::npos)minMEIdx=mew;
+            if ( maxMEIdx<0 and string(lhe_handle -> weights() . at(mew) .id).find(maxMEId) != string::npos)maxMEIdx=mew;
+            if ( maxMEIdx >=0 and minMEIdx >=0) break;
+        }
+        if (minMEIdx==-1) minMEIdx=-2; // don't reloop if I didn't find them once
+        if (maxMEIdx==-1) maxMEIdx=-2;
+
+        if (VERBOSE or maxMEIdx >0 ) // if maxMEIdx >0 is printed only once
+        {
+        cout<<"[NeroMonteCarlo]::[analyze]::[INFO] "
+                <<"ME saved from ["
+                << minMEIdx<<","
+                << maxMEIdx
+                <<"] corresponding to ids ["
+                << ((minMEIdx>0)?lhe_handle -> weights() . at(minMEIdx) .id :"XXX") <<","
+                << ((maxMEIdx>0)?lhe_handle -> weights() . at(maxMEIdx) .id :"XXX")
+                << "]. Requested were ["
+                << minMEId <<","
+                << maxMEId
+                << "]"
+                <<endl;
+        }
+    }
+    if (lhe_handle.isValid() and minMEIdx>=0 and maxMEIdx>=0) 
+    {
+        for( int mew = minMEIdx ; mew<=maxMEIdx ;++mew)
+        {
+            meRwgt -> push_back( double(lhe_handle -> weights() . at(mew) . wgt ) );    
         }
     }
 

@@ -59,6 +59,9 @@ class NeroMonteCarlo : virtual public NeroCollection,
         
         string minPdfId{"xxx"}; int minPdfIdx=-1;
         string maxPdfId{"xxx"}; int maxPdfIdx=-1;
+
+        string minMEId{"xxx"}; int minMEIdx=-1;
+        string maxMEId{"xxx"}; int maxMEIdx=-1;
         // ---  
         template<class T> // T is supposed to be: reco::GenParticles or Packed Gen Particles
         unsigned  ComputeFlags( T & p ) ;
