@@ -82,6 +82,8 @@ nero = cms.EDAnalyzer("Nero",
         minPdfId=cms.string("1682"),# PDF4LHC15_nlo_30
         maxPdfId=cms.string("1714"),
         ## PDF4LH15_nlo_100 1476, 1578
+        minMEId=cms.string("fs0_0p00"),# AQGC
+        maxMEId=cms.string("ft9_2p50"),
     ),
 
     #
