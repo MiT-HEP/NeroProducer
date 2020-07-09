@@ -22,7 +22,7 @@ class BarePuppiJets : virtual public BareP4
         std::string cachedPrefix="";
 
         BarePuppiJets();
-        ~BarePuppiJets();
+        virtual ~BarePuppiJets();
         void init() override;
         void clear() override;
         void defineBranches(TTree* t) override; 

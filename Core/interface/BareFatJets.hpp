@@ -9,7 +9,7 @@ class BareFatJets : virtual public BareP4
 {
     public:
         BareFatJets();
-        ~BareFatJets();
+        virtual ~BareFatJets();
         void clear() override;
         void init() override;
         void defineBranches(TTree* t) override;

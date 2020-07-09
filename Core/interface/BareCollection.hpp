@@ -52,6 +52,7 @@ class BareFactory{
 class BareCreator{
     private:
     public:
+        virtual ~BareCreator(){}
         virtual BareCollection* create() = 0;
         BareCreator(const string& name){ std::cout<<"called creator for class"<<name<<std::endl; BareFactory::get() . registerit( name, this); }
 };

@@ -34,7 +34,7 @@ class BareLeptons : virtual public BareP4
         };
 
         BareLeptons();
-        ~BareLeptons();
+        virtual ~BareLeptons();
         void init() override;
         void clear() override;
         void defineBranches(TTree*) override;

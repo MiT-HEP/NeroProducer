@@ -51,7 +51,7 @@ class BareTaus : virtual public BareP4
         };
 
         BareTaus();
-        ~BareTaus();
+        virtual ~BareTaus();
         void init() override;
         void clear() override;
         void defineBranches(TTree*) override;

@@ -8,7 +8,7 @@ class BareVertex : virtual public BareCollection
 {
     public:
         BareVertex();
-        ~BareVertex();
+        virtual ~BareVertex();
         void clear() override;
         void defineBranches(TTree *t) override;
         void setBranchAddresses(TTree*) override;

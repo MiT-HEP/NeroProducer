@@ -1,57 +1,14 @@
 #!/bin/bash
 
 # Instruct builder to use a particular CMSSW release
-# [CMSSW] CMSSW_10_2_9
+# [CMSSW] CMSSW_10_6_13
 # [Options] isData=False
 # [fileList] /store/mc/RunIIAutumn18MiniAOD/DYJetsToLL_M-105To160_TuneCP5_PSweights_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/100000/48A13F85-97BC-8348-A555-9AC79DF6628B.root
 # [MaxEvents] 5000
-# [Tag] CMSSW_102X
+# [Tag] CMSSW_106X
 
-function CMSSW_8_0_26_patch1 {
-        git cms-init
-        git cms-merge-topic zdemirag:conflict_met_resolved
-        #git cms-merge-topic emanueledimarco:ecal_smear_fix_80X
-        git cms-merge-topic rafaellopesdesa:Regression80XEgammaAnalysis_v2
-        git cms-merge-topic rafaellopesdesa:RegressionCheckNegEnergy
-        git cms-merge-topic shervin86:Moriond17_23Jan
-        git cms-merge-topic ikrav:egm_id_80X_v2
-        git clone -b egm_id_80X_v1 https://github.com/ikrav/RecoEgamma-ElectronIdentification.git RecoEgamma/ElectronIdentification/data.new
-        git cms-addpkg RecoEgamma/ElectronIdentification
-        rsync -avP RecoEgamma/ElectronIdentification/data.new/* RecoEgamma/ElectronIdentification/data/
-        git cms-merge-topic ikrav:egm_id_80X_v3_photons
-        git clone -b egm_id_80X_v1 https://github.com/ikrav/RecoEgamma-PhotonIdentification.git RecoEgamma/PhotonIdentification/data.new
-        rsync -avP RecoEgamma/PhotonIdentification/data.new/* RecoEgamma/PhotonIdentification/data/
-        git cms-addpkg EgammaAnalysis/ElectronTools
-        git cms-merge-topic shervin86:Moriond2017_JEC_energyScales
-        git clone git@github.com:ECALELFS/ScalesSmearings.git EgammaAnalysis/ElectronTools/data/ScalesSmearings.new
-        rsync -avP EgammaAnalysis/ElectronTools/data/ScalesSmearings.new/* EgammaAnalysis/ElectronTools/data/ScalesSmearings/
-        git cms-merge-topic amarini:topic_qgmorevar
-        git cms-merge-topic amarini:eleMva_exception
-}
 
-function CMSSW_8_0_28_patch1 {
-        git cms-init
-        git cms-merge-topic ikrav:egm_id_80X_v3_photons_rebasedTo_8026patch2
-        git cms-merge-topic ikrav:egm_id_80X_v2
-}
 
-function CMSSW_9_4_1 {
-        git cms-init
-        git cms-merge-topic lsoffi:CMSSW_9_4_0_pre3_TnP
-        git cms-merge-topic guitargeek:ElectronID_MVA2017_940pre3
-        git clone https://github.com/lsoffi/RecoEgamma-PhotonIdentification.git RecoEgamma/PhotonIdentification/data.new -b CMSSW_9_4_0_pre3_TnP
-        git clone https://github.com/lsoffi/RecoEgamma-ElectronIdentification.git RecoEgamma/ElectronIdentification/data.new -b CMSSW_9_4_0_pre3_TnP
-        rsync -avP RecoEgamma/ElectronIdentification/data.new/* RecoEgamma/ElectronIdentification/data/
-        rsync -avP RecoEgamma/PhotonIdentification/data.new/* RecoEgamma/PhotonIdentification/data/
-        #git cms-merge-topic ikrav:egm_id_80X_v3_photons_rebasedTo_CMSSW_9_2_X_2017-05-29-1100
-        #git cms-merge-topic ikrav:egm_id_80X_v2_rebased_CMSSW_9_0_X_2016-12-07-2300
-        #add the repository with the updated Egamma package
-        git cms-merge-topic cms-egamma:EGM_94X_v1
-        # download the txt files with the corrections
-        git clone https://github.com/ECALELFS/ScalesSmearings.git EgammaAnalysis/ElectronTools/data/ScalesSmearings -b Run2017_17Nov2017_v1
-        #rsync -avP EgammaAnalysis/ElectronTools/data/ScalesSmearings.new/* EgammaAnalysis/ElectronTools/data/ScalesSmearings/
-        git cms-merge-topic amarini:topic_qgmorvar_94X 
-}
 
 function CMSSW_9_4_9 {
         git cms-init
@@ -66,13 +23,6 @@ function CMSSW_9_4_9 {
         #cd CAST &&  echo "/.gitignore" > .git/info/sparse_checkout && echo "/FSRPhotons/" >> .git/info/sparse-checkout && git read-tree -mu HEAD && cd -
 }
 
-
-#git cms-merge-topic cms-egamma:EgammaPostRecoTools #just adds in an extra file to have a setup function to make things easier 
-#git cms-merge-topic cms-egamma:PhotonIDValueMapSpeedup1029 #optional but speeds up the photon ID value module so things fun faster
-#git cms-merge-topic cms-egamma:slava77-btvDictFix_10210 #fixes the Run2018D dictionary issue, see https://github.com/cms-sw/cmssw/issues/26182, may not be necessary for later releases, try it first and see if it works
-#git cms-addpkg EgammaAnalysis/ElectronTools
-#rm EgammaAnalysis/ElectronTools/data -rf
-#git clone git@github.com:cms-data/EgammaAnalysis-ElectronTools.git EgammaAnalysis/ElectronTools/data
 
 function CMSSW_10_2_9 {
         git cms-init
@@ -123,6 +73,25 @@ function CMSSW_10_2_15 {
         git cms-merge-topic amarini:fix_102_15_met_ptdepjer
         git clone ssh://git@gitlab.cern.ch:7999/uhh-cmssw/fsr-photon-recovery.git FSRPhotonRecovery
 
+}
+
+function CMSSW_10_6_13 {
+        git cms-init
+
+        #TODO
+        git cms-merge-topic amarini:topic_qgmorevar_106X 
+        
+        # CHECK if is working
+        git clone ssh://git@gitlab.cern.ch:7999/uhh-cmssw/fsr-photon-recovery.git FSRPhotonRecovery
+        
+        ### CLEAN UP
+        git cms-merge-topic jainshilpi:ULV1_backport106X_forUsers
+        git clone https://github.com/jainshilpi/EgammaPostRecoTools.git -b ULV0  ./EgammaPostRecoTools_tmp
+        mv EgammaPostRecoTools_tmp/python/EgammaPostRecoTools.py RecoEgamma/EgammaTools/python/.
+        rm -rf EgammaPostRecoTools_tmp
+        git cms-addpkg EgammaAnalysis/ElectronTools
+        rm EgammaAnalysis/ElectronTools/data -rf
+        git clone https://github.com/jainshilpi/EgammaAnalysis-ElectronTools.git -b UL2017SSV2 EgammaAnalysis/ElectronTools/data/
 }
 
 

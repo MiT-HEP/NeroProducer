@@ -9,7 +9,7 @@ class BareMet : virtual public BareP4
 {
     public:
         BareMet();
-        ~BareMet();
+        virtual ~BareMet();
         void init() override;
         void clear() override;
         void defineBranches(TTree*) override;

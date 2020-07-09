@@ -25,7 +25,7 @@ class BareJets : virtual public BareP4
         std::string cachedPrefix="";
 
         BareJets();
-        ~BareJets();
+        virtual ~BareJets();
         void init() override;
         void clear() override;
         void defineBranches(TTree* t) override;

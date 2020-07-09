@@ -8,7 +8,7 @@ class BareAll : virtual public BareCollection
     /* container for the inforamations that will be saved for all events */
     public:
         BareAll();
-        ~BareAll();
+        virtual ~BareAll();
         void clear() override;
         void defineBranches(TTree*) override;
         void setBranchAddresses(TTree*) override;

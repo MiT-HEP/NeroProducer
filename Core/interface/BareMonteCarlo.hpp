@@ -8,7 +8,7 @@ class BareMonteCarlo : virtual public BareP4
 {
     public:
         BareMonteCarlo();
-        ~BareMonteCarlo();
+        virtual ~BareMonteCarlo();
         void init() override;
         void clear() override;
         void defineBranches(TTree*) override;

@@ -45,6 +45,7 @@ class NeroFactory{
 class NeroCreator{
     private:
     public:
+        virtual ~NeroCreator(){}
         virtual NeroCollection* create(edm::ConsumesCollector & cc,const edm::ParameterSet& iConfig ) = 0;
         NeroCreator(const string& name){ std::cout<<"* Called creator for class: "<<name <<std::endl; NeroFactory::get() . registerit( name, this); }
 };
@@ -54,6 +55,7 @@ class NeroCreatorImpl : public NeroCreator
 {
     public:
         NeroCreatorImpl(const string &name) : NeroCreator(name) {}
+        virtual ~NeroCreatorImpl(){}
         NeroCollection* create(edm::ConsumesCollector & cc,const edm::ParameterSet& iConfig ) override final { return new T(cc,iConfig); } 
 };
 

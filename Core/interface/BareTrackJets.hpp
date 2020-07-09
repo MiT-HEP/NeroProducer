@@ -11,7 +11,7 @@ class BareTrackJets : virtual public BareP4
 
 
         BareTrackJets();
-        ~BareTrackJets();
+        virtual ~BareTrackJets();
         void init() override;
         void clear() override;
         void defineBranches(TTree* t) override;

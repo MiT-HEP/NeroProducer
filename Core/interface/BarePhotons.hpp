@@ -25,7 +25,7 @@ class BarePhotons : virtual public BareP4
         };
 
         BarePhotons();
-        ~BarePhotons();
+        virtual ~BarePhotons();
         void init() override;
         void clear() override;
         void defineBranches(TTree*) override;

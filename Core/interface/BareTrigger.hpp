@@ -9,7 +9,7 @@ class BareTrigger: virtual public BareCollection
 {
     public:
         BareTrigger();
-        ~BareTrigger();
+        virtual ~BareTrigger();
         void init() override;
         void clear() override;
         void defineBranches(TTree*) override;

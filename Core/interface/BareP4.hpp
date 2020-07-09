@@ -9,7 +9,7 @@ class BareP4 : virtual public BareCollection
     bool doMatch_{false};
     public:
         BareP4();
-        ~BareP4();
+        virtual ~BareP4();
 
         inline string name() override { return "BareP4"; }
         inline unsigned size() const override { if (p4) return p4->GetEntries(); else return 0; }

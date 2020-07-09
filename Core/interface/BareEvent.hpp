@@ -24,7 +24,7 @@ class BareEvent : virtual public BareCollection
         };
 
         BareEvent();
-        ~BareEvent();
+        virtual ~BareEvent();
         void clear() override;
         void defineBranches(TTree*) override;
         void setBranchAddresses(TTree*) override;
