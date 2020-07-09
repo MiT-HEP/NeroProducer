@@ -116,175 +116,173 @@ process.load('NeroProducer.Nero.Nero_cfi')
 
 ############################### JEC #####################
 #### Load from a sqlite db, if not read from the global tag
-### process.load("CondCore.DBCommon.CondDBCommon_cfi")
-### from CondCore.DBCommon.CondDBSetup_cfi import *
+process.load("CondCore.DBCommon.CondDBCommon_cfi")
+from CondCore.DBCommon.CondDBSetup_cfi import *
+
+if options.isData:
+    if isYear == 2017:
+        connectString = cms.string('sqlite:jec/Summer19UL17_RunBCDEF_V5_DATA.db')
+        tagName = 'Summer19UL17_RunBCDEF_V5_DATA_AK4PFchs'
+        tagNamePuppi = 'Summer19UL17_RunBCDEF_V5_DATA_AK4PFPuppi'
+    else: raise ValueError("Not implemented")
+    #if isYear == 2016:
+    #    connectString = cms.string('sqlite:jec/Summer16_07Aug2017All_V11_DATA.db')
+    #    tagName = 'Summer16_07Aug2017_V11_94X_DATA_AK4PFchs'
+    #    tagNamePuppi = 'Summer16_07Aug2017_V11_94X_DATA_AK4PFPuppi'
+else:
+    if isYear==2017:
+        connectString = cms.string('sqlite:jec/Summer19UL17_V5_MC.db')
+        tagName = 'Summer19UL17_V5_MC_AK4PFchs'
+        tagNamePuppi = 'Summer19UL17_V5_MC_AK4PFPuppi'
+    else: raise ValueError("Not implemented")
+
+#data only, mc hard coded. Need to be fixed per Run
+print "-> Setting Up JEC for AK8 using Year",isYear,"and Run",options.isRun
+if isYear == 2017:
+    process.nero.NeroFatJets.chsAK8JECMC = cms.string("jec/Fall17/Fall17_17Nov2017_V32")
+    if options.isRun=='Run2017B':
+        process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Fall17/Fall17_17Nov2017B_V32")
+    elif options.isRun=='Run2017C':
+        process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Fall17/Fall17_17Nov2017C_V32")
+    elif options.isRun=='Run2017D' or options.isRun=='Run2017E':
+        process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Fall17/Fall17_17Nov2017DE_V32")
+    elif options.isRun=='Run2017F':
+        process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Fall17/Fall17_17Nov2017F_V32")
+    else: raise ValueError("Unable to configure AK8 JEC")
+elif isYear==2016:
+    process.nero.NeroFatJets.chsAK8JECMC = cms.string("jec/Summer16/Summer16_07Aug2017_V11")
+    if options.isRun in ['Run2016A','Run2016B','Run2016C','Run2016D']:
+        process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Summer16/Summer16_07Aug2017ABCD_V11")
+    elif options.isRun in ['Run2016E', 'Run2016F']:
+        process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Summer16/Summer16_07Aug2017EF_V11")
+    elif options.isRun in ['Run2016G', 'Run2016H']:
+        process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Summer16/Summer16_07Aug2017GH_V11")
+    else: raise ValueError("Unable to configure AK8 JEC")
+
 ### 
-### if options.isData:
-###     if isYear == 2017:
-###         connectString = cms.string('sqlite:jec/Fall17_17Nov2017_V32_94X_DATA.db')
-###         tagName = 'Fall17_17Nov2017_V32_94X_DATA_AK4PFchs'
-###         tagNamePuppi = 'Fall17_17Nov2017_V32_94X_DATA_AK4PFPuppi'
-###     if isYear == 2016:
-###         connectString = cms.string('sqlite:jec/Summer16_07Aug2017All_V11_DATA.db')
-###         tagName = 'Summer16_07Aug2017_V11_94X_DATA_AK4PFchs'
-###         tagNamePuppi = 'Summer16_07Aug2017_V11_94X_DATA_AK4PFPuppi'
-### else:
-###     if isYear==2017:
-###         connectString = cms.string('sqlite:jec/Fall17_17Nov2017_V32_94X_MC.db')
-###         tagName = 'Fall17_17Nov2017_V32_94X_MC_AK4PFchs'
-###         tagNamePuppi = 'Fall17_17Nov2017_V32_94X_MC_AK4PFPuppi'
-###     if isYear==2016:
-###         connectString = cms.string('sqlite:jec/Summer16_07Aug2017_V11_MC.db')
-###         tagName = 'Summer16_07Aug2017_V11_94X_MC_AK4PFchs'
-###         tagNamePuppi = 'Summer16_07Aug2017_V11_94X_MC_AK4PFPuppi'
 ### 
-### #data only, mc hard coded. Need to be fixed per Run
-### print "-> Setting Up JEC for AK8 using Year",isYear,"and Run",options.isRun
-### if isYear == 2017:
-###     process.nero.NeroFatJets.chsAK8JECMC = cms.string("jec/Fall17/Fall17_17Nov2017_V32")
-###     if options.isRun=='Run2017B':
-###         process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Fall17/Fall17_17Nov2017B_V32")
-###     elif options.isRun=='Run2017C':
-###         process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Fall17/Fall17_17Nov2017C_V32")
-###     elif options.isRun=='Run2017D' or options.isRun=='Run2017E':
-###         process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Fall17/Fall17_17Nov2017DE_V32")
-###     elif options.isRun=='Run2017F':
-###         process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Fall17/Fall17_17Nov2017F_V32")
-###     else: raise ValueError("Unable to configure AK8 JEC")
-### elif isYear==2016:
-###     process.nero.NeroFatJets.chsAK8JECMC = cms.string("jec/Summer16/Summer16_07Aug2017_V11")
-###     if options.isRun in ['Run2016A','Run2016B','Run2016C','Run2016D']:
-###         process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Summer16/Summer16_07Aug2017ABCD_V11")
-###     elif options.isRun in ['Run2016E', 'Run2016F']:
-###         process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Summer16/Summer16_07Aug2017EF_V11")
-###     elif options.isRun in ['Run2016G', 'Run2016H']:
-###         process.nero.NeroFatJets.chsAK8JEC = cms.string("jec/Summer16/Summer16_07Aug2017GH_V11")
-###     else: raise ValueError("Unable to configure AK8 JEC")
-### 
-### ### 
-### ### 
-### process.jec = cms.ESSource("PoolDBESSource",
-###       DBParameters = cms.PSet(
-###         messageLevel = cms.untracked.int32(0)
-###         ),
-###       timetype = cms.string('runnumber'),
-###       toGet = cms.VPSet(
-###       cms.PSet(
-###             record = cms.string('JetCorrectionsRecord'),
-###             tag    = cms.string('JetCorrectorParametersCollection_%s'%tagName),
-###             label  = cms.untracked.string('AK4PFchs')
-###             ),
-###       cms.PSet( ## AK8
-###             record = cms.string('JetCorrectionsRecord'),
-###             tag    = cms.string('JetCorrectorParametersCollection_%s'%re.sub('AK4','AK8',tagName)),
-###             label  = cms.untracked.string('AK8PFchs')
-###             ),
-###       cms.PSet(#puppi
-###             record = cms.string('JetCorrectionsRecord'),
-###             tag    = cms.string('JetCorrectorParametersCollection_%s'%tagNamePuppi),
-###             label  = cms.untracked.string('AK4PFPuppi')
-###             ),
-###       cms.PSet( ## AK8 puppi
-###             record = cms.string('JetCorrectionsRecord'),
-###             tag    = cms.string('JetCorrectorParametersCollection_%s'%re.sub('AK4','AK8',tagNamePuppi)),
-###             label  = cms.untracked.string('AK8PFPuppi')
-###             ),
-###       ## here you add as many jet types as you need
-###       ## note that the tag name is specific for the particular sqlite file 
-###       ), 
-###       connect = connectString
-###      # uncomment above tag lines and this comment to use MC JEC
-### )
-### ## add an es_prefer statement to resolve a possible conflict from simultaneous connection to a global tag
-### process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
+process.jec = cms.ESSource("PoolDBESSource",
+      DBParameters = cms.PSet(
+        messageLevel = cms.untracked.int32(0)
+        ),
+      timetype = cms.string('runnumber'),
+      toGet = cms.VPSet(
+      cms.PSet(
+            record = cms.string('JetCorrectionsRecord'),
+            tag    = cms.string('JetCorrectorParametersCollection_%s'%tagName),
+            label  = cms.untracked.string('AK4PFchs')
+            ),
+      cms.PSet( ## AK8
+            record = cms.string('JetCorrectionsRecord'),
+            tag    = cms.string('JetCorrectorParametersCollection_%s'%re.sub('AK4','AK8',tagName)),
+            label  = cms.untracked.string('AK8PFchs')
+            ),
+      cms.PSet(#puppi
+            record = cms.string('JetCorrectionsRecord'),
+            tag    = cms.string('JetCorrectorParametersCollection_%s'%tagNamePuppi),
+            label  = cms.untracked.string('AK4PFPuppi')
+            ),
+      cms.PSet( ## AK8 puppi
+            record = cms.string('JetCorrectionsRecord'),
+            tag    = cms.string('JetCorrectorParametersCollection_%s'%re.sub('AK4','AK8',tagNamePuppi)),
+            label  = cms.untracked.string('AK8PFPuppi')
+            ),
+      ## here you add as many jet types as you need
+      ## note that the tag name is specific for the particular sqlite file 
+      ), 
+      connect = connectString
+     # uncomment above tag lines and this comment to use MC JEC
+)
+## add an es_prefer statement to resolve a possible conflict from simultaneous connection to a global tag
+process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 
 #------------------- JER -----------------
-## toGet=[]
-## if options.isData:
-##     if isYear==2017:
-##         jerString = cms.string('sqlite:jer/Fall17_V3_94X_DATA.db')
-##         resTag= cms.string('JR_Fall17_V3_94X_DATA_PtResolution_AK4PFchs')
-##         phiTag= cms.string('JR_Fall17_V3_94X_DATA_PhiResolution_AK4PFchs')
-##         sfTag = cms.string('JR_Fall17_V3_94X_DATA_SF_AK4PFchs')
-##     if isYear==2016: # no _94X
-##         jerString = cms.string('sqlite:jer/Summer16_25nsV1_DATA.db')
-##         resTag= cms.string('JR_Summer16_25nsV1_DATA_PtResolution_AK4PFchs')
-##         phiTag= cms.string('JR_Summer16_25nsV1_DATA_PhiResolution_AK4PFchs')
-##         sfTag = cms.string('JR_Summer16_25nsV1_DATA_SF_AK4PFchs')
-## else:
-##     if isYear==2017:
-##         jerString = cms.string('sqlite:jer/Fall17_V3_94X_MC.db')
-##         resTag= cms.string('JR_Fall17_V3_94X_MC_PtResolution_AK4PFchs')
-##         phiTag= cms.string('JR_Fall17_V3_94X_MC_PhiResolution_AK4PFchs')
-##         sfTag = cms.string('JR_Fall17_V3_94X_MC_SF_AK4PFchs')
-##     if isYear==2016: # no _94X
-##         jerString = cms.string('sqlite:jer/Summer16_25nsV1_MC.db')
-##         resTag= cms.string('JR_Summer16_25nsV1_MC_PtResolution_AK4PFchs')
-##         phiTag= cms.string('JR_Summer16_25nsV1_MC_PhiResolution_AK4PFchs')
-##         sfTag = cms.string('JR_Summer16_25nsV1_MC_SF_AK4PFchs')
-## 
-## process.jer = cms.ESSource("PoolDBESSource",
-##         CondDBSetup,
-##         toGet = cms.VPSet( 
-##             # Resolution
-##             cms.PSet(
-##                 record = cms.string('JetResolutionRcd'),
-##                 tag    = resTag,
-##                 label  = cms.untracked.string('AK4PFchs_pt')
-##                 ),
-## 
-##              # Phi
-##              cms.PSet(
-##                  record = cms.string('JetResolutionRcd'),
-##                  tag    = phiTag,
-##                  label  = cms.untracked.string('AK4PFchs_phi')
-##                  ),        
-##              # Scale factors
-##              cms.PSet(
-##                  record = cms.string('JetResolutionScaleFactorRcd'),
-##                  tag    = sfTag,
-##                  label  = cms.untracked.string('AK4PFchs')
-##                  )
-##             ),
-##         connect = jerString
-##         )
-## 
-## process.es_prefer_jer = cms.ESPrefer('PoolDBESSource', 'jer')
+toGet=[]
+if options.isData:
+    if isYear==2017:
+        jerString = cms.string('sqlite:jer/Summer19UL17_JRV2_DATA.db')
+        resTag= cms.string('JR_Summer19UL17_JRV2_DATA_PtResolution_AK4PFchs')
+        phiTag= cms.string('JR_Summer19UL17_JRV2_DATA_PhiResolution_AK4PFchs')
+        sfTag = cms.string('JR_Summer19UL17_JRV2_DATA_SF_AK4PFchs')
+    else: raise ValueError("Not implemented"
+    #if isYear==2016: # no _94X
+    #    jerString = cms.string('sqlite:jer/Summer16_25nsV1_DATA.db')
+    #    resTag= cms.string('JR_Summer16_25nsV1_DATA_PtResolution_AK4PFchs')
+    #    phiTag= cms.string('JR_Summer16_25nsV1_DATA_PhiResolution_AK4PFchs')
+    #    sfTag = cms.string('JR_Summer16_25nsV1_DATA_SF_AK4PFchs')
+else:
+    if isYear==2017:
+        jerString = cms.string('sqlite:jer/Summer19UL17_JRV2_MC.db')
+        resTag= cms.string('JR_Summer19UL17_JRV2_MC_PtResolution_AK4PFchs')
+        phiTag= cms.string('JR_Summer19UL17_JRV2_MC_PhiResolution_AK4PFchs')
+        sfTag = cms.string('JR_Summer19UL17_JRV2_MC_SF_AK4PFchs')
+    else: raise ValueError("Not implemented"
+    #if isYear==2016: # no _94X
+    #    jerString = cms.string('sqlite:jer/Summer16_25nsV1_MC.db')
+    #    resTag= cms.string('JR_Summer16_25nsV1_MC_PtResolution_AK4PFchs')
+    #    phiTag= cms.string('JR_Summer16_25nsV1_MC_PhiResolution_AK4PFchs')
+    #    sfTag = cms.string('JR_Summer16_25nsV1_MC_SF_AK4PFchs')
+
+process.jer = cms.ESSource("PoolDBESSource",
+        CondDBSetup,
+        toGet = cms.VPSet( 
+            # Resolution
+            cms.PSet(
+                record = cms.string('JetResolutionRcd'),
+                tag    = resTag,
+                label  = cms.untracked.string('AK4PFchs_pt')
+                ),
+
+             # Phi
+             cms.PSet(
+                 record = cms.string('JetResolutionRcd'),
+                 tag    = phiTag,
+                 label  = cms.untracked.string('AK4PFchs_phi')
+                 ),        
+             # Scale factors
+             cms.PSet(
+                 record = cms.string('JetResolutionScaleFactorRcd'),
+                 tag    = sfTag,
+                 label  = cms.untracked.string('AK4PFchs')
+                 )
+            ),
+        connect = jerString
+        )
+
+process.es_prefer_jer = cms.ESPrefer('PoolDBESSource', 'jer')
 
 ################ end sqlite connection
 #### RECOMPUTE JEC From GT ###
-## from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
-##  
-## jecLevels= ['L1FastJet',  'L2Relative', 'L3Absolute']
-## if options.isData:
-##         jecLevels =['L1FastJet',  'L2Relative', 'L3Absolute', 'L2L3Residual']
-##  
-## updateJetCollection(
-##     process,
-##     jetSource = process.nero.NeroJets.jets,
-##     labelName = 'UpdatedJEC',
-##     jetCorrections = ('AK4PFchs', cms.vstring(jecLevels), 'None')  # Do not forget 'L2L3Residual' on data!
-## )
-## 
-## updateJetCollection(
-##     process,
-##     jetSource = process.nero.NeroFatJets.chsAK8,
-##     labelName = 'UpdatedJECAK8',
-##     jetCorrections = ('AK8PFchs', cms.vstring(jecLevels), 'None')  # Do not forget 'L2L3Residual' on data!
-## )
-## 
-## from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
-## 
-## runMetCorAndUncFromMiniAOD (
-##         process,
-##         isData = isData, # false for MC
-##         reclusterJets = True,
-##         pfCandColl=cms.InputTag("packedPFCandidates"),
-##         CHS = True,
-##         fixEE2017 = True,
-##         #fixEE2017Params = {'userawPt': True, 'PtThreshold':50.0, 'MinEtaThreshold':2.65, 'MaxEtaThreshold': 3.139} , ## default have modified names
-##         postfix = "ModifiedMET"
-## )
+from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
+ 
+jecLevels= ['L1FastJet',  'L2Relative', 'L3Absolute']
+if options.isData:
+        jecLevels =['L1FastJet',  'L2Relative', 'L3Absolute', 'L2L3Residual']
+ 
+updateJetCollection(
+    process,
+    jetSource = process.nero.NeroJets.jets,
+    labelName = 'UpdatedJEC',
+    jetCorrections = ('AK4PFchs', cms.vstring(jecLevels), 'None')  # Do not forget 'L2L3Residual' on data!
+)
+
+updateJetCollection(
+    process,
+    jetSource = process.nero.NeroFatJets.chsAK8,
+    labelName = 'UpdatedJECAK8',
+    jetCorrections = ('AK8PFchs', cms.vstring(jecLevels), 'None')  # Do not forget 'L2L3Residual' on data!
+)
+
+from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+
+runMetCorAndUncFromMiniAOD (
+        process,
+        isData = isData, # false for MC
+        reclusterJets = True,
+        pfCandColl=cms.InputTag("packedPFCandidates"),
+        CHS = True,
+        postfix = "ModifiedMET"
+)
 
 #print "-> Updating the jets collection to run on to 'updatedPatJetsUpdatedJEC' with the new jec in the GT/or DB"
 #process.nero.NeroJets.jets=cms.InputTag('updatedPatJetsUpdatedJEC')
