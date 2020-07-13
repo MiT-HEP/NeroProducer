@@ -24,7 +24,8 @@ options.register('isRun', 'Run2017B', VarParsing.multiplicity.singleton,VarParsi
 
 options.parseArguments()
 
-if '2017' in options.isRun: isYear=2017
+if '2015' in options.isRun: isYear=2015
+elif '2017' in options.isRun: isYear=2017
 elif '2016' in options.isRun: isYear=2016
 elif '2018' in options.isRun: isYear=2018
 else: raise ValueError("Unable to determine Year from isRun: %s"%options.isRun)
@@ -46,11 +47,11 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 250
 if len(options.inputFiles) == 0:
     if isData:
         options.inputFiles = [
-                '/store/user/amarini/Sync/0E555487-7241-E811-9209-002481CFC92C.root' ## SingleMuon Run2017B 31Mar2018
+                '/store/data/Run2017G/SingleMuon/MINIAOD/09Aug2019_UL2017-v1/20000/5B32D24F-BDAD-6F45-95B9-6424DE9D8075.root', ## Single Muon
         ]
     else:
         options.inputFiles = [
-                '/store/user/amarini/Sync/5AC9148F-9842-E811-892B-3417EBE535DA.root' ## GGH Hmm Apr2018
+                '/store/mc/RunIISummer19UL17MiniAOD/TTTo2L2Nu_TuneCP5CR2_13TeV-powheg-pythia8/MINIAODSIM/106X_mc2017_realistic_v6-v1/50000/E876FEB5-706D-B348-ACE3-EA5FD04F44D7.root' ## TT UL 2017
         ]
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxEvents) )
@@ -204,7 +205,7 @@ if options.isData:
         resTag= cms.string('JR_Summer19UL17_JRV2_DATA_PtResolution_AK4PFchs')
         phiTag= cms.string('JR_Summer19UL17_JRV2_DATA_PhiResolution_AK4PFchs')
         sfTag = cms.string('JR_Summer19UL17_JRV2_DATA_SF_AK4PFchs')
-    else: raise ValueError("Not implemented"
+    else: raise ValueError("Not implemented")
     #if isYear==2016: # no _94X
     #    jerString = cms.string('sqlite:jer/Summer16_25nsV1_DATA.db')
     #    resTag= cms.string('JR_Summer16_25nsV1_DATA_PtResolution_AK4PFchs')
@@ -214,9 +215,9 @@ else:
     if isYear==2017:
         jerString = cms.string('sqlite:jer/Summer19UL17_JRV2_MC.db')
         resTag= cms.string('JR_Summer19UL17_JRV2_MC_PtResolution_AK4PFchs')
-        phiTag= cms.string('JR_Summer19UL17_JRV2_MC_PhiResolution_AK4PFchs')
+        #phiTag= cms.string('JR_Summer19UL17_JRV2_MC_PhiResolution_AK4PFchs')
         sfTag = cms.string('JR_Summer19UL17_JRV2_MC_SF_AK4PFchs')
-    else: raise ValueError("Not implemented"
+    else: raise ValueError("Not implemented")
     #if isYear==2016: # no _94X
     #    jerString = cms.string('sqlite:jer/Summer16_25nsV1_MC.db')
     #    resTag= cms.string('JR_Summer16_25nsV1_MC_PtResolution_AK4PFchs')
@@ -234,11 +235,11 @@ process.jer = cms.ESSource("PoolDBESSource",
                 ),
 
              # Phi
-             cms.PSet(
-                 record = cms.string('JetResolutionRcd'),
-                 tag    = phiTag,
-                 label  = cms.untracked.string('AK4PFchs_phi')
-                 ),        
+             #cms.PSet(
+             #    record = cms.string('JetResolutionRcd'),
+             #    tag    = phiTag,
+             #    label  = cms.untracked.string('AK4PFchs_phi')
+             #    ),        
              # Scale factors
              cms.PSet(
                  record = cms.string('JetResolutionScaleFactorRcd'),
@@ -273,28 +274,29 @@ updateJetCollection(
     jetCorrections = ('AK8PFchs', cms.vstring(jecLevels), 'None')  # Do not forget 'L2L3Residual' on data!
 )
 
-from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+#from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+#
+#runMetCorAndUncFromMiniAOD (
+#        process,
+#        isData = isData, # false for MC
+        #reclusterJets = True, ## FIXME
+#        pfCandColl=cms.InputTag("packedPFCandidates"),
+#        CHS = True,
+#        postfix = "ModifiedMET"
+#)
 
-runMetCorAndUncFromMiniAOD (
-        process,
-        isData = isData, # false for MC
-        reclusterJets = True,
-        pfCandColl=cms.InputTag("packedPFCandidates"),
-        CHS = True,
-        postfix = "ModifiedMET"
-)
-
-#print "-> Updating the jets collection to run on to 'updatedPatJetsUpdatedJEC' with the new jec in the GT/or DB"
-#process.nero.NeroJets.jets=cms.InputTag('updatedPatJetsUpdatedJEC')
-#process.nero.NeroFatJets.chsAK8=cms.InputTag('updatedPatJetsUpdatedJECAK8')
+print "-> Updating the jets collection to run on to 'updatedPatJetsUpdatedJEC' with the new jec in the GT/or DB"
+process.nero.NeroJets.jets=cms.InputTag('updatedPatJetsUpdatedJEC')
+process.nero.NeroFatJets.chsAK8=cms.InputTag('updatedPatJetsUpdatedJECAK8')
 #process.nero.NeroMet.mets=cms.InputTag("slimmedMETsModifiedMET")
-##process.jecSequence = cms.Sequence( 
-##        #process.patJetCorrFactorsReapplyJEC + process.patJetsReapplyJEC
-##        process.patJetCorrFactorsUpdatedJEC* process.updatedPatJetsUpdatedJEC 
-##        * process.patJetCorrFactorsUpdatedJECAK8* process.updatedPatJetsUpdatedJECAK8
-##        * process.fullPatMetSequenceModifiedMET 
-##        * process.ecalBadCalibReducedMINIAODFilter
-##        )
+
+process.jecSequence = cms.Sequence( 
+        #process.patJetCorrFactorsReapplyJEC + process.patJetsReapplyJEC
+        process.patJetCorrFactorsUpdatedJEC* process.updatedPatJetsUpdatedJEC 
+        * process.patJetCorrFactorsUpdatedJECAK8* process.updatedPatJetsUpdatedJECAK8
+        #* process.fullPatMetSequenceModifiedMET 
+        #* process.ecalBadCalibReducedMINIAODFilter
+        )
 
 
 #-----------------------ELECTRON ID-------------------------------
@@ -349,43 +351,43 @@ process.softActivityJets = ak4PFJets.clone(src = 'chsForSATkJets', doAreaFastjet
 #)
 #process.es_prefer_qg = cms.ESPrefer('PoolDBESSource','QGPoolDBESSource')
 #
-#process.load('RecoJets.JetProducers.QGTagger_cfi')
-#process.QGTagger.srcJets             = process.nero.NeroJets.jets   # Could be reco::PFJetCollection or pat::JetCollection (both AOD and miniAOD)               
-#process.QGTagger.srcVertexCollection = process.nero.NeroVertex.vertices
-#process.QGTagger.useQualityCuts = cms.bool(False)
+process.load('RecoJets.JetProducers.QGTagger_cfi')
+process.QGTagger.srcJets             = process.nero.NeroJets.jets   # Could be reco::PFJetCollection or pat::JetCollection (both AOD and miniAOD)               
+process.QGTagger.srcVertexCollection = process.nero.NeroVertex.vertices
+process.QGTagger.useQualityCuts = cms.bool(False)
 #
 ## ----------------------- GenHFHadronMatcher -----------------
-#
-#process.load("PhysicsTools.JetMCAlgos.GenHFHadronMatcher_cff")
-#
-#from PhysicsTools.JetMCAlgos.HadronAndPartonSelector_cfi import selectedHadronsAndPartons
-#process.selectedHadronsAndPartons = selectedHadronsAndPartons.clone(
-#            particles = process.nero.NeroMonteCarlo.prunedgen
-#            )
-#from PhysicsTools.JetMCAlgos.AK4PFJetsMCFlavourInfos_cfi import ak4JetFlavourInfos
-#process.genJetFlavourInfos = ak4JetFlavourInfos.clone(
-#            jets = process.nero.NeroMonteCarlo.genjets
-#            )
-#
-#from PhysicsTools.JetMCAlgos.GenHFHadronMatcher_cff import matchGenBHadron
-#process.matchGenBHadron = matchGenBHadron.clone(
-#            genParticles = process.nero.NeroMonteCarlo.prunedgen,
-#            jetFlavourInfos = "genJetFlavourInfos"
-#            )
-#from PhysicsTools.JetMCAlgos.GenHFHadronMatcher_cff import matchGenCHadron
-#process.matchGenCHadron = matchGenCHadron.clone(
-#            genParticles = process.nero.NeroMonteCarlo.prunedgen,
-#            jetFlavourInfos = "genJetFlavourInfos"
-#            )
-#process.load("TopQuarkAnalysis.TopTools.GenTtbarCategorizer_cfi")
-#process.categorizeGenTtbar.genJets = process.nero.NeroMonteCarlo.genjets
-#
-#process.ttbarcat = cms.Sequence()
-#if not isData:
-#    process.ttbarcat = cms.Sequence( 
-#                    process.selectedHadronsAndPartons * process.genJetFlavourInfos * process.matchGenBHadron * process.matchGenCHadron* ## gen HF flavour matching
-#                    process.categorizeGenTtbar  ## return already a categorization id for tt
-#                    )
+
+process.load("PhysicsTools.JetMCAlgos.GenHFHadronMatcher_cff")
+
+from PhysicsTools.JetMCAlgos.HadronAndPartonSelector_cfi import selectedHadronsAndPartons
+process.selectedHadronsAndPartons = selectedHadronsAndPartons.clone(
+            particles = process.nero.NeroMonteCarlo.prunedgen
+            )
+from PhysicsTools.JetMCAlgos.AK4PFJetsMCFlavourInfos_cfi import ak4JetFlavourInfos
+process.genJetFlavourInfos = ak4JetFlavourInfos.clone(
+            jets = process.nero.NeroMonteCarlo.genjets
+            )
+
+from PhysicsTools.JetMCAlgos.GenHFHadronMatcher_cff import matchGenBHadron
+process.matchGenBHadron = matchGenBHadron.clone(
+            genParticles = process.nero.NeroMonteCarlo.prunedgen,
+            jetFlavourInfos = "genJetFlavourInfos"
+            )
+from PhysicsTools.JetMCAlgos.GenHFHadronMatcher_cff import matchGenCHadron
+process.matchGenCHadron = matchGenCHadron.clone(
+            genParticles = process.nero.NeroMonteCarlo.prunedgen,
+            jetFlavourInfos = "genJetFlavourInfos"
+            )
+process.load("TopQuarkAnalysis.TopTools.GenTtbarCategorizer_cfi")
+process.categorizeGenTtbar.genJets = process.nero.NeroMonteCarlo.genjets
+
+process.ttbarcat = cms.Sequence()
+if not isData:
+    process.ttbarcat = cms.Sequence( 
+                    process.selectedHadronsAndPartons * process.genJetFlavourInfos * process.matchGenBHadron * process.matchGenCHadron* ## gen HF flavour matching
+                    process.categorizeGenTtbar  ## return already a categorization id for tt
+                    )
 ################## FSR PHOTONS ###############
 
 #process.load("NeroProducer.Nero.fsrPhotons_cfi")
@@ -440,7 +442,6 @@ process.p = cms.Path(
                 process.infoProducerSequence *
                 process.egammaPostRecoSeq *  #-> should be everything from EGamma
                 process.jecSequence *
-                process.fullPatMetSequence *
                 process.QGTagger    * ## after jec, because it will produce the new jet collection
                 process.ttbarcat *
                 process.QGVariablesSequence*

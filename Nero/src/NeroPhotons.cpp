@@ -165,9 +165,8 @@ int NeroPhotons::analyze(const edm::Event& iEvent,const edm::EventSetup &iSetup)
 
         etaSC -> push_back(  pho.superCluster()->eta() ) ;
 
-        //Requested UserFloat PhotonMVAEstimatorRunIIFall17v1 is not available! Possible UserFloats are:
-        //PhotonMVAEstimatorRun2Spring15NonTrig25nsV2p1Values PhotonMVAEstimatorRun2Spring15NonTrig50nsV2p1Values PhotonMVAEstimatorRun2Spring16NonTrigV1Values PhotonMVAEstimatorRunIIFall17v1Values PhotonMVAEstimatorRunIIFall17v1p1Values ecalEnergyErrPostCorr ecalEnergyErrPreCorr ecalEnergyPostCorr ecalEnergyPreCorr energyScaleDown energyScaleEtDown energyScaleEtUp energyScaleGainDown energyScaleGainUp energyScaleStatDown energyScaleStatUp energyScaleSystDown energyScaleSystUp energyScaleUp energyScaleValue energySigmaDown energySigmaPhiDown energySigmaPhiUp energySigmaRhoDown energySigmaRhoUp energySigmaUp energySigmaValue energySmearNrSigma phoChargedIsolation phoNeutralHadronIsolation phoPhotonIsolation phoWorstChargedIsolation
-        double mvaValue= pho.userFloat("PhotonMVAEstimatorRunIIFall17v1Values");
+        //PhotonMVAEstimatorRun2Spring16NonTrigV1Values PhotonMVAEstimatorRunIIFall17v1p1Values PhotonMVAEstimatorRunIIFall17v2Values ecalEnergyErrPostCorr ecalEnergyErrPreCorr ecalEnergyPostCorr ecalEnergyPreCorr energyScaleDown energyScaleEtDown energyScaleEtUp energyScaleGainDown energyScaleGainUp energyScaleStatDown energyScaleStatUp energyScaleSystDown energyScaleSystUp energyScaleUp energyScaleValue energySigmaDown energySigmaPhiDown energySigmaPhiUp energySigmaRhoDown energySigmaRhoUp energySigmaUp energySigmaValue energySmearNrSigma 
+        double mvaValue= pho.userFloat("PhotonMVAEstimatorRunIIFall17v2Values");
         mva   -> push_back(mvaValue);
 
         /*

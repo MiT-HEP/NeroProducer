@@ -3,7 +3,7 @@
 # Instruct builder to use a particular CMSSW release
 # [CMSSW] CMSSW_10_6_13
 # [Options] isData=False
-# [fileList] /store/mc/RunIIAutumn18MiniAOD/DYJetsToLL_M-105To160_TuneCP5_PSweights_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/100000/48A13F85-97BC-8348-A555-9AC79DF6628B.root
+# [fileList] i/store/mc/RunIISummer19UL17MiniAOD/TTTo2L2Nu_TuneCP5CR2_13TeV-powheg-pythia8/MINIAODSIM/106X_mc2017_realistic_v6-v1/50000/E876FEB5-706D-B348-ACE3-EA5FD04F44D7.root
 # [MaxEvents] 5000
 # [Tag] CMSSW_106X
 
@@ -77,14 +77,12 @@ function CMSSW_10_2_15 {
 
 function CMSSW_10_6_13 {
         git cms-init
-
-        #TODO
-        git cms-merge-topic amarini:topic_qgmorevar_106X 
         
-        # CHECK if is working
+        ## customization
+        git cms-merge-topic amarini:topic_qgmorevar_106X 
         git clone ssh://git@gitlab.cern.ch:7999/uhh-cmssw/fsr-photon-recovery.git FSRPhotonRecovery
         
-        ### CLEAN UP
+        ### EGamma
         git cms-merge-topic jainshilpi:ULV1_backport106X_forUsers
         git clone https://github.com/jainshilpi/EgammaPostRecoTools.git -b ULV0  ./EgammaPostRecoTools_tmp
         mv EgammaPostRecoTools_tmp/python/EgammaPostRecoTools.py RecoEgamma/EgammaTools/python/.
@@ -92,6 +90,10 @@ function CMSSW_10_6_13 {
         git cms-addpkg EgammaAnalysis/ElectronTools
         rm EgammaAnalysis/ElectronTools/data -rf
         git clone https://github.com/jainshilpi/EgammaAnalysis-ElectronTools.git -b UL2017SSV2 EgammaAnalysis/ElectronTools/data/
+
+        ## JetMet
+
+        ## Muon
 }
 
 
